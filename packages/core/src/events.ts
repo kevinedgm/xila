@@ -20,6 +20,8 @@ export interface ChartEventMap {
   zoom: { readonly x: readonly [number, number]; readonly y: readonly [number, number] };
   dataChanged: { readonly reason: 'update' | 'filter' };
   resize: { readonly width: number; readonly height: number };
+  /** Tras cada dibujo completo; `first` en el primero (sirve para quitar un esqueleto). */
+  draw: { readonly first: boolean };
 }
 
 export type Listener<K extends keyof ChartEventMap> = (payload: ChartEventMap[K]) => void;

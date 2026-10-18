@@ -57,6 +57,7 @@ export class Chart {
   /** Con render diferido, `false` hasta que el contenedor entra en pantalla. */
   private visible = true;
   private pendingDraw = false;
+  private drawn = false;
   private layout: Layout;
   private scales: ChartScales | null = null;
   private frame = 0;
@@ -438,6 +439,13 @@ export class Chart {
           ? gridHitTester(visible, scales, plotArea)
           : sortedHitTester(visible, scales);
     if (this.lastHover) this.drawHoverOverlay(this.lastHover);
+    this.events.emit('draw', { first: !this.drawn });
+    this.drawn = true;
+  }
+
+  /** `true` después del primer dibujo completo. */
+  hasDrawn(): boolean {
+    return this.drawn;
   }
 
   private buildScales(area: Rect, previous?: ChartScales): ChartScales {

@@ -48,3 +48,21 @@ test('en móvil el grid pasa a una columna', async ({ page }) => {
   const anchoUnico = new Set(cajas.map((w) => Math.round(w)));
   expect(anchoUnico.size).toBe(1);
 });
+
+test('los paneles fuera de pantalla muestran una silueta hasta que se ven, sin saltos', async ({
+  page,
+}) => {
+  // Ventana baja: los paneles de abajo quedan a más de 200 px del borde y no se dibujan aún.
+  await page.setViewportSize({ width: 1200, height: 400 });
+  await abrir(page);
+  const ultimo = page.locator('.xila-panel').last();
+  const antes = (await ultimo.locator('.xila-panel-chart').boundingBox()) as { height: number };
+  // Con render diferido, lo que está bajo el pliegue aún no se dibujó: tiene silueta.
+  expect(await page.locator('.xila-skeleton').count()).toBeGreaterThan(0);
+  await expect(ultimo.locator('.xila-skeleton')).toHaveCount(1);
+  await ultimo.scrollIntoViewIfNeeded();
+  await expect(ultimo.locator('.xila-skeleton')).toHaveCount(0);
+  await expect(ultimo.locator('canvas').first()).toBeVisible();
+  const despues = (await ultimo.locator('.xila-panel-chart').boundingBox()) as { height: number };
+  expect(despues.height).toBe(antes.height);
+});

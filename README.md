@@ -45,6 +45,9 @@ Por defecto un gráfico no se dibuja hasta que su contenedor está a menos de 20
 pantalla, y no redibuja mientras está fuera (`IntersectionObserver`). Una página con 30
 gráficos solo paga los visibles: `examples/muchos.html` lo muestra con un contador. Para
 dibujar siempre (por ejemplo, exportar sin mostrar) se pasa `lazy: false`.
+Mientras un gráfico no se ha dibujado, `XilaChart` (y por tanto los paneles del dashboard)
+muestra una silueta gris del tamaño final, así la página no salta al aparecer; `skeleton: false`
+la quita. El evento `draw` de `Chart` (`{ first }`) avisa de cada dibujo.
 
 ## Plugins
 
