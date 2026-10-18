@@ -10,7 +10,14 @@ import { resolveConfig, type ChartConfig, type ResolvedChartConfig } from './con
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
 import { resolveSeries, type ResolvedSeries } from './data/series';
-import { Emitter } from './events';
+import { Emitter, type HoverPayload } from './events';
+import {
+  bandHitTester,
+  gridHitTester,
+  sortedHitTester,
+  type Hit,
+  type HitTester,
+} from './hit-test';
 import { PluginRegistry, type Layout, type PluginContext, type Rect } from './plugin';
 import type { Renderer, Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
@@ -20,6 +27,8 @@ import { linearScale, type ContinuousScale, type Domain } from './scales/linear'
 const IDENTITY = { offset: 0, scale: 1, base: 0 } as const;
 const FALLBACK_WIDTH = 600;
 const FALLBACK_HEIGHT = 400;
+/** Distancia máxima, en píxeles, para que el cursor "toque" un dato. */
+const HOVER_DISTANCE = 24;
 
 export interface ChartScales {
   readonly x: ContinuousScale | BandScale;
@@ -49,15 +58,28 @@ export class Chart {
   private dirty = { data: true, layout: true };
   private destroyed = false;
   private decimation: DecimatedSeries[] = [];
+  private readonly hidden = new Set<string>();
+  private hitTester: HitTester | null = null;
+  private lastHover: HoverPayload | null = null;
+  private readonly onPointerMove = (e: PointerEvent): void => this.handlePointer(e, 'move');
+  private readonly onPointerLeave = (): void => this.handleLeave();
+  private readonly onClick = (e: MouseEvent): void => this.handlePointer(e, 'click');
 
   constructor(container: HTMLElement, config: ChartConfig) {
     this.container = container;
     this.raw = config;
     this.renderer = new CanvasRenderer(container);
     this.plugins = new PluginRegistry(config.plugins);
-    this.config = resolveConfig(this.plugins.beforeUpdate(config, this.context()));
     this.layout = emptyLayout();
+    // Primero una configuración válida, para que los plugins ya tengan contexto en beforeUpdate.
+    this.config = resolveConfig(config);
+    const adjusted = this.plugins.beforeUpdate(config, this.context());
+    if (adjusted !== config) this.config = resolveConfig(adjusted);
     this.plugins.install(this.context());
+    const el = this.renderer.element;
+    el.addEventListener('pointermove', this.onPointerMove);
+    el.addEventListener('pointerleave', this.onPointerLeave);
+    el.addEventListener('click', this.onClick);
     this.observer =
       typeof ResizeObserver === 'undefined'
         ? null
@@ -97,6 +119,24 @@ export class Chart {
     return this.series;
   }
 
+  /** Ids de las series ocultas (por la leyenda, por ejemplo). */
+  getHiddenSeries(): ReadonlySet<string> {
+    return this.hidden;
+  }
+
+  /** Muestra u oculta una serie; el dominio Y se recalcula con las visibles. */
+  toggleSeries(seriesId: string, hidden = !this.hidden.has(seriesId)): void {
+    this.assertAlive();
+    if (!this.config.series.some((s) => s.id === seriesId)) {
+      throw new RangeError(`No hay una serie con el id "${seriesId}"`);
+    }
+    if (hidden === this.hidden.has(seriesId)) return;
+    if (hidden) this.hidden.add(seriesId);
+    else this.hidden.delete(seriesId);
+    this.events.emit('visibility', { seriesId, hidden });
+    this.requestDraw();
+  }
+
   getLayout(): Layout {
     return this.layout;
   }
@@ -133,6 +173,10 @@ export class Chart {
     this.destroyed = true;
     if (this.frame) cancelAnimationFrame(this.frame);
     this.observer?.disconnect();
+    const el = this.renderer.element;
+    el.removeEventListener('pointermove', this.onPointerMove);
+    el.removeEventListener('pointerleave', this.onPointerLeave);
+    el.removeEventListener('click', this.onClick);
     this.plugins.uninstall(this.context());
     this.events.clear();
     this.renderer.destroy();
@@ -145,7 +189,88 @@ export class Chart {
       layout: this.layout,
       events: this.events,
       requestDraw: () => this.requestDraw(),
+      hiddenSeries: this.hidden,
+      toggleSeries: (id, hidden) => this.toggleSeries(id, hidden),
     };
+  }
+
+  /** Series que se dibujan y cuentan para el dominio, con su índice original (para el color). */
+  private visibleSeries(): { series: ResolvedSeries; index: number }[] {
+    return this.series
+      .map((series, index) => ({ series, index }))
+      .filter(({ series }) => !this.hidden.has(series.id));
+  }
+
+  private handlePointer(e: MouseEvent, kind: 'move' | 'click'): void {
+    if (this.destroyed || !this.hitTester) return;
+    const rect = this.renderer.element.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const { plotArea } = this.layout;
+    const inside =
+      px >= plotArea.x &&
+      px <= plotArea.x + plotArea.width &&
+      py >= plotArea.y &&
+      py <= plotArea.y + plotArea.height;
+    if (!inside) return this.handleLeave();
+
+    const nearest = this.hitTester.nearest(px, py, HOVER_DISTANCE);
+    if (kind === 'click') {
+      if (nearest) {
+        this.events.emit('click', nearest);
+        this.plugins.onEvent('click', nearest, this.context());
+      }
+      return;
+    }
+    const hits =
+      this.config.type === 'scatter'
+        ? nearest
+          ? [nearest]
+          : []
+        : this.hitTester.nearestX(px, HOVER_DISTANCE);
+    const payload: HoverPayload = { px, py, nearest, hits };
+    this.lastHover = payload;
+    this.drawHoverOverlay(payload);
+    this.events.emit('hover', payload);
+    this.plugins.onEvent('hover', payload, this.context());
+  }
+
+  private handleLeave(): void {
+    if (this.destroyed || !this.lastHover) return;
+    this.lastHover = null;
+    this.renderer.clear('overlay');
+    this.events.emit('hover', null);
+    this.plugins.onEvent('hover', null, this.context());
+  }
+
+  /** Marca en la capa `overlay` los datos bajo el cursor; nunca toca la capa de datos. */
+  private drawHoverOverlay(hover: HoverPayload): void {
+    const { renderer, config } = this;
+    const { plotArea } = this.layout;
+    renderer.clear('overlay');
+    if (hover.hits.length === 0) return;
+    const first = hover.hits[0] as Hit;
+    if (config.type !== 'scatter') {
+      renderer.drawRule('overlay', first.px, plotArea.y, first.px, plotArea.y + plotArea.height, {
+        stroke: config.theme.axis,
+        width: 1,
+        dash: [4, 3],
+        opacity: 0.6,
+      });
+    }
+    if (config.type === 'bar') return;
+    for (const h of hover.hits) {
+      const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';
+      renderer.drawPointSeries(
+        'overlay',
+        Float64Array.of(h.px),
+        Float64Array.of(h.py),
+        0,
+        1,
+        { fill: color, radius: 4, stroke: config.theme.background, strokeWidth: 2 },
+        { x: IDENTITY, y: IDENTITY },
+      );
+    }
   }
 
   private assertAlive(): void {
@@ -174,11 +299,12 @@ export class Chart {
 
     // 1. Escalas con un rango provisional, solo para saber qué etiquetas habrá.
     const { padding, theme } = config;
+    const reserved = this.plugins.reserveSpace(this.context());
     const provisional: Rect = {
-      x: padding.left,
-      y: padding.top,
-      width: width - padding.left - padding.right,
-      height: height - padding.top - padding.bottom,
+      x: padding.left + reserved.left,
+      y: padding.top + reserved.top,
+      width: width - padding.left - padding.right - reserved.left - reserved.right,
+      height: height - padding.top - padding.bottom - reserved.top - reserved.bottom,
     };
     let scales = this.buildScales(provisional);
     let ticks = this.buildTicks(scales);
@@ -208,6 +334,16 @@ export class Chart {
     renderer.clip('data', plotArea.x - 1, plotArea.y - 1, plotArea.width + 2, plotArea.height + 2);
     this.drawSeries(scales, plotArea);
     this.plugins.afterDraw(ctx);
+
+    // 4. Índice espacial para hover y click, sobre las series visibles.
+    const visible = this.visibleSeries().map((v) => v.series);
+    this.hitTester =
+      scales.x.kind === 'band'
+        ? bandHitTester(visible, scales, config.bar.mode === 'stacked')
+        : config.type === 'scatter'
+          ? gridHitTester(visible, scales, plotArea)
+          : sortedHitTester(visible, scales);
+    if (this.lastHover) this.drawHoverOverlay(this.lastHover);
   }
 
   private buildScales(area: Rect, previous?: ChartScales): ChartScales {
@@ -248,7 +384,7 @@ export class Chart {
     if (configured !== 'auto') return configured;
     let min = Infinity;
     let max = -Infinity;
-    for (const s of this.series) {
+    for (const { series: s } of this.visibleSeries()) {
       const values = axis === 'x' ? s.x : s.y;
       for (let i = 0; i < values.length; i++) {
         const v = values[i] as number;
@@ -289,7 +425,7 @@ export class Chart {
     const [x0, x1] = scales.x.domain;
     const dpr = window.devicePixelRatio || 1;
 
-    this.series.forEach((s, i) => {
+    for (const { series: s, index: i } of this.visibleSeries()) {
       const color = palette[i % palette.length] ?? '#000';
       const from = Math.max(0, lowerBound(s.x, x0) - 1);
       const to = Math.min(s.length, lowerBound(s.x, x1) + 1);
@@ -303,7 +439,7 @@ export class Chart {
           { fill: color, radius: config.scatter.radius, opacity: 0.85 },
           transform,
         );
-        return;
+        continue;
       }
       // Líneas: decimación min/max por columna de píxel físico (ADR 0002).
       const pxPerUnit = (area.width / (x1 - x0)) * dpr;
@@ -318,19 +454,19 @@ export class Chart {
         { stroke: color, width: config.line.width },
         transform,
       );
-    });
+    }
   }
 
   private drawBars(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
     const { palette } = config.theme;
-    const n = this.series.length;
+    const visible = this.visibleSeries();
     const stacked = config.bar.mode === 'stacked';
-    const slot = stacked ? x.bandwidth : x.bandwidth / Math.max(1, n);
+    const slot = stacked ? x.bandwidth : x.bandwidth / Math.max(1, visible.length);
     const positive = new Float64Array(x.count);
     const negative = new Float64Array(x.count);
 
-    this.series.forEach((s, si) => {
+    visible.forEach(({ series: s, index: colorIndex }, si) => {
       const count = Math.min(s.length, x.count);
       const px0 = new Float64Array(count);
       const px1 = new Float64Array(count);
@@ -352,7 +488,7 @@ export class Chart {
           y1[i] = v;
         }
       }
-      const color = palette[si % palette.length] ?? '#000';
+      const color = palette[colorIndex % palette.length] ?? '#000';
       renderer.drawBars('data', px0, px1, y0, y1, 0, count, { fill: color }, transform);
     });
   }

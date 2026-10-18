@@ -18,6 +18,8 @@ function fakeContext(): PluginContext {
     layout: { width: 100, height: 50, plotArea: { x: 10, y: 5, width: 80, height: 40 } },
     events: new Emitter(),
     requestDraw: vi.fn(),
+    hiddenSeries: new Set(),
+    toggleSeries: vi.fn(),
   };
 }
 
@@ -29,6 +31,10 @@ function recorder(id: string, log: string[]): ChartPlugin {
     beforeUpdate: (config) => {
       log.push(`${id}:beforeUpdate`);
       return { ...config, padding: { top: 42 } };
+    },
+    reserveSpace: () => {
+      log.push(`${id}:reserveSpace`);
+      return { top: 10 };
     },
     afterLayout: () => log.push(`${id}:afterLayout`),
     beforeDraw: () => log.push(`${id}:beforeDraw`),
@@ -50,6 +56,7 @@ describe('PluginRegistry', () => {
 
     registry.install(ctx);
     const updated = registry.beforeUpdate(baseConfig, ctx);
+    const space = registry.reserveSpace(ctx);
     registry.afterLayout(ctx.layout, ctx);
     registry.beforeDraw(ctx);
     registry.afterDraw(ctx);
@@ -63,6 +70,7 @@ describe('PluginRegistry', () => {
     // La desinstalación va en orden inverso.
     expect(log.slice(-2)).toEqual(['b:uninstall', 'a:uninstall']);
     expect(updated.padding).toEqual({ top: 42 });
+    expect(space).toEqual({ top: 20, right: 0, bottom: 0, left: 0 });
     expect(ctx.renderer.drawRect).toHaveBeenCalledWith('overlay', 10, 5, 80, 40, { fill: 'red' });
     expect(registry.list()).toHaveLength(0);
   });

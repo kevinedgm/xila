@@ -64,6 +64,8 @@ export interface TextStyle {
 export type Layer = 'background' | 'data' | 'overlay';
 
 export interface Renderer {
+  /** Elemento raíz del gráfico, donde los plugins cuelgan su HTML (tooltip, leyenda). */
+  readonly element: HTMLElement;
   /** `dpr` es `devicePixelRatio`: el backend escala su superficie interna para verse nítido. */
   resize(width: number, height: number, dpr: number): void;
   clear(layer: Layer): void;

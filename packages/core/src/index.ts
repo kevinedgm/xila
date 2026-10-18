@@ -57,7 +57,15 @@ export type {
 } from './renderer';
 
 export { Emitter } from './events';
-export type { ChartEventMap, Listener } from './events';
+export type { ChartEventMap, HoverPayload, Listener } from './events';
+
+export { sortedHitTester, gridHitTester, bandHitTester } from './hit-test';
+export type { Hit, HitTester } from './hit-test';
+
+export { tooltipPlugin } from './plugins/tooltip';
+export type { TooltipOptions } from './plugins/tooltip';
+export { legendPlugin } from './plugins/legend';
+export type { LegendOptions } from './plugins/legend';
 
 export { PluginRegistry, PLUGIN_HOOK_ORDER } from './plugin';
-export type { ChartPlugin, PluginContext, PluginHook, Layout, Rect } from './plugin';
+export type { ChartPlugin, PluginContext, PluginHook, Layout, Rect, ReservedSpace } from './plugin';

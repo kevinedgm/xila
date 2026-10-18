@@ -1,17 +1,22 @@
+import type { Hit } from './hit-test';
+
+export interface HoverPayload {
+  /** Posición del cursor en píxeles CSS relativos al gráfico. */
+  readonly px: number;
+  readonly py: number;
+  /** El dato más cercano al cursor, o `null` si ninguno está al alcance. */
+  readonly nearest: Hit | null;
+  /** Un dato por serie en la misma x (líneas y barras); vacío en dispersión. */
+  readonly hits: readonly Hit[];
+}
+
 /** Mapa de evento a su carga. Un nombre inexistente es un error de compilación. */
 export interface ChartEventMap {
-  hover: {
-    readonly seriesId: string;
-    readonly index: number;
-    readonly x: number;
-    readonly y: number;
-  } | null;
-  click: {
-    readonly seriesId: string;
-    readonly index: number;
-    readonly x: number;
-    readonly y: number;
-  };
+  /** `null` cuando el cursor sale del gráfico. */
+  hover: HoverPayload | null;
+  click: Hit;
+  /** Una serie se mostró u ocultó (leyenda). */
+  visibility: { readonly seriesId: string; readonly hidden: boolean };
   zoom: { readonly x: readonly [number, number]; readonly y: readonly [number, number] };
   dataChanged: { readonly reason: 'update' | 'filter' };
   resize: { readonly width: number; readonly height: number };

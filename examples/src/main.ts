@@ -2,20 +2,28 @@ import {
   categoryColumn,
   Chart,
   DataTable,
+  legendPlugin,
   numberColumn,
   timeColumn,
+  tooltipPlugin,
   version,
   type ChartConfig,
 } from '@xila/core';
 import { generateSeries } from './bench/synthetic';
 
+const plugins = () => [tooltipPlugin(), legendPlugin()];
+
 const estado = document.getElementById('estado');
 if (estado) estado.textContent = `@xila/core ${version}`;
+
+const charts: Record<string, Chart> = {};
+Object.assign(window, { charts });
 
 function mount(id: string, config: ChartConfig): Chart {
   const container = document.getElementById(id);
   if (!container) throw new Error(`falta #${id}`);
-  return new Chart(container, config);
+  charts[id] = new Chart(container, config);
+  return charts[id];
 }
 
 // 1. Serie temporal: 100 000 lecturas de sensor a 1 kHz, con decimación min/max.
@@ -26,6 +34,7 @@ const sensorTable = new DataTable({
 });
 mount('linea', {
   type: 'line',
+  plugins: plugins(),
   data: sensorTable,
   series: [{ id: 'temp', name: 'Temperatura', x: 'tiempo', y: 'temperatura' }],
   axes: { x: { title: 'Tiempo (UTC)' }, y: { title: '°C' } },
@@ -39,6 +48,7 @@ const y2 = xs.map((i) => (i > 80 && i < 110 ? Number.NaN : 40 + 15 * Math.cos(i 
 const y3 = xs.map((i) => 30 + i / 8);
 mount('multi', {
   type: 'line',
+  plugins: plugins(),
   data: new DataTable({
     x: numberColumn(xs),
     a: numberColumn(y1),
@@ -64,6 +74,7 @@ const ventas = new DataTable({
 });
 const barras: ChartConfig = {
   type: 'bar',
+  plugins: plugins(),
   data: ventas,
   series: [
     { id: 'norte', name: 'Norte', x: 'mes', y: 'norte' },
@@ -88,6 +99,7 @@ for (let i = 0; i < m; i++) {
 }
 mount('dispersion', {
   type: 'scatter',
+  plugins: [tooltipPlugin({ mode: 'nearest' })],
   data: new DataTable({
     x: { kind: 'number', values: sx },
     y: { kind: 'number', values: sy },
@@ -103,10 +115,16 @@ const fechas: Date[] = [];
 const diario: number[] = [];
 for (let d = 0; d < dias; d++) {
   fechas.push(new Date(Date.UTC(2025, 0, 1 + d)));
-  diario.push(1000 + 300 * Math.sin((d / 365) * Math.PI * 2) + 150 * Math.sin(d / 7) + (d % 7 === 0 ? -400 : 0));
+  diario.push(
+    1000 +
+      300 * Math.sin((d / 365) * Math.PI * 2) +
+      150 * Math.sin(d / 7) +
+      (d % 7 === 0 ? -400 : 0),
+  );
 }
 mount('fechas', {
   type: 'line',
+  plugins: plugins(),
   data: new DataTable({ fecha: timeColumn(fechas), ventas: numberColumn(diario) }),
   series: [{ id: 'v', name: 'Ventas diarias', x: 'fecha', y: 'ventas' }],
   axes: { y: { title: 'MXN' } },

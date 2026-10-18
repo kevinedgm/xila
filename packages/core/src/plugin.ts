@@ -24,7 +24,13 @@ export interface PluginContext {
   readonly events: Emitter;
   /** Pide un redibujo en el siguiente fotograma. */
   readonly requestDraw: () => void;
+  /** Series ocultas por la leyenda u otro plugin. */
+  readonly hiddenSeries: ReadonlySet<string>;
+  readonly toggleSeries: (seriesId: string, hidden?: boolean) => void;
 }
+
+/** Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. */
+export type ReservedSpace = Partial<Record<'top' | 'right' | 'bottom' | 'left', number>>;
 
 /**
  * Contrato de extensión. Todos los hooks son opcionales y corren en este orden fijo,
@@ -37,6 +43,8 @@ export interface ChartPlugin {
   install?(ctx: PluginContext): void;
   /** Antes de resolver una configuración nueva. Puede devolver una modificada. */
   beforeUpdate?(config: ChartConfig, ctx: PluginContext): ChartConfig | void;
+  /** Antes de calcular el layout: cuánto espacio necesita el plugin (leyenda, título). */
+  reserveSpace?(ctx: PluginContext): ReservedSpace | void;
   /** Cuando ya se conoce el área de dibujo. */
   afterLayout?(layout: Layout, ctx: PluginContext): void;
   beforeDraw?(ctx: PluginContext): void;
@@ -53,6 +61,7 @@ export interface ChartPlugin {
 export const PLUGIN_HOOK_ORDER = [
   'install',
   'beforeUpdate',
+  'reserveSpace',
   'afterLayout',
   'beforeDraw',
   'afterDraw',
@@ -89,6 +98,19 @@ export class PluginRegistry {
     let current = config;
     for (const p of this.plugins) current = p.beforeUpdate?.(current, ctx) ?? current;
     return current;
+  }
+
+  reserveSpace(ctx: PluginContext): Required<ReservedSpace> {
+    const total = { top: 0, right: 0, bottom: 0, left: 0 };
+    for (const p of this.plugins) {
+      const space = p.reserveSpace?.(ctx);
+      if (!space) continue;
+      total.top += space.top ?? 0;
+      total.right += space.right ?? 0;
+      total.bottom += space.bottom ?? 0;
+      total.left += space.left ?? 0;
+    }
+    return total;
   }
 
   afterLayout(layout: Layout, ctx: PluginContext): void {
