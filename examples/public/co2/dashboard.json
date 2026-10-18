@@ -1,0 +1,77 @@
+{
+  "titulo": "Emisiones de CO₂ 1950–2023 · Our World in Data",
+  "tema": "light",
+  "datos": { "co2": "data/co2.csv" },
+  "filtros": [
+    { "tipo": "fechas", "datos": "co2", "columna": "fecha", "etiqueta": "Años" },
+    { "tipo": "categoria", "datos": "co2", "columna": "pais", "etiqueta": "País", "multiple": true }
+  ],
+  "paneles": [
+    {
+      "tipo": "kpi",
+      "titulo": "CO₂ del último año (Mt)",
+      "datos": "co2",
+      "valor": { "columna": "co2_mt", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "year" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Toneladas por persona (promedio)",
+      "datos": "co2",
+      "valor": { "columna": "co2_t_por_persona", "agregado": "mean", "formato": "numero" },
+      "comparar": { "columna": "fecha", "periodo": "year" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Población (último año)",
+      "datos": "co2",
+      "valor": { "columna": "poblacion", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "year" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Años con dato",
+      "datos": "co2",
+      "valor": { "columna": "co2_mt", "agregado": "count", "formato": "entero" }
+    },
+    {
+      "tipo": "linea",
+      "titulo": "Emisiones anuales por país (Mt de CO₂)",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "co2_mt",
+      "color": "pais",
+      "ejes": { "y": "Mt CO₂" }
+    },
+    {
+      "tipo": "linea",
+      "titulo": "Toneladas de CO₂ por persona",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "co2_t_por_persona",
+      "color": "pais",
+      "ancho": 6,
+      "ejes": { "y": "t / persona" }
+    },
+    {
+      "tipo": "dispersion",
+      "titulo": "PIB per cápita vs. CO₂ por persona",
+      "datos": "co2",
+      "x": "pib_per_capita",
+      "y": "co2_t_por_persona",
+      "ancho": 6,
+      "ejes": { "x": "PIB per cápita (USD 2011)", "y": "t CO₂ / persona" }
+    },
+    {
+      "tipo": "barras",
+      "titulo": "Porcentaje de las emisiones globales, por año",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "porcentaje_global",
+      "color": "pais",
+      "agregado": "mean",
+      "periodo": "year",
+      "apilado": true
+    }
+  ]
+}

@@ -49,7 +49,9 @@ El flujo completo, sin escribir código de gráficos:
 3. Se edita `public/dashboard.json` (`docs/configuracion-dashboard.md`): tablas, filtros y paneles.
 4. `pnpm build` genera `dist/`; se sube y se protege en el servidor (`docs/despliegue.md`).
 
-Ejemplo funcionando: `pnpm dev` y abrir `/dashboard.html`.
+Ejemplos funcionando con `pnpm dev`: `/dashboard.html` (ventas sintéticas) y
+`/dashboard.html?config=co2/dashboard.json` (emisiones de CO₂ de Our World in Data,
+generado con `python3 python/ejemplo_co2.py`: descarga, limpia, exporta; el JSON no tiene código).
 
 ## Licencia
 

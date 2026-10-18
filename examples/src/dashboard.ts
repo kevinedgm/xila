@@ -9,7 +9,9 @@ import { createApp, h } from 'vue';
 const app = document.getElementById('app') as HTMLElement;
 
 try {
-  const loaded = await loadDashboard('dashboard.json');
+  // `?config=co2/dashboard.json` carga otro dashboard; los CSV se resuelven relativos al JSON.
+  const config = new URLSearchParams(location.search).get('config') ?? 'dashboard.json';
+  const loaded = await loadDashboard(config);
   createApp({
     render: () =>
       h(XilaDashboard, { config: loaded.config, tables: loaded.tables, errors: loaded.errors }),
