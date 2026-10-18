@@ -63,6 +63,16 @@ Una serie puede declarar su error: `yError` (simétrico, `y ± error`) o `yLow` 
 dibuja como banda sombreada bajo la línea; en dispersión, como barras de error con remates. El
 dominio Y incluye los límites y el tooltip muestra el intervalo entre paréntesis.
 
+## Backends: Canvas y WebGL
+
+Por defecto todo se dibuja con Canvas 2D. Con `renderer: 'webgl'` los puntos de una dispersión
+van a la GPU: `x` e `y` se suben una vez como buffer y cada fotograma solo cambian la escala y el
+desplazamiento (uniforms), así que el pan y el zoom de un millón de puntos no vuelven a recorrer
+los datos. Ejes, texto, líneas y barras siguen en Canvas. `renderer: 'auto'` elige WebGL para
+dispersiones de 50 000 puntos o más. Si WebGL2 no existe o el navegador pierde el contexto, los
+puntos se dibujan con Canvas y se avisa una vez en consola; `chart.getBackend()` dice cuál quedó.
+Mecanismo y límites en [`docs/adr/0004-webgl-hibrido-para-puntos.md`](docs/adr/0004-webgl-hibrido-para-puntos.md).
+
 ## Histogramas
 
 `histogram(valores, { bins })` cuenta en cubetas iguales (los `NaN` se ignoran; el último borde

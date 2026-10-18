@@ -320,7 +320,12 @@ export class CanvasRenderer implements Renderer {
     this.contexts.clear();
   }
 
-  private ctx(layer: Layer): CanvasRenderingContext2D {
+  /** Color de fondo actual, para componer exportaciones en subclases. */
+  protected currentBackground(): string {
+    return this.background;
+  }
+
+  protected ctx(layer: Layer): CanvasRenderingContext2D {
     const ctx = this.contexts.get(layer);
     if (!ctx) throw new Error(`Capa desconocida: ${layer}`);
     return ctx;

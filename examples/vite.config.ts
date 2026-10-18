@@ -10,6 +10,7 @@ export default defineConfig({
         dashboard: resolve(import.meta.dirname, 'dashboard.html'),
         muchos: resolve(import.meta.dirname, 'muchos.html'),
         sincronia: resolve(import.meta.dirname, 'sincronia.html'),
+        webgl: resolve(import.meta.dirname, 'webgl.html'),
       },
     },
   },

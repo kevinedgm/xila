@@ -43,6 +43,13 @@ interface BaseChartConfig {
    * defecto; `false` dibuja siempre (por ejemplo, para exportar sin mostrar).
    */
   readonly lazy?: boolean;
+  /**
+   * Backend de dibujo. `'canvas'` (por defecto) usa Canvas 2D para todo; `'webgl'` dibuja los
+   * puntos de dispersión en la GPU (ejes, líneas y barras siguen en Canvas) y cae a Canvas con
+   * un aviso si WebGL2 no está disponible; `'auto'` elige WebGL para dispersiones de 50 000
+   * puntos o más.
+   */
+  readonly renderer?: 'auto' | 'canvas' | 'webgl';
 }
 
 export interface LineChartConfig extends BaseChartConfig {

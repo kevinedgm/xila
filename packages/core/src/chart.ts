@@ -21,6 +21,7 @@ import {
 import { PluginRegistry, type Layout, type PluginContext, type Rect } from './plugin';
 import type { Renderer, Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
+import { WebGLRenderer, type Backend } from './renderer-webgl';
 import { bandScale, type BandScale } from './scales/band';
 import { linearScale, type ContinuousScale, type Domain } from './scales/linear';
 import { logScale } from './scales/log';
@@ -78,7 +79,10 @@ export class Chart {
   constructor(container: HTMLElement, config: ChartConfig) {
     this.container = container;
     this.raw = config;
-    this.renderer = new CanvasRenderer(container);
+    this.renderer = useWebGL(config) ? new WebGLRenderer(container) : new CanvasRenderer(container);
+    if (this.renderer instanceof WebGLRenderer) {
+      this.renderer.onFallback = () => this.requestDraw();
+    }
     this.plugins = new PluginRegistry(config.plugins);
     this.layout = emptyLayout();
     // Primero una configuración válida, para que los plugins ya tengan contexto en beforeUpdate.
@@ -445,6 +449,11 @@ export class Chart {
     this.drawn = true;
   }
 
+  /** Backend que dibuja los puntos: `'webgl'` solo si se pidió y la GPU respondió. */
+  getBackend(): Backend {
+    return this.renderer instanceof WebGLRenderer ? this.renderer.backend : 'canvas';
+  }
+
   /** `true` después del primer dibujo completo. */
   hasDrawn(): boolean {
     return this.drawn;
@@ -691,4 +700,15 @@ function mapValues(
   }
   if (to < values.length) out.fill(NaN, to);
   return out;
+}
+
+/** Umbral de puntos a partir del cual `renderer: 'auto'` elige WebGL para dispersiones. */
+export const WEBGL_AUTO_THRESHOLD = 50_000;
+
+function useWebGL(config: ChartConfig): boolean {
+  const mode = config.renderer ?? 'canvas';
+  if (mode === 'webgl') return true;
+  if (mode === 'auto')
+    return config.type === 'scatter' && config.data.length >= WEBGL_AUTO_THRESHOLD;
+  return false;
 }

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Dispersión de un millón de puntos con WebGL</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 24px;
+        color: #1f2933;
+      }
+      .chart {
+        height: 480px;
+        border: 1px solid #e4e7eb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Un millón de puntos <small id="estado"></small></h1>
+    <p>
+      Los puntos se suben una vez a la GPU; arrastrar y hacer zoom solo cambia cuatro números
+      (uniforms). <code>?renderer=canvas</code> compara con Canvas 2D; <code>?n=100000</code>
+      cambia la cantidad.
+    </p>
+    <div id="nube" class="chart"></div>
+    <script type="module" src="/src/webgl.ts"></script>
+  </body>
+</html>

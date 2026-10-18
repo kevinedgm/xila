@@ -3,6 +3,8 @@ export const version = '0.0.0';
 export { Chart } from './chart';
 export type { ChartScales } from './chart';
 export { CanvasRenderer } from './renderer-canvas';
+export { WebGLRenderer, parseColor } from './renderer-webgl';
+export type { Backend } from './renderer-webgl';
 
 export { DataTable, numberColumn, timeColumn, categoryColumn, columnLength } from './data/table';
 export type { Column, ColumnKind, NumberColumn, TimeColumn, CategoryColumn } from './data/table';
