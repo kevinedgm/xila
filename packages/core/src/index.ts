@@ -103,6 +103,8 @@ export type { Hit, HitTester } from './hit-test';
 export { tooltipPlugin } from './plugins/tooltip';
 export type { TooltipOptions } from './plugins/tooltip';
 export { legendPlugin } from './plugins/legend';
+export { zoomPanPlugin, zoomDomain, panDomain, clampDomain } from './plugins/zoom-pan';
+export type { ZoomPanOptions } from './plugins/zoom-pan';
 export type { LegendOptions } from './plugins/legend';
 
 export { PluginRegistry, PLUGIN_HOOK_ORDER } from './plugin';

@@ -8,6 +8,7 @@ import {
   type Chart,
   legendPlugin,
   tooltipPlugin,
+  zoomPanPlugin,
   type ChartConfig,
   type Condition,
   type DashboardConfig,
@@ -130,7 +131,14 @@ export const XilaPanelChart = defineComponent({
   setup(props) {
     const config = computed<ChartConfig>(() => {
       const base = buildChart(props.panel, props.table, props.conditions);
-      const plugins = [tooltipPlugin(), ...(base.series.length > 1 ? [legendPlugin()] : [])];
+      const plugins = [
+        tooltipPlugin(),
+        ...(base.series.length > 1 ? [legendPlugin()] : []),
+        // Barras no hacen zoom (eje de bandas); líneas en X, dispersión en X e Y.
+        ...(base.type === 'bar'
+          ? []
+          : [zoomPanPlugin({ axis: base.type === 'scatter' ? 'xy' : 'x' })]),
+      ];
       return markRaw({ ...base, plugins, theme: props.theme });
     });
     let chart: Chart | null = null;

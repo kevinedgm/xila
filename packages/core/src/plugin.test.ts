@@ -20,6 +20,10 @@ function fakeContext(): PluginContext {
     requestDraw: vi.fn(),
     hiddenSeries: new Set(),
     toggleSeries: vi.fn(),
+    getScales: () => null,
+    getDataDomain: () => [0, 1],
+    getViewDomain: () => null,
+    setViewDomain: vi.fn(),
   };
 }
 

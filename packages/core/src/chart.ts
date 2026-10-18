@@ -62,6 +62,8 @@ export class Chart {
   private readonly hidden = new Set<string>();
   private hitTester: HitTester | null = null;
   private lastHover: HoverPayload | null = null;
+  /** Rangos fijados por zoom o pan; `null` = automático desde los datos. */
+  private readonly view: { x: Domain | null; y: Domain | null } = { x: null, y: null };
   private readonly onPointerMove = (e: PointerEvent): void => this.handlePointer(e, 'move');
   private readonly onPointerLeave = (): void => this.handleLeave();
   private readonly onClick = (e: MouseEvent): void => this.handlePointer(e, 'click');
@@ -204,7 +206,34 @@ export class Chart {
       requestDraw: () => this.requestDraw(),
       hiddenSeries: this.hidden,
       toggleSeries: (id, hidden) => this.toggleSeries(id, hidden),
+      getScales: () => this.scales,
+      getDataDomain: (axis) => this.domain(axis),
+      getViewDomain: (axis) => this.view[axis],
+      setViewDomain: (axis, domain) => this.setViewDomain(axis, domain),
     };
+  }
+
+  /** Rango mostrado en un eje; `null` vuelve al automático. Emite `zoom`. */
+  setViewDomain(axis: 'x' | 'y', domain: Domain | null): void {
+    this.assertAlive();
+    const current = this.view[axis];
+    if (
+      current === domain ||
+      (current && domain && current[0] === domain[0] && current[1] === domain[1])
+    ) {
+      return;
+    }
+    this.view[axis] = domain;
+    this.dirty.layout = true;
+    this.events.emit('zoom', {
+      x: this.view.x ?? this.domain('x'),
+      y: this.view.y ?? this.domain('y'),
+    });
+    this.requestDraw();
+  }
+
+  getViewDomain(axis: 'x' | 'y'): Domain | null {
+    return this.view[axis];
   }
 
   /** Series que se dibujan y cuentan para el dominio, con su índice original (para el color). */
@@ -367,17 +396,17 @@ export class Chart {
       return { x: previous.x.withRange(xRange), y: previous.y.withRange(yRange) };
     }
 
-    const yDomain = this.domain('y');
-    let y = linearScale(yDomain, yRange);
-    if (config.scales.y.nice && config.scales.y.domain === 'auto') y = y.nice(5);
+    // Con zoom (view) el rango es exacto: redondearlo a ticks "bonitos" lo haría saltar.
+    let y = linearScale(this.view.y ?? this.domain('y'), yRange);
+    if (!this.view.y && config.scales.y.nice && config.scales.y.domain === 'auto') y = y.nice(5);
 
     if (config.scales.x.type === 'band') {
       const count = this.categories().length;
       return { x: bandScale(count, xRange, config.bar.padding), y };
     }
     const make = config.scales.x.type === 'time' ? timeScale : linearScale;
-    let x = make(this.domain('x'), xRange);
-    if (config.scales.x.nice && config.scales.x.domain === 'auto') x = x.nice(6);
+    let x = make(this.view.x ?? this.domain('x'), xRange);
+    if (!this.view.x && config.scales.x.nice && config.scales.x.domain === 'auto') x = x.nice(6);
     return { x, y };
   }
 

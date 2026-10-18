@@ -1,6 +1,8 @@
 import type { ChartConfig, ResolvedChartConfig } from './config';
 import type { ChartEventMap, Emitter } from './events';
 import type { Renderer } from './renderer';
+import type { ChartScales } from './chart';
+import type { Domain } from './scales/linear';
 
 export interface Rect {
   readonly x: number;
@@ -27,6 +29,14 @@ export interface PluginContext {
   /** Series ocultas por la leyenda u otro plugin. */
   readonly hiddenSeries: ReadonlySet<string>;
   readonly toggleSeries: (seriesId: string, hidden?: boolean) => void;
+  /** Escalas del último dibujo; `null` antes del primero. */
+  readonly getScales: () => ChartScales | null;
+  /** Rango de los datos visibles en ese eje (sin zoom). */
+  readonly getDataDomain: (axis: 'x' | 'y') => Domain;
+  /** Rango que se está mostrando, o `null` si es el automático. */
+  readonly getViewDomain: (axis: 'x' | 'y') => Domain | null;
+  /** Fija (o quita, con `null`) el rango mostrado: es lo que usan zoom y pan. */
+  readonly setViewDomain: (axis: 'x' | 'y', domain: Domain | null) => void;
 }
 
 /** Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. */

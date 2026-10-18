@@ -7,6 +7,7 @@ import {
   timeColumn,
   tooltipPlugin,
   version,
+  zoomPanPlugin,
   type ChartConfig,
 } from '@xila/core';
 import { generateSeries } from './bench/synthetic';
@@ -34,7 +35,7 @@ const sensorTable = new DataTable({
 });
 mount('linea', {
   type: 'line',
-  plugins: plugins(),
+  plugins: [...plugins(), zoomPanPlugin()],
   data: sensorTable,
   series: [{ id: 'temp', name: 'Temperatura', x: 'tiempo', y: 'temperatura' }],
   axes: { x: { title: 'Tiempo (UTC)' }, y: { title: '°C' } },
@@ -99,7 +100,7 @@ for (let i = 0; i < m; i++) {
 }
 mount('dispersion', {
   type: 'scatter',
-  plugins: [tooltipPlugin({ mode: 'nearest' })],
+  plugins: [tooltipPlugin({ mode: 'nearest' }), zoomPanPlugin({ axis: 'xy' })],
   data: new DataTable({
     x: { kind: 'number', values: sx },
     y: { kind: 'number', values: sy },
