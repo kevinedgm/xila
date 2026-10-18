@@ -1,0 +1,22 @@
+{
+  "name": "sitio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Sitio de documentación de Xila (VitePress).",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xila/core": "workspace:*",
+    "@xila/vue": "workspace:*",
+    "vue": "^3.5.44"
+  },
+  "devDependencies": {
+    "vite": "5.4.21",
+    "vitepress": "^1.6.4"
+  }
+}

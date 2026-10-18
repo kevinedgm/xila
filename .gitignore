@@ -8,3 +8,6 @@ examples/playwright-report/
 clientes/
 __pycache__/
 .pytest_cache/
+sitio/.vitepress/cache/
+sitio/.vitepress/dist/
+sitio/public/api/

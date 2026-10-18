@@ -1,0 +1,50 @@
+name: docs
+
+# Construye el sitio de VitePress y lo publica en GitHub Pages (Settings → Pages → Source:
+# GitHub Actions). La galería usa el código del monorepo, así que primero construye core y vue.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sitio/**'
+      - 'docs/**'
+      - 'packages/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @xila/core --filter @xila/vue build
+      - run: pnpm --filter sitio build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: sitio/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["galeria/**/*.ts", ".vitepress/**/*.ts", "env.d.ts"],
+  "exclude": [".vitepress/cache", ".vitepress/dist"],
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "types": ["vite/client"]
+  }
+}

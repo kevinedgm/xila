@@ -1,2 +1,5 @@
 dist
 pnpm-lock.yaml
+sitio/.vitepress/cache
+sitio/.vitepress/dist
+sitio/public/api
