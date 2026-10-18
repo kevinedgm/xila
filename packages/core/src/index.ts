@@ -106,6 +106,8 @@ export { legendPlugin } from './plugins/legend';
 export { zoomPanPlugin, zoomDomain, panDomain, clampDomain } from './plugins/zoom-pan';
 export type { ZoomPanOptions } from './plugins/zoom-pan';
 export { annotationsPlugin, annotationPixel } from './plugins/annotations';
+export { accessibilityPlugin, chartSummary } from './plugins/accessibility';
+export type { AccessibilityOptions } from './plugins/accessibility';
 export type {
   Annotation,
   AnnotationValue,

@@ -245,6 +245,9 @@ export class Chart {
       hiddenSeries: this.hidden,
       toggleSeries: (id, hidden) => this.toggleSeries(id, hidden),
       getScales: () => this.scales,
+      getSeries: () => this.getSeries(),
+      hoverAt: (px, py) => this.hoverAt(px, py),
+      clearHover: () => this.clearHover(),
       getDataDomain: (axis) => this.domain(axis),
       getViewDomain: (axis) => this.view[axis],
       setViewDomain: (axis, domain) => this.setViewDomain(axis, domain),
@@ -282,10 +285,16 @@ export class Chart {
   }
 
   private handlePointer(e: MouseEvent, kind: 'move' | 'click'): void {
-    if (this.destroyed || !this.hitTester) return;
     const rect = this.renderer.element.getBoundingClientRect();
-    const px = e.clientX - rect.left;
-    const py = e.clientY - rect.top;
+    this.hoverAt(e.clientX - rect.left, e.clientY - rect.top, kind);
+  }
+
+  /**
+   * Simula el cursor en `(px, py)` (píxeles CSS relativos al gráfico): marca y publica el
+   * dato más cercano como si el ratón estuviera ahí. Lo usa la navegación por teclado.
+   */
+  hoverAt(px: number, py: number, kind: 'move' | 'click' = 'move'): void {
+    if (this.destroyed || !this.hitTester) return;
     const { plotArea } = this.layout;
     const inside =
       px >= plotArea.x &&
@@ -313,6 +322,11 @@ export class Chart {
     this.drawHoverOverlay(payload);
     this.events.emit('hover', payload);
     this.plugins.onEvent('hover', payload, this.context());
+  }
+
+  /** Quita la marca del cursor y publica `hover` con `null`. */
+  clearHover(): void {
+    this.handleLeave();
   }
 
   private handleLeave(): void {

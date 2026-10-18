@@ -2,6 +2,7 @@ import type { ChartConfig, ResolvedChartConfig } from './config';
 import type { ChartEventMap, Emitter } from './events';
 import type { Renderer } from './renderer';
 import type { ChartScales } from './chart';
+import type { ResolvedSeries } from './data/series';
 import type { Domain } from './scales/linear';
 
 export interface Rect {
@@ -31,6 +32,11 @@ export interface PluginContext {
   readonly toggleSeries: (seriesId: string, hidden?: boolean) => void;
   /** Escalas del último dibujo; `null` antes del primero. */
   readonly getScales: () => ChartScales | null;
+  /** Series resueltas a arreglos tipados (todas, incluidas las ocultas). */
+  readonly getSeries: () => readonly ResolvedSeries[];
+  /** Simula el cursor en un píxel: marca el dato más cercano y publica `hover`. */
+  readonly hoverAt: (px: number, py: number) => void;
+  readonly clearHover: () => void;
   /** Rango de los datos visibles en ese eje (sin zoom). */
   readonly getDataDomain: (axis: 'x' | 'y') => Domain;
   /** Rango que se está mostrando, o `null` si es el automático. */

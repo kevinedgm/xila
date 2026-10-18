@@ -9,11 +9,12 @@ import {
   version,
   zoomPanPlugin,
   annotationsPlugin,
+  accessibilityPlugin,
   type ChartConfig,
 } from '@xila/core';
 import { generateSeries } from './bench/synthetic';
 
-const plugins = () => [tooltipPlugin(), legendPlugin()];
+const plugins = () => [tooltipPlugin(), legendPlugin(), accessibilityPlugin()];
 
 const estado = document.getElementById('estado');
 if (estado) estado.textContent = `@xila/core ${version}`;
@@ -86,7 +87,8 @@ const barras: ChartConfig = {
   axes: { y: { title: 'Ventas (miles MXN)' } },
 };
 mount('barras', barras);
-mount('apiladas', { ...barras, bar: { mode: 'stacked' } });
+// Cada gráfico necesita sus propias instancias de plugins: guardan estado y nodos del DOM.
+mount('apiladas', { ...barras, plugins: plugins(), bar: { mode: 'stacked' } });
 
 // 4. Dispersión: 20 000 puntos con dos nubes.
 const m = 20_000;

@@ -4,6 +4,10 @@ Un plugin es un objeto con `id` y hooks opcionales (`install`, `reserveSpace`, `
 `beforeDraw`, `afterDraw`, `onEvent`, `uninstall`). Se pasan en `plugins` al crear el gráfico y
 corren en orden de registro. Todos los de esta lista viven en `@xila/core`.
 
+Cada gráfico necesita **sus propias instancias**: un plugin guarda estado y nodos del DOM, así
+que compartir `tooltipPlugin()` entre dos gráficos deja al primero sin tooltip. Lo práctico es
+una función `const plugins = () => [tooltipPlugin(), legendPlugin()]` y llamarla por gráfico.
+
 ```ts
 import { Chart, tooltipPlugin, legendPlugin, zoomPanPlugin, annotationsPlugin } from '@xila/core';
 
@@ -93,3 +97,28 @@ anot.set([{ type: 'line', axis: 'x', value: Date.now() }]);
 ```
 
 Se dibujan en la capa `data`, recortadas al área de dibujo y encima de las series.
+
+## `accessibilityPlugin(opciones)`
+
+Un canvas es una imagen para un lector de pantalla. El plugin añade tres cosas al elemento del
+gráfico:
+
+1. `role="img"`, `tabindex="0"` y un `aria-label` generado en cada dibujo (o fijo con
+   `label`): "Gráfico de líneas. 2 series: Norte y Sur. 365 datos de 1 ene 2025 a 31 dic 2025.
+   Valores entre 420 y 1,450 (MXN)."
+2. Teclado: con el gráfico enfocado, ← → recorren los datos (con Shift, saltos de 5 %), Inicio y
+   Fin van a los extremos, ↑ ↓ cambian de serie y Escape quita el cursor. Mueve el mismo cursor
+   que el ratón, así que el tooltip aparece y una región `aria-live` lee "Serie, x: y".
+3. Una `<table>` oculta visualmente (hermana del gráfico) con una fila por dato, muestreada a
+   `tableRows` (200) filas como máximo, y una columna por serie.
+
+| Opción      | Valores   | Por defecto      |
+| ----------- | --------- | ---------------- |
+| `label`     | texto     | resumen generado |
+| `locale`    | BCP 47    | `'es-MX'`        |
+| `timeZone`  | IANA      | `'UTC'`          |
+| `tableRows` | número    | `200`            |
+| `keyboard`  | `boolean` | `true`           |
+| `table`     | `boolean` | `true`           |
+
+`chartSummary(ctx)` genera el resumen por separado, por si se quiere mostrar en pantalla.
