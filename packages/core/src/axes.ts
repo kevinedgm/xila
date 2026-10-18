@@ -1,5 +1,5 @@
 import type { ResolvedAxisConfig } from './config';
-import { tickFormatter } from './format/number';
+import { formatNumber, formatSI, tickFormatter } from './format/number';
 import type { Layout, Rect } from './plugin';
 import type { Renderer, TextStyle } from './renderer';
 import type { BandScale } from './scales/band';
@@ -34,6 +34,15 @@ export function continuousTicks(
     const t = timeTicks(scale.domain, count);
     values = t.values;
     fmt = axis.format ?? timeTickFormatter(t.interval);
+  } else if (scale.kind === 'log') {
+    values = scale.ticks(count);
+    // Cada tick es una potencia (o 2×, 5×): se formatea solo, sin decimales de un paso común.
+    fmt =
+      axis.format ??
+      ((v) =>
+        v >= 1e4 || v < 1e-2
+          ? formatSI(v)
+          : formatNumber(v, { decimals: Math.max(0, -Math.floor(Math.log10(v))) }));
   } else {
     values = scale.ticks(count);
     const step = scale.tickStep(count);

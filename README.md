@@ -49,6 +49,13 @@ Mientras un gráfico no se ha dibujado, `XilaChart` (y por tanto los paneles del
 muestra una silueta gris del tamaño final, así la página no salta al aparecer; `skeleton: false`
 la quita. El evento `draw` de `Chart` (`{ first }`) avisa de cada dibujo.
 
+## Escalas
+
+`scales.x.type` y `scales.y.type` aceptan `linear` (por defecto), `time` (columna de tiempo;
+ticks alineados al calendario), `band` (barras) y `log` (base 10: ticks en potencias de 10 con
+subticks 2 y 5 cuando caben; los valores ≤ 0 no tienen logaritmo, se omiten y se avisa una vez
+en consola). El zoom en una escala log se hace en espacio logarítmico.
+
 ## Plugins
 
 Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en

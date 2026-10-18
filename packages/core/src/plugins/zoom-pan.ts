@@ -84,9 +84,24 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
   const current = (which: 'x' | 'y', s: ContinuousScale): Domain =>
     ctx?.getViewDomain(which) ?? s.domain;
 
+  /**
+   * Espacio donde el zoom es lineal: el de los valores, o log10 en una escala logarítmica
+   * (ahí "la mitad" del rango [1, 100] es 10, no 50.5).
+   */
+  const toSpace = (s: ContinuousScale, v: number): number => (s.kind === 'log' ? Math.log10(v) : v);
+  const fromSpace = (s: ContinuousScale, v: number): number => (s.kind === 'log' ? 10 ** v : v);
+  const domainToSpace = (s: ContinuousScale, d: Domain): Domain => [
+    toSpace(s, d[0]),
+    toSpace(s, d[1]),
+  ];
+  const domainFromSpace = (s: ContinuousScale, d: Domain): Domain => [
+    fromSpace(s, d[0]),
+    fromSpace(s, d[1]),
+  ];
+
   const valueAt = (which: 'x' | 'y', s: ContinuousScale, px: number): number => {
-    const d = current(which, s);
-    return d[0] + ((px - s.range[0]) / (s.range[1] - s.range[0])) * (d[1] - d[0]);
+    const d = domainToSpace(s, current(which, s));
+    return fromSpace(s, d[0] + ((px - s.range[0]) / (s.range[1] - s.range[0])) * (d[1] - d[0]));
   };
 
   const apply = (which: 'x' | 'y', next: Domain): void => {
@@ -135,7 +150,10 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
       const s = continuous(which);
       if (!s) continue;
       const anchor = valueAt(which, s, which === 'x' ? p.x : p.y);
-      apply(which, zoomDomain(current(which, s), anchor, k));
+      apply(
+        which,
+        domainFromSpace(s, zoomDomain(domainToSpace(s, current(which, s)), toSpace(s, anchor), k)),
+      );
     }
   };
 
@@ -246,9 +264,9 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
       const s = continuous(which);
       if (!s) continue;
       const px = which === 'x' ? dx : dy;
-      const d = current(which, s);
+      const d = domainToSpace(s, current(which, s));
       const perPx = (d[1] - d[0]) / (s.range[1] - s.range[0]);
-      apply(which, panDomain(d, -px * perPx));
+      apply(which, domainFromSpace(s, panDomain(d, -px * perPx)));
     }
     if (el) el.style.cursor = 'grabbing';
   };

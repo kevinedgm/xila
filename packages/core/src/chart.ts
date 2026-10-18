@@ -23,6 +23,7 @@ import type { Renderer, Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
 import { bandScale, type BandScale } from './scales/band';
 import { linearScale, type ContinuousScale, type Domain } from './scales/linear';
+import { logScale } from './scales/log';
 import { timeScale } from './scales/time';
 
 const IDENTITY = { offset: 0, scale: 1, base: 0 } as const;
@@ -58,6 +59,7 @@ export class Chart {
   private visible = true;
   private pendingDraw = false;
   private drawn = false;
+  private readonly warnedLog = new Set<'x' | 'y'>();
   private layout: Layout;
   private scales: ChartScales | null = null;
   private frame = 0;
@@ -457,14 +459,20 @@ export class Chart {
     }
 
     // Con zoom (view) el rango es exacto: redondearlo a ticks "bonitos" lo haría saltar.
-    let y = linearScale(this.view.y ?? this.domain('y'), yRange);
+    const makeY = config.scales.y.type === 'log' ? logScale : linearScale;
+    let y = makeY(this.view.y ?? this.domain('y'), yRange);
     if (!this.view.y && config.scales.y.nice && config.scales.y.domain === 'auto') y = y.nice(5);
 
     if (config.scales.x.type === 'band') {
       const count = this.categories().length;
       return { x: bandScale(count, xRange, config.bar.padding), y };
     }
-    const make = config.scales.x.type === 'time' ? timeScale : linearScale;
+    const make =
+      config.scales.x.type === 'time'
+        ? timeScale
+        : config.scales.x.type === 'log'
+          ? logScale
+          : linearScale;
     let x = make(this.view.x ?? this.domain('x'), xRange);
     if (!this.view.x && config.scales.x.nice && config.scales.x.domain === 'auto') x = x.nice(6);
     return { x, y };
@@ -485,16 +493,29 @@ export class Chart {
     if (configured !== 'auto') return configured;
     let min = Infinity;
     let max = -Infinity;
+    const log = this.config.scales[axis].type === 'log';
+    let skipped = 0;
     for (const { series: s } of this.visibleSeries()) {
       const values = axis === 'x' ? s.x : s.y;
       for (let i = 0; i < values.length; i++) {
         const v = values[i] as number;
         if (v !== v) continue;
+        // En escala log, cero y negativos no tienen logaritmo: no cuentan y se avisa una vez.
+        if (log && v <= 0) {
+          skipped++;
+          continue;
+        }
         if (v < min) min = v;
         if (v > max) max = v;
       }
     }
-    if (!Number.isFinite(min)) return [0, 1];
+    if (log && skipped > 0 && !this.warnedLog.has(axis)) {
+      this.warnedLog.add(axis);
+      console.warn(
+        `Xila: ${skipped} valor(es) ≤ 0 en el eje ${axis} no se dibujan con escala logarítmica.`,
+      );
+    }
+    if (!Number.isFinite(min)) return log ? [1, 10] : [0, 1];
     // Una barra codifica cantidad por su longitud: su eje siempre incluye el cero.
     if (axis === 'y' && this.config.type === 'bar') {
       min = Math.min(min, 0);
@@ -543,6 +564,9 @@ export class Chart {
     const [x0, x1] = scales.x.domain;
     const dpr = window.devicePixelRatio || 1;
 
+    const tx = scales.x.transform;
+    const ty = scales.y.transform;
+
     for (const { series: s, index: i } of this.visibleSeries()) {
       const color = palette[i % palette.length] ?? '#000';
       const from = Math.max(0, lowerBound(s.x, x0) - 1);
@@ -550,8 +574,8 @@ export class Chart {
       if (config.type === 'scatter') {
         renderer.drawPointSeries(
           'data',
-          s.x,
-          s.y,
+          tx ? mapValues(s.x, from, to, tx) : s.x,
+          ty ? mapValues(s.y, from, to, ty) : s.y,
           from,
           to,
           { fill: color, radius: config.scatter.radius, opacity: 0.85 },
@@ -559,14 +583,16 @@ export class Chart {
         );
         continue;
       }
-      // Líneas: decimación min/max por columna de píxel físico (ADR 0002).
+      // Líneas: decimación min/max por columna de píxel físico (ADR 0002). Se decima sobre los
+      // valores crudos (min y max se conservan bajo una transformación monótona) y después se
+      // transforma el buffer, que ya es pequeño.
       const pxPerUnit = (area.width / (x1 - x0)) * dpr;
       const buffer = minMaxDecimate(s.x, s.y, from, to, x0, pxPerUnit, this.decimation[i]);
       this.decimation[i] = buffer;
       renderer.drawLineSeries(
         'data',
-        buffer.x,
-        buffer.y,
+        tx ? mapValues(buffer.x, 0, buffer.length, tx) : buffer.x,
+        ty ? mapValues(buffer.y, 0, buffer.length, ty) : buffer.y,
         0,
         buffer.length,
         { stroke: color, width: config.line.width },
@@ -614,4 +640,22 @@ export class Chart {
 
 function emptyLayout(): Layout {
   return { width: 0, height: 0, plotArea: { x: 0, y: 0, width: 0, height: 0 } };
+}
+
+/** Copia de `values` con `fn` aplicada en `[from, to)`; fuera del rango queda NaN (no se dibuja). */
+function mapValues(
+  values: Float64Array,
+  from: number,
+  to: number,
+  fn: (v: number) => number,
+): Float64Array {
+  const out = new Float64Array(values.length);
+  if (from > 0) out.fill(NaN, 0, from);
+  for (let i = from; i < to; i++) {
+    // log10(0) = −∞ y log10(−1) = NaN: ambos se vuelven hueco en la línea.
+    const r = fn(values[i] as number);
+    out[i] = Number.isFinite(r) ? r : NaN;
+  }
+  if (to < values.length) out.fill(NaN, to);
+  return out;
 }

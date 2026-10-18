@@ -69,6 +69,7 @@ export {
 } from './scales/time';
 export { floorTime } from './scales/time';
 export type { TimeInterval, TimeUnit } from './scales/time';
+export { logScale, logTicks } from './scales/log';
 export { bandScale } from './scales/band';
 export type { BandScale } from './scales/band';
 

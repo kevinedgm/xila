@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
  * Cada ejemplo de `index.html` es un caso. Si una captura cambia, Playwright guarda la actual
  * junto a la referencia y un diff; para aceptar el cambio: `pnpm test:visual --update-snapshots`.
  */
-const CASOS = ['linea', 'multi', 'barras', 'apiladas', 'dispersion', 'fechas'] as const;
+const CASOS = ['linea', 'multi', 'barras', 'apiladas', 'dispersion', 'fechas', 'log'] as const;
 
 async function abrir(page: Page): Promise<void> {
   const errores: string[] = [];

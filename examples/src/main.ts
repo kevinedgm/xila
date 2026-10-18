@@ -20,6 +20,26 @@ const estado = document.getElementById('estado');
 if (estado) estado.textContent = `@xila/core ${version}`;
 
 const charts: Record<string, Chart> = {};
+// 7. Escala logarítmica en Y: crecimiento exponencial con ruido y algunos ceros (se omiten con aviso).
+const nLog = 400;
+const xLog = new Float64Array(nLog);
+const yLog = new Float64Array(nLog);
+for (let i = 0; i < nLog; i++) {
+  xLog[i] = i;
+  yLog[i] = i % 97 === 0 ? 0 : 10 ** (i / 80) * (0.7 + 0.6 * Math.abs(Math.sin(i * 1.7)));
+}
+mount('log', {
+  type: 'line',
+  plugins: [...plugins(), zoomPanPlugin({ axis: 'xy' })],
+  data: new DataTable({
+    dia: numberColumn(Array.from(xLog)),
+    casos: numberColumn(Array.from(yLog)),
+  }),
+  series: [{ id: 'c', name: 'Casos', x: 'dia', y: 'casos' }],
+  scales: { y: { type: 'log' } },
+  axes: { x: { title: 'Día' }, y: { title: 'Casos (log)' } },
+});
+
 Object.assign(window, { charts });
 
 function mount(id: string, config: ChartConfig): Chart {

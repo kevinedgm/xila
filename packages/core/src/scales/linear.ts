@@ -5,9 +5,14 @@ export type Range = readonly [number, number];
 
 /** Escala continua: lleva valores del dominio (datos) al rango (píxeles) y de vuelta. */
 export interface ContinuousScale {
-  readonly kind: 'linear' | 'time';
+  readonly kind: 'linear' | 'time' | 'log';
   readonly domain: Domain;
   readonly range: Range;
+  /**
+   * Transformación previa al mapa lineal (`log10` en la escala log). Los valores que van al
+   * renderer pasan por aquí; sin ella el mapa se aplica a los valores tal cual.
+   */
+  readonly transform?: (value: number) => number;
   toPixel(value: number): number;
   toValue(pixel: number): number;
   /** Ticks "bonitos" dentro del dominio, aproximadamente `count`. */
