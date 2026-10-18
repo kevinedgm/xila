@@ -3,7 +3,7 @@ import type { SeriesSpec } from './data/series';
 import type { ChartPlugin } from './plugin';
 import { resolveTheme, type Theme, type ThemeName } from './theme';
 
-export type ChartType = 'line' | 'bar' | 'scatter';
+export type ChartType = 'line' | 'bar' | 'scatter' | 'box';
 
 export interface ScaleConfig {
   /** `band` solo tiene sentido para barras; `time` requiere una columna de tiempo. */
@@ -71,6 +71,22 @@ export interface BarChartConfig extends BaseChartConfig {
   };
 }
 
+export interface BoxChartConfig extends BaseChartConfig {
+  readonly type: 'box';
+  /**
+   * Datos en formato largo: `x` es la columna categórica del grupo y `y` la del valor; el
+   * gráfico calcula cuartiles, bigotes y atípicos por grupo (como `df.groupby(x)[y].describe()`).
+   */
+  readonly box?: {
+    /** Factor del bigote sobre el IQR (1.5 = Tukey, el de pandas y R). */
+    readonly whisker?: number;
+    /** Fracción de la banda que queda vacía entre cajas, de 0 a 1. */
+    readonly padding?: number;
+    /** Dibujar los valores fuera de los bigotes como puntos. */
+    readonly outliers?: boolean;
+  };
+}
+
 export interface ScatterChartConfig extends BaseChartConfig {
   readonly type: 'scatter';
   readonly scatter?: {
@@ -82,7 +98,7 @@ export interface ScatterChartConfig extends BaseChartConfig {
  * Configuración que escribe el usuario. Es una unión discriminada por `type`, así el
  * editor solo sugiere `line`, `bar` o `scatter` según el gráfico elegido.
  */
-export type ChartConfig = LineChartConfig | BarChartConfig | ScatterChartConfig;
+export type ChartConfig = LineChartConfig | BarChartConfig | ScatterChartConfig | BoxChartConfig;
 
 /** Lo mismo, con todos los valores por defecto aplicados. Es lo que usa el núcleo. */
 export interface ResolvedChartConfig {
@@ -97,6 +113,7 @@ export interface ResolvedChartConfig {
   readonly line: Required<NonNullable<LineChartConfig['line']>>;
   readonly bar: Required<NonNullable<BarChartConfig['bar']>>;
   readonly scatter: Required<NonNullable<ScatterChartConfig['scatter']>>;
+  readonly box: Required<NonNullable<BoxChartConfig['box']>>;
 }
 
 export interface ResolvedAxisConfig {
@@ -111,6 +128,7 @@ export const DEFAULTS = {
   line: { width: 1.5, area: false, step: false },
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2 },
   scatter: { radius: 3 },
+  box: { whisker: 1.5, padding: 0.3, outliers: true },
 } as const;
 
 export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
@@ -129,7 +147,11 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
   // Sin `scales.x.type`, el tipo sale de los datos: barras → banda; columna `time` → tiempo.
   const firstX = config.series[0]?.x ?? '';
   const defaultX =
-    config.type === 'bar' ? 'band' : config.data.column(firstX).kind === 'time' ? 'time' : 'linear';
+    config.type === 'bar' || config.type === 'box'
+      ? 'band'
+      : config.data.column(firstX).kind === 'time'
+        ? 'time'
+        : 'linear';
   return {
     type: config.type,
     data: config.data,
@@ -145,6 +167,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     line: { ...DEFAULTS.line, ...(config.type === 'line' ? config.line : undefined) },
     bar: { ...DEFAULTS.bar, ...(config.type === 'bar' ? config.bar : undefined) },
     scatter: { ...DEFAULTS.scatter, ...(config.type === 'scatter' ? config.scatter : undefined) },
+    box: { ...DEFAULTS.box, ...(config.type === 'box' ? config.box : undefined) },
   };
 }
 

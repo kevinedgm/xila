@@ -247,3 +247,24 @@ mount('histograma', {
   bar: { padding: 0 },
   axes: { x: { title: 'Valor' }, y: { title: 'Frecuencia' } },
 });
+
+// 10. Box plot: tiempos de respuesta por servidor en formato largo (una fila por medición). El
+// gráfico agrupa por la columna categórica y calcula cuartiles, bigotes (1.5·IQR) y atípicos.
+const servidores = ['alpha', 'beta', 'gamma', 'delta'];
+const filas: { servidor: string; ms: number }[] = [];
+let semillaB = 5;
+const u = () => (semillaB = (semillaB * 16807) % 2147483647) / 2147483647;
+servidores.forEach((srv, k) => {
+  for (let i = 0; i < 150; i++) {
+    // Log-normal: asimétrica a la derecha, como los tiempos de respuesta reales.
+    const r = Math.sqrt(-2 * Math.log(u() || 1e-12)) * Math.cos(2 * Math.PI * u());
+    filas.push({ servidor: srv, ms: Math.exp(3.5 + k * 0.25 + 0.35 * r) });
+  }
+});
+mount('cajas', {
+  type: 'box',
+  plugins: [tooltipPlugin(), accessibilityPlugin()],
+  data: DataTable.fromRows(filas),
+  series: [{ id: 'ms', name: 'Tiempo de respuesta', x: 'servidor', y: 'ms' }],
+  axes: { x: { title: 'Servidor' }, y: { title: 'ms' } },
+});

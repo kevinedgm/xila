@@ -2,6 +2,7 @@ import type { ChartConfig, ResolvedChartConfig } from './config';
 import type { ChartEventMap, Emitter } from './events';
 import type { Renderer } from './renderer';
 import type { ChartScales } from './chart';
+import type { BoxStats } from './data/box';
 import type { ResolvedSeries } from './data/series';
 import type { Domain } from './scales/linear';
 
@@ -34,6 +35,8 @@ export interface PluginContext {
   readonly getScales: () => ChartScales | null;
   /** Series resueltas a arreglos tipados (todas, incluidas las ocultas). */
   readonly getSeries: () => readonly ResolvedSeries[];
+  /** Box plot: estadísticos por serie y categoría; vacío en otros tipos de gráfico. */
+  readonly getBoxStats?: () => readonly (readonly BoxStats[])[];
   /** Simula el cursor en un píxel: marca el dato más cercano y publica `hover`. */
   readonly hoverAt: (px: number, py: number) => void;
   readonly clearHover: () => void;

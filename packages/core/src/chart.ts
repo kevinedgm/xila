@@ -7,6 +7,7 @@ import {
   type AxisTicks,
 } from './axes';
 import { resolveConfig, type ChartConfig, type ResolvedChartConfig } from './config';
+import { boxGroups, type BoxStats } from './data/box';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
 import { resolveSeries, type ResolvedSeries } from './data/series';
@@ -19,7 +20,7 @@ import {
   type HitTester,
 } from './hit-test';
 import { PluginRegistry, type Layout, type PluginContext, type Rect } from './plugin';
-import type { Renderer, Transform } from './renderer';
+import { applyMap, type Renderer, type Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
 import { WebGLRenderer, type Backend } from './renderer-webgl';
 import { bandScale, type BandScale } from './scales/band';
@@ -67,6 +68,8 @@ export class Chart {
   private dirty = { data: true, layout: true };
   private destroyed = false;
   private decimation: DecimatedSeries[] = [];
+  /** Box plot: estadísticos por serie y por categoría, calculados al resolver los datos. */
+  private boxes: BoxStats[][] = [];
   private readonly hidden = new Set<string>();
   private hitTester: HitTester | null = null;
   private lastHover: HoverPayload | null = null;
@@ -253,6 +256,7 @@ export class Chart {
       toggleSeries: (id, hidden) => this.toggleSeries(id, hidden),
       getScales: () => this.scales,
       getSeries: () => this.getSeries(),
+      getBoxStats: () => this.boxes,
       hoverAt: (px, py) => this.hoverAt(px, py),
       clearHover: () => this.clearHover(),
       getDataDomain: (axis) => this.domain(axis),
@@ -359,7 +363,7 @@ export class Chart {
         opacity: 0.6,
       });
     }
-    if (config.type === 'bar') return;
+    if (config.type === 'bar' || config.type === 'box') return;
     for (const h of hover.hits) {
       const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';
       renderer.drawPointSeries(
@@ -381,6 +385,12 @@ export class Chart {
   private resolveData(): void {
     this.series = this.config.series.map((spec) => resolveSeries(this.config.data, spec));
     this.decimation = [];
+    this.boxes =
+      this.config.type === 'box'
+        ? this.series.map((s) =>
+            boxGroups(s.x, s.y, this.categories().length, this.config.box.whisker),
+          )
+        : [];
     this.dirty.data = false;
   }
 
@@ -440,7 +450,11 @@ export class Chart {
     const visible = this.visibleSeries().map((v) => v.series);
     this.hitTester =
       scales.x.kind === 'band'
-        ? bandHitTester(visible, scales, config.bar.mode === 'stacked')
+        ? bandHitTester(
+            config.type === 'box' ? this.boxSeries() : visible,
+            scales,
+            config.type === 'bar' && config.bar.mode === 'stacked',
+          )
         : config.type === 'scatter'
           ? gridHitTester(visible, scales, plotArea)
           : sortedHitTester(visible, scales);
@@ -474,7 +488,8 @@ export class Chart {
 
     if (config.scales.x.type === 'band') {
       const count = this.categories().length;
-      return { x: bandScale(count, xRange, config.bar.padding), y };
+      const padding = config.type === 'box' ? config.box.padding : config.bar.padding;
+      return { x: bandScale(count, xRange, padding), y };
     }
     const make =
       config.scales.x.type === 'time'
@@ -569,7 +584,8 @@ export class Chart {
     const yMap = scales.y.map();
 
     if (scales.x.kind === 'band') {
-      this.drawBars(scales.x, { x: IDENTITY, y: yMap }, renderer);
+      if (config.type === 'box') this.drawBoxes(scales.x, { x: IDENTITY, y: yMap }, renderer);
+      else this.drawBars(scales.x, { x: IDENTITY, y: yMap }, renderer);
       return;
     }
     const transform: Transform = { x: scales.x.map(), y: yMap };
@@ -641,6 +657,120 @@ export class Chart {
         transform,
       );
     }
+  }
+
+  /** Estadísticos del box plot por serie visible y categoría (vacío si no es un box plot). */
+  getBoxStats(): readonly (readonly BoxStats[])[] {
+    return this.boxes;
+  }
+
+  /**
+   * Para el hover de un box plot, cada serie se reduce a una "barra" por categoría cuyo valor
+   * es la mediana; así el índice espacial de barras sirve tal cual.
+   */
+  private boxSeries(): ResolvedSeries[] {
+    return this.visibleSeries().map(({ series: s, index }) => {
+      const stats = this.boxes[index] ?? [];
+      const y = Float64Array.from(stats, (b) => (b.count > 0 ? b.median : NaN));
+      return {
+        id: s.id,
+        name: s.name,
+        x: Float64Array.from(stats, (_, i) => i),
+        y,
+        size: undefined,
+        yLow: undefined,
+        yHigh: undefined,
+        length: stats.length,
+      };
+    });
+  }
+
+  /**
+   * Box plot de Tukey: caja de Q1 a Q3, raya en la mediana, bigotes hasta el último dato dentro
+   * de 1.5·IQR y atípicos como puntos. Varias series se colocan lado a lado en cada categoría.
+   */
+  private drawBoxes(x: BandScale, transform: Transform, renderer: Renderer): void {
+    const { config } = this;
+    const { palette, background } = config.theme;
+    const visible = this.visibleSeries();
+    const slot = x.bandwidth / Math.max(1, visible.length);
+    const boxWidth = slot * 0.8;
+
+    visible.forEach(({ index: colorIndex }, si) => {
+      const stats = this.boxes[colorIndex] ?? [];
+      const n = Math.min(stats.length, x.count);
+      const color = palette[colorIndex % palette.length] ?? '#000';
+      const cx = new Float64Array(n);
+      const px0 = new Float64Array(n);
+      const px1 = new Float64Array(n);
+      const q1 = new Float64Array(n);
+      const q3 = new Float64Array(n);
+      const low = new Float64Array(n);
+      const high = new Float64Array(n);
+      const median = new Float64Array(n);
+      for (let i = 0; i < n; i++) {
+        const b = stats[i] as BoxStats;
+        const start = x.start(i) + si * slot + (slot - boxWidth) / 2;
+        cx[i] = start + boxWidth / 2;
+        px0[i] = start;
+        px1[i] = start + boxWidth;
+        const empty = b.count === 0;
+        q1[i] = empty ? NaN : b.q1;
+        q3[i] = empty ? NaN : b.q3;
+        low[i] = empty ? NaN : b.low;
+        high[i] = empty ? NaN : b.high;
+        median[i] = empty ? NaN : b.median;
+      }
+      // Bigotes debajo, la caja encima (tapa el tramo del bigote que cruza la caja).
+      renderer.drawErrorBars(
+        'data',
+        cx,
+        low,
+        high,
+        0,
+        n,
+        { stroke: color, width: 1 },
+        transform,
+        boxWidth / 2,
+      );
+      renderer.drawBars(
+        'data',
+        px0,
+        px1,
+        q1,
+        q3,
+        0,
+        n,
+        { fill: background, stroke: color, strokeWidth: 1.5 },
+        transform,
+      );
+      renderer.drawBars('data', px0, px1, q1, q3, 0, n, { fill: color, opacity: 0.25 }, transform);
+      for (let i = 0; i < n; i++) {
+        const m = median[i] as number;
+        if (m !== m) continue;
+        const py = applyMap(transform.y, m);
+        renderer.drawRule('data', px0[i] as number, py, px1[i] as number, py, {
+          stroke: color,
+          width: 2,
+        });
+      }
+      if (config.box.outliers) {
+        for (let i = 0; i < n; i++) {
+          const b = stats[i] as BoxStats;
+          if (b.outliers.length === 0) continue;
+          const ox = new Float64Array(b.outliers.length).fill(cx[i] as number);
+          renderer.drawPointSeries(
+            'data',
+            ox,
+            b.outliers,
+            0,
+            b.outliers.length,
+            { fill: color, radius: 2.5, opacity: 0.7 },
+            transform,
+          );
+        }
+      }
+    });
   }
 
   private drawBars(x: BandScale, transform: Transform, renderer: Renderer): void {

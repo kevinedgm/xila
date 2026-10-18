@@ -13,6 +13,8 @@ export type { SeriesSpec, ResolvedSeries } from './data/series';
 export { minMaxDecimate } from './data/decimate';
 export type { DecimatedSeries } from './data/decimate';
 export { lttb } from './data/lttb';
+export { boxStats, boxGroups } from './data/box';
+export type { BoxStats } from './data/box';
 export { histogram, histogramTable, binCount } from './data/histogram';
 export type { Histogram, HistogramOptions, HistogramTableOptions, BinRule } from './data/histogram';
 export { lowerBound } from './data/search';

@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 
 test('el gráfico tiene resumen, responde a las flechas y expone una tabla', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 30);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 33);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   const img = page.locator('#multi [role="img"]');
   await expect(img).toHaveAttribute('tabindex', '0');
@@ -34,7 +34,7 @@ test('el gráfico tiene resumen, responde a las flechas y expone una tabla', asy
 
 test('en barras el resumen habla de categorías', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 30);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 33);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   // Está bajo el pliegue: con render diferido se dibuja (y describe) al entrar en pantalla.
   const img = page.locator('#barras [role="img"]');

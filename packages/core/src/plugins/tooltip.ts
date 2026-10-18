@@ -110,6 +110,12 @@ function defaultFormat(
       .map((h) => {
         const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';
         const name = config.series[h.seriesIndex]?.name ?? h.seriesId;
+        const box =
+          config.type === 'box' ? ctx.getBoxStats?.()[h.seriesIndex]?.[h.index] : undefined;
+        if (box) {
+          // Box plot: mediana en negritas y los cuartiles y el tamaño del grupo al lado.
+          return `<div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px"></span>${escape(name)}: <b>${escape(fy(box.median))}</b> <span style="opacity:.7">Q1 ${escape(fy(box.q1))} · Q3 ${escape(fy(box.q3))} · n = ${box.count}</span></div>`;
+        }
         const resolved = ctx.getSeries()[h.seriesIndex];
         const lo = resolved?.yLow?.[h.index];
         const hi = resolved?.yHigh?.[h.index];
