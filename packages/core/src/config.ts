@@ -113,7 +113,10 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     config.data.column(s.y);
   }
 
-  const defaultX = config.type === 'bar' ? 'band' : 'linear';
+  // Sin `scales.x.type`, el tipo sale de los datos: barras → banda; columna `time` → tiempo.
+  const firstX = config.series[0]?.x ?? '';
+  const defaultX =
+    config.type === 'bar' ? 'band' : config.data.column(firstX).kind === 'time' ? 'time' : 'linear';
   return {
     type: config.type,
     data: config.data,

@@ -27,6 +27,14 @@ export type {
 
 export { linearScale, niceStep } from './scales/linear';
 export type { ContinuousScale, Domain, Range } from './scales/linear';
+export {
+  timeScale,
+  timeTicks,
+  timeTickFormatter,
+  pickInterval,
+  TIME_INTERVALS,
+} from './scales/time';
+export type { TimeInterval } from './scales/time';
 export { bandScale } from './scales/band';
 export type { BandScale } from './scales/band';
 

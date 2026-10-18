@@ -23,6 +23,7 @@ import type { Renderer, Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
 import { bandScale, type BandScale } from './scales/band';
 import { linearScale, type ContinuousScale, type Domain } from './scales/linear';
+import { timeScale } from './scales/time';
 
 const IDENTITY = { offset: 0, scale: 1, base: 0 } as const;
 const FALLBACK_WIDTH = 600;
@@ -362,20 +363,19 @@ export class Chart {
       const count = this.categories().length;
       return { x: bandScale(count, xRange, config.bar.padding), y };
     }
-    let x = linearScale(this.domain('x'), xRange);
+    const make = config.scales.x.type === 'time' ? timeScale : linearScale;
+    let x = make(this.domain('x'), xRange);
     if (config.scales.x.nice && config.scales.x.domain === 'auto') x = x.nice(6);
     return { x, y };
   }
 
   private buildTicks(scales: ChartScales): { x: AxisTicks; y: AxisTicks } {
     const { config } = this;
-    const firstX = config.series[0]?.x ?? '';
-    const isTime = config.data.has(firstX) && config.data.column(firstX).kind === 'time';
     const x =
       scales.x.kind === 'band'
         ? bandTicks(scales.x, this.categories())
-        : continuousTicks(scales.x, 6, config.axes.x, isTime || config.scales.x.type === 'time');
-    const y = continuousTicks(scales.y, 5, config.axes.y, false);
+        : continuousTicks(scales.x, 6, config.axes.x);
+    const y = continuousTicks(scales.y, 5, config.axes.y);
     return { x, y };
   }
 

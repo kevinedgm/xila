@@ -1,9 +1,10 @@
 import type { ResolvedAxisConfig } from './config';
-import { tickFormatter, type NumberFormatter } from './format/number';
+import { tickFormatter } from './format/number';
 import type { Layout, Rect } from './plugin';
 import type { Renderer, TextStyle } from './renderer';
 import type { BandScale } from './scales/band';
 import type { ContinuousScale } from './scales/linear';
+import { timeTickFormatter, timeTicks } from './scales/time';
 import type { Theme } from './theme';
 
 export const TICK_SIZE = 5;
@@ -21,34 +22,26 @@ export function textStyle(theme: Theme, fill = theme.text): TextStyle {
   return { font: `${theme.fontSize}px ${theme.fontFamily}`, fill };
 }
 
-export function dateFormatter(step: number): NumberFormatter {
-  const day = 86_400_000;
-  const opts: Intl.DateTimeFormatOptions =
-    step >= 365 * day
-      ? { year: 'numeric' }
-      : step >= 28 * day
-        ? { month: 'short', year: '2-digit' }
-        : step >= day
-          ? { day: 'numeric', month: 'short' }
-          : step >= 60_000
-            ? { hour: '2-digit', minute: '2-digit' }
-            : { minute: '2-digit', second: '2-digit' };
-  const fmt = new Intl.DateTimeFormat('es-MX', { ...opts, timeZone: 'UTC' });
-  return (v) => fmt.format(v);
-}
-
-/** Ticks y etiquetas de una escala continua. `count` se reduce si las etiquetas no caben. */
+/** Ticks y etiquetas de una escala continua (lineal o de tiempo). */
 export function continuousTicks(
   scale: ContinuousScale,
   count: number,
   axis: ResolvedAxisConfig,
-  isTime: boolean,
 ): AxisTicks {
-  const values = scale.ticks(count);
-  const step = scale.tickStep(count);
-  const maxAbs = Math.max(Math.abs(scale.domain[0]), Math.abs(scale.domain[1]));
-  const fmt = axis.format ?? (isTime ? dateFormatter(step) : tickFormatter(step, maxAbs));
-  return { values, labels: values.map(fmt), positions: values.map((v) => scale.toPixel(v)) };
+  let values: number[];
+  let fmt: (v: number, i: number, all: readonly number[]) => string;
+  if (scale.kind === 'time') {
+    const t = timeTicks(scale.domain, count);
+    values = t.values;
+    fmt = axis.format ?? timeTickFormatter(t.interval);
+  } else {
+    values = scale.ticks(count);
+    const step = scale.tickStep(count);
+    const maxAbs = Math.max(Math.abs(scale.domain[0]), Math.abs(scale.domain[1]));
+    fmt = axis.format ?? tickFormatter(step, maxAbs);
+  }
+  const labels = values.map((v, i) => fmt(v, i, values));
+  return { values, labels, positions: values.map((v) => scale.toPixel(v)) };
 }
 
 export function bandTicks(scale: BandScale, categories: readonly string[]): AxisTicks {

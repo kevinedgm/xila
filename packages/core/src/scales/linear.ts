@@ -5,7 +5,7 @@ export type Range = readonly [number, number];
 
 /** Escala continua: lleva valores del dominio (datos) al rango (píxeles) y de vuelta. */
 export interface ContinuousScale {
-  readonly kind: 'linear';
+  readonly kind: 'linear' | 'time';
   readonly domain: Domain;
   readonly range: Range;
   toPixel(value: number): number;
