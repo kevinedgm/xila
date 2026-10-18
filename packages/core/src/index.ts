@@ -11,6 +11,8 @@ export type { SeriesSpec, ResolvedSeries } from './data/series';
 export { minMaxDecimate } from './data/decimate';
 export type { DecimatedSeries } from './data/decimate';
 export { lowerBound } from './data/search';
+export { parseCsv, fetchCsv, parseIsoDate, CsvError } from './data/csv';
+export type { CsvOptions, CsvResult } from './data/csv';
 
 export { resolveConfig, DEFAULTS } from './config';
 export type {
