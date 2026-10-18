@@ -204,9 +204,10 @@ function pivotRaw(data: DataTable, x: string, color: string, y: string): DataTab
     const p = pos.get(xs[i] as number);
     if (p !== undefined) (cols[col.codes[i] as number] as Float64Array)[p] = ys[i] as number;
   }
-  col.categories.forEach(
-    (name, c) => (out[name] = { kind: 'number', values: cols[c] as Float64Array }),
-  );
+  const present = new Set<number>(col.codes);
+  col.categories.forEach((name, c) => {
+    if (present.has(c)) out[name] = { kind: 'number', values: cols[c] as Float64Array };
+  });
   return new DataTable(out);
 }
 

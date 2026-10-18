@@ -44,6 +44,18 @@ function fixed(
   };
 }
 
+/** Semanas que empiezan en lunes (la época, 1970-01-01, fue jueves). */
+function week(): TimeInterval {
+  const ms = 7 * DAY;
+  return {
+    name: '7d',
+    approxMs: ms,
+    floor: (t) => Math.floor((t + 3 * DAY) / ms) * ms - 3 * DAY,
+    next: (t) => t + ms,
+    format: dm,
+  };
+}
+
 function months(name: string, mult: number, format: Intl.DateTimeFormatOptions): TimeInterval {
   return {
     name,
@@ -97,7 +109,7 @@ export const TIME_INTERVALS: readonly TimeInterval[] = [
   fixed('12h', HOUR, 12, hm),
   fixed('1d', DAY, 1, dm),
   fixed('2d', DAY, 2, dm),
-  fixed('7d', DAY, 7, dm),
+  week(),
   months('1M', 1, my),
   months('3M', 3, my),
   months('6M', 6, my),
@@ -172,11 +184,15 @@ export function timeScale(domain: Domain, range: Range): ContinuousScale {
     kind: 'time',
     ticks: (count) => timeTicks(base.domain, count).values,
     tickStep: (count) => pickInterval(Math.abs(base.domain[1] - base.domain[0]), count).approxMs,
+    /**
+     * Extiende a límites de calendario de un intervalo 4× más fino que el de los ticks:
+     * redondear un año de datos a trimestres dejaría meses vacíos a los lados.
+     */
     nice(count) {
       const [d0, d1] = base.domain;
       const lo = Math.min(d0, d1);
       const hi = Math.max(d0, d1);
-      const it = pickInterval(hi - lo, count);
+      const it = pickInterval(hi - lo, count * 4);
       const nlo = it.floor(lo);
       const ceil = it.floor(hi);
       const nhi = ceil === hi ? hi : it.next(ceil);
@@ -202,8 +218,8 @@ export function floorTime(ms: number, unit: TimeUnit): number {
     case 'day':
       return Math.floor(ms / DAY) * DAY;
     case 'week': {
-      // La época (jueves) está a 3 días del lunes anterior.
-      return Math.floor((ms - 3 * DAY) / (7 * DAY)) * 7 * DAY + 3 * DAY;
+      // La época (jueves) está 3 días después del lunes anterior.
+      return Math.floor((ms + 3 * DAY) / (7 * DAY)) * 7 * DAY - 3 * DAY;
     }
     case 'month':
     case 'quarter':

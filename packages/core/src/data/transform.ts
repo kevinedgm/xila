@@ -293,7 +293,10 @@ export function pivot(
 
   const out: Record<string, Column> = {};
   let indexColumn: Column | null = null;
+  // Solo las categorías presentes: tras un filtro el diccionario conserva las ausentes.
+  const present = new Set<number>(col.codes);
   for (let c = 0; c < col.categories.length; c++) {
+    if (!present.has(c)) continue;
     const sub = filterRows(table, (row) => col.codes[row] === c);
     const grouped = groupBy(sub, spec.index, { agg, column: spec.values, as: '__v' });
     if (!indexColumn) {

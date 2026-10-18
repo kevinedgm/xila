@@ -35,6 +35,8 @@ export type {
 } from './dashboard/config';
 export { buildChart, buildKpi, applyFilters, formatter } from './dashboard/build';
 export type { KpiResult } from './dashboard/build';
+export { loadDashboard } from './dashboard/load';
+export type { LoadedDashboard } from './dashboard/load';
 
 export { resolveConfig, DEFAULTS } from './config';
 export type {

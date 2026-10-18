@@ -70,10 +70,10 @@ describe('timeTickFormatter', () => {
 });
 
 describe('timeScale', () => {
-  it('nice extiende el dominio a inicios de mes', () => {
+  it('nice extiende el dominio a límites de calendario finos (semanas para medio año)', () => {
     const s = timeScale([Date.UTC(2025, 0, 15), Date.UTC(2025, 5, 20)], [0, 600]).nice(6);
-    expect(iso(s.domain[0])).toBe('2025-01-01T00:00:00.000Z');
-    expect(iso(s.domain[1])).toBe('2025-07-01T00:00:00.000Z');
+    expect(iso(s.domain[0])).toBe('2025-01-13T00:00:00.000Z'); // lunes anterior
+    expect(iso(s.domain[1])).toBe('2025-06-23T00:00:00.000Z'); // lunes siguiente
     expect(s.kind).toBe('time');
   });
 

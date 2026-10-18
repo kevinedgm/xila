@@ -398,6 +398,23 @@ export class Chart {
     if (axis === 'y' && this.config.type === 'bar') {
       min = Math.min(min, 0);
       max = Math.max(max, 0);
+      // Apiladas: lo que importa es la suma por índice (positivos arriba, negativos abajo).
+      if (this.config.bar.mode === 'stacked') {
+        const visible = this.visibleSeries();
+        const n = Math.max(0, ...visible.map(({ series: s }) => s.length));
+        for (let i = 0; i < n; i++) {
+          let up = 0;
+          let down = 0;
+          for (const { series: s } of visible) {
+            const v = s.y[i] as number;
+            if (v !== v) continue;
+            if (v >= 0) up += v;
+            else down += v;
+          }
+          if (up > max) max = up;
+          if (down < min) min = down;
+        }
+      }
     }
     return [min, max];
   }
