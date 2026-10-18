@@ -11,6 +11,7 @@ export default defineConfig({
         muchos: resolve(import.meta.dirname, 'muchos.html'),
         sincronia: resolve(import.meta.dirname, 'sincronia.html'),
         webgl: resolve(import.meta.dirname, 'webgl.html'),
+        calor: resolve(import.meta.dirname, 'calor.html'),
       },
     },
   },

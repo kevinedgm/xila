@@ -296,6 +296,33 @@ export class CanvasRenderer implements Renderer {
     }
   }
 
+  drawImage(
+    layer: Layer,
+    pixels: Uint8ClampedArray,
+    width: number,
+    height: number,
+    x: number,
+    y: number,
+    drawWidth: number,
+    drawHeight: number,
+  ): void {
+    if (width <= 0 || height <= 0) return;
+    // putImageData ignora transformaciones y recortes, así que primero va a un canvas auxiliar
+    // y luego drawImage lo escala respetando el clip y el dpr de la capa.
+    const source = document.createElement('canvas');
+    source.width = width;
+    source.height = height;
+    const sctx = source.getContext('2d');
+    if (!sctx) return;
+    // Copia: ImageData exige un Uint8ClampedArray sobre un ArrayBuffer normal (no compartido).
+    sctx.putImageData(new ImageData(new Uint8ClampedArray(pixels), width, height), 0, 0);
+    const ctx = this.ctx(layer);
+    const smoothing = ctx.imageSmoothingEnabled;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(source, x, y, drawWidth, drawHeight);
+    ctx.imageSmoothingEnabled = smoothing;
+  }
+
   measureText(text: string, style: TextStyle): number {
     const ctx = this.ctx('overlay');
     ctx.font = style.font;

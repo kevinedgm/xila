@@ -147,6 +147,21 @@ export interface Renderer {
   /** Ancho del texto en píxeles CSS, para calcular márgenes y evitar solapes. */
   measureText(text: string, style: TextStyle): number;
 
+  /**
+   * Imagen RGBA de `width × height` píxeles (heatmap) escalada al rectángulo dado en píxeles
+   * CSS, sin suavizado: cada celda queda nítida. Mucho más barato que un rectángulo por celda.
+   */
+  drawImage(
+    layer: Layer,
+    pixels: Uint8ClampedArray,
+    width: number,
+    height: number,
+    x: number,
+    y: number,
+    drawWidth: number,
+    drawHeight: number,
+  ): void;
+
   /** Imagen compuesta de todas las capas sobre fondo sólido. */
   toDataURL(type?: string): string;
   destroy(): void;

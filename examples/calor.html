@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Heatmap de 500 × 500</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #1f2933;
+      }
+      .chart {
+        height: 560px;
+        border: 1px solid #e4e7eb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Heatmap de 500 × 500 celdas <small id="estado"></small></h1>
+    <p>
+      250 000 celdas dibujadas como una imagen de 500 × 500 píxeles escalada sin suavizado.
+      <code>?n=100</code> cambia el tamaño; <code>?colormap=magma</code> el mapa.
+    </p>
+    <div id="calor" class="chart"></div>
+    <script type="module" src="/src/calor.ts"></script>
+  </body>
+</html>

@@ -151,6 +151,48 @@ export function gridHitTester(
 }
 
 /** Barras: la banda bajo el cursor, y dentro de ella la barra de la serie que lo contiene. */
+/**
+ * Heatmap: la celda bajo el cursor. `rows[yi * nx + xi]` es la fila de la tabla que llenó la
+ * celda (−1 si está vacía); `y` es una escala lineal de `[0, ny]` con una unidad por fila.
+ */
+export function heatmapHitTester(
+  series: ResolvedSeries,
+  rows: Int32Array,
+  nx: number,
+  ny: number,
+  scales: ChartScales,
+): HitTester {
+  if (scales.x.kind !== 'band')
+    throw new TypeError('heatmapHitTester requiere una escala de banda');
+  const band = scales.x;
+  const { y: yScale } = scales;
+  const values = series.value;
+  const at = (px: number, py: number): Hit | null => {
+    const xi = band.indexAt(px);
+    const yi = Math.floor(yScale.toValue(py));
+    if (xi < 0 || yi < 0 || yi >= ny) return null;
+    const row = rows[yi * nx + xi] as number;
+    if (row < 0 || !values) return null;
+    const v = values[row] as number;
+    if (!valid(v)) return null;
+    return {
+      seriesIndex: 0,
+      seriesId: series.id,
+      index: row,
+      x: xi,
+      y: v,
+      px: band.center(xi),
+      py: yScale.toPixel(yi + 0.5),
+      distance: 0,
+    };
+  };
+  return {
+    nearest: (px, py) => at(px, py),
+    // Sin coordenada vertical no hay celda; el gráfico usa `nearest` para el heatmap.
+    nearestX: () => [],
+  };
+}
+
 export function bandHitTester(
   series: readonly ResolvedSeries[],
   scales: ChartScales,

@@ -1,9 +1,10 @@
 import type { DataTable } from './data/table';
 import type { SeriesSpec } from './data/series';
 import type { ChartPlugin } from './plugin';
+import type { ColormapName } from './colormap';
 import { resolveTheme, type Theme, type ThemeName } from './theme';
 
-export type ChartType = 'line' | 'bar' | 'scatter' | 'box';
+export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap';
 
 export interface ScaleConfig {
   /** `band` solo tiene sentido para barras; `time` requiere una columna de tiempo. */
@@ -87,6 +88,27 @@ export interface BoxChartConfig extends BaseChartConfig {
   };
 }
 
+export interface HeatmapChartConfig extends BaseChartConfig {
+  readonly type: 'heatmap';
+  /**
+   * Datos en formato largo: `x` e `y` son las columnas categóricas (columna y fila de cada
+   * celda) y `value` la numérica. Celdas sin fila en la tabla quedan vacías.
+   */
+  readonly heatmap?: {
+    /** Mapa de color por nombre o paradas hexadecimales propias. `viridis` por defecto. */
+    readonly colormap?: ColormapName | readonly string[];
+    /** Rango de valores que cubre el mapa; `'auto'` usa min y max de los datos. */
+    readonly domain?: readonly [number, number] | 'auto';
+    /**
+     * Valor central para escalas divergentes (correlaciones: 0): el dominio se hace simétrico
+     * alrededor de él, así el color neutro del mapa cae exactamente en el centro.
+     */
+    readonly center?: number | null;
+    /** Barra de color a la derecha. */
+    readonly legend?: boolean;
+  };
+}
+
 export interface ScatterChartConfig extends BaseChartConfig {
   readonly type: 'scatter';
   readonly scatter?: {
@@ -98,7 +120,8 @@ export interface ScatterChartConfig extends BaseChartConfig {
  * Configuración que escribe el usuario. Es una unión discriminada por `type`, así el
  * editor solo sugiere `line`, `bar` o `scatter` según el gráfico elegido.
  */
-export type ChartConfig = LineChartConfig | BarChartConfig | ScatterChartConfig | BoxChartConfig;
+export type ChartConfig =
+  LineChartConfig | BarChartConfig | ScatterChartConfig | BoxChartConfig | HeatmapChartConfig;
 
 /** Lo mismo, con todos los valores por defecto aplicados. Es lo que usa el núcleo. */
 export interface ResolvedChartConfig {
@@ -114,6 +137,7 @@ export interface ResolvedChartConfig {
   readonly bar: Required<NonNullable<BarChartConfig['bar']>>;
   readonly scatter: Required<NonNullable<ScatterChartConfig['scatter']>>;
   readonly box: Required<NonNullable<BoxChartConfig['box']>>;
+  readonly heatmap: Required<NonNullable<HeatmapChartConfig['heatmap']>>;
 }
 
 export interface ResolvedAxisConfig {
@@ -129,6 +153,7 @@ export const DEFAULTS = {
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2 },
   scatter: { radius: 3 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
+  heatmap: { colormap: 'viridis', domain: 'auto', center: null, legend: true },
 } as const;
 
 export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
@@ -142,12 +167,13 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     // Falla aquí, con el nombre de la columna, y no más tarde al dibujar.
     config.data.column(s.x);
     config.data.column(s.y);
+    if (s.value !== undefined) config.data.column(s.value);
   }
 
   // Sin `scales.x.type`, el tipo sale de los datos: barras → banda; columna `time` → tiempo.
   const firstX = config.series[0]?.x ?? '';
   const defaultX =
-    config.type === 'bar' || config.type === 'box'
+    config.type === 'bar' || config.type === 'box' || config.type === 'heatmap'
       ? 'band'
       : config.data.column(firstX).kind === 'time'
         ? 'time'
@@ -168,6 +194,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     bar: { ...DEFAULTS.bar, ...(config.type === 'bar' ? config.bar : undefined) },
     scatter: { ...DEFAULTS.scatter, ...(config.type === 'scatter' ? config.scatter : undefined) },
     box: { ...DEFAULTS.box, ...(config.type === 'box' ? config.box : undefined) },
+    heatmap: { ...DEFAULTS.heatmap, ...(config.type === 'heatmap' ? config.heatmap : undefined) },
   };
 }
 

@@ -14,6 +14,7 @@ function series(id: string, xs: number[], ys: number[]): ResolvedSeries {
     size: undefined,
     yLow: undefined,
     yHigh: undefined,
+    value: undefined,
     length: xs.length,
   };
 }

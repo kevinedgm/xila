@@ -268,3 +268,42 @@ mount('cajas', {
   series: [{ id: 'ms', name: 'Tiempo de respuesta', x: 'servidor', y: 'ms' }],
   axes: { x: { title: 'Servidor' }, y: { title: 'ms' } },
 });
+
+// 11. Heatmaps. Actividad por día de la semana y hora, en formato largo (una fila por celda), con
+// viridis; y una matriz de correlación con mapa divergente centrado en 0 (`rdbu`).
+const diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const actividad: { dia: string; hora: string; visitas: number }[] = [];
+diasSemana.forEach((dia, d) => {
+  for (let h = 0; h < 24; h++) {
+    const laboral = d < 5 ? 1 : 0.45;
+    const pico = Math.exp(-((h - 11) ** 2) / 12) + 0.8 * Math.exp(-((h - 17) ** 2) / 8);
+    actividad.push({ dia, hora: `${h}h`, visitas: Math.round(40 + 300 * laboral * pico) });
+  }
+});
+mount('calor', {
+  type: 'heatmap',
+  plugins: [tooltipPlugin(), accessibilityPlugin()],
+  data: DataTable.fromRows(actividad),
+  series: [{ id: 'v', name: 'Visitas', x: 'hora', y: 'dia', value: 'visitas' }],
+  axes: { x: { title: 'Hora' } },
+});
+
+const variables = ['precio', 'ventas', 'descuento', 'stock', 'clics', 'devoluciones'];
+const matriz = [
+  [1, -0.62, 0.35, 0.12, -0.2, 0.41],
+  [-0.62, 1, 0.48, -0.3, 0.71, -0.15],
+  [0.35, 0.48, 1, -0.05, 0.33, 0.09],
+  [0.12, -0.3, -0.05, 1, -0.22, 0.04],
+  [-0.2, 0.71, 0.33, -0.22, 1, -0.11],
+  [0.41, -0.15, 0.09, 0.04, -0.11, 1],
+];
+const correlacion = variables.flatMap((a, i) =>
+  variables.map((b, j) => ({ a, b, r: matriz[i]?.[j] ?? 0 })),
+);
+mount('correlacion', {
+  type: 'heatmap',
+  plugins: [tooltipPlugin(), accessibilityPlugin()],
+  data: DataTable.fromRows(correlacion),
+  series: [{ id: 'r', name: 'Correlación', x: 'a', y: 'b', value: 'r' }],
+  heatmap: { colormap: 'rdbu', center: 0, domain: [-1, 1] },
+});

@@ -14,6 +14,8 @@ export { minMaxDecimate } from './data/decimate';
 export type { DecimatedSeries } from './data/decimate';
 export { lttb } from './data/lttb';
 export { boxStats, boxGroups } from './data/box';
+export { colormap, stopsColormap, colormapCss } from './colormap';
+export type { Colormap, ColormapName } from './colormap';
 export type { BoxStats } from './data/box';
 export { histogram, histogramTable, binCount } from './data/histogram';
 export type { Histogram, HistogramOptions, HistogramTableOptions, BinRule } from './data/histogram';

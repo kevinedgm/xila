@@ -16,6 +16,8 @@ export interface SeriesSpec {
   /** Incertidumbre asimétrica: columnas con los límites inferior y superior (por ejemplo, IC 95 %). */
   readonly yLow?: string;
   readonly yHigh?: string;
+  /** Heatmap: columna numérica con el valor de cada celda (`x` e `y` son las categorías). */
+  readonly value?: string;
 }
 
 /** Serie ya resuelta contra la tabla: buffers listos para el renderer. */
@@ -28,6 +30,8 @@ export interface ResolvedSeries {
   /** Límites de la incertidumbre, si la serie los declara (`yError` o `yLow`/`yHigh`). */
   readonly yLow: Float64Array | undefined;
   readonly yHigh: Float64Array | undefined;
+  /** Heatmap: valor de cada celda; `y` son entonces códigos de categoría. */
+  readonly value: Float64Array | undefined;
   readonly length: number;
 }
 
@@ -35,7 +39,10 @@ export function resolveSeries(table: DataTable, spec: SeriesSpec): ResolvedSerie
   // En X se admite una columna categórica (barras): se usan sus códigos como posición.
   const xc = table.column(spec.x);
   const x = xc.kind === 'category' ? Float64Array.from(xc.codes) : xc.values;
-  const y = table.numeric(spec.y);
+  const yc = table.column(spec.y);
+  const value = spec.value === undefined ? undefined : table.numeric(spec.value);
+  // Con `value`, `y` puede ser categórica (filas del heatmap); sin él, debe ser numérica.
+  const y = value && yc.kind === 'category' ? Float64Array.from(yc.codes) : table.numeric(spec.y);
   const size = spec.size === undefined ? undefined : table.numeric(spec.size);
   let yLow: Float64Array | undefined;
   let yHigh: Float64Array | undefined;
@@ -55,7 +62,17 @@ export function resolveSeries(table: DataTable, spec: SeriesSpec): ResolvedSerie
     yLow = table.numeric(spec.yLow);
     yHigh = table.numeric(spec.yHigh);
   }
-  return { id: spec.id, name: spec.name ?? spec.id, x, y, size, yLow, yHigh, length: table.length };
+  return {
+    id: spec.id,
+    name: spec.name ?? spec.id,
+    x,
+    y,
+    size,
+    yLow,
+    yHigh,
+    value,
+    length: table.length,
+  };
 }
 
 /** `true` si `x` no decrece, requisito de la decimación y la búsqueda binaria. */

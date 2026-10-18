@@ -106,6 +106,15 @@ function defaultFormat(
           ? (v: number) => xColumn.categories[v] ?? String(v)
           : (v: number) => formatNumber(v, { decimals: 2 }));
     const fy = options.formatY ?? ((v: number) => formatNumber(v, { decimals: 2 }));
+    if (config.type === 'heatmap' && spec) {
+      // Heatmap: la celda es (columna, fila) y hay un solo valor.
+      const yColumn = config.data.column(spec.y);
+      const fila =
+        yColumn.kind === 'category'
+          ? (yColumn.categories[yColumn.codes[first.index] as number] ?? '')
+          : String(first.index);
+      return `<div style="opacity:.7;margin-bottom:4px">${escape(fx(first.x))} · ${escape(fila)}</div><div>${escape(spec.name ?? spec.id)}: <b>${escape(fy(first.y))}</b></div>`;
+    }
     const rows = hits
       .map((h) => {
         const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';

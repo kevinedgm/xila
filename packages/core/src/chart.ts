@@ -3,10 +3,13 @@ import {
   bandTicks,
   continuousTicks,
   drawAxes,
+  textStyle,
   thinLabels,
   type AxisTicks,
 } from './axes';
+import { formatNumber } from './format/number';
 import { resolveConfig, type ChartConfig, type ResolvedChartConfig } from './config';
+import { colormap, type Colormap } from './colormap';
 import { boxGroups, type BoxStats } from './data/box';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
@@ -15,6 +18,7 @@ import { Emitter, type HoverPayload } from './events';
 import {
   bandHitTester,
   gridHitTester,
+  heatmapHitTester,
   sortedHitTester,
   type Hit,
   type HitTester,
@@ -33,6 +37,9 @@ const FALLBACK_WIDTH = 600;
 const FALLBACK_HEIGHT = 400;
 /** Distancia máxima, en píxeles, para que el cursor "toque" un dato. */
 const HOVER_DISTANCE = 24;
+/** Barra de color del heatmap: ancho y separación en píxeles CSS. */
+const LEGEND_BAR = 12;
+const LEGEND_GAP = 10;
 
 export interface ChartScales {
   readonly x: ContinuousScale | BandScale;
@@ -70,6 +77,8 @@ export class Chart {
   private decimation: DecimatedSeries[] = [];
   /** Box plot: estadísticos por serie y por categoría, calculados al resolver los datos. */
   private boxes: BoxStats[][] = [];
+  /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
+  private cells: Int32Array = new Int32Array(0);
   private readonly hidden = new Set<string>();
   private hitTester: HitTester | null = null;
   private lastHover: HoverPayload | null = null;
@@ -323,7 +332,7 @@ export class Chart {
       return;
     }
     const hits =
-      this.config.type === 'scatter'
+      this.config.type === 'scatter' || this.config.type === 'heatmap'
         ? nearest
           ? [nearest]
           : []
@@ -355,6 +364,20 @@ export class Chart {
     renderer.clear('overlay');
     if (hover.hits.length === 0) return;
     const first = hover.hits[0] as Hit;
+    if (config.type === 'heatmap') {
+      const scales = this.scales;
+      if (!scales || scales.x.kind !== 'band') return;
+      const h = Math.abs(scales.y.toPixel(1) - scales.y.toPixel(0));
+      renderer.drawRect(
+        'overlay',
+        scales.x.start(first.x),
+        first.py - h / 2,
+        scales.x.bandwidth,
+        h,
+        { fill: 'transparent', stroke: config.theme.text, strokeWidth: 2 },
+      );
+      return;
+    }
     if (config.type !== 'scatter') {
       renderer.drawRule('overlay', first.px, plotArea.y, first.px, plotArea.y + plotArea.height, {
         stroke: config.theme.axis,
@@ -391,6 +414,20 @@ export class Chart {
             boxGroups(s.x, s.y, this.categories().length, this.config.box.whisker),
           )
         : [];
+    if (this.config.type === 'heatmap') {
+      const nx = this.categories().length;
+      const ny = this.categoriesY().length;
+      const cells = new Int32Array(nx * ny).fill(-1);
+      const s = this.series[0];
+      if (s) {
+        for (let i = 0; i < s.length; i++) {
+          const xi = s.x[i] as number;
+          const yi = s.y[i] as number;
+          if (xi >= 0 && xi < nx && yi >= 0 && yi < ny) cells[yi * nx + xi] = i;
+        }
+      }
+      this.cells = cells;
+    }
     this.dirty.data = false;
   }
 
@@ -422,10 +459,21 @@ export class Chart {
 
     // 2. Medir etiquetas, fijar el área de dibujo y recalcular con el rango definitivo.
     const margins = axisMargins(renderer, theme, ticks.x, ticks.y, config.axes.x, config.axes.y);
+    // Heatmap con barra de color a la derecha: su ancho más la etiqueta más ancha.
+    const legendWidth =
+      config.type === 'heatmap' && config.heatmap.legend
+        ? LEGEND_BAR +
+          LEGEND_GAP * 2 +
+          Math.max(
+            ...legendLabels(this.heatmapDomain(), config.heatmap.center).map((l) =>
+              renderer.measureText(l, textStyle(theme)),
+            ),
+          )
+        : 0;
     const plotArea: Rect = {
       x: provisional.x + margins.left,
       y: provisional.y + theme.fontSize / 2,
-      width: Math.max(1, provisional.width - margins.left - theme.fontSize),
+      width: Math.max(1, provisional.width - margins.left - theme.fontSize - legendWidth),
       height: Math.max(1, provisional.height - margins.bottom - theme.fontSize / 2),
     };
     scales = this.buildScales(plotArea, scales);
@@ -448,16 +496,25 @@ export class Chart {
 
     // 4. Índice espacial para hover y click, sobre las series visibles.
     const visible = this.visibleSeries().map((v) => v.series);
+    const firstVisible = visible[0];
     this.hitTester =
-      scales.x.kind === 'band'
-        ? bandHitTester(
-            config.type === 'box' ? this.boxSeries() : visible,
+      config.type === 'heatmap' && firstVisible
+        ? heatmapHitTester(
+            firstVisible,
+            this.cells,
+            this.categories().length,
+            this.categoriesY().length,
             scales,
-            config.type === 'bar' && config.bar.mode === 'stacked',
           )
-        : config.type === 'scatter'
-          ? gridHitTester(visible, scales, plotArea)
-          : sortedHitTester(visible, scales);
+        : scales.x.kind === 'band'
+          ? bandHitTester(
+              config.type === 'box' ? this.boxSeries() : visible,
+              scales,
+              config.type === 'bar' && config.bar.mode === 'stacked',
+            )
+          : config.type === 'scatter'
+            ? gridHitTester(visible, scales, plotArea)
+            : sortedHitTester(visible, scales);
     if (this.lastHover) this.drawHoverOverlay(this.lastHover);
     this.events.emit('draw', { first: !this.drawn });
     this.drawn = true;
@@ -488,6 +545,13 @@ export class Chart {
 
     if (config.scales.x.type === 'band') {
       const count = this.categories().length;
+      if (config.type === 'heatmap') {
+        // Filas como unidades enteras: la fila `i` ocupa `[i, i + 1)`; su centro es `i + 0.5`.
+        return {
+          x: bandScale(count, xRange, 0),
+          y: linearScale([0, Math.max(1, this.categoriesY().length)], yRange),
+        };
+      }
       const padding = config.type === 'box' ? config.box.padding : config.bar.padding;
       return { x: bandScale(count, xRange, padding), y };
     }
@@ -508,6 +572,14 @@ export class Chart {
       scales.x.kind === 'band'
         ? bandTicks(scales.x, this.categories())
         : continuousTicks(scales.x, 6, config.axes.x);
+    if (config.type === 'heatmap') {
+      const rows = this.categoriesY();
+      const values = rows.map((_, i) => i + 0.5);
+      return {
+        x,
+        y: { values, labels: [...rows], positions: values.map((v) => scales.y.toPixel(v)) },
+      };
+    }
     const y = continuousTicks(scales.y, 5, config.axes.y);
     return { x, y };
   }
@@ -578,11 +650,128 @@ export class Chart {
     return first ? Array.from(first.x, (v) => String(v)) : [];
   }
 
+  /** Categorías del eje Y de un heatmap (las de la columna `y` de la primera serie). */
+  private categoriesY(): readonly string[] {
+    const spec = this.config.series[0];
+    if (!spec) return [];
+    const column = this.config.data.column(spec.y);
+    return column.kind === 'category' ? column.categories : [];
+  }
+
+  /** Rango de valores que cubre el mapa de color del heatmap. */
+  private heatmapDomain(): [number, number] {
+    const { heatmap } = this.config;
+    let [lo, hi] = heatmap.domain === 'auto' ? this.valueRange() : heatmap.domain;
+    if (heatmap.center !== null) {
+      const half = Math.max(Math.abs(hi - heatmap.center), Math.abs(lo - heatmap.center));
+      lo = heatmap.center - half;
+      hi = heatmap.center + half;
+    }
+    if (!(hi > lo)) hi = lo + 1;
+    return [lo, hi];
+  }
+
+  private valueRange(): [number, number] {
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const s of this.series) {
+      if (!s.value) continue;
+      for (let i = 0; i < s.value.length; i++) {
+        const v = s.value[i] as number;
+        if (v !== v) continue;
+        if (v < lo) lo = v;
+        if (v > hi) hi = v;
+      }
+    }
+    return Number.isFinite(lo) ? [lo, hi] : [0, 1];
+  }
+
+  /**
+   * Heatmap: una imagen de `nx × ny` píxeles (un píxel por celda) escalada al área de dibujo sin
+   * suavizar. Pintar 250 000 celdas así cuesta lo que llenar un arreglo, no 250 000 rectángulos.
+   */
+  private drawHeatmap(scales: ChartScales, area: Rect): void {
+    const { config, renderer } = this;
+    const s = this.series[0];
+    if (!s || !s.value || scales.x.kind !== 'band') return;
+    const nx = this.categories().length;
+    const ny = this.categoriesY().length;
+    if (nx === 0 || ny === 0) return;
+    const map = colormap(config.heatmap.colormap);
+    const [lo, hi] = this.heatmapDomain();
+    const span = hi - lo;
+    const pixels = new Uint8ClampedArray(nx * ny * 4);
+    // Caché de 256 niveles: evaluar el polinomio por celda sería la parte cara.
+    const lut = new Uint8ClampedArray(256 * 3);
+    for (let k = 0; k < 256; k++) {
+      const [r, g, b] = map(k / 255);
+      lut[k * 3] = r;
+      lut[k * 3 + 1] = g;
+      lut[k * 3 + 2] = b;
+    }
+    for (let yi = 0; yi < ny; yi++) {
+      // La fila 0 va abajo (el eje Y crece hacia arriba); la imagen se llena de arriba a abajo.
+      const imageRow = ny - 1 - yi;
+      for (let xi = 0; xi < nx; xi++) {
+        const row = this.cells[yi * nx + xi] as number;
+        if (row < 0) continue;
+        const v = s.value[row] as number;
+        if (v !== v) continue;
+        let t = (v - lo) / span;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        const k = Math.round(t * 255) * 3;
+        const o = (imageRow * nx + xi) * 4;
+        pixels[o] = lut[k] as number;
+        pixels[o + 1] = lut[k + 1] as number;
+        pixels[o + 2] = lut[k + 2] as number;
+        pixels[o + 3] = 255;
+      }
+    }
+    const x0 = scales.x.start(0);
+    const x1 = scales.x.start(nx - 1) + scales.x.bandwidth;
+    renderer.drawImage('data', pixels, nx, ny, x0, area.y, x1 - x0, area.height);
+    if (config.heatmap.legend) this.drawColorLegend(map, lo, hi, area);
+  }
+
+  /** Barra de color vertical a la derecha del área, con el máximo arriba y el mínimo abajo. */
+  private drawColorLegend(map: Colormap, lo: number, hi: number, area: Rect): void {
+    const { renderer, config } = this;
+    const steps = 128;
+    const pixels = new Uint8ClampedArray(steps * 4);
+    for (let i = 0; i < steps; i++) {
+      const [r, g, b] = map(1 - i / (steps - 1));
+      pixels[i * 4] = r;
+      pixels[i * 4 + 1] = g;
+      pixels[i * 4 + 2] = b;
+      pixels[i * 4 + 3] = 255;
+    }
+    const x = area.x + area.width + LEGEND_GAP;
+    renderer.drawImage('background', pixels, 1, steps, x, area.y, LEGEND_BAR, area.height);
+    const label = { ...textStyle(config.theme), align: 'left' as const };
+    const tx = x + LEGEND_BAR + LEGEND_GAP / 2;
+    const [loLabel, hiLabel, centerLabel] = legendLabels([lo, hi], config.heatmap.center);
+    renderer.drawText('background', hiLabel ?? '', tx, area.y, { ...label, baseline: 'top' });
+    renderer.drawText('background', loLabel ?? '', tx, area.y + area.height, {
+      ...label,
+      baseline: 'bottom',
+    });
+    if (centerLabel !== undefined) {
+      renderer.drawText('background', centerLabel, tx, area.y + area.height / 2, {
+        ...label,
+        baseline: 'middle',
+      });
+    }
+  }
+
   private drawSeries(scales: ChartScales, area: Rect): void {
     const { config, renderer } = this;
     const { palette } = config.theme;
     const yMap = scales.y.map();
 
+    if (config.type === 'heatmap') {
+      this.drawHeatmap(scales, area);
+      return;
+    }
     if (scales.x.kind === 'band') {
       if (config.type === 'box') this.drawBoxes(scales.x, { x: IDENTITY, y: yMap }, renderer);
       else this.drawBars(scales.x, { x: IDENTITY, y: yMap }, renderer);
@@ -680,6 +869,7 @@ export class Chart {
         size: undefined,
         yLow: undefined,
         yHigh: undefined,
+        value: undefined,
         length: stats.length,
       };
     });
@@ -829,6 +1019,15 @@ function mapValues(
     out[i] = Number.isFinite(r) ? r : NaN;
   }
   if (to < values.length) out.fill(NaN, to);
+  return out;
+}
+
+/** Etiquetas de la barra de color: mínimo, máximo y centro, con decimales según el rango. */
+function legendLabels(domain: readonly [number, number], center: number | null): string[] {
+  const [lo, hi] = domain;
+  const step = (hi - lo) / 10;
+  const out = [formatNumber(lo, { step }), formatNumber(hi, { step })];
+  if (center !== null) out.push(formatNumber(center, { step }));
   return out;
 }
 
