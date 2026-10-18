@@ -11,6 +11,7 @@ import {
   annotationsPlugin,
   accessibilityPlugin,
   endLabelsPlugin,
+  titlePlugin,
   histogramTable,
   type ChartConfig,
 } from 'xilaplot';
@@ -51,7 +52,11 @@ const y2 = xs.map((i) => (i > 80 && i < 110 ? Number.NaN : 40 + 15 * Math.cos(i 
 const y3 = xs.map((i) => 30 + i / 8);
 mount('multi', {
   type: 'line',
-  plugins: [...plugins(), endLabelsPlugin()],
+  plugins: [
+    titlePlugin({ title: 'La serie C sube mientras A y B oscilan', subtitle: 'Valor por muestra' }),
+    ...plugins(),
+    endLabelsPlugin(),
+  ],
   data: new DataTable({
     x: numberColumn(xs),
     a: numberColumn(y1),

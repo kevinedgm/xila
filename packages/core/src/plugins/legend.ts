@@ -89,10 +89,13 @@ export function legendPlugin(options: LegendOptions = {}): ChartPlugin {
         render(ctx);
       }
     },
-    /** Reserva espacio para la leyenda, para que no tape el gráfico. */
+    /** Reserva espacio para la leyenda, para que no tape el gráfico; arriba, debajo del título. */
     reserveSpace() {
       const height = el?.offsetHeight ?? 0;
-      return options.position === 'bottom' ? { bottom: height } : { top: height };
+      if (options.position === 'bottom') return { bottom: height };
+      const title = el?.parentElement?.querySelector<HTMLElement>('.xila-title');
+      if (el) el.style.top = `${title?.offsetHeight ?? 0}px`;
+      return { top: height };
     },
     uninstall() {
       el?.remove();

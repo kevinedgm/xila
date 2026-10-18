@@ -1,4 +1,11 @@
-import { endLabelsPlugin, legendPlugin, pivot, tooltipPlugin, type ChartConfig } from 'xilaplot';
+import {
+  endLabelsPlugin,
+  legendPlugin,
+  pivot,
+  titlePlugin,
+  tooltipPlugin,
+  type ChartConfig,
+} from 'xilaplot';
 import { co2 } from './datos';
 
 /**
@@ -16,7 +23,15 @@ export default async function multi(): Promise<ChartConfig> {
     type: 'line',
     data: ancho,
     series: paises.map((p) => ({ id: p, name: p, x: 'fecha', y: p })),
-    plugins: [tooltipPlugin(), legendPlugin(), endLabelsPlugin({ format: (v) => v.toFixed(1) })],
+    plugins: [
+      titlePlugin({
+        title: 'Estados Unidos y Alemania bajan; China sube',
+        subtitle: 'Toneladas de CO₂ por persona y año',
+      }),
+      tooltipPlugin(),
+      legendPlugin(),
+      endLabelsPlugin({ format: (v) => v.toFixed(1) }),
+    ],
     axes: { y: { title: 't de CO₂ por persona' } },
   };
 }

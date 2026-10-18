@@ -118,6 +118,22 @@ Mecanismo: el panel es un `div` con `role="region"` y `aria-live="polite"` colga
 `selection`, en el primer dibujo y tras `dataChanged`. Los botones de forma llaman a
 `ctx.update({ dots: { mode } })`, el mismo `update` del gráfico.
 
+## `titlePlugin({ title, subtitle, align })`
+
+Título y subtítulo en HTML sobre el gráfico. En la anatomía editorial el título es el **hallazgo**
+("Alemania emite la mitad que en 1990") y el subtítulo dice qué se mide, en qué unidad y en qué
+periodo. Reserva arriba su alto; con `legendPlugin` arriba, la leyenda baja debajo del título.
+
+```ts
+plugins: [
+  titlePlugin({
+    title: 'Estados Unidos y Alemania bajan; China sube',
+    subtitle: 'Toneladas de CO₂ por persona, 1990–2022',
+  }),
+  legendPlugin(),
+];
+```
+
 ## `endLabelsPlugin(opciones)`
 
 Etiquetas directas al final de cada línea, la anatomía editorial: junto al último punto visible
