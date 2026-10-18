@@ -14,7 +14,7 @@ cada serie y qué escala X va por defecto.
 
 ## Línea
 
-`line.width`, `line.area` (relleno hasta cero) y `line.step` (escalones). Con más puntos que
+`line.width` (2 px por defecto), `line.area` (relleno hasta cero) y `line.step` (escalones). Con más puntos que
 píxeles la serie se **decima por mín y máx**: por cada columna de píxeles se dibujan el mínimo y
 el máximo, así los picos no desaparecen y un millón de puntos se traza en unos milisegundos.
 Requiere X ordenada; `isSorted` lo comprueba.
@@ -68,7 +68,8 @@ mediana, forma); en cubetas la selección salta a los bordes.
 
 `scales.x.type` y `scales.y.type` aceptan `linear`, `time`, `band` y `log`; `domain: [min, max]`
 fija el rango y `nice: false` evita redondearlo a ticks bonitos. `axes.x.title`, `grid`, `show`
-y `format: (valor) => string` controlan cada eje. Los ticks de tiempo se alinean al calendario
+y `format: (valor) => string` controlan cada eje. Por defecto solo el eje Y dibuja grid
+(`axes.x.grid: true` lo enciende en X). Los ticks de tiempo se alinean al calendario
 (UTC) y los números se formatean en `es-MX`.
 
 Cada tipo tiene su ejemplo con datos reales en la [Galería](../galeria/).

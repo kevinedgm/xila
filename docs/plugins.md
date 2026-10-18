@@ -118,6 +118,31 @@ Mecanismo: el panel es un `div` con `role="region"` y `aria-live="polite"` colga
 `selection`, en el primer dibujo y tras `dataChanged`. Los botones de forma llaman a
 `ctx.update({ dots: { mode } })`, el mismo `update` del gráfico.
 
+## `endLabelsPlugin(opciones)`
+
+Etiquetas directas al final de cada línea, la anatomía editorial: junto al último punto visible
+de cada serie escribe "Nombre valor" en el color de tinta, con un punto de cierre del color de
+la serie y anillo del color de la superficie. Con pocas series sustituye a la leyenda como lugar
+donde se lee quién es quién; con muchas va junto a `legendPlugin`.
+
+```ts
+plugins: [tooltipPlugin(), endLabelsPlugin({ format: (v) => `${v.toFixed(1)} t` })];
+```
+
+| Opción   | Por defecto       | Qué hace                                   |
+| -------- | ----------------- | ------------------------------------------ |
+| `name`   | `true`            | Escribir el nombre de la serie             |
+| `value`  | `true`            | Escribir el último valor                   |
+| `format` | formato del eje Y | Texto del valor                            |
+| `minGap` | `1.1` líneas      | Separación mínima vertical entre etiquetas |
+| `marker` | `4`               | Radio del punto de cierre                  |
+
+Mecanismo: `reserveSpace` mide con `renderer.measureText` la etiqueta más ancha y descuenta ese
+ancho del área de dibujo; `afterDraw` ordena las etiquetas por su Y, empuja hacia abajo las que
+chocan y, si la última se sale del área, las sube en cadena. Solo actúa con un eje X continuo
+(líneas, dispersión); con barras no dibuja nada. Las series ocultas desde la leyenda no se
+etiquetan.
+
 ## `annotationsPlugin(anotaciones)`
 
 Marca eventos sobre el gráfico. Las anotaciones guardan su posición en **valores de datos**

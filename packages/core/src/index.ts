@@ -119,6 +119,8 @@ export { tooltipPlugin } from './plugins/tooltip';
 export { selectionPlugin } from './plugins/selection';
 export { summaryPlugin } from './plugins/summary';
 export type { SummaryOptions, SummaryStat } from './plugins/summary';
+export { endLabelsPlugin } from './plugins/end-labels';
+export type { EndLabelsOptions } from './plugins/end-labels';
 export type { SelectionOptions, SelectionSummary } from './plugins/selection';
 export { dotsLayout, countInRange, snapToEdges, jitter } from './dots';
 export type { DotsLayout, DotsMode, DotsOptions } from './dots';

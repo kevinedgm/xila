@@ -10,6 +10,7 @@ import {
   zoomPanPlugin,
   annotationsPlugin,
   accessibilityPlugin,
+  endLabelsPlugin,
   histogramTable,
   type ChartConfig,
 } from 'xilaplot';
@@ -50,7 +51,7 @@ const y2 = xs.map((i) => (i > 80 && i < 110 ? Number.NaN : 40 + 15 * Math.cos(i 
 const y3 = xs.map((i) => 30 + i / 8);
 mount('multi', {
   type: 'line',
-  plugins: plugins(),
+  plugins: [...plugins(), endLabelsPlugin()],
   data: new DataTable({
     x: numberColumn(xs),
     a: numberColumn(y1),

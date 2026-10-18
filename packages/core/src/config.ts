@@ -178,7 +178,7 @@ export interface ResolvedAxisConfig {
 
 export const DEFAULTS = {
   padding: { top: 8, right: 8, bottom: 8, left: 8 } satisfies Padding,
-  line: { width: 1.5, area: false, step: false },
+  line: { width: 2, area: false, step: false },
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2 },
   scatter: { radius: 3 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
@@ -220,7 +220,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
       x: resolveScale(config.scales?.x, defaultX),
       y: resolveScale(config.scales?.y, 'linear'),
     },
-    axes: { x: resolveAxis(config.axes?.x), y: resolveAxis(config.axes?.y) },
+    axes: { x: resolveAxis(config.axes?.x, false), y: resolveAxis(config.axes?.y, true) },
     plugins: config.plugins ?? [],
     theme: resolveTheme(config.theme),
     padding: { ...DEFAULTS.padding, ...config.padding },
@@ -244,11 +244,15 @@ function resolveScale(
   };
 }
 
-function resolveAxis(axis: AxisConfig | undefined): ResolvedAxisConfig {
+/**
+ * Por defecto solo el eje Y lleva grid: líneas horizontales finas para leer valores; las
+ * verticales se quitan porque el eje X se lee por sus ticks (anatomía editorial).
+ */
+function resolveAxis(axis: AxisConfig | undefined, grid: boolean): ResolvedAxisConfig {
   return {
     title: axis?.title ?? '',
     show: axis?.show ?? true,
-    grid: axis?.grid ?? true,
+    grid: axis?.grid ?? grid,
     format: axis?.format,
   };
 }
