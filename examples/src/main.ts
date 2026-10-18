@@ -8,6 +8,7 @@ import {
   tooltipPlugin,
   version,
   zoomPanPlugin,
+  annotationsPlugin,
   type ChartConfig,
 } from '@xila/core';
 import { generateSeries } from './bench/synthetic';
@@ -125,7 +126,28 @@ for (let d = 0; d < dias; d++) {
 }
 mount('fechas', {
   type: 'line',
-  plugins: plugins(),
+  plugins: [
+    ...plugins(),
+    zoomPanPlugin(),
+    annotationsPlugin([
+      {
+        type: 'band',
+        axis: 'x',
+        from: new Date(Date.UTC(2025, 6, 7)),
+        to: new Date(Date.UTC(2025, 6, 20)),
+        label: 'Campaña de verano',
+        color: '#f59e0b',
+      },
+      {
+        type: 'line',
+        axis: 'x',
+        value: new Date(Date.UTC(2025, 10, 17)),
+        label: 'Buen Fin',
+        dash: [4, 3],
+      },
+      { type: 'line', axis: 'y', value: 1000, label: 'Meta', color: '#10b981' },
+    ]),
+  ],
   data: new DataTable({ fecha: timeColumn(fechas), ventas: numberColumn(diario) }),
   series: [{ id: 'v', name: 'Ventas diarias', x: 'fecha', y: 'ventas' }],
   axes: { y: { title: 'MXN' } },

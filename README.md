@@ -39,6 +39,11 @@ pnpm --filter examples test:visual                         # o con CHROMIUM_PATH
 pnpm --filter examples test:visual --update-snapshots      # aceptar cambios
 ```
 
+## Plugins
+
+Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en
+[`docs/plugins.md`](docs/plugins.md).
+
 ## Dashboards para clientes
 
 El flujo completo, sin escribir código de gráficos:
