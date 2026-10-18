@@ -29,3 +29,13 @@ pnpm typecheck  # TypeScript estricto en todos los paquetes
 ## Licencia
 
 MIT
+
+## Benchmark del prototipo
+
+```bash
+pnpm build && pnpm --filter examples build
+CHROMIUM_PATH=/ruta/a/chrome pnpm --filter examples bench         # memoria, primer render y pan
+CHROMIUM_PATH=/ruta/a/chrome pnpm --filter examples bench:visual  # compara píxel a píxel
+```
+
+Resultados y decisiones en `docs/adr/`.

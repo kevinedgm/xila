@@ -1,0 +1,165 @@
+{
+  "machine": {
+    "browser": "141.0.7390.37",
+    "node": "v22.22.0",
+    "platform": "linux",
+    "note": "Chromium headless en contenedor, sin GPU; usar solo para comparar entre sí"
+  },
+  "memory": [
+    {
+      "mode": "objects",
+      "n": 1000000,
+      "heapMB": 45.790679931640625,
+      "externalMB": 0,
+      "totalMB": 45.790679931640625,
+      "traverseMs": 17.799999999813735
+    },
+    {
+      "mode": "columns",
+      "n": 1000000,
+      "heapMB": 0.012542724609375,
+      "externalMB": 15.2587890625,
+      "totalMB": 15.271331787109375,
+      "traverseMs": 15.600000000093132
+    }
+  ],
+  "firstRender": [
+    {
+      "kind": "naive",
+      "n": 10000,
+      "ms": 2.8999999999068677,
+      "vertices": 10000
+    },
+    {
+      "kind": "naive",
+      "n": 100000,
+      "ms": 15,
+      "vertices": 100000
+    },
+    {
+      "kind": "naive",
+      "n": 1000000,
+      "ms": 158,
+      "vertices": 1000000
+    },
+    {
+      "kind": "decimated",
+      "n": 10000,
+      "ms": 4.100000000093132,
+      "vertices": 3586
+    },
+    {
+      "kind": "decimated",
+      "n": 100000,
+      "ms": 5.099999999627471,
+      "vertices": 3935
+    },
+    {
+      "kind": "decimated",
+      "n": 1000000,
+      "ms": 13.5,
+      "vertices": 3971
+    },
+    {
+      "kind": "uplot",
+      "n": 10000,
+      "ms": 3.5,
+      "vertices": 9999
+    },
+    {
+      "kind": "uplot",
+      "n": 100000,
+      "ms": 6.7999999998137355,
+      "vertices": 99999
+    },
+    {
+      "kind": "uplot",
+      "n": 1000000,
+      "ms": 17.90000000037253,
+      "vertices": 999999
+    }
+  ],
+  "pan": [
+    {
+      "kind": "naive",
+      "n": 10000,
+      "workMedian": 1.6000000000931323,
+      "workP95": 2.3000000002793968,
+      "intervalMedian": 16.69999999999999,
+      "intervalP95": 16.799999999999955,
+      "vertices": 8601
+    },
+    {
+      "kind": "naive",
+      "n": 100000,
+      "workMedian": 14,
+      "workP95": 19.800000000279397,
+      "intervalMedian": 16.69999999999999,
+      "intervalP95": 16.799999999999955,
+      "vertices": 86001
+    },
+    {
+      "kind": "naive",
+      "n": 1000000,
+      "workMedian": 134.1999999997206,
+      "workP95": 192.89999999990687,
+      "intervalMedian": 133.39999999999964,
+      "intervalP95": 200,
+      "vertices": 860001
+    },
+    {
+      "kind": "decimated",
+      "n": 10000,
+      "workMedian": 0.8999999999068677,
+      "workP95": 1.3999999999068677,
+      "intervalMedian": 16.699999999999932,
+      "intervalP95": 16.700000000000273,
+      "vertices": 3078
+    },
+    {
+      "kind": "decimated",
+      "n": 100000,
+      "workMedian": 1.5,
+      "workP95": 2.2999999998137355,
+      "intervalMedian": 16.69999999999999,
+      "intervalP95": 16.700000000000273,
+      "vertices": 3389
+    },
+    {
+      "kind": "decimated",
+      "n": 1000000,
+      "workMedian": 4.599999999627471,
+      "workP95": 7.300000000279397,
+      "intervalMedian": 16.699999999999932,
+      "intervalP95": 16.700000000000273,
+      "vertices": 3415
+    },
+    {
+      "kind": "uplot",
+      "n": 10000,
+      "workMedian": 1.1000000000931323,
+      "workP95": 1.8999999999068677,
+      "intervalMedian": 16.69999999999999,
+      "intervalP95": 16.700000000000045,
+      "vertices": 8600
+    },
+    {
+      "kind": "uplot",
+      "n": 100000,
+      "workMedian": 2.2999999998137355,
+      "workP95": 3.5,
+      "intervalMedian": 16.699999999999932,
+      "intervalP95": 16.799999999999955,
+      "vertices": 86000
+    },
+    {
+      "kind": "uplot",
+      "n": 1000000,
+      "workMedian": 11.299999999813735,
+      "workP95": 17.100000000093132,
+      "intervalMedian": 16.699999999999932,
+      "intervalP95": 16.700000000000273,
+      "vertices": 860000
+    }
+  ]
+}
