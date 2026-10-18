@@ -1,0 +1,69 @@
+{
+  "titulo": "Ventas 2025 · Ejemplo",
+  "datos": { "ventas": "data/ventas.csv" },
+  "filtros": [
+    { "tipo": "fechas", "datos": "ventas", "columna": "fecha", "etiqueta": "Periodo" },
+    { "tipo": "categoria", "datos": "ventas", "columna": "region", "etiqueta": "Región" },
+    { "tipo": "categoria", "datos": "ventas", "columna": "canal", "etiqueta": "Canal" }
+  ],
+  "paneles": [
+    {
+      "tipo": "kpi",
+      "titulo": "Ventas del último mes",
+      "datos": "ventas",
+      "valor": { "columna": "monto", "agregado": "sum", "formato": "moneda" },
+      "comparar": { "columna": "fecha", "periodo": "month" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Unidades del último mes",
+      "datos": "ventas",
+      "valor": { "columna": "unidades", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "month" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Ticket promedio",
+      "datos": "ventas",
+      "valor": { "columna": "monto", "agregado": "mean", "formato": "moneda" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Registros",
+      "datos": "ventas",
+      "valor": { "columna": "monto", "agregado": "count", "formato": "entero" }
+    },
+    {
+      "tipo": "linea",
+      "titulo": "Ventas semanales por región",
+      "datos": "ventas",
+      "x": "fecha",
+      "y": "monto",
+      "color": "region",
+      "agregado": "sum",
+      "periodo": "week",
+      "ejes": { "y": "MXN" }
+    },
+    {
+      "tipo": "barras",
+      "titulo": "Ventas por mes y canal",
+      "datos": "ventas",
+      "x": "fecha",
+      "y": "monto",
+      "color": "canal",
+      "agregado": "sum",
+      "periodo": "month",
+      "apilado": true,
+      "ancho": 6
+    },
+    {
+      "tipo": "barras",
+      "titulo": "Unidades por región",
+      "datos": "ventas",
+      "x": "region",
+      "y": "unidades",
+      "agregado": "sum",
+      "ancho": 6
+    }
+  ]
+}

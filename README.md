@@ -39,6 +39,18 @@ pnpm --filter examples test:visual                         # o con CHROMIUM_PATH
 pnpm --filter examples test:visual --update-snapshots      # aceptar cambios
 ```
 
+## Dashboards para clientes
+
+El flujo completo, sin escribir código de gráficos:
+
+1. Notebook → `exportar_xila(df, 'ventas')` (`python/xila_export.py`) escribe `data/ventas.csv`
+   según `docs/contrato-csv.md`.
+2. `pnpm nuevo-cliente acme` copia `plantilla/` a `clientes/acme/`.
+3. Se edita `public/dashboard.json` (`docs/configuracion-dashboard.md`): tablas, filtros y paneles.
+4. `pnpm build` genera `dist/`; se sube y se protege en el servidor (`docs/despliegue.md`).
+
+Ejemplo funcionando: `pnpm dev` y abrir `/dashboard.html`.
+
 ## Licencia
 
 MIT

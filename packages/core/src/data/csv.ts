@@ -169,6 +169,8 @@ export function parseIsoDate(s: string): number {
   return Date.parse(normalized);
 }
 
+const LEADING_ZERO = /^-?0\d/;
+
 function isNumeric(s: string): boolean {
   // `Number('')` es 0 y `Number(' 1 ')` es 1; el contrato no permite ninguno de los dos.
   return s !== '' && s.trim() === s && !Number.isNaN(Number(s));
@@ -215,7 +217,8 @@ export function parseCsv(text: string, options: CsvOptions = {}): CsvResult {
       const s = cell(r, c);
       if (s === '') continue;
       seenCells++;
-      if (allNumber && !isNumeric(s)) allNumber = false;
+      // "01000" parsea como 1000, pero un cero a la izquierda delata un código, no una cantidad.
+      if (allNumber && (!isNumeric(s) || LEADING_ZERO.test(s))) allNumber = false;
       if (allTime && Number.isNaN(parseIsoDate(s))) allTime = false;
       if (!allNumber && !allTime) return 'category';
     }

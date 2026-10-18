@@ -12,7 +12,8 @@
     "test": "vitest run",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "nuevo-cliente": "node scripts/nuevo-cliente.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

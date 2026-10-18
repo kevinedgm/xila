@@ -76,6 +76,22 @@ importers:
         specifier: ^3.5.44
         version: 3.5.44(typescript@7.0.2)
 
+  plantilla:
+    dependencies:
+      '@xila/core':
+        specifier: workspace:*
+        version: link:../packages/core
+      '@xila/vue':
+        specifier: workspace:*
+        version: link:../packages/vue
+      vue:
+        specifier: ^3.5.44
+        version: 3.5.44(typescript@7.0.2)
+    devDependencies:
+      vite:
+        specifier: ^8.3.4
+        version: 8.3.4(@types/node@26.6.5)(esbuild@0.28.2)
+
 packages:
 
   '@babel/helper-string-parser@7.29.7':

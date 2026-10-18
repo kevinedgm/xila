@@ -5,3 +5,6 @@ coverage/
 .DS_Store
 examples/test-results/
 examples/playwright-report/
+clientes/
+__pycache__/
+.pytest_cache/

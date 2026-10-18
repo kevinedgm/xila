@@ -57,9 +57,13 @@ describe('parseCsv', () => {
     expect((err as CsvError).column).toBe('x');
   });
 
-  it('se puede forzar categoría para que un código no se vuelva número', () => {
-    const { kinds } = parseCsv('cp,valor\n01000,1\n06600,2\n', { types: { cp: 'category' } });
-    expect(kinds['cp']).toBe('category');
+  it('un código con cero a la izquierda se infiere como categoría, y se puede forzar', () => {
+    expect(parseCsv('cp,valor\n01000,1\n06600,2\n').kinds['cp']).toBe('category');
+    expect(parseCsv('cp,valor\n1000,1\n6600,2\n').kinds['cp']).toBe('number');
+    expect(parseCsv('cp,valor\n1000,1\n6600,2\n', { types: { cp: 'category' } }).kinds['cp']).toBe(
+      'category',
+    );
+    expect(parseCsv('v\n0\n0.5\n-0.25\n').kinds['v']).toBe('number');
   });
 
   it('rechaza filas con distinto número de columnas, encabezados repetidos y comillas sin cerrar', () => {

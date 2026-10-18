@@ -1,0 +1,2921 @@
+fecha,region,canal,monto,unidades
+2025-01-01,Norte,Tienda,1289.05,14
+2025-01-01,Norte,En línea,611.25,5
+2025-01-01,Centro,Tienda,1541.62,13
+2025-01-01,Centro,En línea,1052.33,12
+2025-01-01,Sur,Tienda,1088.17,8
+2025-01-01,Sur,En línea,535.9,4
+2025-01-01,Bajío,Tienda,880.83,8
+2025-01-01,Bajío,En línea,360.72,2
+2025-01-02,Norte,Tienda,1165.43,13
+2025-01-02,Norte,En línea,902.91,9
+2025-01-02,Centro,Tienda,2122.46,20
+2025-01-02,Centro,En línea,852.92,10
+2025-01-02,Sur,Tienda,1236.36,11
+2025-01-02,Sur,En línea,650.42,6
+2025-01-02,Bajío,Tienda,975.74,8
+2025-01-02,Bajío,En línea,485.21,4
+2025-01-03,Norte,Tienda,1584.83,16
+2025-01-03,Norte,En línea,632.62,6
+2025-01-03,Centro,Tienda,1644.06,15
+2025-01-03,Centro,En línea,1186.8,9
+2025-01-03,Sur,Tienda,1350.91,13
+2025-01-03,Sur,En línea,655.07,5
+2025-01-03,Bajío,Tienda,998.03,7
+2025-01-03,Bajío,En línea,507.68,6
+2025-01-04,Norte,Tienda,1530.87,10
+2025-01-04,Norte,En línea,699.82,6
+2025-01-04,Centro,Tienda,1519.79,14
+2025-01-04,Centro,En línea,887.79,10
+2025-01-04,Sur,Tienda,929.36,9
+2025-01-04,Sur,En línea,743.95,8
+2025-01-04,Bajío,Tienda,876.73,6
+2025-01-04,Bajío,En línea,556.21,5
+2025-01-05,Norte,Tienda,930.53,6
+2025-01-05,Norte,En línea,454.56,5
+2025-01-05,Centro,Tienda,1214.83,11
+2025-01-05,Centro,En línea,679.5,8
+2025-01-05,Sur,Tienda,748.62,6
+2025-01-05,Sur,En línea,482.5,4
+2025-01-05,Bajío,Tienda,653.67,7
+2025-01-05,Bajío,En línea,376.66,2
+2025-01-06,Norte,Tienda,1357.6,13
+2025-01-06,Norte,En línea,842.13,10
+2025-01-06,Centro,Tienda,1716.22,19
+2025-01-06,Centro,En línea,857.64,10
+2025-01-06,Sur,Tienda,919.12,9
+2025-01-06,Sur,En línea,749.48,6
+2025-01-06,Bajío,Tienda,754.25,7
+2025-01-06,Bajío,En línea,384.2,2
+2025-01-07,Norte,Tienda,1414.91,12
+2025-01-07,Norte,En línea,634.2,6
+2025-01-07,Centro,Tienda,2346.49,26
+2025-01-07,Centro,En línea,1358.25,12
+2025-01-07,Sur,Tienda,1176.37,14
+2025-01-07,Sur,En línea,784.86,5
+2025-01-07,Bajío,Tienda,760.48,7
+2025-01-07,Bajío,En línea,539.58,4
+2025-01-08,Norte,Tienda,1321.09,14
+2025-01-08,Norte,En línea,986.82,7
+2025-01-08,Centro,Tienda,2343.49,18
+2025-01-08,Centro,En línea,1121.74,11
+2025-01-08,Sur,Tienda,882.58,9
+2025-01-08,Sur,En línea,696.56,5
+2025-01-08,Bajío,Tienda,1055.77,7
+2025-01-08,Bajío,En línea,444.29,4
+2025-01-09,Norte,Tienda,1229.15,13
+2025-01-09,Norte,En línea,956.37,7
+2025-01-09,Centro,Tienda,2183.56,17
+2025-01-09,Centro,En línea,1205.2,8
+2025-01-09,Sur,Tienda,1304.06,11
+2025-01-09,Sur,En línea,729.66,7
+2025-01-09,Bajío,Tienda,1074.33,10
+2025-01-09,Bajío,En línea,584.94,4
+2025-01-10,Norte,Tienda,1182.66,13
+2025-01-10,Norte,En línea,922.1,10
+2025-01-10,Centro,Tienda,2524.04,21
+2025-01-10,Centro,En línea,1146.63,13
+2025-01-10,Sur,Tienda,1436.84,12
+2025-01-10,Sur,En línea,778.34,7
+2025-01-10,Bajío,Tienda,1014.5,10
+2025-01-10,Bajío,En línea,430.08,4
+2025-01-11,Norte,Tienda,1283.25,12
+2025-01-11,Norte,En línea,966.8,9
+2025-01-11,Centro,Tienda,2127.38,15
+2025-01-11,Centro,En línea,1357.85,12
+2025-01-11,Sur,Tienda,1180.73,14
+2025-01-11,Sur,En línea,540.16,6
+2025-01-11,Bajío,Tienda,731.87,6
+2025-01-11,Bajío,En línea,494.99,4
+2025-01-12,Norte,Tienda,1053.11,8
+2025-01-12,Norte,En línea,580.58,6
+2025-01-12,Centro,Tienda,1629.88,14
+2025-01-12,Centro,En línea,891.59,6
+2025-01-12,Sur,Tienda,865.89,7
+2025-01-12,Sur,En línea,494.32,4
+2025-01-12,Bajío,Tienda,608.07,4
+2025-01-12,Bajío,En línea,401.82,2
+2025-01-13,Norte,Tienda,1512.78,11
+2025-01-13,Norte,En línea,661.39,7
+2025-01-13,Centro,Tienda,1617.12,17
+2025-01-13,Centro,En línea,1227.03,9
+2025-01-13,Sur,Tienda,972.19,7
+2025-01-13,Sur,En línea,531.0,3
+2025-01-13,Bajío,Tienda,757.85,5
+2025-01-13,Bajío,En línea,481.7,3
+2025-01-14,Norte,Tienda,1224.8,11
+2025-01-14,Norte,En línea,745.67,8
+2025-01-14,Centro,Tienda,2293.38,28
+2025-01-14,Centro,En línea,1101.46,13
+2025-01-14,Sur,Tienda,1252.57,11
+2025-01-14,Sur,En línea,806.06,6
+2025-01-14,Bajío,Tienda,709.81,7
+2025-01-14,Bajío,En línea,554.41,5
+2025-01-15,Norte,Tienda,1422.23,10
+2025-01-15,Norte,En línea,715.64,8
+2025-01-15,Centro,Tienda,2144.78,17
+2025-01-15,Centro,En línea,887.33,7
+2025-01-15,Sur,Tienda,930.71,6
+2025-01-15,Sur,En línea,749.29,8
+2025-01-15,Bajío,Tienda,695.47,5
+2025-01-15,Bajío,En línea,449.05,3
+2025-01-16,Norte,Tienda,1312.85,14
+2025-01-16,Norte,En línea,710.05,8
+2025-01-16,Centro,Tienda,1611.88,17
+2025-01-16,Centro,En línea,1032.14,8
+2025-01-16,Sur,Tienda,1188.25,13
+2025-01-16,Sur,En línea,496.07,5
+2025-01-16,Bajío,Tienda,995.0,8
+2025-01-16,Bajío,En línea,483.95,3
+2025-01-17,Norte,Tienda,1728.55,16
+2025-01-17,Norte,En línea,957.14,9
+2025-01-17,Centro,Tienda,2283.08,16
+2025-01-17,Centro,En línea,1338.66,10
+2025-01-17,Sur,Tienda,1135.83,11
+2025-01-17,Sur,En línea,534.55,6
+2025-01-17,Bajío,Tienda,785.19,8
+2025-01-17,Bajío,En línea,575.92,4
+2025-01-18,Norte,Tienda,1333.33,14
+2025-01-18,Norte,En línea,806.39,9
+2025-01-18,Centro,Tienda,1847.09,13
+2025-01-18,Centro,En línea,1179.43,12
+2025-01-18,Sur,Tienda,,10
+2025-01-18,Sur,En línea,619.49,5
+2025-01-18,Bajío,Tienda,,6
+2025-01-18,Bajío,En línea,435.61,5
+2025-01-19,Norte,Tienda,810.6,9
+2025-01-19,Norte,En línea,501.1,4
+2025-01-19,Centro,Tienda,1656.64,13
+2025-01-19,Centro,En línea,963.2,9
+2025-01-19,Sur,Tienda,1045.16,11
+2025-01-19,Sur,En línea,495.83,6
+2025-01-19,Bajío,Tienda,754.6,6
+2025-01-19,Bajío,En línea,401.2,4
+2025-01-20,Norte,Tienda,1511.41,11
+2025-01-20,Norte,En línea,964.84,8
+2025-01-20,Centro,Tienda,2304.44,18
+2025-01-20,Centro,En línea,889.03,10
+2025-01-20,Sur,Tienda,968.16,7
+2025-01-20,Sur,En línea,705.96,6
+2025-01-20,Bajío,Tienda,900.03,11
+2025-01-20,Bajío,En línea,559.46,5
+2025-01-21,Norte,Tienda,1634.65,19
+2025-01-21,Norte,En línea,729.55,8
+2025-01-21,Centro,Tienda,2362.74,25
+2025-01-21,Centro,En línea,1443.13,13
+2025-01-21,Sur,Tienda,1198.53,9
+2025-01-21,Sur,En línea,705.15,5
+2025-01-21,Bajío,Tienda,748.29,7
+2025-01-21,Bajío,En línea,450.78,3
+2025-01-22,Norte,Tienda,1186.16,12
+2025-01-22,Norte,En línea,916.38,7
+2025-01-22,Centro,Tienda,2145.71,19
+2025-01-22,Centro,En línea,947.2,7
+2025-01-22,Sur,Tienda,1506.78,11
+2025-01-22,Sur,En línea,655.11,5
+2025-01-22,Bajío,Tienda,889.0,9
+2025-01-22,Bajío,En línea,613.39,6
+2025-01-23,Norte,Tienda,1252.8,11
+2025-01-23,Norte,En línea,685.21,5
+2025-01-23,Centro,Tienda,2549.96,20
+2025-01-23,Centro,En línea,1408.85,12
+2025-01-23,Sur,Tienda,917.9,8
+2025-01-23,Sur,En línea,605.02,6
+2025-01-23,Bajío,Tienda,,6
+2025-01-23,Bajío,En línea,566.78,4
+2025-01-24,Norte,Tienda,1859.07,15
+2025-01-24,Norte,En línea,754.24,7
+2025-01-24,Centro,Tienda,2680.36,23
+2025-01-24,Centro,En línea,1137.48,11
+2025-01-24,Sur,Tienda,981.77,7
+2025-01-24,Sur,En línea,821.09,8
+2025-01-24,Bajío,Tienda,924.46,10
+2025-01-24,Bajío,En línea,621.02,4
+2025-01-25,Norte,Tienda,1639.34,12
+2025-01-25,Norte,En línea,867.08,7
+2025-01-25,Centro,Tienda,2404.35,22
+2025-01-25,Centro,En línea,1270.35,13
+2025-01-25,Sur,Tienda,1493.57,17
+2025-01-25,Sur,En línea,624.08,6
+2025-01-25,Bajío,Tienda,1143.04,11
+2025-01-25,Bajío,En línea,457.19,4
+2025-01-26,Norte,Tienda,901.6,10
+2025-01-26,Norte,En línea,715.56,6
+2025-01-26,Centro,Tienda,1821.64,13
+2025-01-26,Centro,En línea,682.68,7
+2025-01-26,Sur,Tienda,796.82,9
+2025-01-26,Sur,En línea,418.36,3
+2025-01-26,Bajío,Tienda,729.89,6
+2025-01-26,Bajío,En línea,361.2,3
+2025-01-27,Norte,Tienda,1211.69,12
+2025-01-27,Norte,En línea,693.66,6
+2025-01-27,Centro,Tienda,2566.03,27
+2025-01-27,Centro,En línea,1044.33,10
+2025-01-27,Sur,Tienda,1522.82,11
+2025-01-27,Sur,En línea,519.41,6
+2025-01-27,Bajío,Tienda,1115.01,10
+2025-01-27,Bajío,En línea,384.02,3
+2025-01-28,Norte,Tienda,1811.52,13
+2025-01-28,Norte,En línea,749.08,8
+2025-01-28,Centro,Tienda,2205.45,18
+2025-01-28,Centro,En línea,1332.58,11
+2025-01-28,Sur,Tienda,1219.72,10
+2025-01-28,Sur,En línea,782.23,8
+2025-01-28,Bajío,Tienda,1002.74,10
+2025-01-28,Bajío,En línea,450.3,3
+2025-01-29,Norte,Tienda,1261.06,14
+2025-01-29,Norte,En línea,896.12,8
+2025-01-29,Centro,Tienda,2300.92,28
+2025-01-29,Centro,En línea,1180.96,8
+2025-01-29,Sur,Tienda,1491.73,13
+2025-01-29,Sur,En línea,601.31,4
+2025-01-29,Bajío,Tienda,848.28,10
+2025-01-29,Bajío,En línea,561.31,5
+2025-01-30,Norte,Tienda,1702.56,12
+2025-01-30,Norte,En línea,662.81,6
+2025-01-30,Centro,Tienda,2400.32,26
+2025-01-30,Centro,En línea,1354.39,12
+2025-01-30,Sur,Tienda,1552.16,15
+2025-01-30,Sur,En línea,598.24,6
+2025-01-30,Bajío,Tienda,846.0,6
+2025-01-30,Bajío,En línea,437.4,4
+2025-01-31,Norte,Tienda,1708.2,12
+2025-01-31,Norte,En línea,821.56,8
+2025-01-31,Centro,Tienda,1813.43,21
+2025-01-31,Centro,En línea,1150.1,8
+2025-01-31,Sur,Tienda,1409.12,10
+2025-01-31,Sur,En línea,634.96,6
+2025-01-31,Bajío,Tienda,1063.27,12
+2025-01-31,Bajío,En línea,489.07,4
+2025-02-01,Norte,Tienda,1322.53,16
+2025-02-01,Norte,En línea,806.79,5
+2025-02-01,Centro,Tienda,2733.37,29
+2025-02-01,Centro,En línea,1416.3,10
+2025-02-01,Sur,Tienda,981.96,9
+2025-02-01,Sur,En línea,843.45,9
+2025-02-01,Bajío,Tienda,1139.46,13
+2025-02-01,Bajío,En línea,604.44,4
+2025-02-02,Norte,Tienda,854.9,10
+2025-02-02,Norte,En línea,538.25,4
+2025-02-02,Centro,Tienda,1434.08,14
+2025-02-02,Centro,En línea,907.94,9
+2025-02-02,Sur,Tienda,,8
+2025-02-02,Sur,En línea,552.81,4
+2025-02-02,Bajío,Tienda,816.52,10
+2025-02-02,Bajío,En línea,363.05,2
+2025-02-03,Norte,Tienda,1507.61,15
+2025-02-03,Norte,En línea,876.19,6
+2025-02-03,Centro,Tienda,2576.13,20
+2025-02-03,Centro,En línea,1398.56,12
+2025-02-03,Sur,Tienda,1163.27,11
+2025-02-03,Sur,En línea,555.22,6
+2025-02-03,Bajío,Tienda,837.81,9
+2025-02-03,Bajío,En línea,541.31,5
+2025-02-04,Norte,Tienda,1913.04,13
+2025-02-04,Norte,En línea,699.28,8
+2025-02-04,Centro,Tienda,2483.07,23
+2025-02-04,Centro,En línea,1184.65,10
+2025-02-04,Sur,Tienda,1443.43,11
+2025-02-04,Sur,En línea,572.52,4
+2025-02-04,Bajío,Tienda,995.36,9
+2025-02-04,Bajío,En línea,450.06,4
+2025-02-05,Norte,Tienda,1332.8,10
+2025-02-05,Norte,En línea,809.75,7
+2025-02-05,Centro,Tienda,2265.43,24
+2025-02-05,Centro,En línea,1336.62,9
+2025-02-05,Sur,Tienda,1273.53,9
+2025-02-05,Sur,En línea,856.37,10
+2025-02-05,Bajío,Tienda,783.18,8
+2025-02-05,Bajío,En línea,554.18,4
+2025-02-06,Norte,Tienda,1915.77,17
+2025-02-06,Norte,En línea,1014.33,7
+2025-02-06,Centro,Tienda,2376.05,20
+2025-02-06,Centro,En línea,1165.03,13
+2025-02-06,Sur,Tienda,1136.71,9
+2025-02-06,Sur,En línea,606.86,7
+2025-02-06,Bajío,Tienda,1058.23,11
+2025-02-06,Bajío,En línea,455.13,3
+2025-02-07,Norte,Tienda,1271.29,14
+2025-02-07,Norte,En línea,916.97,7
+2025-02-07,Centro,Tienda,1894.14,15
+2025-02-07,Centro,En línea,1116.67,11
+2025-02-07,Sur,Tienda,1179.09,10
+2025-02-07,Sur,En línea,685.74,5
+2025-02-07,Bajío,Tienda,909.4,9
+2025-02-07,Bajío,En línea,457.2,5
+2025-02-08,Norte,Tienda,1571.35,12
+2025-02-08,Norte,En línea,1070.48,9
+2025-02-08,Centro,Tienda,1732.27,15
+2025-02-08,Centro,En línea,1515.63,17
+2025-02-08,Sur,Tienda,1222.5,11
+2025-02-08,Sur,En línea,640.91,5
+2025-02-08,Bajío,Tienda,788.45,7
+2025-02-08,Bajío,En línea,664.94,7
+2025-02-09,Norte,Tienda,1403.05,10
+2025-02-09,Norte,En línea,490.65,3
+2025-02-09,Centro,Tienda,1933.03,16
+2025-02-09,Centro,En línea,734.19,5
+2025-02-09,Sur,Tienda,874.99,6
+2025-02-09,Sur,En línea,425.27,4
+2025-02-09,Bajío,Tienda,695.32,6
+2025-02-09,Bajío,En línea,331.1,2
+2025-02-10,Norte,Tienda,1269.95,11
+2025-02-10,Norte,En línea,697.13,5
+2025-02-10,Centro,Tienda,2422.17,21
+2025-02-10,Centro,En línea,1146.09,10
+2025-02-10,Sur,Tienda,1269.54,10
+2025-02-10,Sur,En línea,702.82,8
+2025-02-10,Bajío,Tienda,983.68,10
+2025-02-10,Bajío,En línea,620.01,5
+2025-02-11,Norte,Tienda,1633.26,18
+2025-02-11,Norte,En línea,878.89,10
+2025-02-11,Centro,Tienda,2329.37,28
+2025-02-11,Centro,En línea,1008.43,8
+2025-02-11,Sur,Tienda,1331.95,15
+2025-02-11,Sur,En línea,683.91,4
+2025-02-11,Bajío,Tienda,1170.59,8
+2025-02-11,Bajío,En línea,632.33,6
+2025-02-12,Norte,Tienda,1656.03,12
+2025-02-12,Norte,En línea,761.4,5
+2025-02-12,Centro,Tienda,1822.18,18
+2025-02-12,Centro,En línea,1061.9,7
+2025-02-12,Sur,Tienda,1540.16,17
+2025-02-12,Sur,En línea,885.23,9
+2025-02-12,Bajío,Tienda,1000.67,10
+2025-02-12,Bajío,En línea,461.5,5
+2025-02-13,Norte,Tienda,1820.23,13
+2025-02-13,Norte,En línea,1049.44,12
+2025-02-13,Centro,Tienda,2497.63,24
+2025-02-13,Centro,En línea,1321.52,11
+2025-02-13,Sur,Tienda,1072.0,7
+2025-02-13,Sur,En línea,696.03,5
+2025-02-13,Bajío,Tienda,1247.88,10
+2025-02-13,Bajío,En línea,624.09,5
+2025-02-14,Norte,Tienda,1881.95,22
+2025-02-14,Norte,En línea,809.04,6
+2025-02-14,Centro,Tienda,2449.51,20
+2025-02-14,Centro,En línea,969.98,11
+2025-02-14,Sur,Tienda,1419.97,13
+2025-02-14,Sur,En línea,884.14,10
+2025-02-14,Bajío,Tienda,,13
+2025-02-14,Bajío,En línea,513.47,5
+2025-02-15,Norte,Tienda,1452.77,12
+2025-02-15,Norte,En línea,789.72,6
+2025-02-15,Centro,Tienda,1928.29,14
+2025-02-15,Centro,En línea,1070.01,12
+2025-02-15,Sur,Tienda,1598.33,12
+2025-02-15,Sur,En línea,654.04,8
+2025-02-15,Bajío,Tienda,1042.56,10
+2025-02-15,Bajío,En línea,540.44,3
+2025-02-16,Norte,Tienda,1035.83,7
+2025-02-16,Norte,En línea,661.92,6
+2025-02-16,Centro,Tienda,1292.48,10
+2025-02-16,Centro,En línea,935.54,6
+2025-02-16,Sur,Tienda,805.45,6
+2025-02-16,Sur,En línea,558.22,4
+2025-02-16,Bajío,Tienda,643.14,6
+2025-02-16,Bajío,En línea,467.11,3
+2025-02-17,Norte,Tienda,1280.5,9
+2025-02-17,Norte,En línea,918.83,7
+2025-02-17,Centro,Tienda,2054.04,23
+2025-02-17,Centro,En línea,1007.24,10
+2025-02-17,Sur,Tienda,1492.79,11
+2025-02-17,Sur,En línea,660.53,5
+2025-02-17,Bajío,Tienda,1167.2,10
+2025-02-17,Bajío,En línea,600.88,4
+2025-02-18,Norte,Tienda,2032.21,25
+2025-02-18,Norte,En línea,815.31,6
+2025-02-18,Centro,Tienda,2685.03,26
+2025-02-18,Centro,En línea,1202.21,12
+2025-02-18,Sur,Tienda,1455.44,11
+2025-02-18,Sur,En línea,931.35,8
+2025-02-18,Bajío,Tienda,1125.86,8
+2025-02-18,Bajío,En línea,626.83,5
+2025-02-19,Norte,Tienda,1468.27,12
+2025-02-19,Norte,En línea,1137.19,12
+2025-02-19,Centro,Tienda,1929.15,14
+2025-02-19,Centro,En línea,1084.26,13
+2025-02-19,Sur,Tienda,1504.4,12
+2025-02-19,Sur,En línea,844.09,10
+2025-02-19,Bajío,Tienda,958.89,7
+2025-02-19,Bajío,En línea,676.79,8
+2025-02-20,Norte,Tienda,2079.91,15
+2025-02-20,Norte,En línea,808.18,9
+2025-02-20,Centro,Tienda,2831.45,21
+2025-02-20,Centro,En línea,1542.27,13
+2025-02-20,Sur,Tienda,1102.58,12
+2025-02-20,Sur,En línea,646.26,6
+2025-02-20,Bajío,Tienda,786.13,8
+2025-02-20,Bajío,En línea,629.9,6
+2025-02-21,Norte,Tienda,2132.05,19
+2025-02-21,Norte,En línea,1008.1,12
+2025-02-21,Centro,Tienda,2345.8,18
+2025-02-21,Centro,En línea,1468.89,13
+2025-02-21,Sur,Tienda,1635.2,19
+2025-02-21,Sur,En línea,635.95,7
+2025-02-21,Bajío,Tienda,,8
+2025-02-21,Bajío,En línea,568.46,5
+2025-02-22,Norte,Tienda,1464.04,13
+2025-02-22,Norte,En línea,1114.64,11
+2025-02-22,Centro,Tienda,2170.37,23
+2025-02-22,Centro,En línea,1337.31,15
+2025-02-22,Sur,Tienda,1099.17,8
+2025-02-22,Sur,En línea,874.54,7
+2025-02-22,Bajío,Tienda,991.45,9
+2025-02-22,Bajío,En línea,454.93,3
+2025-02-23,Norte,Tienda,1042.55,10
+2025-02-23,Norte,En línea,672.57,6
+2025-02-23,Centro,Tienda,1483.06,13
+2025-02-23,Centro,En línea,1060.78,8
+2025-02-23,Sur,Tienda,903.64,9
+2025-02-23,Sur,En línea,629.99,5
+2025-02-23,Bajío,Tienda,612.12,5
+2025-02-23,Bajío,En línea,419.27,4
+2025-02-24,Norte,Tienda,2091.28,22
+2025-02-24,Norte,En línea,868.76,7
+2025-02-24,Centro,Tienda,2031.05,22
+2025-02-24,Centro,En línea,1233.18,11
+2025-02-24,Sur,Tienda,1282.29,14
+2025-02-24,Sur,En línea,859.83,9
+2025-02-24,Bajío,Tienda,842.59,8
+2025-02-24,Bajío,En línea,664.01,5
+2025-02-25,Norte,Tienda,1493.76,12
+2025-02-25,Norte,En línea,826.54,8
+2025-02-25,Centro,Tienda,2341.34,18
+2025-02-25,Centro,En línea,1356.54,11
+2025-02-25,Sur,Tienda,1156.7,9
+2025-02-25,Sur,En línea,868.34,6
+2025-02-25,Bajío,Tienda,1095.88,8
+2025-02-25,Bajío,En línea,502.35,4
+2025-02-26,Norte,Tienda,2011.44,16
+2025-02-26,Norte,En línea,1060.34,8
+2025-02-26,Centro,Tienda,2245.1,19
+2025-02-26,Centro,En línea,1307.39,10
+2025-02-26,Sur,Tienda,1506.95,15
+2025-02-26,Sur,En línea,760.94,6
+2025-02-26,Bajío,Tienda,1154.43,8
+2025-02-26,Bajío,En línea,628.88,4
+2025-02-27,Norte,Tienda,1767.75,12
+2025-02-27,Norte,En línea,998.41,11
+2025-02-27,Centro,Tienda,3035.46,27
+2025-02-27,Centro,En línea,1419.12,12
+2025-02-27,Sur,Tienda,1430.08,12
+2025-02-27,Sur,En línea,790.26,7
+2025-02-27,Bajío,Tienda,911.53,7
+2025-02-27,Bajío,En línea,663.35,7
+2025-02-28,Norte,Tienda,1655.56,19
+2025-02-28,Norte,En línea,932.25,11
+2025-02-28,Centro,Tienda,2399.07,19
+2025-02-28,Centro,En línea,1212.73,12
+2025-02-28,Sur,Tienda,1741.63,15
+2025-02-28,Sur,En línea,903.55,8
+2025-02-28,Bajío,Tienda,872.25,6
+2025-02-28,Bajío,En línea,628.43,5
+2025-03-01,Norte,Tienda,1546.7,11
+2025-03-01,Norte,En línea,1054.15,8
+2025-03-01,Centro,Tienda,2469.14,25
+2025-03-01,Centro,En línea,1121.39,8
+2025-03-01,Sur,Tienda,1685.2,17
+2025-03-01,Sur,En línea,691.42,6
+2025-03-01,Bajío,Tienda,807.96,6
+2025-03-01,Bajío,En línea,516.03,5
+2025-03-02,Norte,Tienda,1214.95,10
+2025-03-02,Norte,En línea,645.33,4
+2025-03-02,Centro,Tienda,1373.33,10
+2025-03-02,Centro,En línea,1107.99,12
+2025-03-02,Sur,Tienda,1075.11,13
+2025-03-02,Sur,En línea,679.63,5
+2025-03-02,Bajío,Tienda,605.37,6
+2025-03-02,Bajío,En línea,473.24,4
+2025-03-03,Norte,Tienda,2172.99,17
+2025-03-03,Norte,En línea,1188.71,10
+2025-03-03,Centro,Tienda,2744.01,20
+2025-03-03,Centro,En línea,1627.77,17
+2025-03-03,Sur,Tienda,1468.46,11
+2025-03-03,Sur,En línea,947.6,8
+2025-03-03,Bajío,Tienda,940.48,10
+2025-03-03,Bajío,En línea,464.85,4
+2025-03-04,Norte,Tienda,1807.66,16
+2025-03-04,Norte,En línea,1179.69,14
+2025-03-04,Centro,Tienda,2500.97,21
+2025-03-04,Centro,En línea,1635.97,15
+2025-03-04,Sur,Tienda,1786.89,21
+2025-03-04,Sur,En línea,853.19,10
+2025-03-04,Bajío,Tienda,1188.74,8
+2025-03-04,Bajío,En línea,743.41,6
+2025-03-05,Norte,Tienda,2185.65,26
+2025-03-05,Norte,En línea,1065.59,10
+2025-03-05,Centro,Tienda,2381.7,21
+2025-03-05,Centro,En línea,1593.81,17
+2025-03-05,Sur,Tienda,1401.98,12
+2025-03-05,Sur,En línea,719.14,5
+2025-03-05,Bajío,Tienda,1095.99,11
+2025-03-05,Bajío,En línea,744.56,6
+2025-03-06,Norte,Tienda,1676.15,16
+2025-03-06,Norte,En línea,1050.56,8
+2025-03-06,Centro,Tienda,1973.84,16
+2025-03-06,Centro,En línea,1441.84,17
+2025-03-06,Sur,Tienda,1103.13,12
+2025-03-06,Sur,En línea,849.4,7
+2025-03-06,Bajío,Tienda,1323.69,11
+2025-03-06,Bajío,En línea,642.53,5
+2025-03-07,Norte,Tienda,2005.07,21
+2025-03-07,Norte,En línea,989.98,7
+2025-03-07,Centro,Tienda,2163.96,26
+2025-03-07,Centro,En línea,1708.91,14
+2025-03-07,Sur,Tienda,1708.22,13
+2025-03-07,Sur,En línea,711.13,7
+2025-03-07,Bajío,Tienda,1003.08,9
+2025-03-07,Bajío,En línea,738.39,8
+2025-03-08,Norte,Tienda,1421.15,16
+2025-03-08,Norte,En línea,1053.76,7
+2025-03-08,Centro,Tienda,1956.98,18
+2025-03-08,Centro,En línea,1732.88,12
+2025-03-08,Sur,Tienda,1412.43,16
+2025-03-08,Sur,En línea,695.54,7
+2025-03-08,Bajío,Tienda,833.53,6
+2025-03-08,Bajío,En línea,751.39,8
+2025-03-09,Norte,Tienda,1057.09,13
+2025-03-09,Norte,En línea,621.84,5
+2025-03-09,Centro,Tienda,1408.31,11
+2025-03-09,Centro,En línea,1176.99,9
+2025-03-09,Sur,Tienda,1105.07,9
+2025-03-09,Sur,En línea,694.51,7
+2025-03-09,Bajío,Tienda,863.29,10
+2025-03-09,Bajío,En línea,460.57,3
+2025-03-10,Norte,Tienda,1685.9,13
+2025-03-10,Norte,En línea,1208.79,11
+2025-03-10,Centro,Tienda,2433.89,21
+2025-03-10,Centro,En línea,1560.35,17
+2025-03-10,Sur,Tienda,1387.59,11
+2025-03-10,Sur,En línea,785.58,7
+2025-03-10,Bajío,Tienda,1365.57,10
+2025-03-10,Bajío,En línea,550.61,6
+2025-03-11,Norte,Tienda,2059.44,15
+2025-03-11,Norte,En línea,1082.59,7
+2025-03-11,Centro,Tienda,2749.56,27
+2025-03-11,Centro,En línea,1718.81,16
+2025-03-11,Sur,Tienda,1571.66,11
+2025-03-11,Sur,En línea,733.43,9
+2025-03-11,Bajío,Tienda,1078.2,9
+2025-03-11,Bajío,En línea,736.42,8
+2025-03-12,Norte,Tienda,2169.67,16
+2025-03-12,Norte,En línea,915.66,6
+2025-03-12,Centro,Tienda,2870.52,21
+2025-03-12,Centro,En línea,1145.49,10
+2025-03-12,Sur,Tienda,1276.74,10
+2025-03-12,Sur,En línea,716.08,6
+2025-03-12,Bajío,Tienda,1106.72,11
+2025-03-12,Bajío,En línea,697.22,5
+2025-03-13,Norte,Tienda,1496.17,11
+2025-03-13,Norte,En línea,898.13,7
+2025-03-13,Centro,Tienda,3146.63,28
+2025-03-13,Centro,En línea,1516.04,16
+2025-03-13,Sur,Tienda,1267.04,10
+2025-03-13,Sur,En línea,855.98,8
+2025-03-13,Bajío,Tienda,932.37,11
+2025-03-13,Bajío,En línea,582.78,6
+2025-03-14,Norte,Tienda,2164.17,24
+2025-03-14,Norte,En línea,960.06,8
+2025-03-14,Centro,Tienda,2031.39,14
+2025-03-14,Centro,En línea,1447.1,12
+2025-03-14,Sur,Tienda,1725.16,16
+2025-03-14,Sur,En línea,943.87,7
+2025-03-14,Bajío,Tienda,995.72,12
+2025-03-14,Bajío,En línea,524.77,6
+2025-03-15,Norte,Tienda,1954.37,14
+2025-03-15,Norte,En línea,1278.57,9
+2025-03-15,Centro,Tienda,2790.23,26
+2025-03-15,Centro,En línea,1798.85,18
+2025-03-15,Sur,Tienda,1626.77,11
+2025-03-15,Sur,En línea,791.27,7
+2025-03-15,Bajío,Tienda,1405.39,10
+2025-03-15,Bajío,En línea,482.33,5
+2025-03-16,Norte,Tienda,1604.06,11
+2025-03-16,Norte,En línea,568.04,4
+2025-03-16,Centro,Tienda,2006.35,14
+2025-03-16,Centro,En línea,845.5,6
+2025-03-16,Sur,Tienda,1162.62,11
+2025-03-16,Sur,En línea,663.23,7
+2025-03-16,Bajío,Tienda,703.78,8
+2025-03-16,Bajío,En línea,367.6,3
+2025-03-17,Norte,Tienda,2084.99,25
+2025-03-17,Norte,En línea,892.64,10
+2025-03-17,Centro,Tienda,2306.29,16
+2025-03-17,Centro,En línea,1761.05,19
+2025-03-17,Sur,Tienda,1223.23,9
+2025-03-17,Sur,En línea,896.64,8
+2025-03-17,Bajío,Tienda,1334.54,12
+2025-03-17,Bajío,En línea,519.05,5
+2025-03-18,Norte,Tienda,2127.81,18
+2025-03-18,Norte,En línea,1253.29,13
+2025-03-18,Centro,Tienda,2228.0,23
+2025-03-18,Centro,En línea,1357.75,15
+2025-03-18,Sur,Tienda,1398.01,10
+2025-03-18,Sur,En línea,1048.27,12
+2025-03-18,Bajío,Tienda,1250.48,13
+2025-03-18,Bajío,En línea,566.58,5
+2025-03-19,Norte,Tienda,1798.86,12
+2025-03-19,Norte,En línea,1286.99,14
+2025-03-19,Centro,Tienda,3236.96,38
+2025-03-19,Centro,En línea,1332.55,9
+2025-03-19,Sur,Tienda,1780.85,17
+2025-03-19,Sur,En línea,637.66,4
+2025-03-19,Bajío,Tienda,976.0,9
+2025-03-19,Bajío,En línea,547.13,4
+2025-03-20,Norte,Tienda,1627.39,12
+2025-03-20,Norte,En línea,903.9,10
+2025-03-20,Centro,Tienda,2859.31,26
+2025-03-20,Centro,En línea,1272.41,10
+2025-03-20,Sur,Tienda,1791.21,15
+2025-03-20,Sur,En línea,667.28,5
+2025-03-20,Bajío,Tienda,1291.15,15
+2025-03-20,Bajío,En línea,586.61,4
+2025-03-21,Norte,Tienda,1937.78,23
+2025-03-21,Norte,En línea,1057.01,7
+2025-03-21,Centro,Tienda,2295.05,17
+2025-03-21,Centro,En línea,1245.39,12
+2025-03-21,Sur,Tienda,1170.35,10
+2025-03-21,Sur,En línea,862.3,9
+2025-03-21,Bajío,Tienda,1351.4,10
+2025-03-21,Bajío,En línea,709.47,6
+2025-03-22,Norte,Tienda,1523.65,11
+2025-03-22,Norte,En línea,1070.75,9
+2025-03-22,Centro,Tienda,2783.65,34
+2025-03-22,Centro,En línea,1295.32,14
+2025-03-22,Sur,Tienda,1366.68,10
+2025-03-22,Sur,En línea,685.55,5
+2025-03-22,Bajío,Tienda,888.71,7
+2025-03-22,Bajío,En línea,651.5,5
+2025-03-23,Norte,Tienda,1624.79,13
+2025-03-23,Norte,En línea,612.11,5
+2025-03-23,Centro,Tienda,1708.41,19
+2025-03-23,Centro,En línea,864.3,7
+2025-03-23,Sur,Tienda,903.6,7
+2025-03-23,Sur,En línea,502.14,3
+2025-03-23,Bajío,Tienda,777.07,7
+2025-03-23,Bajío,En línea,458.36,4
+2025-03-24,Norte,Tienda,2238.63,22
+2025-03-24,Norte,En línea,992.33,9
+2025-03-24,Centro,Tienda,3171.89,23
+2025-03-24,Centro,En línea,1777.29,21
+2025-03-24,Sur,Tienda,1933.23,14
+2025-03-24,Sur,En línea,831.52,7
+2025-03-24,Bajío,Tienda,1197.99,14
+2025-03-24,Bajío,En línea,650.45,8
+2025-03-25,Norte,Tienda,2437.03,19
+2025-03-25,Norte,En línea,1157.75,9
+2025-03-25,Centro,Tienda,3294.35,40
+2025-03-25,Centro,En línea,1341.66,11
+2025-03-25,Sur,Tienda,1612.2,11
+2025-03-25,Sur,En línea,760.07,6
+2025-03-25,Bajío,Tienda,1451.07,14
+2025-03-25,Bajío,En línea,699.31,8
+2025-03-26,Norte,Tienda,2432.35,21
+2025-03-26,Norte,En línea,1071.08,9
+2025-03-26,Centro,Tienda,2251.51,25
+2025-03-26,Centro,En línea,1453.85,14
+2025-03-26,Sur,Tienda,1258.0,11
+2025-03-26,Sur,En línea,919.41,8
+2025-03-26,Bajío,Tienda,1010.85,8
+2025-03-26,Bajío,En línea,669.32,5
+2025-03-27,Norte,Tienda,1799.4,19
+2025-03-27,Norte,En línea,1100.06,10
+2025-03-27,Centro,Tienda,2103.65,20
+2025-03-27,Centro,En línea,1330.47,11
+2025-03-27,Sur,Tienda,1419.1,10
+2025-03-27,Sur,En línea,993.61,11
+2025-03-27,Bajío,Tienda,1414.04,13
+2025-03-27,Bajío,En línea,619.18,5
+2025-03-28,Norte,Tienda,1605.02,17
+2025-03-28,Norte,En línea,1228.02,13
+2025-03-28,Centro,Tienda,2586.63,21
+2025-03-28,Centro,En línea,1804.74,13
+2025-03-28,Sur,Tienda,1786.31,14
+2025-03-28,Sur,En línea,866.82,6
+2025-03-28,Bajío,Tienda,1445.02,16
+2025-03-28,Bajío,En línea,495.12,3
+2025-03-29,Norte,Tienda,1999.58,14
+2025-03-29,Norte,En línea,1055.75,8
+2025-03-29,Centro,Tienda,2952.78,28
+2025-03-29,Centro,En línea,1508.87,12
+2025-03-29,Sur,Tienda,1513.84,13
+2025-03-29,Sur,En línea,802.36,6
+2025-03-29,Bajío,Tienda,1200.75,11
+2025-03-29,Bajío,En línea,595.84,6
+2025-03-30,Norte,Tienda,1463.37,17
+2025-03-30,Norte,En línea,705.21,5
+2025-03-30,Centro,Tienda,2419.95,26
+2025-03-30,Centro,En línea,1304.88,16
+2025-03-30,Sur,Tienda,1161.33,10
+2025-03-30,Sur,En línea,703.24,6
+2025-03-30,Bajío,Tienda,850.97,7
+2025-03-30,Bajío,En línea,438.35,4
+2025-03-31,Norte,Tienda,1865.39,13
+2025-03-31,Norte,En línea,1122.48,13
+2025-03-31,Centro,Tienda,2681.78,23
+2025-03-31,Centro,En línea,1846.61,13
+2025-03-31,Sur,Tienda,1564.11,13
+2025-03-31,Sur,En línea,817.3,7
+2025-03-31,Bajío,Tienda,1010.17,10
+2025-03-31,Bajío,En línea,773.51,6
+2025-04-01,Norte,Tienda,2421.09,19
+2025-04-01,Norte,En línea,1384.84,10
+2025-04-01,Centro,Tienda,2344.7,24
+2025-04-01,Centro,En línea,1560.9,17
+2025-04-01,Sur,Tienda,1722.99,14
+2025-04-01,Sur,En línea,1109.43,9
+2025-04-01,Bajío,Tienda,1159.58,9
+2025-04-01,Bajío,En línea,730.95,9
+2025-04-02,Norte,Tienda,2376.0,20
+2025-04-02,Norte,En línea,946.64,8
+2025-04-02,Centro,Tienda,2508.15,21
+2025-04-02,Centro,En línea,1950.56,17
+2025-04-02,Sur,Tienda,1315.95,14
+2025-04-02,Sur,En línea,717.14,8
+2025-04-02,Bajío,Tienda,1231.03,9
+2025-04-02,Bajío,En línea,772.18,9
+2025-04-03,Norte,Tienda,2310.93,23
+2025-04-03,Norte,En línea,1037.73,11
+2025-04-03,Centro,Tienda,2279.03,16
+2025-04-03,Centro,En línea,1448.94,13
+2025-04-03,Sur,Tienda,1265.84,9
+2025-04-03,Sur,En línea,1101.46,10
+2025-04-03,Bajío,Tienda,1068.25,12
+2025-04-03,Bajío,En línea,790.86,7
+2025-04-04,Norte,Tienda,2364.65,24
+2025-04-04,Norte,En línea,1381.5,12
+2025-04-04,Centro,Tienda,2491.47,24
+2025-04-04,Centro,En línea,1353.38,13
+2025-04-04,Sur,Tienda,1620.93,12
+2025-04-04,Sur,En línea,751.83,7
+2025-04-04,Bajío,Tienda,1514.15,15
+2025-04-04,Bajío,En línea,544.13,4
+2025-04-05,Norte,Tienda,1949.44,23
+2025-04-05,Norte,En línea,1310.29,12
+2025-04-05,Centro,Tienda,2425.2,24
+2025-04-05,Centro,En línea,1210.6,10
+2025-04-05,Sur,Tienda,1356.9,11
+2025-04-05,Sur,En línea,797.57,6
+2025-04-05,Bajío,Tienda,1194.32,9
+2025-04-05,Bajío,En línea,560.85,5
+2025-04-06,Norte,Tienda,1349.97,9
+2025-04-06,Norte,En línea,969.57,8
+2025-04-06,Centro,Tienda,1966.28,22
+2025-04-06,Centro,En línea,975.16,7
+2025-04-06,Sur,Tienda,1074.85,11
+2025-04-06,Sur,En línea,541.97,4
+2025-04-06,Bajío,Tienda,868.73,7
+2025-04-06,Bajío,En línea,539.21,5
+2025-04-07,Norte,Tienda,2131.12,21
+2025-04-07,Norte,En línea,899.08,9
+2025-04-07,Centro,Tienda,2627.67,21
+2025-04-07,Centro,En línea,1636.44,16
+2025-04-07,Sur,Tienda,1481.67,17
+2025-04-07,Sur,En línea,782.93,8
+2025-04-07,Bajío,Tienda,1102.23,10
+2025-04-07,Bajío,En línea,773.78,5
+2025-04-08,Norte,Tienda,1687.36,17
+2025-04-08,Norte,En línea,1239.33,10
+2025-04-08,Centro,Tienda,2768.14,23
+2025-04-08,Centro,En línea,1391.81,10
+2025-04-08,Sur,Tienda,1760.65,19
+2025-04-08,Sur,En línea,1097.48,8
+2025-04-08,Bajío,Tienda,955.52,11
+2025-04-08,Bajío,En línea,579.32,5
+2025-04-09,Norte,Tienda,1596.04,16
+2025-04-09,Norte,En línea,957.92,7
+2025-04-09,Centro,Tienda,3217.82,33
+2025-04-09,Centro,En línea,,17
+2025-04-09,Sur,Tienda,1936.34,15
+2025-04-09,Sur,En línea,703.96,5
+2025-04-09,Bajío,Tienda,962.67,10
+2025-04-09,Bajío,En línea,784.08,8
+2025-04-10,Norte,Tienda,2339.42,27
+2025-04-10,Norte,En línea,1083.12,8
+2025-04-10,Centro,Tienda,2593.28,30
+2025-04-10,Centro,En línea,1540.66,11
+2025-04-10,Sur,Tienda,1862.45,14
+2025-04-10,Sur,En línea,893.56,10
+2025-04-10,Bajío,Tienda,1203.24,10
+2025-04-10,Bajío,En línea,558.59,4
+2025-04-11,Norte,Tienda,2297.4,17
+2025-04-11,Norte,En línea,1173.89,8
+2025-04-11,Centro,Tienda,2984.47,31
+2025-04-11,Centro,En línea,1492.0,14
+2025-04-11,Sur,Tienda,1510.69,17
+2025-04-11,Sur,En línea,995.98,10
+2025-04-11,Bajío,Tienda,1261.19,11
+2025-04-11,Bajío,En línea,637.24,6
+2025-04-12,Norte,Tienda,1717.32,15
+2025-04-12,Norte,En línea,1331.97,11
+2025-04-12,Centro,Tienda,2444.26,20
+2025-04-12,Centro,En línea,1579.48,12
+2025-04-12,Sur,Tienda,1350.92,13
+2025-04-12,Sur,En línea,785.32,9
+2025-04-12,Bajío,Tienda,1065.05,8
+2025-04-12,Bajío,En línea,556.74,5
+2025-04-13,Norte,Tienda,1367.81,15
+2025-04-13,Norte,En línea,610.09,4
+2025-04-13,Centro,Tienda,1628.15,13
+2025-04-13,Centro,En línea,1166.67,13
+2025-04-13,Sur,Tienda,1136.11,12
+2025-04-13,Sur,En línea,487.26,3
+2025-04-13,Bajío,Tienda,937.32,6
+2025-04-13,Bajío,En línea,424.35,4
+2025-04-14,Norte,Tienda,1606.73,12
+2025-04-14,Norte,En línea,1039.1,11
+2025-04-14,Centro,Tienda,3453.96,25
+2025-04-14,Centro,En línea,1850.19,14
+2025-04-14,Sur,Tienda,1536.96,16
+2025-04-14,Sur,En línea,842.31,8
+2025-04-14,Bajío,Tienda,1179.61,9
+2025-04-14,Bajío,En línea,534.93,4
+2025-04-15,Norte,Tienda,2446.36,19
+2025-04-15,Norte,En línea,1418.12,12
+2025-04-15,Centro,Tienda,2447.14,24
+2025-04-15,Centro,En línea,1283.2,10
+2025-04-15,Sur,Tienda,1639.41,11
+2025-04-15,Sur,En línea,714.56,6
+2025-04-15,Bajío,Tienda,1406.58,17
+2025-04-15,Bajío,En línea,819.69,6
+2025-04-16,Norte,Tienda,1885.58,15
+2025-04-16,Norte,En línea,1117.29,11
+2025-04-16,Centro,Tienda,3206.55,24
+2025-04-16,Centro,En línea,1355.18,13
+2025-04-16,Sur,Tienda,1745.41,17
+2025-04-16,Sur,En línea,737.43,7
+2025-04-16,Bajío,Tienda,1567.86,11
+2025-04-16,Bajío,En línea,863.39,6
+2025-04-17,Norte,Tienda,2450.1,29
+2025-04-17,Norte,En línea,1229.78,12
+2025-04-17,Centro,Tienda,3640.39,33
+2025-04-17,Centro,En línea,1468.77,14
+2025-04-17,Sur,Tienda,1295.76,14
+2025-04-17,Sur,En línea,908.35,10
+2025-04-17,Bajío,Tienda,1190.74,10
+2025-04-17,Bajío,En línea,710.17,6
+2025-04-18,Norte,Tienda,1715.66,18
+2025-04-18,Norte,En línea,1197.23,13
+2025-04-18,Centro,Tienda,2609.1,30
+2025-04-18,Centro,En línea,1433.41,13
+2025-04-18,Sur,Tienda,1468.01,12
+2025-04-18,Sur,En línea,941.45,8
+2025-04-18,Bajío,Tienda,1216.73,14
+2025-04-18,Bajío,En línea,828.94,7
+2025-04-19,Norte,Tienda,2404.66,27
+2025-04-19,Norte,En línea,1301.87,15
+2025-04-19,Centro,Tienda,2822.16,31
+2025-04-19,Centro,En línea,1692.54,13
+2025-04-19,Sur,Tienda,1940.15,23
+2025-04-19,Sur,En línea,877.77,10
+2025-04-19,Bajío,Tienda,1095.17,11
+2025-04-19,Bajío,En línea,677.18,5
+2025-04-20,Norte,Tienda,1773.51,15
+2025-04-20,Norte,En línea,974.88,10
+2025-04-20,Centro,Tienda,1927.4,15
+2025-04-20,Centro,En línea,1338.84,15
+2025-04-20,Sur,Tienda,1338.14,9
+2025-04-20,Sur,En línea,507.76,4
+2025-04-20,Bajío,Tienda,919.08,7
+2025-04-20,Bajío,En línea,598.39,4
+2025-04-21,Norte,Tienda,1812.72,16
+2025-04-21,Norte,En línea,1225.6,14
+2025-04-21,Centro,Tienda,2413.8,18
+2025-04-21,Centro,En línea,1693.47,17
+2025-04-21,Sur,Tienda,1610.91,18
+2025-04-21,Sur,En línea,960.25,7
+2025-04-21,Bajío,Tienda,1573.02,19
+2025-04-21,Bajío,En línea,583.28,5
+2025-04-22,Norte,Tienda,2468.66,30
+2025-04-22,Norte,En línea,1368.29,11
+2025-04-22,Centro,Tienda,2968.31,33
+2025-04-22,Centro,En línea,1564.53,11
+2025-04-22,Sur,Tienda,1352.89,13
+2025-04-22,Sur,En línea,1130.37,9
+2025-04-22,Bajío,Tienda,1075.09,10
+2025-04-22,Bajío,En línea,735.54,7
+2025-04-23,Norte,Tienda,1619.79,14
+2025-04-23,Norte,En línea,899.48,8
+2025-04-23,Centro,Tienda,2327.02,26
+2025-04-23,Centro,En línea,1468.1,15
+2025-04-23,Sur,Tienda,1516.18,13
+2025-04-23,Sur,En línea,1162.75,8
+2025-04-23,Bajío,Tienda,1329.81,10
+2025-04-23,Bajío,En línea,807.23,6
+2025-04-24,Norte,Tienda,2008.15,20
+2025-04-24,Norte,En línea,1406.79,10
+2025-04-24,Centro,Tienda,2722.5,21
+2025-04-24,Centro,En línea,1667.46,14
+2025-04-24,Sur,Tienda,1768.5,16
+2025-04-24,Sur,En línea,871.4,8
+2025-04-24,Bajío,Tienda,1281.57,12
+2025-04-24,Bajío,En línea,617.12,6
+2025-04-25,Norte,Tienda,1628.27,12
+2025-04-25,Norte,En línea,1155.97,10
+2025-04-25,Centro,Tienda,2524.12,30
+2025-04-25,Centro,En línea,1504.37,12
+2025-04-25,Sur,Tienda,2106.54,20
+2025-04-25,Sur,En línea,990.29,11
+2025-04-25,Bajío,Tienda,1348.53,9
+2025-04-25,Bajío,En línea,810.84,7
+2025-04-26,Norte,Tienda,1697.24,15
+2025-04-26,Norte,En línea,1057.4,11
+2025-04-26,Centro,Tienda,2522.87,26
+2025-04-26,Centro,En línea,1432.39,13
+2025-04-26,Sur,Tienda,1821.28,13
+2025-04-26,Sur,En línea,808.22,6
+2025-04-26,Bajío,Tienda,1364.73,16
+2025-04-26,Bajío,En línea,848.67,8
+2025-04-27,Norte,Tienda,1281.97,11
+2025-04-27,Norte,En línea,893.75,6
+2025-04-27,Centro,Tienda,1942.08,15
+2025-04-27,Centro,En línea,1114.09,9
+2025-04-27,Sur,Tienda,946.16,9
+2025-04-27,Sur,En línea,710.46,7
+2025-04-27,Bajío,Tienda,955.84,10
+2025-04-27,Bajío,En línea,379.3,2
+2025-04-28,Norte,Tienda,2703.97,32
+2025-04-28,Norte,En línea,1329.72,13
+2025-04-28,Centro,Tienda,2520.42,28
+2025-04-28,Centro,En línea,1330.72,10
+2025-04-28,Sur,Tienda,1772.84,15
+2025-04-28,Sur,En línea,1031.83,8
+2025-04-28,Bajío,Tienda,1461.65,15
+2025-04-28,Bajío,En línea,811.88,6
+2025-04-29,Norte,Tienda,2475.18,17
+2025-04-29,Norte,En línea,1065.23,9
+2025-04-29,Centro,Tienda,2488.26,30
+2025-04-29,Centro,En línea,1807.57,14
+2025-04-29,Sur,Tienda,2169.15,23
+2025-04-29,Sur,En línea,761.92,9
+2025-04-29,Bajío,Tienda,1019.54,9
+2025-04-29,Bajío,En línea,604.47,4
+2025-04-30,Norte,Tienda,1799.75,19
+2025-04-30,Norte,En línea,1453.27,16
+2025-04-30,Centro,Tienda,3480.24,36
+2025-04-30,Centro,En línea,1679.57,14
+2025-04-30,Sur,Tienda,2008.29,18
+2025-04-30,Sur,En línea,1154.0,13
+2025-04-30,Bajío,Tienda,1024.93,8
+2025-04-30,Bajío,En línea,851.3,10
+2025-05-01,Norte,Tienda,2087.97,15
+2025-05-01,Norte,En línea,1278.98,13
+2025-05-01,Centro,Tienda,2697.25,25
+2025-05-01,Centro,En línea,1433.73,11
+2025-05-01,Sur,Tienda,1572.89,11
+2025-05-01,Sur,En línea,995.48,11
+2025-05-01,Bajío,Tienda,1554.08,16
+2025-05-01,Bajío,En línea,837.99,8
+2025-05-02,Norte,Tienda,2174.53,16
+2025-05-02,Norte,En línea,1314.79,11
+2025-05-02,Centro,Tienda,3187.97,23
+2025-05-02,Centro,En línea,2010.03,19
+2025-05-02,Sur,Tienda,2070.63,22
+2025-05-02,Sur,En línea,1202.2,12
+2025-05-02,Bajío,Tienda,,7
+2025-05-02,Bajío,En línea,871.58,9
+2025-05-03,Norte,Tienda,1752.63,19
+2025-05-03,Norte,En línea,959.53,9
+2025-05-03,Centro,Tienda,3404.12,25
+2025-05-03,Centro,En línea,1294.93,13
+2025-05-03,Sur,Tienda,1921.6,23
+2025-05-03,Sur,En línea,835.88,7
+2025-05-03,Bajío,Tienda,1000.49,7
+2025-05-03,Bajío,En línea,861.13,9
+2025-05-04,Norte,Tienda,1258.33,11
+2025-05-04,Norte,En línea,924.6,10
+2025-05-04,Centro,Tienda,2154.66,24
+2025-05-04,Centro,En línea,1182.42,8
+2025-05-04,Sur,Tienda,1055.48,7
+2025-05-04,Sur,En línea,755.25,7
+2025-05-04,Bajío,Tienda,814.46,9
+2025-05-04,Bajío,En línea,509.92,4
+2025-05-05,Norte,Tienda,2050.17,25
+2025-05-05,Norte,En línea,1303.46,11
+2025-05-05,Centro,Tienda,3375.18,24
+2025-05-05,Centro,En línea,1879.63,18
+2025-05-05,Sur,Tienda,1689.92,12
+2025-05-05,Sur,En línea,913.12,8
+2025-05-05,Bajío,Tienda,1649.96,20
+2025-05-05,Bajío,En línea,881.3,9
+2025-05-06,Norte,Tienda,2069.2,21
+2025-05-06,Norte,En línea,979.93,7
+2025-05-06,Centro,Tienda,3717.27,44
+2025-05-06,Centro,En línea,1548.64,13
+2025-05-06,Sur,Tienda,,11
+2025-05-06,Sur,En línea,1089.55,8
+2025-05-06,Bajío,Tienda,1383.95,9
+2025-05-06,Bajío,En línea,774.71,6
+2025-05-07,Norte,Tienda,2442.41,23
+2025-05-07,Norte,En línea,1282.99,10
+2025-05-07,Centro,Tienda,3290.66,29
+2025-05-07,Centro,En línea,1795.94,18
+2025-05-07,Sur,Tienda,1742.92,14
+2025-05-07,Sur,En línea,960.23,10
+2025-05-07,Bajío,Tienda,1607.98,14
+2025-05-07,Bajío,En línea,738.7,5
+2025-05-08,Norte,Tienda,1849.08,14
+2025-05-08,Norte,En línea,1301.7,10
+2025-05-08,Centro,Tienda,3665.21,44
+2025-05-08,Centro,En línea,1985.5,15
+2025-05-08,Sur,Tienda,1462.9,15
+2025-05-08,Sur,En línea,903.26,7
+2025-05-08,Bajío,Tienda,1295.51,15
+2025-05-08,Bajío,En línea,911.08,7
+2025-05-09,Norte,Tienda,2190.45,17
+2025-05-09,Norte,En línea,1004.73,8
+2025-05-09,Centro,Tienda,3132.29,33
+2025-05-09,Centro,En línea,1568.79,15
+2025-05-09,Sur,Tienda,1506.57,13
+2025-05-09,Sur,En línea,817.69,6
+2025-05-09,Bajío,Tienda,1211.75,12
+2025-05-09,Bajío,En línea,581.44,4
+2025-05-10,Norte,Tienda,1886.65,17
+2025-05-10,Norte,En línea,1291.44,12
+2025-05-10,Centro,Tienda,3015.15,29
+2025-05-10,Centro,En línea,1532.6,14
+2025-05-10,Sur,Tienda,2049.6,20
+2025-05-10,Sur,En línea,1014.05,7
+2025-05-10,Bajío,Tienda,1644.0,13
+2025-05-10,Bajío,En línea,792.33,7
+2025-05-11,Norte,Tienda,1753.12,17
+2025-05-11,Norte,En línea,853.33,6
+2025-05-11,Centro,Tienda,1659.71,14
+2025-05-11,Centro,En línea,1174.07,9
+2025-05-11,Sur,Tienda,1226.92,9
+2025-05-11,Sur,En línea,680.84,6
+2025-05-11,Bajío,Tienda,1011.93,8
+2025-05-11,Bajío,En línea,395.06,3
+2025-05-12,Norte,Tienda,2522.17,19
+2025-05-12,Norte,En línea,1051.88,12
+2025-05-12,Centro,Tienda,2492.34,29
+2025-05-12,Centro,En línea,1766.79,21
+2025-05-12,Sur,Tienda,1966.02,18
+2025-05-12,Sur,En línea,1071.51,10
+2025-05-12,Bajío,Tienda,1665.93,12
+2025-05-12,Bajío,En línea,603.55,6
+2025-05-13,Norte,Tienda,1675.84,12
+2025-05-13,Norte,En línea,1078.58,10
+2025-05-13,Centro,Tienda,3674.81,32
+2025-05-13,Centro,En línea,1645.29,19
+2025-05-13,Sur,Tienda,2106.92,16
+2025-05-13,Sur,En línea,860.29,9
+2025-05-13,Bajío,Tienda,1359.91,13
+2025-05-13,Bajío,En línea,730.38,6
+2025-05-14,Norte,Tienda,2563.79,27
+2025-05-14,Norte,En línea,1259.78,15
+2025-05-14,Centro,Tienda,3170.75,30
+2025-05-14,Centro,En línea,1564.19,16
+2025-05-14,Sur,Tienda,1596.6,13
+2025-05-14,Sur,En línea,1025.45,9
+2025-05-14,Bajío,Tienda,1299.94,9
+2025-05-14,Bajío,En línea,710.87,6
+2025-05-15,Norte,Tienda,2634.69,31
+2025-05-15,Norte,En línea,1030.5,7
+2025-05-15,Centro,Tienda,3591.88,32
+2025-05-15,Centro,En línea,1867.57,19
+2025-05-15,Sur,Tienda,2086.05,23
+2025-05-15,Sur,En línea,837.52,9
+2025-05-15,Bajío,Tienda,1528.37,11
+2025-05-15,Bajío,En línea,794.47,8
+2025-05-16,Norte,Tienda,2440.03,27
+2025-05-16,Norte,En línea,1348.03,16
+2025-05-16,Centro,Tienda,2803.01,29
+2025-05-16,Centro,En línea,1563.23,13
+2025-05-16,Sur,Tienda,2153.84,21
+2025-05-16,Sur,En línea,811.33,6
+2025-05-16,Bajío,Tienda,1266.84,15
+2025-05-16,Bajío,En línea,788.59,8
+2025-05-17,Norte,Tienda,1780.5,16
+2025-05-17,Norte,En línea,1185.92,9
+2025-05-17,Centro,Tienda,3642.25,41
+2025-05-17,Centro,En línea,2147.46,15
+2025-05-17,Sur,Tienda,1600.64,15
+2025-05-17,Sur,En línea,981.52,7
+2025-05-17,Bajío,Tienda,1330.52,10
+2025-05-17,Bajío,En línea,752.42,8
+2025-05-18,Norte,Tienda,1386.45,10
+2025-05-18,Norte,En línea,743.61,5
+2025-05-18,Centro,Tienda,2300.07,16
+2025-05-18,Centro,En línea,1473.35,12
+2025-05-18,Sur,Tienda,1147.96,10
+2025-05-18,Sur,En línea,772.32,8
+2025-05-18,Bajío,Tienda,844.58,10
+2025-05-18,Bajío,En línea,412.19,3
+2025-05-19,Norte,Tienda,2345.33,21
+2025-05-19,Norte,En línea,1239.32,14
+2025-05-19,Centro,Tienda,2557.04,22
+2025-05-19,Centro,En línea,1615.56,13
+2025-05-19,Sur,Tienda,1494.94,10
+2025-05-19,Sur,En línea,1153.43,8
+2025-05-19,Bajío,Tienda,1107.33,12
+2025-05-19,Bajío,En línea,597.23,5
+2025-05-20,Norte,Tienda,1811.72,16
+2025-05-20,Norte,En línea,1253.87,11
+2025-05-20,Centro,Tienda,2662.05,25
+2025-05-20,Centro,En línea,1403.24,14
+2025-05-20,Sur,Tienda,1793.63,13
+2025-05-20,Sur,En línea,1204.08,11
+2025-05-20,Bajío,Tienda,1391.34,11
+2025-05-20,Bajío,En línea,831.63,9
+2025-05-21,Norte,Tienda,1715.85,16
+2025-05-21,Norte,En línea,1104.63,8
+2025-05-21,Centro,Tienda,3261.43,34
+2025-05-21,Centro,En línea,1971.13,16
+2025-05-21,Sur,Tienda,1565.3,13
+2025-05-21,Sur,En línea,760.05,6
+2025-05-21,Bajío,Tienda,1556.54,15
+2025-05-21,Bajío,En línea,725.59,5
+2025-05-22,Norte,Tienda,2736.82,26
+2025-05-22,Norte,En línea,979.55,10
+2025-05-22,Centro,Tienda,3420.96,38
+2025-05-22,Centro,En línea,1416.56,15
+2025-05-22,Sur,Tienda,1642.84,11
+2025-05-22,Sur,En línea,1130.81,10
+2025-05-22,Bajío,Tienda,1533.72,11
+2025-05-22,Bajío,En línea,790.67,8
+2025-05-23,Norte,Tienda,2632.26,20
+2025-05-23,Norte,En línea,1368.57,13
+2025-05-23,Centro,Tienda,3873.73,32
+2025-05-23,Centro,En línea,1412.68,10
+2025-05-23,Sur,Tienda,2158.83,17
+2025-05-23,Sur,En línea,1136.69,9
+2025-05-23,Bajío,Tienda,1565.52,12
+2025-05-23,Bajío,En línea,666.18,4
+2025-05-24,Norte,Tienda,2746.14,31
+2025-05-24,Norte,En línea,1412.53,14
+2025-05-24,Centro,Tienda,2722.54,29
+2025-05-24,Centro,En línea,1501.34,13
+2025-05-24,Sur,Tienda,1962.83,16
+2025-05-24,Sur,En línea,1128.23,8
+2025-05-24,Bajío,Tienda,1644.83,12
+2025-05-24,Bajío,En línea,588.02,4
+2025-05-25,Norte,Tienda,1446.42,12
+2025-05-25,Norte,En línea,991.59,12
+2025-05-25,Centro,Tienda,1669.18,19
+2025-05-25,Centro,En línea,1161.62,9
+2025-05-25,Sur,Tienda,1154.51,12
+2025-05-25,Sur,En línea,811.12,6
+2025-05-25,Bajío,Tienda,749.15,7
+2025-05-25,Bajío,En línea,503.9,4
+2025-05-26,Norte,Tienda,1821.19,15
+2025-05-26,Norte,En línea,1435.65,15
+2025-05-26,Centro,Tienda,3866.41,38
+2025-05-26,Centro,En línea,2067.82,17
+2025-05-26,Sur,Tienda,1702.95,15
+2025-05-26,Sur,En línea,992.19,7
+2025-05-26,Bajío,Tienda,1571.35,17
+2025-05-26,Bajío,En línea,556.36,6
+2025-05-27,Norte,Tienda,2197.1,17
+2025-05-27,Norte,En línea,1145.18,13
+2025-05-27,Centro,Tienda,3717.51,33
+2025-05-27,Centro,En línea,2102.07,15
+2025-05-27,Sur,Tienda,1417.15,12
+2025-05-27,Sur,En línea,1215.64,11
+2025-05-27,Bajío,Tienda,1437.87,14
+2025-05-27,Bajío,En línea,807.39,6
+2025-05-28,Norte,Tienda,2095.57,15
+2025-05-28,Norte,En línea,1443.89,11
+2025-05-28,Centro,Tienda,3066.04,24
+2025-05-28,Centro,En línea,1929.72,15
+2025-05-28,Sur,Tienda,1641.8,18
+2025-05-28,Sur,En línea,1183.12,13
+2025-05-28,Bajío,Tienda,1401.07,16
+2025-05-28,Bajío,En línea,833.89,7
+2025-05-29,Norte,Tienda,2544.46,26
+2025-05-29,Norte,En línea,1188.06,8
+2025-05-29,Centro,Tienda,3629.09,30
+2025-05-29,Centro,En línea,2132.93,17
+2025-05-29,Sur,Tienda,1599.23,17
+2025-05-29,Sur,En línea,1150.95,9
+2025-05-29,Bajío,Tienda,1106.58,9
+2025-05-29,Bajío,En línea,616.88,4
+2025-05-30,Norte,Tienda,2038.16,24
+2025-05-30,Norte,En línea,1164.91,8
+2025-05-30,Centro,Tienda,2656.86,26
+2025-05-30,Centro,En línea,1470.11,14
+2025-05-30,Sur,Tienda,1447.37,15
+2025-05-30,Sur,En línea,933.19,6
+2025-05-30,Bajío,Tienda,1150.01,8
+2025-05-30,Bajío,En línea,867.52,7
+2025-05-31,Norte,Tienda,2041.51,22
+2025-05-31,Norte,En línea,1219.02,10
+2025-05-31,Centro,Tienda,3547.73,36
+2025-05-31,Centro,En línea,2094.05,18
+2025-05-31,Sur,Tienda,1917.09,20
+2025-05-31,Sur,En línea,762.92,5
+2025-05-31,Bajío,Tienda,1251.16,9
+2025-05-31,Bajío,En línea,647.2,7
+2025-06-01,Norte,Tienda,1774.81,14
+2025-06-01,Norte,En línea,999.55,11
+2025-06-01,Centro,Tienda,2364.61,17
+2025-06-01,Centro,En línea,1329.18,10
+2025-06-01,Sur,Tienda,1537.42,12
+2025-06-01,Sur,En línea,655.77,5
+2025-06-01,Bajío,Tienda,796.51,6
+2025-06-01,Bajío,En línea,525.26,4
+2025-06-02,Norte,Tienda,1837.73,18
+2025-06-02,Norte,En línea,1183.78,10
+2025-06-02,Centro,Tienda,3414.25,29
+2025-06-02,Centro,En línea,1796.33,18
+2025-06-02,Sur,Tienda,2059.59,15
+2025-06-02,Sur,En línea,1074.9,8
+2025-06-02,Bajío,Tienda,1618.85,12
+2025-06-02,Bajío,En línea,861.65,7
+2025-06-03,Norte,Tienda,1835.02,15
+2025-06-03,Norte,En línea,1306.9,13
+2025-06-03,Centro,Tienda,3312.48,25
+2025-06-03,Centro,En línea,1483.82,15
+2025-06-03,Sur,Tienda,1958.23,14
+2025-06-03,Sur,En línea,920.48,7
+2025-06-03,Bajío,Tienda,,15
+2025-06-03,Bajío,En línea,790.41,8
+2025-06-04,Norte,Tienda,1753.59,16
+2025-06-04,Norte,En línea,1427.37,17
+2025-06-04,Centro,Tienda,2536.04,27
+2025-06-04,Centro,En línea,1593.63,15
+2025-06-04,Sur,Tienda,1545.73,12
+2025-06-04,Sur,En línea,1157.75,9
+2025-06-04,Bajío,Tienda,1032.85,8
+2025-06-04,Bajío,En línea,744.07,7
+2025-06-05,Norte,Tienda,2395.26,19
+2025-06-05,Norte,En línea,1175.22,10
+2025-06-05,Centro,Tienda,2717.76,20
+2025-06-05,Centro,En línea,1995.16,14
+2025-06-05,Sur,Tienda,2236.7,26
+2025-06-05,Sur,En línea,808.37,7
+2025-06-05,Bajío,Tienda,1490.06,13
+2025-06-05,Bajío,En línea,627.12,6
+2025-06-06,Norte,Tienda,1904.71,15
+2025-06-06,Norte,En línea,1198.72,13
+2025-06-06,Centro,Tienda,2670.57,27
+2025-06-06,Centro,En línea,1905.54,13
+2025-06-06,Sur,Tienda,2202.0,16
+2025-06-06,Sur,En línea,1097.92,13
+2025-06-06,Bajío,Tienda,1020.6,7
+2025-06-06,Bajío,En línea,790.3,8
+2025-06-07,Norte,Tienda,1869.77,15
+2025-06-07,Norte,En línea,1116.21,13
+2025-06-07,Centro,Tienda,2919.17,21
+2025-06-07,Centro,En línea,1691.91,19
+2025-06-07,Sur,Tienda,1487.03,11
+2025-06-07,Sur,En línea,1231.63,9
+2025-06-07,Bajío,Tienda,1332.66,10
+2025-06-07,Bajío,En línea,596.71,5
+2025-06-08,Norte,Tienda,1344.25,14
+2025-06-08,Norte,En línea,1041.94,8
+2025-06-08,Centro,Tienda,2731.12,25
+2025-06-08,Centro,En línea,1140.96,8
+2025-06-08,Sur,Tienda,1027.92,12
+2025-06-08,Sur,En línea,,7
+2025-06-08,Bajío,Tienda,1099.59,8
+2025-06-08,Bajío,En línea,400.51,3
+2025-06-09,Norte,Tienda,1764.21,17
+2025-06-09,Norte,En línea,1473.29,13
+2025-06-09,Centro,Tienda,2681.73,28
+2025-06-09,Centro,En línea,1627.91,18
+2025-06-09,Sur,Tienda,1461.02,15
+2025-06-09,Sur,En línea,1030.51,8
+2025-06-09,Bajío,Tienda,1306.92,15
+2025-06-09,Bajío,En línea,575.81,5
+2025-06-10,Norte,Tienda,2438.97,19
+2025-06-10,Norte,En línea,1327.01,10
+2025-06-10,Centro,Tienda,2579.94,19
+2025-06-10,Centro,En línea,1350.66,14
+2025-06-10,Sur,Tienda,1552.32,14
+2025-06-10,Sur,En línea,1147.69,9
+2025-06-10,Bajío,Tienda,1035.99,12
+2025-06-10,Bajío,En línea,852.95,10
+2025-06-11,Norte,Tienda,1952.5,14
+2025-06-11,Norte,En línea,1340.07,9
+2025-06-11,Centro,Tienda,3799.66,39
+2025-06-11,Centro,En línea,1311.46,10
+2025-06-11,Sur,Tienda,2219.58,18
+2025-06-11,Sur,En línea,1138.79,12
+2025-06-11,Bajío,Tienda,1080.87,8
+2025-06-11,Bajío,En línea,894.55,11
+2025-06-12,Norte,Tienda,2304.98,17
+2025-06-12,Norte,En línea,1307.17,11
+2025-06-12,Centro,Tienda,2476.27,29
+2025-06-12,Centro,En línea,,14
+2025-06-12,Sur,Tienda,2013.6,24
+2025-06-12,Sur,En línea,1140.31,10
+2025-06-12,Bajío,Tienda,1446.33,15
+2025-06-12,Bajío,En línea,595.82,4
+2025-06-13,Norte,Tienda,2075.6,24
+2025-06-13,Norte,En línea,1447.97,11
+2025-06-13,Centro,Tienda,2929.46,29
+2025-06-13,Centro,En línea,1421.61,12
+2025-06-13,Sur,Tienda,2033.59,25
+2025-06-13,Sur,En línea,795.51,6
+2025-06-13,Bajío,Tienda,1358.02,12
+2025-06-13,Bajío,En línea,780.52,6
+2025-06-14,Norte,Tienda,2499.72,19
+2025-06-14,Norte,En línea,1439.2,11
+2025-06-14,Centro,Tienda,3418.38,26
+2025-06-14,Centro,En línea,2050.18,22
+2025-06-14,Sur,Tienda,1739.18,14
+2025-06-14,Sur,En línea,886.99,8
+2025-06-14,Bajío,Tienda,1071.27,10
+2025-06-14,Bajío,En línea,795.84,5
+2025-06-15,Norte,Tienda,1829.99,13
+2025-06-15,Norte,En línea,764.16,8
+2025-06-15,Centro,Tienda,1667.47,17
+2025-06-15,Centro,En línea,1459.79,14
+2025-06-15,Sur,Tienda,1425.23,10
+2025-06-15,Sur,En línea,700.17,8
+2025-06-15,Bajío,Tienda,852.18,7
+2025-06-15,Bajío,En línea,526.49,3
+2025-06-16,Norte,Tienda,2270.13,19
+2025-06-16,Norte,En línea,1498.81,14
+2025-06-16,Centro,Tienda,3426.81,24
+2025-06-16,Centro,En línea,1473.83,15
+2025-06-16,Sur,Tienda,1353.53,14
+2025-06-16,Sur,En línea,1224.5,13
+2025-06-16,Bajío,Tienda,1466.68,12
+2025-06-16,Bajío,En línea,831.11,8
+2025-06-17,Norte,Tienda,1706.08,14
+2025-06-17,Norte,En línea,1080.75,7
+2025-06-17,Centro,Tienda,3269.47,27
+2025-06-17,Centro,En línea,1887.46,19
+2025-06-17,Sur,Tienda,1399.92,17
+2025-06-17,Sur,En línea,806.97,9
+2025-06-17,Bajío,Tienda,1654.76,13
+2025-06-17,Bajío,En línea,836.37,9
+2025-06-18,Norte,Tienda,2011.81,19
+2025-06-18,Norte,En línea,1193.49,9
+2025-06-18,Centro,Tienda,3799.26,37
+2025-06-18,Centro,En línea,1315.02,10
+2025-06-18,Sur,Tienda,2102.01,16
+2025-06-18,Sur,En línea,872.67,10
+2025-06-18,Bajío,Tienda,1609.9,17
+2025-06-18,Bajío,En línea,768.4,6
+2025-06-19,Norte,Tienda,1831.99,21
+2025-06-19,Norte,En línea,1154.32,9
+2025-06-19,Centro,Tienda,2688.99,32
+2025-06-19,Centro,En línea,2019.02,22
+2025-06-19,Sur,Tienda,1661.73,13
+2025-06-19,Sur,En línea,1122.06,11
+2025-06-19,Bajío,Tienda,1352.91,15
+2025-06-19,Bajío,En línea,844.48,8
+2025-06-20,Norte,Tienda,2521.57,26
+2025-06-20,Norte,En línea,1052.66,10
+2025-06-20,Centro,Tienda,3337.91,30
+2025-06-20,Centro,En línea,1329.31,11
+2025-06-20,Sur,Tienda,1545.21,18
+2025-06-20,Sur,En línea,791.58,7
+2025-06-20,Bajío,Tienda,1064.66,12
+2025-06-20,Bajío,En línea,614.99,6
+2025-06-21,Norte,Tienda,1799.76,21
+2025-06-21,Norte,En línea,1204.47,8
+2025-06-21,Centro,Tienda,2446.8,26
+2025-06-21,Centro,En línea,1766.51,13
+2025-06-21,Sur,Tienda,2097.84,24
+2025-06-21,Sur,En línea,990.82,10
+2025-06-21,Bajío,Tienda,1577.88,17
+2025-06-21,Bajío,En línea,647.87,4
+2025-06-22,Norte,Tienda,1734.99,20
+2025-06-22,Norte,En línea,777.4,8
+2025-06-22,Centro,Tienda,2026.11,23
+2025-06-22,Centro,En línea,1186.41,13
+2025-06-22,Sur,Tienda,1339.25,12
+2025-06-22,Sur,En línea,674.09,5
+2025-06-22,Bajío,Tienda,809.01,7
+2025-06-22,Bajío,En línea,551.97,6
+2025-06-23,Norte,Tienda,2713.16,21
+2025-06-23,Norte,En línea,1139.64,8
+2025-06-23,Centro,Tienda,2682.17,23
+2025-06-23,Centro,En línea,1351.39,14
+2025-06-23,Sur,Tienda,1720.94,19
+2025-06-23,Sur,En línea,1097.8,9
+2025-06-23,Bajío,Tienda,1266.06,10
+2025-06-23,Bajío,En línea,896.37,9
+2025-06-24,Norte,Tienda,2228.84,16
+2025-06-24,Norte,En línea,1518.49,12
+2025-06-24,Centro,Tienda,3620.26,39
+2025-06-24,Centro,En línea,1669.22,17
+2025-06-24,Sur,Tienda,1614.78,15
+2025-06-24,Sur,En línea,1057.24,12
+2025-06-24,Bajío,Tienda,,8
+2025-06-24,Bajío,En línea,770.58,8
+2025-06-25,Norte,Tienda,2281.37,18
+2025-06-25,Norte,En línea,1059.15,12
+2025-06-25,Centro,Tienda,2554.6,28
+2025-06-25,Centro,En línea,1773.3,13
+2025-06-25,Sur,Tienda,1535.15,17
+2025-06-25,Sur,En línea,950.52,9
+2025-06-25,Bajío,Tienda,1435.1,10
+2025-06-25,Bajío,En línea,645.89,4
+2025-06-26,Norte,Tienda,1714.33,12
+2025-06-26,Norte,En línea,922.17,9
+2025-06-26,Centro,Tienda,3815.89,28
+2025-06-26,Centro,En línea,1726.52,13
+2025-06-26,Sur,Tienda,1903.42,17
+2025-06-26,Sur,En línea,847.72,7
+2025-06-26,Bajío,Tienda,1525.45,11
+2025-06-26,Bajío,En línea,617.17,7
+2025-06-27,Norte,Tienda,2284.09,25
+2025-06-27,Norte,En línea,1065.32,11
+2025-06-27,Centro,Tienda,3125.97,25
+2025-06-27,Centro,En línea,1903.98,16
+2025-06-27,Sur,Tienda,,14
+2025-06-27,Sur,En línea,958.9,7
+2025-06-27,Bajío,Tienda,1421.56,15
+2025-06-27,Bajío,En línea,832.16,8
+2025-06-28,Norte,Tienda,2707.54,29
+2025-06-28,Norte,En línea,1491.38,11
+2025-06-28,Centro,Tienda,3447.21,33
+2025-06-28,Centro,En línea,1922.78,21
+2025-06-28,Sur,Tienda,1511.3,15
+2025-06-28,Sur,En línea,792.95,7
+2025-06-28,Bajío,Tienda,1042.82,9
+2025-06-28,Bajío,En línea,755.01,7
+2025-06-29,Norte,Tienda,1491.4,16
+2025-06-29,Norte,En línea,642.6,5
+2025-06-29,Centro,Tienda,2015.2,14
+2025-06-29,Centro,En línea,1384.51,11
+2025-06-29,Sur,Tienda,1357.98,9
+2025-06-29,Sur,En línea,767.65,7
+2025-06-29,Bajío,Tienda,1072.38,9
+2025-06-29,Bajío,En línea,603.42,5
+2025-06-30,Norte,Tienda,1663.48,14
+2025-06-30,Norte,En línea,,12
+2025-06-30,Centro,Tienda,,21
+2025-06-30,Centro,En línea,1462.62,15
+2025-06-30,Sur,Tienda,2184.77,26
+2025-06-30,Sur,En línea,1176.21,8
+2025-06-30,Bajío,Tienda,1209.14,10
+2025-06-30,Bajío,En línea,694.75,6
+2025-07-01,Norte,Tienda,1704.47,20
+2025-07-01,Norte,En línea,959.41,8
+2025-07-01,Centro,Tienda,2705.4,21
+2025-07-01,Centro,En línea,1554.44,14
+2025-07-01,Sur,Tienda,2129.98,18
+2025-07-01,Sur,En línea,797.68,6
+2025-07-01,Bajío,Tienda,1458.08,15
+2025-07-01,Bajío,En línea,832.69,9
+2025-07-02,Norte,Tienda,1850.63,15
+2025-07-02,Norte,En línea,1378.92,14
+2025-07-02,Centro,Tienda,3314.17,29
+2025-07-02,Centro,En línea,1426.19,12
+2025-07-02,Sur,Tienda,1868.0,19
+2025-07-02,Sur,En línea,926.06,8
+2025-07-02,Bajío,Tienda,1005.08,8
+2025-07-02,Bajío,En línea,646.64,5
+2025-07-03,Norte,Tienda,2309.74,17
+2025-07-03,Norte,En línea,1087.99,9
+2025-07-03,Centro,Tienda,2534.27,27
+2025-07-03,Centro,En línea,1957.03,15
+2025-07-03,Sur,Tienda,2004.76,20
+2025-07-03,Sur,En línea,1067.45,12
+2025-07-03,Bajío,Tienda,1041.41,12
+2025-07-03,Bajío,En línea,595.17,4
+2025-07-04,Norte,Tienda,2138.67,23
+2025-07-04,Norte,En línea,1203.28,10
+2025-07-04,Centro,Tienda,3382.67,30
+2025-07-04,Centro,En línea,1348.32,16
+2025-07-04,Sur,Tienda,1729.92,18
+2025-07-04,Sur,En línea,825.95,8
+2025-07-04,Bajío,Tienda,1447.11,11
+2025-07-04,Bajío,En línea,700.4,5
+2025-07-05,Norte,Tienda,2305.37,26
+2025-07-05,Norte,En línea,1278.76,13
+2025-07-05,Centro,Tienda,3779.59,28
+2025-07-05,Centro,En línea,1647.05,14
+2025-07-05,Sur,Tienda,1365.36,10
+2025-07-05,Sur,En línea,927.52,10
+2025-07-05,Bajío,Tienda,1040.67,7
+2025-07-05,Bajío,En línea,642.02,5
+2025-07-06,Norte,Tienda,1221.22,14
+2025-07-06,Norte,En línea,849.48,6
+2025-07-06,Centro,Tienda,1781.15,14
+2025-07-06,Centro,En línea,1075.83,12
+2025-07-06,Sur,Tienda,1503.12,17
+2025-07-06,Sur,En línea,749.42,5
+2025-07-06,Bajío,Tienda,899.76,6
+2025-07-06,Bajío,En línea,448.7,4
+2025-07-07,Norte,Tienda,2421.02,27
+2025-07-07,Norte,En línea,1465.23,16
+2025-07-07,Centro,Tienda,2789.92,29
+2025-07-07,Centro,En línea,1643.24,11
+2025-07-07,Sur,Tienda,2041.32,20
+2025-07-07,Sur,En línea,1070.38,10
+2025-07-07,Bajío,Tienda,1247.42,9
+2025-07-07,Bajío,En línea,742.04,9
+2025-07-08,Norte,Tienda,2278.12,17
+2025-07-08,Norte,En línea,1086.74,8
+2025-07-08,Centro,Tienda,2673.76,26
+2025-07-08,Centro,En línea,1542.94,15
+2025-07-08,Sur,Tienda,1494.27,11
+2025-07-08,Sur,En línea,1016.31,7
+2025-07-08,Bajío,Tienda,1131.88,8
+2025-07-08,Bajío,En línea,888.86,7
+2025-07-09,Norte,Tienda,2496.07,26
+2025-07-09,Norte,En línea,1116.23,8
+2025-07-09,Centro,Tienda,3080.7,30
+2025-07-09,Centro,En línea,1533.31,11
+2025-07-09,Sur,Tienda,2053.68,23
+2025-07-09,Sur,En línea,1065.62,8
+2025-07-09,Bajío,Tienda,1002.31,7
+2025-07-09,Bajío,En línea,696.46,6
+2025-07-10,Norte,Tienda,2457.45,18
+2025-07-10,Norte,En línea,1089.95,11
+2025-07-10,Centro,Tienda,2754.37,33
+2025-07-10,Centro,En línea,1431.96,16
+2025-07-10,Sur,Tienda,1930.53,21
+2025-07-10,Sur,En línea,901.05,7
+2025-07-10,Bajío,Tienda,1169.3,9
+2025-07-10,Bajío,En línea,700.18,5
+2025-07-11,Norte,Tienda,1946.21,14
+2025-07-11,Norte,En línea,948.9,8
+2025-07-11,Centro,Tienda,3036.06,27
+2025-07-11,Centro,En línea,1969.23,16
+2025-07-11,Sur,Tienda,1600.66,15
+2025-07-11,Sur,En línea,1038.03,11
+2025-07-11,Bajío,Tienda,989.4,8
+2025-07-11,Bajío,En línea,786.17,7
+2025-07-12,Norte,Tienda,2169.13,16
+2025-07-12,Norte,En línea,1094.53,11
+2025-07-12,Centro,Tienda,3454.02,37
+2025-07-12,Centro,En línea,2057.12,19
+2025-07-12,Sur,Tienda,1894.95,13
+2025-07-12,Sur,En línea,849.76,8
+2025-07-12,Bajío,Tienda,1084.83,9
+2025-07-12,Bajío,En línea,767.02,8
+2025-07-13,Norte,Tienda,1871.33,16
+2025-07-13,Norte,En línea,693.03,5
+2025-07-13,Centro,Tienda,2367.9,17
+2025-07-13,Centro,En línea,1397.13,15
+2025-07-13,Sur,Tienda,1199.11,8
+2025-07-13,Sur,En línea,808.57,7
+2025-07-13,Bajío,Tienda,925.19,10
+2025-07-13,Bajío,En línea,568.99,5
+2025-07-14,Norte,Tienda,1876.61,19
+2025-07-14,Norte,En línea,1181.21,10
+2025-07-14,Centro,Tienda,2248.7,22
+2025-07-14,Centro,En línea,1846.84,19
+2025-07-14,Sur,Tienda,1721.07,19
+2025-07-14,Sur,En línea,1128.46,12
+2025-07-14,Bajío,Tienda,1421.45,11
+2025-07-14,Bajío,En línea,778.2,8
+2025-07-15,Norte,Tienda,2580.67,31
+2025-07-15,Norte,En línea,1136.99,13
+2025-07-15,Centro,Tienda,3421.89,28
+2025-07-15,Centro,En línea,1605.99,13
+2025-07-15,Sur,Tienda,1563.06,12
+2025-07-15,Sur,En línea,795.46,8
+2025-07-15,Bajío,Tienda,1352.46,13
+2025-07-15,Bajío,En línea,603.49,7
+2025-07-16,Norte,Tienda,1927.42,17
+2025-07-16,Norte,En línea,1155.78,10
+2025-07-16,Centro,Tienda,2951.7,21
+2025-07-16,Centro,En línea,1387.8,12
+2025-07-16,Sur,Tienda,1417.45,16
+2025-07-16,Sur,En línea,1152.21,11
+2025-07-16,Bajío,Tienda,1226.11,12
+2025-07-16,Bajío,En línea,662.71,7
+2025-07-17,Norte,Tienda,2194.35,27
+2025-07-17,Norte,En línea,1297.67,12
+2025-07-17,Centro,Tienda,3587.41,34
+2025-07-17,Centro,En línea,1465.99,12
+2025-07-17,Sur,Tienda,1893.1,13
+2025-07-17,Sur,En línea,869.21,6
+2025-07-17,Bajío,Tienda,1327.7,11
+2025-07-17,Bajío,En línea,854.2,7
+2025-07-18,Norte,Tienda,1776.61,20
+2025-07-18,Norte,En línea,1336.11,16
+2025-07-18,Centro,Tienda,2926.64,26
+2025-07-18,Centro,En línea,1947.52,19
+2025-07-18,Sur,Tienda,2052.32,17
+2025-07-18,Sur,En línea,851.5,8
+2025-07-18,Bajío,Tienda,1448.37,15
+2025-07-18,Bajío,En línea,657.82,6
+2025-07-19,Norte,Tienda,2147.36,22
+2025-07-19,Norte,En línea,1344.69,15
+2025-07-19,Centro,Tienda,2243.75,24
+2025-07-19,Centro,En línea,1869.69,21
+2025-07-19,Sur,Tienda,1312.33,13
+2025-07-19,Sur,En línea,1028.8,7
+2025-07-19,Bajío,Tienda,1295.97,9
+2025-07-19,Bajío,En línea,842.84,7
+2025-07-20,Norte,Tienda,1652.81,12
+2025-07-20,Norte,En línea,644.23,4
+2025-07-20,Centro,Tienda,2158.45,15
+2025-07-20,Centro,En línea,880.85,10
+2025-07-20,Sur,Tienda,1298.86,11
+2025-07-20,Sur,En línea,537.66,5
+2025-07-20,Bajío,Tienda,958.35,6
+2025-07-20,Bajío,En línea,601.46,5
+2025-07-21,Norte,Tienda,1836.44,19
+2025-07-21,Norte,En línea,1437.25,11
+2025-07-21,Centro,Tienda,2463.36,27
+2025-07-21,Centro,En línea,1804.29,21
+2025-07-21,Sur,Tienda,1827.28,22
+2025-07-21,Sur,En línea,1055.79,9
+2025-07-21,Bajío,Tienda,1496.57,12
+2025-07-21,Bajío,En línea,655.32,4
+2025-07-22,Norte,Tienda,2522.2,22
+2025-07-22,Norte,En línea,962.24,9
+2025-07-22,Centro,Tienda,2200.1,17
+2025-07-22,Centro,En línea,1620.4,20
+2025-07-22,Sur,Tienda,1599.37,13
+2025-07-22,Sur,En línea,1024.08,9
+2025-07-22,Bajío,Tienda,1538.81,11
+2025-07-22,Bajío,En línea,626.04,6
+2025-07-23,Norte,Tienda,2503.47,19
+2025-07-23,Norte,En línea,1329.63,9
+2025-07-23,Centro,Tienda,2651.15,21
+2025-07-23,Centro,En línea,1692.79,18
+2025-07-23,Sur,Tienda,1656.97,17
+2025-07-23,Sur,En línea,725.39,5
+2025-07-23,Bajío,Tienda,1030.48,8
+2025-07-23,Bajío,En línea,827.32,7
+2025-07-24,Norte,Tienda,2526.89,29
+2025-07-24,Norte,En línea,915.48,9
+2025-07-24,Centro,Tienda,3447.38,32
+2025-07-24,Centro,En línea,1404.58,11
+2025-07-24,Sur,Tienda,1327.19,12
+2025-07-24,Sur,En línea,783.38,6
+2025-07-24,Bajío,Tienda,1165.45,8
+2025-07-24,Bajío,En línea,855.99,8
+2025-07-25,Norte,Tienda,2390.13,19
+2025-07-25,Norte,En línea,1345.95,12
+2025-07-25,Centro,Tienda,2859.56,32
+2025-07-25,Centro,En línea,1311.36,10
+2025-07-25,Sur,Tienda,2061.03,18
+2025-07-25,Sur,En línea,743.09,6
+2025-07-25,Bajío,Tienda,1086.58,8
+2025-07-25,Bajío,En línea,675.79,7
+2025-07-26,Norte,Tienda,2470.42,30
+2025-07-26,Norte,En línea,1117.89,9
+2025-07-26,Centro,Tienda,2663.74,19
+2025-07-26,Centro,En línea,1300.85,10
+2025-07-26,Sur,Tienda,1392.25,12
+2025-07-26,Sur,En línea,755.68,5
+2025-07-26,Bajío,Tienda,1415.75,14
+2025-07-26,Bajío,En línea,586.3,4
+2025-07-27,Norte,Tienda,1780.08,14
+2025-07-27,Norte,En línea,805.46,6
+2025-07-27,Centro,Tienda,1611.95,11
+2025-07-27,Centro,En línea,1210.32,9
+2025-07-27,Sur,Tienda,1131.45,8
+2025-07-27,Sur,En línea,768.07,8
+2025-07-27,Bajío,Tienda,887.83,8
+2025-07-27,Bajío,En línea,389.17,3
+2025-07-28,Norte,Tienda,1813.65,17
+2025-07-28,Norte,En línea,1276.26,11
+2025-07-28,Centro,Tienda,3427.05,33
+2025-07-28,Centro,En línea,1960.38,22
+2025-07-28,Sur,Tienda,2024.58,19
+2025-07-28,Sur,En línea,818.77,10
+2025-07-28,Bajío,Tienda,999.64,10
+2025-07-28,Bajío,En línea,698.44,5
+2025-07-29,Norte,Tienda,1904.56,13
+2025-07-29,Norte,En línea,1149.27,8
+2025-07-29,Centro,Tienda,2663.55,22
+2025-07-29,Centro,En línea,1944.44,20
+2025-07-29,Sur,Tienda,1279.89,15
+2025-07-29,Sur,En línea,767.56,6
+2025-07-29,Bajío,Tienda,1433.9,11
+2025-07-29,Bajío,En línea,818.96,5
+2025-07-30,Norte,Tienda,2256.16,28
+2025-07-30,Norte,En línea,1080.17,7
+2025-07-30,Centro,Tienda,2952.08,36
+2025-07-30,Centro,En línea,1885.86,16
+2025-07-30,Sur,Tienda,1233.96,13
+2025-07-30,Sur,En línea,1046.13,12
+2025-07-30,Bajío,Tienda,1081.06,8
+2025-07-30,Bajío,En línea,613.43,4
+2025-07-31,Norte,Tienda,2232.84,26
+2025-07-31,Norte,En línea,1386.66,16
+2025-07-31,Centro,Tienda,2518.51,28
+2025-07-31,Centro,En línea,1691.43,12
+2025-07-31,Sur,Tienda,2027.01,17
+2025-07-31,Sur,En línea,742.67,6
+2025-07-31,Bajío,Tienda,1133.37,8
+2025-07-31,Bajío,En línea,550.48,6
+2025-08-01,Norte,Tienda,2115.22,16
+2025-08-01,Norte,En línea,1115.62,9
+2025-08-01,Centro,Tienda,2712.0,24
+2025-08-01,Centro,En línea,1215.06,11
+2025-08-01,Sur,Tienda,1828.54,19
+2025-08-01,Sur,En línea,776.04,9
+2025-08-01,Bajío,Tienda,1146.99,11
+2025-08-01,Bajío,En línea,575.63,4
+2025-08-02,Norte,Tienda,1971.0,17
+2025-08-02,Norte,En línea,1168.11,12
+2025-08-02,Centro,Tienda,2235.88,22
+2025-08-02,Centro,En línea,1670.17,15
+2025-08-02,Sur,Tienda,1624.88,11
+2025-08-02,Sur,En línea,734.92,7
+2025-08-02,Bajío,Tienda,1459.55,11
+2025-08-02,Bajío,En línea,554.94,6
+2025-08-03,Norte,Tienda,1653.12,13
+2025-08-03,Norte,En línea,823.11,9
+2025-08-03,Centro,Tienda,1809.45,21
+2025-08-03,Centro,En línea,1202.02,10
+2025-08-03,Sur,Tienda,1222.28,11
+2025-08-03,Sur,En línea,,3
+2025-08-03,Bajío,Tienda,727.89,7
+2025-08-03,Bajío,En línea,368.99,3
+2025-08-04,Norte,Tienda,1839.7,19
+2025-08-04,Norte,En línea,949.87,9
+2025-08-04,Centro,Tienda,2709.96,30
+2025-08-04,Centro,En línea,1577.18,11
+2025-08-04,Sur,Tienda,1283.2,11
+2025-08-04,Sur,En línea,747.29,6
+2025-08-04,Bajío,Tienda,1388.84,14
+2025-08-04,Bajío,En línea,765.76,7
+2025-08-05,Norte,Tienda,1981.92,22
+2025-08-05,Norte,En línea,1207.54,10
+2025-08-05,Centro,Tienda,2161.41,17
+2025-08-05,Centro,En línea,1240.83,12
+2025-08-05,Sur,Tienda,1664.93,13
+2025-08-05,Sur,En línea,965.16,9
+2025-08-05,Bajío,Tienda,1065.21,7
+2025-08-05,Bajío,En línea,495.75,5
+2025-08-06,Norte,Tienda,2354.38,19
+2025-08-06,Norte,En línea,1298.92,10
+2025-08-06,Centro,Tienda,,21
+2025-08-06,Centro,En línea,1182.39,11
+2025-08-06,Sur,Tienda,1988.34,20
+2025-08-06,Sur,En línea,1001.47,7
+2025-08-06,Bajío,Tienda,1475.13,12
+2025-08-06,Bajío,En línea,678.75,7
+2025-08-07,Norte,Tienda,1967.31,19
+2025-08-07,Norte,En línea,1097.04,9
+2025-08-07,Centro,Tienda,2468.74,22
+2025-08-07,Centro,En línea,1465.8,12
+2025-08-07,Sur,Tienda,1612.63,16
+2025-08-07,Sur,En línea,961.96,7
+2025-08-07,Bajío,Tienda,1041.09,7
+2025-08-07,Bajío,En línea,613.92,6
+2025-08-08,Norte,Tienda,2183.4,16
+2025-08-08,Norte,En línea,1213.07,13
+2025-08-08,Centro,Tienda,2571.36,26
+2025-08-08,Centro,En línea,1716.26,13
+2025-08-08,Sur,Tienda,1371.17,10
+2025-08-08,Sur,En línea,946.56,8
+2025-08-08,Bajío,Tienda,1051.5,12
+2025-08-08,Bajío,En línea,499.89,3
+2025-08-09,Norte,Tienda,2137.62,15
+2025-08-09,Norte,En línea,936.83,9
+2025-08-09,Centro,Tienda,3165.66,25
+2025-08-09,Centro,En línea,1417.72,14
+2025-08-09,Sur,Tienda,1743.08,13
+2025-08-09,Sur,En línea,1026.13,9
+2025-08-09,Bajío,Tienda,1072.08,7
+2025-08-09,Bajío,En línea,538.86,5
+2025-08-10,Norte,Tienda,1616.26,16
+2025-08-10,Norte,En línea,903.3,8
+2025-08-10,Centro,Tienda,2185.82,21
+2025-08-10,Centro,En línea,1271.0,11
+2025-08-10,Sur,Tienda,1151.51,12
+2025-08-10,Sur,En línea,571.3,5
+2025-08-10,Bajío,Tienda,771.51,6
+2025-08-10,Bajío,En línea,494.11,4
+2025-08-11,Norte,Tienda,1486.57,12
+2025-08-11,Norte,En línea,964.65,10
+2025-08-11,Centro,Tienda,3297.97,35
+2025-08-11,Centro,En línea,1561.95,15
+2025-08-11,Sur,Tienda,1427.8,12
+2025-08-11,Sur,En línea,864.75,9
+2025-08-11,Bajío,Tienda,1062.63,10
+2025-08-11,Bajío,En línea,775.13,8
+2025-08-12,Norte,Tienda,1695.33,12
+2025-08-12,Norte,En línea,1118.27,10
+2025-08-12,Centro,Tienda,3131.75,24
+2025-08-12,Centro,En línea,1707.29,15
+2025-08-12,Sur,Tienda,1211.32,11
+2025-08-12,Sur,En línea,910.77,7
+2025-08-12,Bajío,Tienda,1197.2,11
+2025-08-12,Bajío,En línea,515.81,5
+2025-08-13,Norte,Tienda,1883.09,13
+2025-08-13,Norte,En línea,,11
+2025-08-13,Centro,Tienda,2164.98,25
+2025-08-13,Centro,En línea,1444.12,13
+2025-08-13,Sur,Tienda,1709.52,15
+2025-08-13,Sur,En línea,712.76,6
+2025-08-13,Bajío,Tienda,1089.9,8
+2025-08-13,Bajío,En línea,761.42,7
+2025-08-14,Norte,Tienda,2044.52,17
+2025-08-14,Norte,En línea,842.48,6
+2025-08-14,Centro,Tienda,2185.02,18
+2025-08-14,Centro,En línea,1360.45,13
+2025-08-14,Sur,Tienda,1422.0,13
+2025-08-14,Sur,En línea,791.56,7
+2025-08-14,Bajío,Tienda,1254.36,10
+2025-08-14,Bajío,En línea,608.04,6
+2025-08-15,Norte,Tienda,1884.94,14
+2025-08-15,Norte,En línea,1183.04,14
+2025-08-15,Centro,Tienda,3317.56,27
+2025-08-15,Centro,En línea,1480.89,13
+2025-08-15,Sur,Tienda,1288.94,10
+2025-08-15,Sur,En línea,745.24,6
+2025-08-15,Bajío,Tienda,1220.99,13
+2025-08-15,Bajío,En línea,576.5,5
+2025-08-16,Norte,Tienda,1902.7,16
+2025-08-16,Norte,En línea,954.31,7
+2025-08-16,Centro,Tienda,2842.85,22
+2025-08-16,Centro,En línea,1272.15,11
+2025-08-16,Sur,Tienda,1586.1,12
+2025-08-16,Sur,En línea,822.46,5
+2025-08-16,Bajío,Tienda,1239.15,14
+2025-08-16,Bajío,En línea,485.37,3
+2025-08-17,Norte,Tienda,1490.38,15
+2025-08-17,Norte,En línea,617.04,4
+2025-08-17,Centro,Tienda,1419.46,10
+2025-08-17,Centro,En línea,1200.18,9
+2025-08-17,Sur,Tienda,1264.2,13
+2025-08-17,Sur,En línea,541.2,6
+2025-08-17,Bajío,Tienda,628.54,7
+2025-08-17,Bajío,En línea,357.78,3
+2025-08-18,Norte,Tienda,1693.04,12
+2025-08-18,Norte,En línea,1240.73,8
+2025-08-18,Centro,Tienda,3059.27,31
+2025-08-18,Centro,En línea,1693.51,13
+2025-08-18,Sur,Tienda,1211.85,8
+2025-08-18,Sur,En línea,884.65,6
+2025-08-18,Bajío,Tienda,1256.01,11
+2025-08-18,Bajío,En línea,614.36,6
+2025-08-19,Norte,Tienda,1688.62,13
+2025-08-19,Norte,En línea,911.34,7
+2025-08-19,Centro,Tienda,2288.3,24
+2025-08-19,Centro,En línea,1363.78,12
+2025-08-19,Sur,Tienda,1157.8,9
+2025-08-19,Sur,En línea,991.09,9
+2025-08-19,Bajío,Tienda,1050.87,8
+2025-08-19,Bajío,En línea,596.32,5
+2025-08-20,Norte,Tienda,2283.71,21
+2025-08-20,Norte,En línea,1187.72,12
+2025-08-20,Centro,Tienda,2449.97,19
+2025-08-20,Centro,En línea,1291.26,10
+2025-08-20,Sur,Tienda,1417.8,12
+2025-08-20,Sur,En línea,804.92,10
+2025-08-20,Bajío,Tienda,993.69,7
+2025-08-20,Bajío,En línea,654.84,5
+2025-08-21,Norte,Tienda,2141.61,21
+2025-08-21,Norte,En línea,1182.61,9
+2025-08-21,Centro,Tienda,2549.88,21
+2025-08-21,Centro,En línea,1223.15,14
+2025-08-21,Sur,Tienda,1511.91,16
+2025-08-21,Sur,En línea,979.27,9
+2025-08-21,Bajío,Tienda,949.64,8
+2025-08-21,Bajío,En línea,612.95,5
+2025-08-22,Norte,Tienda,1876.73,14
+2025-08-22,Norte,En línea,1251.78,13
+2025-08-22,Centro,Tienda,2973.4,26
+2025-08-22,Centro,En línea,1238.76,9
+2025-08-22,Sur,Tienda,1668.65,17
+2025-08-22,Sur,En línea,885.32,8
+2025-08-22,Bajío,Tienda,879.63,7
+2025-08-22,Bajío,En línea,511.04,4
+2025-08-23,Norte,Tienda,1493.52,11
+2025-08-23,Norte,En línea,795.47,8
+2025-08-23,Centro,Tienda,2288.87,26
+2025-08-23,Centro,En línea,1257.22,12
+2025-08-23,Sur,Tienda,1396.63,10
+2025-08-23,Sur,En línea,,7
+2025-08-23,Bajío,Tienda,1023.82,11
+2025-08-23,Bajío,En línea,701.94,5
+2025-08-24,Norte,Tienda,999.26,7
+2025-08-24,Norte,En línea,869.48,8
+2025-08-24,Centro,Tienda,1431.76,10
+2025-08-24,Centro,En línea,971.73,9
+2025-08-24,Sur,Tienda,1212.55,11
+2025-08-24,Sur,En línea,545.44,4
+2025-08-24,Bajío,Tienda,843.12,7
+2025-08-24,Bajío,En línea,445.24,4
+2025-08-25,Norte,Tienda,2187.67,25
+2025-08-25,Norte,En línea,1211.31,8
+2025-08-25,Centro,Tienda,2754.88,23
+2025-08-25,Centro,En línea,1403.31,15
+2025-08-25,Sur,Tienda,1637.62,13
+2025-08-25,Sur,En línea,872.16,7
+2025-08-25,Bajío,Tienda,844.77,7
+2025-08-25,Bajío,En línea,640.26,6
+2025-08-26,Norte,Tienda,1999.48,20
+2025-08-26,Norte,En línea,914.96,8
+2025-08-26,Centro,Tienda,2083.73,16
+2025-08-26,Centro,En línea,1728.24,21
+2025-08-26,Sur,Tienda,1377.27,15
+2025-08-26,Sur,En línea,811.26,7
+2025-08-26,Bajío,Tienda,1118.11,11
+2025-08-26,Bajío,En línea,572.5,5
+2025-08-27,Norte,Tienda,2264.91,22
+2025-08-27,Norte,En línea,1176.96,11
+2025-08-27,Centro,Tienda,2284.62,26
+2025-08-27,Centro,En línea,1376.76,10
+2025-08-27,Sur,Tienda,1424.18,11
+2025-08-27,Sur,En línea,667.11,6
+2025-08-27,Bajío,Tienda,1342.26,10
+2025-08-27,Bajío,En línea,623.91,5
+2025-08-28,Norte,Tienda,1776.25,13
+2025-08-28,Norte,En línea,1048.18,8
+2025-08-28,Centro,Tienda,3100.39,35
+2025-08-28,Centro,En línea,1558.71,19
+2025-08-28,Sur,Tienda,1188.81,10
+2025-08-28,Sur,En línea,663.68,7
+2025-08-28,Bajío,Tienda,871.82,9
+2025-08-28,Bajío,En línea,493.49,3
+2025-08-29,Norte,Tienda,1593.65,16
+2025-08-29,Norte,En línea,773.96,6
+2025-08-29,Centro,Tienda,3113.27,29
+2025-08-29,Centro,En línea,1655.36,19
+2025-08-29,Sur,Tienda,1596.35,13
+2025-08-29,Sur,En línea,711.59,6
+2025-08-29,Bajío,Tienda,1057.28,10
+2025-08-29,Bajío,En línea,540.07,5
+2025-08-30,Norte,Tienda,1436.21,11
+2025-08-30,Norte,En línea,861.32,9
+2025-08-30,Centro,Tienda,2541.19,20
+2025-08-30,Centro,En línea,1333.74,9
+2025-08-30,Sur,Tienda,1797.89,13
+2025-08-30,Sur,En línea,973.78,10
+2025-08-30,Bajío,Tienda,1147.79,12
+2025-08-30,Bajío,En línea,641.98,4
+2025-08-31,Norte,Tienda,997.24,7
+2025-08-31,Norte,En línea,610.84,5
+2025-08-31,Centro,Tienda,1734.7,14
+2025-08-31,Centro,En línea,1050.39,12
+2025-08-31,Sur,Tienda,1085.66,8
+2025-08-31,Sur,En línea,469.78,3
+2025-08-31,Bajío,Tienda,729.15,7
+2025-08-31,Bajío,En línea,466.79,3
+2025-09-01,Norte,Tienda,1858.57,16
+2025-09-01,Norte,En línea,1209.86,8
+2025-09-01,Centro,Tienda,3133.87,29
+2025-09-01,Centro,En línea,1203.68,9
+2025-09-01,Sur,Tienda,1752.0,13
+2025-09-01,Sur,En línea,698.49,5
+2025-09-01,Bajío,Tienda,976.64,9
+2025-09-01,Bajío,En línea,694.3,5
+2025-09-02,Norte,Tienda,1493.57,16
+2025-09-02,Norte,En línea,841.98,8
+2025-09-02,Centro,Tienda,2071.56,16
+2025-09-02,Centro,En línea,1616.6,16
+2025-09-02,Sur,Tienda,1289.51,13
+2025-09-02,Sur,En línea,594.92,5
+2025-09-02,Bajío,Tienda,811.55,6
+2025-09-02,Bajío,En línea,442.75,3
+2025-09-03,Norte,Tienda,1560.72,19
+2025-09-03,Norte,En línea,1082.07,9
+2025-09-03,Centro,Tienda,2176.52,22
+2025-09-03,Centro,En línea,1283.51,9
+2025-09-03,Sur,Tienda,1157.14,8
+2025-09-03,Sur,En línea,866.15,6
+2025-09-03,Bajío,Tienda,1094.98,8
+2025-09-03,Bajío,En línea,599.3,6
+2025-09-04,Norte,Tienda,1499.24,12
+2025-09-04,Norte,En línea,1111.24,9
+2025-09-04,Centro,Tienda,3005.67,23
+2025-09-04,Centro,En línea,1246.45,9
+2025-09-04,Sur,Tienda,1136.16,11
+2025-09-04,Sur,En línea,948.3,7
+2025-09-04,Bajío,Tienda,1296.34,10
+2025-09-04,Bajío,En línea,573.88,4
+2025-09-05,Norte,Tienda,1420.79,12
+2025-09-05,Norte,En línea,848.63,7
+2025-09-05,Centro,Tienda,2011.17,22
+2025-09-05,Centro,En línea,1246.6,9
+2025-09-05,Sur,Tienda,1373.75,10
+2025-09-05,Sur,En línea,649.86,4
+2025-09-05,Bajío,Tienda,834.58,7
+2025-09-05,Bajío,En línea,576.9,5
+2025-09-06,Norte,Tienda,1681.57,12
+2025-09-06,Norte,En línea,1008.3,10
+2025-09-06,Centro,Tienda,2449.96,23
+2025-09-06,Centro,En línea,1356.87,13
+2025-09-06,Sur,Tienda,1755.03,19
+2025-09-06,Sur,En línea,584.62,6
+2025-09-06,Bajío,Tienda,1013.82,7
+2025-09-06,Bajío,En línea,715.12,5
+2025-09-07,Norte,Tienda,1274.07,15
+2025-09-07,Norte,En línea,593.37,5
+2025-09-07,Centro,Tienda,1751.02,17
+2025-09-07,Centro,En línea,898.03,10
+2025-09-07,Sur,Tienda,1127.02,9
+2025-09-07,Sur,En línea,565.64,4
+2025-09-07,Bajío,Tienda,829.88,10
+2025-09-07,Bajío,En línea,437.54,4
+2025-09-08,Norte,Tienda,2026.09,15
+2025-09-08,Norte,En línea,995.01,9
+2025-09-08,Centro,Tienda,2757.46,23
+2025-09-08,Centro,En línea,1370.25,10
+2025-09-08,Sur,Tienda,1681.8,14
+2025-09-08,Sur,En línea,586.05,5
+2025-09-08,Bajío,Tienda,1163.77,8
+2025-09-08,Bajío,En línea,568.56,4
+2025-09-09,Norte,Tienda,1912.12,13
+2025-09-09,Norte,En línea,868.25,6
+2025-09-09,Centro,Tienda,2780.58,33
+2025-09-09,Centro,En línea,1536.02,16
+2025-09-09,Sur,Tienda,1197.71,9
+2025-09-09,Sur,En línea,803.43,8
+2025-09-09,Bajío,Tienda,1277.09,10
+2025-09-09,Bajío,En línea,500.0,4
+2025-09-10,Norte,Tienda,1593.84,12
+2025-09-10,Norte,En línea,977.5,7
+2025-09-10,Centro,Tienda,1835.57,19
+2025-09-10,Centro,En línea,1619.69,18
+2025-09-10,Sur,Tienda,1310.38,11
+2025-09-10,Sur,En línea,594.23,5
+2025-09-10,Bajío,Tienda,846.34,8
+2025-09-10,Bajío,En línea,592.73,6
+2025-09-11,Norte,Tienda,1725.38,19
+2025-09-11,Norte,En línea,1097.16,11
+2025-09-11,Centro,Tienda,,29
+2025-09-11,Centro,En línea,1566.84,12
+2025-09-11,Sur,Tienda,1558.5,12
+2025-09-11,Sur,En línea,882.16,6
+2025-09-11,Bajío,Tienda,1203.68,8
+2025-09-11,Bajío,En línea,619.35,5
+2025-09-12,Norte,Tienda,1768.72,18
+2025-09-12,Norte,En línea,961.46,10
+2025-09-12,Centro,Tienda,2862.38,30
+2025-09-12,Centro,En línea,1431.98,16
+2025-09-12,Sur,Tienda,1551.52,15
+2025-09-12,Sur,En línea,670.91,5
+2025-09-12,Bajío,Tienda,1188.81,13
+2025-09-12,Bajío,En línea,522.15,3
+2025-09-13,Norte,Tienda,1340.48,10
+2025-09-13,Norte,En línea,1015.77,11
+2025-09-13,Centro,Tienda,2580.61,19
+2025-09-13,Centro,En línea,1278.94,15
+2025-09-13,Sur,Tienda,1187.33,9
+2025-09-13,Sur,En línea,856.33,7
+2025-09-13,Bajío,Tienda,831.79,8
+2025-09-13,Bajío,En línea,501.06,4
+2025-09-14,Norte,Tienda,1083.76,11
+2025-09-14,Norte,En línea,698.32,6
+2025-09-14,Centro,Tienda,2012.89,14
+2025-09-14,Centro,En línea,944.89,7
+2025-09-14,Sur,Tienda,835.32,9
+2025-09-14,Sur,En línea,592.61,6
+2025-09-14,Bajío,Tienda,887.26,8
+2025-09-14,Bajío,En línea,458.37,3
+2025-09-15,Norte,Tienda,1370.93,11
+2025-09-15,Norte,En línea,1125.42,9
+2025-09-15,Centro,Tienda,2382.06,24
+2025-09-15,Centro,En línea,1279.69,9
+2025-09-15,Sur,Tienda,1639.07,15
+2025-09-15,Sur,En línea,608.94,4
+2025-09-15,Bajío,Tienda,1202.03,11
+2025-09-15,Bajío,En línea,424.96,3
+2025-09-16,Norte,Tienda,1575.61,12
+2025-09-16,Norte,En línea,1041.5,9
+2025-09-16,Centro,Tienda,1996.77,15
+2025-09-16,Centro,En línea,1028.59,7
+2025-09-16,Sur,Tienda,1261.17,12
+2025-09-16,Sur,En línea,884.16,6
+2025-09-16,Bajío,Tienda,941.0,10
+2025-09-16,Bajío,En línea,560.07,4
+2025-09-17,Norte,Tienda,2077.69,19
+2025-09-17,Norte,En línea,882.94,9
+2025-09-17,Centro,Tienda,2450.05,21
+2025-09-17,Centro,En línea,1127.81,11
+2025-09-17,Sur,Tienda,1303.15,9
+2025-09-17,Sur,En línea,628.61,7
+2025-09-17,Bajío,Tienda,926.91,7
+2025-09-17,Bajío,En línea,479.58,3
+2025-09-18,Norte,Tienda,1697.73,15
+2025-09-18,Norte,En línea,717.76,5
+2025-09-18,Centro,Tienda,2193.5,16
+2025-09-18,Centro,En línea,1156.11,13
+2025-09-18,Sur,Tienda,1436.06,15
+2025-09-18,Sur,En línea,728.52,8
+2025-09-18,Bajío,Tienda,1062.64,10
+2025-09-18,Bajío,En línea,476.5,5
+2025-09-19,Norte,Tienda,1920.96,17
+2025-09-19,Norte,En línea,842.96,6
+2025-09-19,Centro,Tienda,2501.64,24
+2025-09-19,Centro,En línea,1079.9,7
+2025-09-19,Sur,Tienda,1348.83,11
+2025-09-19,Sur,En línea,669.58,7
+2025-09-19,Bajío,Tienda,753.01,7
+2025-09-19,Bajío,En línea,624.86,5
+2025-09-20,Norte,Tienda,1430.68,11
+2025-09-20,Norte,En línea,1009.81,9
+2025-09-20,Centro,Tienda,2396.91,18
+2025-09-20,Centro,En línea,,8
+2025-09-20,Sur,Tienda,1570.69,19
+2025-09-20,Sur,En línea,686.18,5
+2025-09-20,Bajío,Tienda,846.48,6
+2025-09-20,Bajío,En línea,614.76,5
+2025-09-21,Norte,Tienda,1307.22,14
+2025-09-21,Norte,En línea,475.02,4
+2025-09-21,Centro,Tienda,1824.46,15
+2025-09-21,Centro,En línea,989.52,8
+2025-09-21,Sur,Tienda,937.08,8
+2025-09-21,Sur,En línea,429.95,4
+2025-09-21,Bajío,Tienda,551.14,5
+2025-09-21,Bajío,En línea,394.61,4
+2025-09-22,Norte,Tienda,1323.51,10
+2025-09-22,Norte,En línea,718.77,7
+2025-09-22,Centro,Tienda,2028.58,15
+2025-09-22,Centro,En línea,1124.12,8
+2025-09-22,Sur,Tienda,1349.83,14
+2025-09-22,Sur,En línea,884.8,10
+2025-09-22,Bajío,Tienda,894.43,9
+2025-09-22,Bajío,En línea,647.85,7
+2025-09-23,Norte,Tienda,1474.33,18
+2025-09-23,Norte,En línea,794.46,8
+2025-09-23,Centro,Tienda,2130.54,24
+2025-09-23,Centro,En línea,1098.28,9
+2025-09-23,Sur,Tienda,1176.9,10
+2025-09-23,Sur,En línea,797.56,7
+2025-09-23,Bajío,Tienda,1120.45,9
+2025-09-23,Bajío,En línea,492.07,5
+2025-09-24,Norte,Tienda,1710.79,19
+2025-09-24,Norte,En línea,1065.34,12
+2025-09-24,Centro,Tienda,1974.63,17
+2025-09-24,Centro,En línea,1156.24,10
+2025-09-24,Sur,Tienda,1098.58,9
+2025-09-24,Sur,En línea,886.34,9
+2025-09-24,Bajío,Tienda,750.35,7
+2025-09-24,Bajío,En línea,441.54,3
+2025-09-25,Norte,Tienda,1853.94,21
+2025-09-25,Norte,En línea,1049.09,11
+2025-09-25,Centro,Tienda,2561.73,23
+2025-09-25,Centro,En línea,1143.34,11
+2025-09-25,Sur,Tienda,1191.72,8
+2025-09-25,Sur,En línea,604.41,5
+2025-09-25,Bajío,Tienda,784.0,5
+2025-09-25,Bajío,En línea,599.69,5
+2025-09-26,Norte,Tienda,1977.47,22
+2025-09-26,Norte,En línea,983.57,9
+2025-09-26,Centro,Tienda,2151.56,17
+2025-09-26,Centro,En línea,1507.19,14
+2025-09-26,Sur,Tienda,1268.71,9
+2025-09-26,Sur,En línea,723.82,8
+2025-09-26,Bajío,Tienda,762.15,5
+2025-09-26,Bajío,En línea,511.0,3
+2025-09-27,Norte,Tienda,1967.55,23
+2025-09-27,Norte,En línea,981.2,8
+2025-09-27,Centro,Tienda,2717.73,25
+2025-09-27,Centro,En línea,1427.44,14
+2025-09-27,Sur,Tienda,1552.67,16
+2025-09-27,Sur,En línea,576.75,4
+2025-09-27,Bajío,Tienda,821.66,9
+2025-09-27,Bajío,En línea,572.14,4
+2025-09-28,Norte,Tienda,,7
+2025-09-28,Norte,En línea,589.19,7
+2025-09-28,Centro,Tienda,1253.78,9
+2025-09-28,Centro,En línea,959.21,11
+2025-09-28,Sur,Tienda,889.98,8
+2025-09-28,Sur,En línea,494.22,3
+2025-09-28,Bajío,Tienda,795.8,7
+2025-09-28,Bajío,En línea,320.37,2
+2025-09-29,Norte,Tienda,1643.44,12
+2025-09-29,Norte,En línea,878.9,6
+2025-09-29,Centro,Tienda,1685.82,16
+2025-09-29,Centro,En línea,992.85,9
+2025-09-29,Sur,Tienda,1537.69,14
+2025-09-29,Sur,En línea,767.71,6
+2025-09-29,Bajío,Tienda,858.28,6
+2025-09-29,Bajío,En línea,538.4,4
+2025-09-30,Norte,Tienda,1318.51,13
+2025-09-30,Norte,En línea,1002.08,7
+2025-09-30,Centro,Tienda,1892.85,21
+2025-09-30,Centro,En línea,1366.92,11
+2025-09-30,Sur,Tienda,1275.03,11
+2025-09-30,Sur,En línea,747.3,6
+2025-09-30,Bajío,Tienda,945.82,7
+2025-09-30,Bajío,En línea,424.99,4
+2025-10-01,Norte,Tienda,1521.13,13
+2025-10-01,Norte,En línea,818.81,7
+2025-10-01,Centro,Tienda,2724.29,31
+2025-10-01,Centro,En línea,1346.58,12
+2025-10-01,Sur,Tienda,1317.37,12
+2025-10-01,Sur,En línea,524.88,3
+2025-10-01,Bajío,Tienda,843.55,7
+2025-10-01,Bajío,En línea,404.83,3
+2025-10-02,Norte,Tienda,1364.79,14
+2025-10-02,Norte,En línea,990.2,9
+2025-10-02,Centro,Tienda,1902.44,14
+2025-10-02,Centro,En línea,1423.25,16
+2025-10-02,Sur,Tienda,1558.49,12
+2025-10-02,Sur,En línea,567.42,6
+2025-10-02,Bajío,Tienda,737.76,5
+2025-10-02,Bajío,En línea,510.51,3
+2025-10-03,Norte,Tienda,1652.18,19
+2025-10-03,Norte,En línea,824.7,8
+2025-10-03,Centro,Tienda,2437.28,27
+2025-10-03,Centro,En línea,1107.51,9
+2025-10-03,Sur,Tienda,1211.22,9
+2025-10-03,Sur,En línea,762.52,7
+2025-10-03,Bajío,Tienda,1148.3,11
+2025-10-03,Bajío,En línea,414.93,3
+2025-10-04,Norte,Tienda,1662.04,16
+2025-10-04,Norte,En línea,694.4,6
+2025-10-04,Centro,Tienda,1965.49,16
+2025-10-04,Centro,En línea,1206.21,12
+2025-10-04,Sur,Tienda,1104.2,8
+2025-10-04,Sur,En línea,602.64,5
+2025-10-04,Bajío,Tienda,776.74,8
+2025-10-04,Bajío,En línea,439.59,4
+2025-10-05,Norte,Tienda,1224.42,11
+2025-10-05,Norte,En línea,565.19,4
+2025-10-05,Centro,Tienda,1460.7,10
+2025-10-05,Centro,En línea,1033.83,9
+2025-10-05,Sur,Tienda,815.54,8
+2025-10-05,Sur,En línea,568.71,5
+2025-10-05,Bajío,Tienda,637.47,5
+2025-10-05,Bajío,En línea,299.89,2
+2025-10-06,Norte,Tienda,1575.23,19
+2025-10-06,Norte,En línea,819.64,9
+2025-10-06,Centro,Tienda,1847.29,14
+2025-10-06,Centro,En línea,1084.38,11
+2025-10-06,Sur,Tienda,1097.84,10
+2025-10-06,Sur,En línea,776.26,6
+2025-10-06,Bajío,Tienda,996.28,11
+2025-10-06,Bajío,En línea,423.39,4
+2025-10-07,Norte,Tienda,1782.75,15
+2025-10-07,Norte,En línea,735.64,5
+2025-10-07,Centro,Tienda,1979.05,23
+2025-10-07,Centro,En línea,1038.13,7
+2025-10-07,Sur,Tienda,1322.41,13
+2025-10-07,Sur,En línea,607.07,7
+2025-10-07,Bajío,Tienda,1062.12,7
+2025-10-07,Bajío,En línea,552.77,5
+2025-10-08,Norte,Tienda,1213.28,8
+2025-10-08,Norte,En línea,888.36,8
+2025-10-08,Centro,Tienda,2072.47,15
+2025-10-08,Centro,En línea,980.07,8
+2025-10-08,Sur,Tienda,1229.93,13
+2025-10-08,Sur,En línea,541.95,5
+2025-10-08,Bajío,Tienda,923.9,8
+2025-10-08,Bajío,En línea,561.94,4
+2025-10-09,Norte,Tienda,1174.29,9
+2025-10-09,Norte,En línea,761.48,8
+2025-10-09,Centro,Tienda,2432.94,27
+2025-10-09,Centro,En línea,1378.68,11
+2025-10-09,Sur,Tienda,1332.07,10
+2025-10-09,Sur,En línea,554.67,4
+2025-10-09,Bajío,Tienda,746.54,8
+2025-10-09,Bajío,En línea,408.86,3
+2025-10-10,Norte,Tienda,1556.58,14
+2025-10-10,Norte,En línea,662.43,6
+2025-10-10,Centro,Tienda,2510.75,18
+2025-10-10,Centro,En línea,1189.01,9
+2025-10-10,Sur,Tienda,981.57,10
+2025-10-10,Sur,En línea,792.7,7
+2025-10-10,Bajío,Tienda,927.63,10
+2025-10-10,Bajío,En línea,574.61,4
+2025-10-11,Norte,Tienda,1373.05,15
+2025-10-11,Norte,En línea,911.37,8
+2025-10-11,Centro,Tienda,1749.17,13
+2025-10-11,Centro,En línea,1345.08,13
+2025-10-11,Sur,Tienda,1216.87,9
+2025-10-11,Sur,En línea,616.09,5
+2025-10-11,Bajío,Tienda,1070.51,8
+2025-10-11,Bajío,En línea,464.37,4
+2025-10-12,Norte,Tienda,1212.15,12
+2025-10-12,Norte,En línea,491.15,3
+2025-10-12,Centro,Tienda,1703.71,15
+2025-10-12,Centro,En línea,827.32,7
+2025-10-12,Sur,Tienda,670.1,4
+2025-10-12,Sur,En línea,379.86,3
+2025-10-12,Bajío,Tienda,729.12,5
+2025-10-12,Bajío,En línea,269.76,3
+2025-10-13,Norte,Tienda,1708.46,19
+2025-10-13,Norte,En línea,936.13,10
+2025-10-13,Centro,Tienda,2519.73,20
+2025-10-13,Centro,En línea,1142.35,11
+2025-10-13,Sur,Tienda,1368.99,11
+2025-10-13,Sur,En línea,736.19,6
+2025-10-13,Bajío,Tienda,838.38,6
+2025-10-13,Bajío,En línea,482.58,4
+2025-10-14,Norte,Tienda,,11
+2025-10-14,Norte,En línea,984.68,8
+2025-10-14,Centro,Tienda,2456.92,27
+2025-10-14,Centro,En línea,1273.12,9
+2025-10-14,Sur,Tienda,1490.15,12
+2025-10-14,Sur,En línea,533.37,6
+2025-10-14,Bajío,Tienda,816.38,8
+2025-10-14,Bajío,En línea,388.94,2
+2025-10-15,Norte,Tienda,1531.66,14
+2025-10-15,Norte,En línea,860.46,8
+2025-10-15,Centro,Tienda,2558.36,20
+2025-10-15,Centro,En línea,902.46,10
+2025-10-15,Sur,Tienda,967.9,9
+2025-10-15,Sur,En línea,764.22,5
+2025-10-15,Bajío,Tienda,768.64,9
+2025-10-15,Bajío,En línea,382.16,3
+2025-10-16,Norte,Tienda,1611.29,14
+2025-10-16,Norte,En línea,733.77,5
+2025-10-16,Centro,Tienda,2297.85,21
+2025-10-16,Centro,En línea,1019.35,12
+2025-10-16,Sur,Tienda,1254.91,13
+2025-10-16,Sur,En línea,775.91,5
+2025-10-16,Bajío,Tienda,884.31,9
+2025-10-16,Bajío,En línea,547.35,3
+2025-10-17,Norte,Tienda,1112.4,10
+2025-10-17,Norte,En línea,852.05,9
+2025-10-17,Centro,Tienda,1900.42,14
+2025-10-17,Centro,En línea,1026.63,11
+2025-10-17,Sur,Tienda,1234.49,9
+2025-10-17,Sur,En línea,663.85,5
+2025-10-17,Bajío,Tienda,1079.69,12
+2025-10-17,Bajío,En línea,608.98,5
+2025-10-18,Norte,Tienda,1290.29,15
+2025-10-18,Norte,En línea,713.84,6
+2025-10-18,Centro,Tienda,2140.28,15
+2025-10-18,Centro,En línea,1346.84,14
+2025-10-18,Sur,Tienda,893.84,8
+2025-10-18,Sur,En línea,568.09,5
+2025-10-18,Bajío,Tienda,766.74,6
+2025-10-18,Bajío,En línea,387.33,2
+2025-10-19,Norte,Tienda,1127.39,11
+2025-10-19,Norte,En línea,445.45,3
+2025-10-19,Centro,Tienda,1407.53,11
+2025-10-19,Centro,En línea,958.93,8
+2025-10-19,Sur,Tienda,828.82,5
+2025-10-19,Sur,En línea,490.01,3
+2025-10-19,Bajío,Tienda,634.05,4
+2025-10-19,Bajío,En línea,399.54,4
+2025-10-20,Norte,Tienda,1516.0,17
+2025-10-20,Norte,En línea,779.35,8
+2025-10-20,Centro,Tienda,,20
+2025-10-20,Centro,En línea,895.88,7
+2025-10-20,Sur,Tienda,1026.1,7
+2025-10-20,Sur,En línea,,8
+2025-10-20,Bajío,Tienda,988.24,8
+2025-10-20,Bajío,En línea,366.14,3
+2025-10-21,Norte,Tienda,1520.3,10
+2025-10-21,Norte,En línea,630.76,5
+2025-10-21,Centro,Tienda,1756.34,16
+2025-10-21,Centro,En línea,1022.82,10
+2025-10-21,Sur,Tienda,968.31,9
+2025-10-21,Sur,En línea,584.37,4
+2025-10-21,Bajío,Tienda,699.67,5
+2025-10-21,Bajío,En línea,581.03,6
+2025-10-22,Norte,Tienda,1574.54,15
+2025-10-22,Norte,En línea,842.86,6
+2025-10-22,Centro,Tienda,2003.89,16
+2025-10-22,Centro,En línea,1074.66,11
+2025-10-22,Sur,Tienda,1189.96,8
+2025-10-22,Sur,En línea,656.7,6
+2025-10-22,Bajío,Tienda,927.58,7
+2025-10-22,Bajío,En línea,524.51,3
+2025-10-23,Norte,Tienda,1763.82,16
+2025-10-23,Norte,En línea,941.37,10
+2025-10-23,Centro,Tienda,2515.21,29
+2025-10-23,Centro,En línea,1100.68,8
+2025-10-23,Sur,Tienda,,11
+2025-10-23,Sur,En línea,500.03,6
+2025-10-23,Bajío,Tienda,662.64,5
+2025-10-23,Bajío,En línea,406.28,3
+2025-10-24,Norte,Tienda,1773.27,17
+2025-10-24,Norte,En línea,809.55,8
+2025-10-24,Centro,Tienda,1517.86,15
+2025-10-24,Centro,En línea,1322.24,12
+2025-10-24,Sur,Tienda,1037.49,8
+2025-10-24,Sur,En línea,510.36,4
+2025-10-24,Bajío,Tienda,875.47,8
+2025-10-24,Bajío,En línea,592.45,4
+2025-10-25,Norte,Tienda,1606.47,13
+2025-10-25,Norte,En línea,606.73,4
+2025-10-25,Centro,Tienda,2143.35,21
+2025-10-25,Centro,En línea,1339.4,11
+2025-10-25,Sur,Tienda,1057.97,10
+2025-10-25,Sur,En línea,783.46,5
+2025-10-25,Bajío,Tienda,648.52,6
+2025-10-25,Bajío,En línea,527.78,4
+2025-10-26,Norte,Tienda,1149.07,13
+2025-10-26,Norte,En línea,439.26,3
+2025-10-26,Centro,Tienda,1415.24,15
+2025-10-26,Centro,En línea,,6
+2025-10-26,Sur,Tienda,995.92,9
+2025-10-26,Sur,En línea,507.75,4
+2025-10-26,Bajío,Tienda,684.26,5
+2025-10-26,Bajío,En línea,261.77,2
+2025-10-27,Norte,Tienda,1302.89,12
+2025-10-27,Norte,En línea,612.79,5
+2025-10-27,Centro,Tienda,2496.69,22
+2025-10-27,Centro,En línea,1110.73,8
+2025-10-27,Sur,Tienda,1093.06,8
+2025-10-27,Sur,En línea,750.19,7
+2025-10-27,Bajío,Tienda,958.51,8
+2025-10-27,Bajío,En línea,487.08,5
+2025-10-28,Norte,Tienda,1289.51,14
+2025-10-28,Norte,En línea,868.01,7
+2025-10-28,Centro,Tienda,1700.26,13
+2025-10-28,Centro,En línea,1161.69,12
+2025-10-28,Sur,Tienda,1079.12,11
+2025-10-28,Sur,En línea,740.77,6
+2025-10-28,Bajío,Tienda,714.22,7
+2025-10-28,Bajío,En línea,366.28,3
+2025-10-29,Norte,Tienda,1406.71,10
+2025-10-29,Norte,En línea,834.49,7
+2025-10-29,Centro,Tienda,1854.72,23
+2025-10-29,Centro,En línea,1252.95,14
+2025-10-29,Sur,Tienda,978.01,8
+2025-10-29,Sur,En línea,,4
+2025-10-29,Bajío,Tienda,749.11,7
+2025-10-29,Bajío,En línea,351.94,3
+2025-10-30,Norte,Tienda,1291.15,12
+2025-10-30,Norte,En línea,710.07,8
+2025-10-30,Centro,Tienda,,20
+2025-10-30,Centro,En línea,944.62,7
+2025-10-30,Sur,Tienda,965.59,7
+2025-10-30,Sur,En línea,505.19,4
+2025-10-30,Bajío,Tienda,686.82,6
+2025-10-30,Bajío,En línea,507.66,4
+2025-10-31,Norte,Tienda,1325.45,15
+2025-10-31,Norte,En línea,907.41,6
+2025-10-31,Centro,Tienda,1557.27,12
+2025-10-31,Centro,En línea,1003.37,10
+2025-10-31,Sur,Tienda,1309.42,10
+2025-10-31,Sur,En línea,756.51,7
+2025-10-31,Bajío,Tienda,920.36,9
+2025-10-31,Bajío,En línea,372.71,2
+2025-11-01,Norte,Tienda,1151.53,11
+2025-11-01,Norte,En línea,827.35,7
+2025-11-01,Centro,Tienda,2219.58,23
+2025-11-01,Centro,En línea,904.77,9
+2025-11-01,Sur,Tienda,888.0,8
+2025-11-01,Sur,En línea,667.76,7
+2025-11-01,Bajío,Tienda,883.31,7
+2025-11-01,Bajío,En línea,370.24,3
+2025-11-02,Norte,Tienda,776.59,6
+2025-11-02,Norte,En línea,564.66,5
+2025-11-02,Centro,Tienda,1682.98,16
+2025-11-02,Centro,En línea,771.98,5
+2025-11-02,Sur,Tienda,892.21,7
+2025-11-02,Sur,En línea,462.3,3
+2025-11-02,Bajío,Tienda,666.33,7
+2025-11-02,Bajío,En línea,314.52,3
+2025-11-03,Norte,Tienda,1205.12,9
+2025-11-03,Norte,En línea,742.05,6
+2025-11-03,Centro,Tienda,2440.52,17
+2025-11-03,Centro,En línea,950.98,7
+2025-11-03,Sur,Tienda,1367.01,12
+2025-11-03,Sur,En línea,470.1,4
+2025-11-03,Bajío,Tienda,759.68,8
+2025-11-03,Bajío,En línea,362.9,4
+2025-11-04,Norte,Tienda,1290.81,11
+2025-11-04,Norte,En línea,725.44,8
+2025-11-04,Centro,Tienda,2013.71,14
+2025-11-04,Centro,En línea,995.87,10
+2025-11-04,Sur,Tienda,,8
+2025-11-04,Sur,En línea,501.74,5
+2025-11-04,Bajío,Tienda,795.98,7
+2025-11-04,Bajío,En línea,446.96,3
+2025-11-05,Norte,Tienda,1492.36,12
+2025-11-05,Norte,En línea,702.96,8
+2025-11-05,Centro,Tienda,1984.4,17
+2025-11-05,Centro,En línea,1204.44,11
+2025-11-05,Sur,Tienda,994.19,7
+2025-11-05,Sur,En línea,544.34,4
+2025-11-05,Bajío,Tienda,740.33,6
+2025-11-05,Bajío,En línea,371.46,4
+2025-11-06,Norte,Tienda,1094.91,10
+2025-11-06,Norte,En línea,845.95,6
+2025-11-06,Centro,Tienda,2325.73,22
+2025-11-06,Centro,En línea,1055.31,7
+2025-11-06,Sur,Tienda,977.5,10
+2025-11-06,Sur,En línea,474.01,5
+2025-11-06,Bajío,Tienda,864.92,6
+2025-11-06,Bajío,En línea,454.26,4
+2025-11-07,Norte,Tienda,1223.03,9
+2025-11-07,Norte,En línea,766.32,6
+2025-11-07,Centro,Tienda,2382.56,20
+2025-11-07,Centro,En línea,1266.62,14
+2025-11-07,Sur,Tienda,908.28,8
+2025-11-07,Sur,En línea,598.18,5
+2025-11-07,Bajío,Tienda,922.99,8
+2025-11-07,Bajío,En línea,534.09,3
+2025-11-08,Norte,Tienda,1719.64,20
+2025-11-08,Norte,En línea,742.18,7
+2025-11-08,Centro,Tienda,2330.07,26
+2025-11-08,Centro,En línea,1314.84,9
+2025-11-08,Sur,Tienda,888.4,8
+2025-11-08,Sur,En línea,695.98,7
+2025-11-08,Bajío,Tienda,1031.69,12
+2025-11-08,Bajío,En línea,364.25,2
+2025-11-09,Norte,Tienda,1172.47,12
+2025-11-09,Norte,En línea,459.32,5
+2025-11-09,Centro,Tienda,1066.68,10
+2025-11-09,Centro,En línea,690.41,5
+2025-11-09,Sur,Tienda,779.58,6
+2025-11-09,Sur,En línea,442.39,4
+2025-11-09,Bajío,Tienda,675.93,5
+2025-11-09,Bajío,En línea,256.22,3
+2025-11-10,Norte,Tienda,1472.53,10
+2025-11-10,Norte,En línea,896.27,10
+2025-11-10,Centro,Tienda,2182.73,20
+2025-11-10,Centro,En línea,1113.91,12
+2025-11-10,Sur,Tienda,898.54,7
+2025-11-10,Sur,En línea,,8
+2025-11-10,Bajío,Tienda,1022.52,10
+2025-11-10,Bajío,En línea,538.28,6
+2025-11-11,Norte,Tienda,1648.66,14
+2025-11-11,Norte,En línea,569.73,4
+2025-11-11,Centro,Tienda,2187.05,19
+2025-11-11,Centro,En línea,912.4,7
+2025-11-11,Sur,Tienda,884.25,9
+2025-11-11,Sur,En línea,619.4,6
+2025-11-11,Bajío,Tienda,858.88,9
+2025-11-11,Bajío,En línea,534.69,5
+2025-11-12,Norte,Tienda,1426.38,10
+2025-11-12,Norte,En línea,634.88,5
+2025-11-12,Centro,Tienda,1896.91,15
+2025-11-12,Centro,En línea,1061.41,10
+2025-11-12,Sur,Tienda,1274.73,11
+2025-11-12,Sur,En línea,540.39,5
+2025-11-12,Bajío,Tienda,837.34,8
+2025-11-12,Bajío,En línea,453.07,4
+2025-11-13,Norte,Tienda,1601.72,11
+2025-11-13,Norte,En línea,658.96,7
+2025-11-13,Centro,Tienda,1463.13,11
+2025-11-13,Centro,En línea,969.48,9
+2025-11-13,Sur,Tienda,910.35,8
+2025-11-13,Sur,En línea,657.67,5
+2025-11-13,Bajío,Tienda,706.17,7
+2025-11-13,Bajío,En línea,484.03,4
+2025-11-14,Norte,Tienda,1405.81,10
+2025-11-14,Norte,En línea,759.32,7
+2025-11-14,Centro,Tienda,,21
+2025-11-14,Centro,En línea,976.71,10
+2025-11-14,Sur,Tienda,1099.91,10
+2025-11-14,Sur,En línea,681.19,7
+2025-11-14,Bajío,Tienda,903.56,7
+2025-11-14,Bajío,En línea,451.72,5
+2025-11-15,Norte,Tienda,1595.63,13
+2025-11-15,Norte,En línea,610.42,4
+2025-11-15,Centro,Tienda,1592.12,13
+2025-11-15,Centro,En línea,1244.24,10
+2025-11-15,Sur,Tienda,867.73,8
+2025-11-15,Sur,En línea,553.56,6
+2025-11-15,Bajío,Tienda,903.73,11
+2025-11-15,Bajío,En línea,463.83,3
+2025-11-16,Norte,Tienda,1134.73,13
+2025-11-16,Norte,En línea,441.7,4
+2025-11-16,Centro,Tienda,1312.95,15
+2025-11-16,Centro,En línea,789.26,5
+2025-11-16,Sur,Tienda,601.92,4
+2025-11-16,Sur,En línea,511.89,4
+2025-11-16,Bajío,Tienda,631.54,6
+2025-11-16,Bajío,En línea,321.37,2
+2025-11-17,Norte,Tienda,1244.32,10
+2025-11-17,Norte,En línea,734.45,7
+2025-11-17,Centro,Tienda,2112.37,22
+2025-11-17,Centro,En línea,1040.76,8
+2025-11-17,Sur,Tienda,965.49,6
+2025-11-17,Sur,En línea,681.02,6
+2025-11-17,Bajío,Tienda,811.9,6
+2025-11-17,Bajío,En línea,348.04,2
+2025-11-18,Norte,Tienda,1348.77,11
+2025-11-18,Norte,En línea,629.81,5
+2025-11-18,Centro,Tienda,1724.01,13
+2025-11-18,Centro,En línea,1053.65,8
+2025-11-18,Sur,Tienda,1025.51,9
+2025-11-18,Sur,En línea,554.31,6
+2025-11-18,Bajío,Tienda,982.99,8
+2025-11-18,Bajío,En línea,528.8,5
+2025-11-19,Norte,Tienda,1461.85,12
+2025-11-19,Norte,En línea,660.61,5
+2025-11-19,Centro,Tienda,2147.4,16
+2025-11-19,Centro,En línea,999.83,9
+2025-11-19,Sur,Tienda,1291.54,10
+2025-11-19,Sur,En línea,611.58,4
+2025-11-19,Bajío,Tienda,757.54,6
+2025-11-19,Bajío,En línea,447.93,4
+2025-11-20,Norte,Tienda,1473.25,14
+2025-11-20,Norte,En línea,896.78,6
+2025-11-20,Centro,Tienda,1914.49,22
+2025-11-20,Centro,En línea,823.03,7
+2025-11-20,Sur,Tienda,1228.67,12
+2025-11-20,Sur,En línea,726.26,8
+2025-11-20,Bajío,Tienda,959.59,11
+2025-11-20,Bajío,En línea,480.77,4
+2025-11-21,Norte,Tienda,1429.91,12
+2025-11-21,Norte,En línea,,8
+2025-11-21,Centro,Tienda,2163.42,18
+2025-11-21,Centro,En línea,822.07,9
+2025-11-21,Sur,Tienda,1011.21,9
+2025-11-21,Sur,En línea,505.78,4
+2025-11-21,Bajío,Tienda,838.68,6
+2025-11-21,Bajío,En línea,505.72,3
+2025-11-22,Norte,Tienda,1551.99,11
+2025-11-22,Norte,En línea,763.01,5
+2025-11-22,Centro,Tienda,2019.56,16
+2025-11-22,Centro,En línea,959.1,9
+2025-11-22,Sur,Tienda,1236.65,12
+2025-11-22,Sur,En línea,464.81,5
+2025-11-22,Bajío,Tienda,641.19,4
+2025-11-22,Bajío,En línea,422.2,3
+2025-11-23,Norte,Tienda,1009.62,9
+2025-11-23,Norte,En línea,640.45,6
+2025-11-23,Centro,Tienda,1312.7,14
+2025-11-23,Centro,En línea,732.25,5
+2025-11-23,Sur,Tienda,591.08,4
+2025-11-23,Sur,En línea,497.17,6
+2025-11-23,Bajío,Tienda,468.04,4
+2025-11-23,Bajío,En línea,352.72,3
+2025-11-24,Norte,Tienda,1286.99,11
+2025-11-24,Norte,En línea,912.76,9
+2025-11-24,Centro,Tienda,1940.25,19
+2025-11-24,Centro,En línea,801.95,6
+2025-11-24,Sur,Tienda,1313.66,13
+2025-11-24,Sur,En línea,541.0,4
+2025-11-24,Bajío,Tienda,880.68,8
+2025-11-24,Bajío,En línea,399.96,3
+2025-11-25,Norte,Tienda,1499.94,12
+2025-11-25,Norte,En línea,589.72,6
+2025-11-25,Centro,Tienda,1593.82,17
+2025-11-25,Centro,En línea,958.35,7
+2025-11-25,Sur,Tienda,944.24,10
+2025-11-25,Sur,En línea,649.15,5
+2025-11-25,Bajío,Tienda,937.21,7
+2025-11-25,Bajío,En línea,470.28,3
+2025-11-26,Norte,Tienda,1075.56,10
+2025-11-26,Norte,En línea,696.3,5
+2025-11-26,Centro,Tienda,2151.32,16
+2025-11-26,Centro,En línea,974.07,8
+2025-11-26,Sur,Tienda,924.36,10
+2025-11-26,Sur,En línea,597.44,4
+2025-11-26,Bajío,Tienda,962.62,7
+2025-11-26,Bajío,En línea,339.97,3
+2025-11-27,Norte,Tienda,1603.41,13
+2025-11-27,Norte,En línea,719.36,6
+2025-11-27,Centro,Tienda,1936.78,20
+2025-11-27,Centro,En línea,1232.85,10
+2025-11-27,Sur,Tienda,969.41,8
+2025-11-27,Sur,En línea,692.71,7
+2025-11-27,Bajío,Tienda,832.82,8
+2025-11-27,Bajío,En línea,442.85,3
+2025-11-28,Norte,Tienda,1150.06,12
+2025-11-28,Norte,En línea,855.12,9
+2025-11-28,Centro,Tienda,1448.36,17
+2025-11-28,Centro,En línea,1038.27,11
+2025-11-28,Sur,Tienda,1318.37,12
+2025-11-28,Sur,En línea,570.55,5
+2025-11-28,Bajío,Tienda,965.44,8
+2025-11-28,Bajío,En línea,397.62,4
+2025-11-29,Norte,Tienda,1580.39,15
+2025-11-29,Norte,En línea,762.1,8
+2025-11-29,Centro,Tienda,2112.74,23
+2025-11-29,Centro,En línea,788.65,9
+2025-11-29,Sur,Tienda,1163.11,9
+2025-11-29,Sur,En línea,641.65,5
+2025-11-29,Bajío,Tienda,995.66,9
+2025-11-29,Bajío,En línea,343.53,2
+2025-11-30,Norte,Tienda,811.2,7
+2025-11-30,Norte,En línea,540.79,5
+2025-11-30,Centro,Tienda,1107.18,9
+2025-11-30,Centro,En línea,804.71,5
+2025-11-30,Sur,Tienda,825.18,7
+2025-11-30,Sur,En línea,483.43,3
+2025-11-30,Bajío,Tienda,499.41,3
+2025-11-30,Bajío,En línea,382.01,3
+2025-12-01,Norte,Tienda,1470.75,11
+2025-12-01,Norte,En línea,725.62,6
+2025-12-01,Centro,Tienda,2036.08,18
+2025-12-01,Centro,En línea,796.16,9
+2025-12-01,Sur,Tienda,862.56,6
+2025-12-01,Sur,En línea,707.49,7
+2025-12-01,Bajío,Tienda,912.77,7
+2025-12-01,Bajío,En línea,466.93,4
+2025-12-02,Norte,Tienda,1355.21,12
+2025-12-02,Norte,En línea,709.82,5
+2025-12-02,Centro,Tienda,2071.88,15
+2025-12-02,Centro,En línea,1061.93,10
+2025-12-02,Sur,Tienda,859.93,7
+2025-12-02,Sur,En línea,702.79,7
+2025-12-02,Bajío,Tienda,934.47,8
+2025-12-02,Bajío,En línea,375.74,3
+2025-12-03,Norte,Tienda,1503.41,14
+2025-12-03,Norte,En línea,878.95,8
+2025-12-03,Centro,Tienda,1629.23,14
+2025-12-03,Centro,En línea,967.88,8
+2025-12-03,Sur,Tienda,816.61,5
+2025-12-03,Sur,En línea,607.75,4
+2025-12-03,Bajío,Tienda,633.55,6
+2025-12-03,Bajío,En línea,523.87,4
+2025-12-04,Norte,Tienda,1196.46,10
+2025-12-04,Norte,En línea,670.97,4
+2025-12-04,Centro,Tienda,1638.74,14
+2025-12-04,Centro,En línea,1050.42,8
+2025-12-04,Sur,Tienda,1106.78,11
+2025-12-04,Sur,En línea,628.73,4
+2025-12-04,Bajío,Tienda,681.97,7
+2025-12-04,Bajío,En línea,514.9,6
+2025-12-05,Norte,Tienda,1204.5,11
+2025-12-05,Norte,En línea,765.35,6
+2025-12-05,Centro,Tienda,1681.4,14
+2025-12-05,Centro,En línea,1027.03,9
+2025-12-05,Sur,Tienda,901.73,6
+2025-12-05,Sur,En línea,538.96,4
+2025-12-05,Bajío,Tienda,756.71,5
+2025-12-05,Bajío,En línea,547.4,5
+2025-12-06,Norte,Tienda,1528.92,17
+2025-12-06,Norte,En línea,560.24,6
+2025-12-06,Centro,Tienda,1499.33,13
+2025-12-06,Centro,En línea,1165.07,10
+2025-12-06,Sur,Tienda,1267.22,14
+2025-12-06,Sur,En línea,712.22,6
+2025-12-06,Bajío,Tienda,677.24,6
+2025-12-06,Bajío,En línea,378.31,3
+2025-12-07,Norte,Tienda,1073.53,9
+2025-12-07,Norte,En línea,413.33,3
+2025-12-07,Centro,Tienda,1413.12,14
+2025-12-07,Centro,En línea,694.81,5
+2025-12-07,Sur,Tienda,621.17,6
+2025-12-07,Sur,En línea,315.78,2
+2025-12-07,Bajío,Tienda,629.09,6
+2025-12-07,Bajío,En línea,308.83,2
+2025-12-08,Norte,Tienda,1360.42,14
+2025-12-08,Norte,En línea,654.89,7
+2025-12-08,Centro,Tienda,2268.97,22
+2025-12-08,Centro,En línea,1164.86,12
+2025-12-08,Sur,Tienda,816.82,6
+2025-12-08,Sur,En línea,480.17,4
+2025-12-08,Bajío,Tienda,881.42,9
+2025-12-08,Bajío,En línea,474.04,5
+2025-12-09,Norte,Tienda,1614.99,16
+2025-12-09,Norte,En línea,879.17,6
+2025-12-09,Centro,Tienda,2215.76,23
+2025-12-09,Centro,En línea,1140.3,10
+2025-12-09,Sur,Tienda,1247.96,8
+2025-12-09,Sur,En línea,617.82,4
+2025-12-09,Bajío,Tienda,772.18,7
+2025-12-09,Bajío,En línea,383.47,4
+2025-12-10,Norte,Tienda,1590.29,13
+2025-12-10,Norte,En línea,749.38,6
+2025-12-10,Centro,Tienda,1430.43,13
+2025-12-10,Centro,En línea,890.27,8
+2025-12-10,Sur,Tienda,951.69,7
+2025-12-10,Sur,En línea,685.63,5
+2025-12-10,Bajío,Tienda,714.64,5
+2025-12-10,Bajío,En línea,436.27,3
+2025-12-11,Norte,Tienda,,17
+2025-12-11,Norte,En línea,658.5,7
+2025-12-11,Centro,Tienda,1662.02,12
+2025-12-11,Centro,En línea,883.85,7
+2025-12-11,Sur,Tienda,1100.22,13
+2025-12-11,Sur,En línea,682.82,5
+2025-12-11,Bajío,Tienda,749.02,8
+2025-12-11,Bajío,En línea,501.52,4
+2025-12-12,Norte,Tienda,1182.33,10
+2025-12-12,Norte,En línea,577.07,5
+2025-12-12,Centro,Tienda,2271.58,25
+2025-12-12,Centro,En línea,1200.08,12
+2025-12-12,Sur,Tienda,1354.11,11
+2025-12-12,Sur,En línea,739.93,7
+2025-12-12,Bajío,Tienda,737.6,7
+2025-12-12,Bajío,En línea,482.33,3
+2025-12-13,Norte,Tienda,1143.74,8
+2025-12-13,Norte,En línea,750.32,5
+2025-12-13,Centro,Tienda,1997.33,15
+2025-12-13,Centro,En línea,1137.73,13
+2025-12-13,Sur,Tienda,962.19,8
+2025-12-13,Sur,En línea,585.18,5
+2025-12-13,Bajío,Tienda,975.23,10
+2025-12-13,Bajío,En línea,377.98,4
+2025-12-14,Norte,Tienda,1153.1,13
+2025-12-14,Norte,En línea,630.18,4
+2025-12-14,Centro,Tienda,1663.04,16
+2025-12-14,Centro,En línea,642.06,5
+2025-12-14,Sur,Tienda,668.59,6
+2025-12-14,Sur,En línea,346.96,3
+2025-12-14,Bajío,Tienda,454.91,5
+2025-12-14,Bajío,En línea,361.68,2
+2025-12-15,Norte,Tienda,1571.01,12
+2025-12-15,Norte,En línea,674.86,5
+2025-12-15,Centro,Tienda,1476.08,10
+2025-12-15,Centro,En línea,1267.87,10
+2025-12-15,Sur,Tienda,869.58,7
+2025-12-15,Sur,En línea,649.74,5
+2025-12-15,Bajío,Tienda,808.5,8
+2025-12-15,Bajío,En línea,479.33,3
+2025-12-16,Norte,Tienda,1065.64,8
+2025-12-16,Norte,En línea,756.6,6
+2025-12-16,Centro,Tienda,2155.73,19
+2025-12-16,Centro,En línea,,11
+2025-12-16,Sur,Tienda,1103.7,8
+2025-12-16,Sur,En línea,513.42,4
+2025-12-16,Bajío,Tienda,851.77,7
+2025-12-16,Bajío,En línea,493.01,3
+2025-12-17,Norte,Tienda,1561.76,12
+2025-12-17,Norte,En línea,661.51,6
+2025-12-17,Centro,Tienda,1906.02,19
+2025-12-17,Centro,En línea,1176.21,11
+2025-12-17,Sur,Tienda,1326.25,14
+2025-12-17,Sur,En línea,739.72,7
+2025-12-17,Bajío,Tienda,945.1,9
+2025-12-17,Bajío,En línea,520.41,4
+2025-12-18,Norte,Tienda,1344.9,10
+2025-12-18,Norte,En línea,910.24,7
+2025-12-18,Centro,Tienda,1792.21,22
+2025-12-18,Centro,En línea,970.42,10
+2025-12-18,Sur,Tienda,894.04,7
+2025-12-18,Sur,En línea,526.42,4
+2025-12-18,Bajío,Tienda,626.17,4
+2025-12-18,Bajío,En línea,537.49,5
+2025-12-19,Norte,Tienda,1506.75,16
+2025-12-19,Norte,En línea,812.45,7
+2025-12-19,Centro,Tienda,1712.69,16
+2025-12-19,Centro,En línea,868.85,7
+2025-12-19,Sur,Tienda,1356.24,10
+2025-12-19,Sur,En línea,678.92,7
+2025-12-19,Bajío,Tienda,633.58,5
+2025-12-19,Bajío,En línea,382.22,4
+2025-12-20,Norte,Tienda,1573.51,16
+2025-12-20,Norte,En línea,627.24,7
+2025-12-20,Centro,Tienda,2218.26,25
+2025-12-20,Centro,En línea,1081.68,8
+2025-12-20,Sur,Tienda,847.85,9
+2025-12-20,Sur,En línea,606.89,4
+2025-12-20,Bajío,Tienda,733.68,7
+2025-12-20,Bajío,En línea,499.65,5
+2025-12-21,Norte,Tienda,741.64,6
+2025-12-21,Norte,En línea,600.31,4
+2025-12-21,Centro,Tienda,1145.26,13
+2025-12-21,Centro,En línea,814.45,10
+2025-12-21,Sur,Tienda,924.36,9
+2025-12-21,Sur,En línea,456.16,3
+2025-12-21,Bajío,Tienda,582.9,4
+2025-12-21,Bajío,En línea,243.8,2
+2025-12-22,Norte,Tienda,1266.05,12
+2025-12-22,Norte,En línea,687.5,5
+2025-12-22,Centro,Tienda,1889.6,14
+2025-12-22,Centro,En línea,1070.8,8
+2025-12-22,Sur,Tienda,1041.59,11
+2025-12-22,Sur,En línea,640.27,5
+2025-12-22,Bajío,Tienda,667.71,5
+2025-12-22,Bajío,En línea,544.13,4
+2025-12-23,Norte,Tienda,1430.8,11
+2025-12-23,Norte,En línea,949.12,8
+2025-12-23,Centro,Tienda,1635.32,19
+2025-12-23,Centro,En línea,1185.06,9
+2025-12-23,Sur,Tienda,1098.81,8
+2025-12-23,Sur,En línea,732.95,8
+2025-12-23,Bajío,Tienda,627.67,5
+2025-12-23,Bajío,En línea,359.1,3
+2025-12-24,Norte,Tienda,1640.05,19
+2025-12-24,Norte,En línea,874.57,10
+2025-12-24,Centro,Tienda,2365.41,23
+2025-12-24,Centro,En línea,877.74,9
+2025-12-24,Sur,Tienda,1223.23,8
+2025-12-24,Sur,En línea,747.78,7
+2025-12-24,Bajío,Tienda,623.57,5
+2025-12-24,Bajío,En línea,373.14,2
+2025-12-25,Norte,Tienda,1249.58,11
+2025-12-25,Norte,En línea,584.45,6
+2025-12-25,Centro,Tienda,1851.54,21
+2025-12-25,Centro,En línea,1001.06,7
+2025-12-25,Sur,Tienda,933.28,11
+2025-12-25,Sur,En línea,751.7,5
+2025-12-25,Bajío,Tienda,849.67,8
+2025-12-25,Bajío,En línea,505.69,4
+2025-12-26,Norte,Tienda,1347.76,12
+2025-12-26,Norte,En línea,790.09,9
+2025-12-26,Centro,Tienda,2422.93,23
+2025-12-26,Centro,En línea,1207.59,9
+2025-12-26,Sur,Tienda,1047.36,8
+2025-12-26,Sur,En línea,648.25,8
+2025-12-26,Bajío,Tienda,699.43,6
+2025-12-26,Bajío,En línea,349.27,2
+2025-12-27,Norte,Tienda,1709.35,12
+2025-12-27,Norte,En línea,897.97,6
+2025-12-27,Centro,Tienda,2300.77,28
+2025-12-27,Centro,En línea,1153.87,9
+2025-12-27,Sur,Tienda,883.6,7
+2025-12-27,Sur,En línea,671.38,7
+2025-12-27,Bajío,Tienda,1033.32,10
+2025-12-27,Bajío,En línea,566.48,4
+2025-12-28,Norte,Tienda,939.03,8
+2025-12-28,Norte,En línea,423.94,4
+2025-12-28,Centro,Tienda,1644.42,16
+2025-12-28,Centro,En línea,777.62,5
+2025-12-28,Sur,Tienda,865.94,8
+2025-12-28,Sur,En línea,444.6,4
+2025-12-28,Bajío,Tienda,453.11,3
+2025-12-28,Bajío,En línea,310.17,2
+2025-12-29,Norte,Tienda,1748.15,17
+2025-12-29,Norte,En línea,946.94,8
+2025-12-29,Centro,Tienda,1666.13,13
+2025-12-29,Centro,En línea,1221.15,9
+2025-12-29,Sur,Tienda,1231.13,10
+2025-12-29,Sur,En línea,604.34,7
+2025-12-29,Bajío,Tienda,1043.46,10
+2025-12-29,Bajío,En línea,447.69,5
+2025-12-30,Norte,Tienda,1214.87,13
+2025-12-30,Norte,En línea,937.67,11
+2025-12-30,Centro,Tienda,2048.92,18
+2025-12-30,Centro,En línea,817.9,8
+2025-12-30,Sur,Tienda,1032.15,7
+2025-12-30,Sur,En línea,725.47,5
+2025-12-30,Bajío,Tienda,840.1,7
+2025-12-30,Bajío,En línea,375.22,4
+2025-12-31,Norte,Tienda,1403.57,13
+2025-12-31,Norte,En línea,942.3,9
+2025-12-31,Centro,Tienda,1583.74,12
+2025-12-31,Centro,En línea,905.14,6
+2025-12-31,Sur,Tienda,954.35,8
+2025-12-31,Sur,En línea,508.18,5
+2025-12-31,Bajío,Tienda,776.52,5
+2025-12-31,Bajío,En línea,404.23,4

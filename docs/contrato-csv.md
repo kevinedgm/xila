@@ -39,7 +39,8 @@ El lector revisa las primeras 200 celdas no vacías de cada columna:
 - todas son fechas ISO → columna `time` (milisegundos UTC);
 - cualquier otra cosa → columna `category`.
 
-Una celda posterior que no cumpla el tipo inferido es un error, no una categoría nueva:
+Un valor numérico con cero a la izquierda (`01000`) marca la columna como `category`: es un
+código postal o una clave, no una cantidad. Una celda posterior que no cumpla el tipo inferido es un error, no una categoría nueva:
 `fila 1204, columna "monto": "N/A" no es un número`. Para evitar sorpresas (por ejemplo
 códigos postales que parecen números) el tipo se puede fijar por columna:
 

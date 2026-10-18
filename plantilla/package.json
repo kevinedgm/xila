@@ -1,0 +1,21 @@
+{
+  "name": "xila-plantilla",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Punto de partida de un dashboard estático: cópialo por cliente con `pnpm nuevo-cliente <nombre>`.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xila/core": "workspace:*",
+    "@xila/vue": "workspace:*",
+    "vue": "^3.5.44"
+  },
+  "devDependencies": {
+    "vite": "^8.3.4"
+  }
+}

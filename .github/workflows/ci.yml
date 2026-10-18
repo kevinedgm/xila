@@ -55,3 +55,14 @@ jobs:
         with:
           name: benchmark
           path: /tmp/resultados.json
+
+  python:
+    # El lado pandas del contrato de CSV (python/xila_export.py).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas pytest
+      - run: pytest python/
