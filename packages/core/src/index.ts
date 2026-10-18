@@ -10,6 +10,7 @@ export { resolveSeries, isSorted } from './data/series';
 export type { SeriesSpec, ResolvedSeries } from './data/series';
 export { minMaxDecimate } from './data/decimate';
 export type { DecimatedSeries } from './data/decimate';
+export { lttb } from './data/lttb';
 export { lowerBound } from './data/search';
 export { toRelativeFloat32, float32Error, originNeedsReset } from './data/relative';
 export { min, max, sum, mean, variance, std, quantile, quantiles, median, summary } from './stats';
