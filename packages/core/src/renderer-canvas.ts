@@ -110,6 +110,77 @@ export class CanvasRenderer implements Renderer {
     ctx.globalAlpha = 1;
   }
 
+  drawBand(
+    layer: Layer,
+    x: Float64Array,
+    low: Float64Array,
+    high: Float64Array,
+    from: number,
+    to: number,
+    style: RectStyle,
+    t: Transform,
+  ): void {
+    const ctx = this.ctx(layer);
+    ctx.globalAlpha = style.opacity ?? 1;
+    ctx.fillStyle = style.fill;
+    // Polígono: ida por el límite superior y vuelta por el inferior; cada tramo sin NaN es uno.
+    let start = from;
+    while (start < to) {
+      while (start < to && !finitePair(low, high, start)) start++;
+      let end = start;
+      while (end < to && finitePair(low, high, end)) end++;
+      if (end - start >= 2) {
+        ctx.beginPath();
+        for (let i = start; i < end; i++) {
+          const px = applyMap(t.x, x[i] as number);
+          const py = applyMap(t.y, high[i] as number);
+          if (i === start) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        for (let i = end - 1; i >= start; i--) {
+          ctx.lineTo(applyMap(t.x, x[i] as number), applyMap(t.y, low[i] as number));
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+      start = end;
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  drawErrorBars(
+    layer: Layer,
+    x: Float64Array,
+    low: Float64Array,
+    high: Float64Array,
+    from: number,
+    to: number,
+    style: LineStyle,
+    t: Transform,
+    cap = 4,
+  ): void {
+    const ctx = this.ctx(layer);
+    ctx.beginPath();
+    for (let i = from; i < to; i++) {
+      if (!finitePair(low, high, i)) continue;
+      const px = applyMap(t.x, x[i] as number);
+      const y0 = applyMap(t.y, low[i] as number);
+      const y1 = applyMap(t.y, high[i] as number);
+      ctx.moveTo(px, y0);
+      ctx.lineTo(px, y1);
+      if (cap > 0) {
+        ctx.moveTo(px - cap / 2, y0);
+        ctx.lineTo(px + cap / 2, y0);
+        ctx.moveTo(px - cap / 2, y1);
+        ctx.lineTo(px + cap / 2, y1);
+      }
+    }
+    this.applyLineStyle(ctx, style);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+  }
+
   drawPointSeries(
     layer: Layer,
     x: Float64Array,
@@ -263,4 +334,10 @@ export class CanvasRenderer implements Renderer {
     ctx.globalAlpha = style.opacity ?? 1;
     ctx.setLineDash(style.dash ? [...style.dash] : []);
   }
+}
+
+function finitePair(a: Float64Array, b: Float64Array, i: number): boolean {
+  const u = a[i] as number;
+  const v = b[i] as number;
+  return u === u && v === v;
 }

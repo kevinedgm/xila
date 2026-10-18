@@ -12,6 +12,8 @@ function series(id: string, xs: number[], ys: number[]): ResolvedSeries {
     x: Float64Array.from(xs),
     y: Float64Array.from(ys),
     size: undefined,
+    yLow: undefined,
+    yHigh: undefined,
     length: xs.length,
   };
 }

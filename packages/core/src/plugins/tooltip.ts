@@ -110,7 +110,14 @@ function defaultFormat(
       .map((h) => {
         const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';
         const name = config.series[h.seriesIndex]?.name ?? h.seriesId;
-        return `<div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px"></span>${escape(name)}: <b>${escape(fy(h.y))}</b></div>`;
+        const resolved = ctx.getSeries()[h.seriesIndex];
+        const lo = resolved?.yLow?.[h.index];
+        const hi = resolved?.yHigh?.[h.index];
+        const interval =
+          lo !== undefined && hi !== undefined && lo === lo && hi === hi
+            ? ` <span style="opacity:.7">(${escape(fy(lo))} – ${escape(fy(hi))})</span>`
+            : '';
+        return `<div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px"></span>${escape(name)}: <b>${escape(fy(h.y))}</b>${interval}</div>`;
       })
       .join('');
     return `<div style="opacity:.7;margin-bottom:4px">${escape(fx(first.x))}</div>${rows}`;

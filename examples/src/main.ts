@@ -20,28 +20,6 @@ const estado = document.getElementById('estado');
 if (estado) estado.textContent = `@xila/core ${version}`;
 
 const charts: Record<string, Chart> = {};
-// 7. Escala logarítmica en Y: crecimiento exponencial con ruido y algunos ceros (se omiten con aviso).
-const nLog = 400;
-const xLog = new Float64Array(nLog);
-const yLog = new Float64Array(nLog);
-for (let i = 0; i < nLog; i++) {
-  xLog[i] = i;
-  yLog[i] = i % 97 === 0 ? 0 : 10 ** (i / 80) * (0.7 + 0.6 * Math.abs(Math.sin(i * 1.7)));
-}
-mount('log', {
-  type: 'line',
-  plugins: [...plugins(), zoomPanPlugin({ axis: 'xy' })],
-  data: new DataTable({
-    dia: numberColumn(Array.from(xLog)),
-    casos: numberColumn(Array.from(yLog)),
-  }),
-  series: [{ id: 'c', name: 'Casos', x: 'dia', y: 'casos' }],
-  scales: { y: { type: 'log' } },
-  axes: { x: { title: 'Día' }, y: { title: 'Casos (log)' } },
-});
-
-Object.assign(window, { charts });
-
 function mount(id: string, config: ChartConfig): Chart {
   const container = document.getElementById(id);
   if (!container) throw new Error(`falta #${id}`);
@@ -177,3 +155,74 @@ mount('fechas', {
   axes: { y: { title: 'MXN' } },
   theme: 'dark',
 });
+
+// 7. Escala logarítmica en Y: crecimiento exponencial con ruido y algunos ceros (se omiten con aviso).
+const nLog = 400;
+const xLog = new Float64Array(nLog);
+const yLog = new Float64Array(nLog);
+for (let i = 0; i < nLog; i++) {
+  xLog[i] = i;
+  yLog[i] = i % 97 === 0 ? 0 : 10 ** (i / 80) * (0.7 + 0.6 * Math.abs(Math.sin(i * 1.7)));
+}
+mount('log', {
+  type: 'line',
+  plugins: [...plugins(), zoomPanPlugin({ axis: 'xy' })],
+  data: new DataTable({
+    dia: numberColumn(Array.from(xLog)),
+    casos: numberColumn(Array.from(yLog)),
+  }),
+  series: [{ id: 'c', name: 'Casos', x: 'dia', y: 'casos' }],
+  scales: { y: { type: 'log' } },
+  axes: { x: { title: 'Día' }, y: { title: 'Casos (log)' } },
+});
+
+// 8. Incertidumbre: media con su intervalo de confianza del 95 % (banda) y mediciones con
+// error simétrico (barras). Las columnas vienen tal cual de un groupby en pandas.
+const nMeses = 24;
+const mes = new Float64Array(nMeses);
+const media = new Float64Array(nMeses);
+const icBajo = new Float64Array(nMeses);
+const icAlto = new Float64Array(nMeses);
+for (let i = 0; i < nMeses; i++) {
+  mes[i] = i;
+  media[i] = 50 + 10 * Math.sin(i / 3) + (i % 5) - 2;
+  const semi = 3 + 2 * Math.abs(Math.cos(i / 2));
+  icBajo[i] = media[i]! - semi;
+  icAlto[i] = media[i]! + semi * 1.4; // asimétrico: la cola alta es más larga
+}
+mount('banda', {
+  type: 'line',
+  plugins: plugins(),
+  data: new DataTable({
+    mes: numberColumn(Array.from(mes)),
+    media: numberColumn(Array.from(media)),
+    ic_bajo: numberColumn(Array.from(icBajo)),
+    ic_alto: numberColumn(Array.from(icAlto)),
+  }),
+  series: [
+    { id: 'm', name: 'Media ± IC 95 %', x: 'mes', y: 'media', yLow: 'ic_bajo', yHigh: 'ic_alto' },
+  ],
+  axes: { x: { title: 'Mes' }, y: { title: 'Tiempo de entrega (h)' } },
+});
+const muestras = 30;
+const dosis = new Float64Array(muestras);
+const respuesta = new Float64Array(muestras);
+const error = new Float64Array(muestras);
+for (let i = 0; i < muestras; i++) {
+  dosis[i] = 1 + i * 0.5;
+  respuesta[i] = 20 + 4 * Math.log1p(dosis[i]!) + ((i * 7919) % 11) / 5 - 1;
+  error[i] = 0.8 + ((i * 31) % 7) / 4;
+}
+mount('errores', {
+  type: 'scatter',
+  plugins: [tooltipPlugin({ mode: 'nearest' }), accessibilityPlugin()],
+  data: new DataTable({
+    dosis: numberColumn(Array.from(dosis)),
+    respuesta: numberColumn(Array.from(respuesta)),
+    error: numberColumn(Array.from(error)),
+  }),
+  series: [{ id: 'r', name: 'Respuesta ± error', x: 'dosis', y: 'respuesta', yError: 'error' }],
+  axes: { x: { title: 'Dosis (mg)' }, y: { title: 'Respuesta' } },
+});
+
+Object.assign(window, { charts });

@@ -496,17 +496,20 @@ export class Chart {
     const log = this.config.scales[axis].type === 'log';
     let skipped = 0;
     for (const { series: s } of this.visibleSeries()) {
-      const values = axis === 'x' ? s.x : s.y;
-      for (let i = 0; i < values.length; i++) {
-        const v = values[i] as number;
-        if (v !== v) continue;
-        // En escala log, cero y negativos no tienen logaritmo: no cuentan y se avisa una vez.
-        if (log && v <= 0) {
-          skipped++;
-          continue;
+      // En Y cuentan también los límites de la incertidumbre, para que la banda quepa.
+      const arrays = axis === 'x' ? [s.x] : [s.y, ...(s.yLow && s.yHigh ? [s.yLow, s.yHigh] : [])];
+      for (const values of arrays) {
+        for (let i = 0; i < values.length; i++) {
+          const v = values[i] as number;
+          if (v !== v) continue;
+          // En escala log, cero y negativos no tienen logaritmo: no cuentan y se avisa una vez.
+          if (log && v <= 0) {
+            skipped++;
+            continue;
+          }
+          if (v < min) min = v;
+          if (v > max) max = v;
         }
-        if (v < min) min = v;
-        if (v > max) max = v;
       }
     }
     if (log && skipped > 0 && !this.warnedLog.has(axis)) {
@@ -571,10 +574,26 @@ export class Chart {
       const color = palette[i % palette.length] ?? '#000';
       const from = Math.max(0, lowerBound(s.x, x0) - 1);
       const to = Math.min(s.length, lowerBound(s.x, x1) + 1);
+      const sx = tx ? mapValues(s.x, from, to, tx) : s.x;
+      const low = s.yLow && ty ? mapValues(s.yLow, from, to, ty) : s.yLow;
+      const high = s.yHigh && ty ? mapValues(s.yHigh, from, to, ty) : s.yHigh;
       if (config.type === 'scatter') {
+        // Incertidumbre como barras de error, debajo de los puntos.
+        if (low && high) {
+          renderer.drawErrorBars(
+            'data',
+            sx,
+            low,
+            high,
+            from,
+            to,
+            { stroke: color, width: 1, opacity: 0.7 },
+            transform,
+          );
+        }
         renderer.drawPointSeries(
           'data',
-          tx ? mapValues(s.x, from, to, tx) : s.x,
+          sx,
           ty ? mapValues(s.y, from, to, ty) : s.y,
           from,
           to,
@@ -586,6 +605,20 @@ export class Chart {
       // Líneas: decimación min/max por columna de píxel físico (ADR 0002). Se decima sobre los
       // valores crudos (min y max se conservan bajo una transformación monótona) y después se
       // transforma el buffer, que ya es pequeño.
+      // Incertidumbre como banda sombreada, debajo de la línea (sin decimar: su tamaño es el de
+      // series con intervalos, que son pequeñas).
+      if (low && high) {
+        renderer.drawBand(
+          'data',
+          sx,
+          low,
+          high,
+          from,
+          to,
+          { fill: color, opacity: 0.15 },
+          transform,
+        );
+      }
       const pxPerUnit = (area.width / (x1 - x0)) * dpr;
       const buffer = minMaxDecimate(s.x, s.y, from, to, x0, pxPerUnit, this.decimation[i]);
       this.decimation[i] = buffer;

@@ -109,6 +109,31 @@ export interface Renderer {
     transform: Transform,
   ): void;
 
+  /** Banda sombreada entre `low` y `high` (intervalo de confianza). Un `NaN` la corta. */
+  drawBand(
+    layer: Layer,
+    x: Float64Array,
+    low: Float64Array,
+    high: Float64Array,
+    from: number,
+    to: number,
+    style: RectStyle,
+    transform: Transform,
+  ): void;
+
+  /** Barra vertical de `low` a `high` por punto, con remates horizontales de `cap` px. */
+  drawErrorBars(
+    layer: Layer,
+    x: Float64Array,
+    low: Float64Array,
+    high: Float64Array,
+    from: number,
+    to: number,
+    style: LineStyle,
+    transform: Transform,
+    cap?: number,
+  ): void;
+
   drawRule(layer: Layer, x1: number, y1: number, x2: number, y2: number, style: LineStyle): void;
   drawRect(
     layer: Layer,

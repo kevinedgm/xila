@@ -50,7 +50,7 @@ async function valorEn(page: Page, id: string, px: number): Promise<number> {
 
 async function abrir(page: Page): Promise<{ x: number; y: number; w: number }> {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 21);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 27);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   const box = (await page.locator('#linea').boundingBox()) as {
     x: number;

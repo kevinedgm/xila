@@ -56,6 +56,13 @@ ticks alineados al calendario), `band` (barras) y `log` (base 10: ticks en poten
 subticks 2 y 5 cuando caben; los valores ≤ 0 no tienen logaritmo, se omiten y se avisa una vez
 en consola). El zoom en una escala log se hace en espacio logarítmico.
 
+## Incertidumbre
+
+Una serie puede declarar su error: `yError` (simétrico, `y ± error`) o `yLow` y `yHigh`
+(límites explícitos, por ejemplo un intervalo de confianza calculado en pandas). En líneas se
+dibuja como banda sombreada bajo la línea; en dispersión, como barras de error con remates. El
+dominio Y incluye los límites y el tooltip muestra el intervalo entre paréntesis.
+
 ## Plugins
 
 Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en
