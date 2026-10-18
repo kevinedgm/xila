@@ -8,9 +8,10 @@ import { chromium } from 'playwright-core';
 
 const DIST = resolve(import.meta.dirname, '../dist');
 const OUT = process.argv[2] ?? resolve(import.meta.dirname, 'resultados.json');
+// En CI se acorta con BENCH_RENDERERS=decimated BENCH_REPEATS=3 (ver bench/check.mjs).
 const SIZES = [10_000, 100_000, 1_000_000];
-const RENDERERS = ['naive', 'decimated', 'uplot'];
-const REPEATS = 5;
+const RENDERERS = (process.env.BENCH_RENDERERS ?? 'naive,decimated,uplot').split(',');
+const REPEATS = Number(process.env.BENCH_REPEATS ?? 5);
 const PAN_FRAMES = 120;
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };

@@ -21,3 +21,37 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm --filter examples build
+
+      # Tests visuales: comparan capturas de los ejemplos contra tests/__capturas__.
+      - run: pnpm --filter examples exec playwright install --with-deps chromium
+      - run: pnpm --filter examples test:visual
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: capturas-fallidas
+          path: examples/test-results/
+          if-no-files-found: ignore
+
+  benchmark:
+    # Separado del job principal: es lento y su resultado depende del runner.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter examples build
+      - run: pnpm --filter examples exec playwright install --with-deps chromium
+      - run: pnpm --filter examples bench /tmp/resultados.json
+        env:
+          BENCH_RENDERERS: decimated
+          BENCH_REPEATS: 3
+      - run: pnpm --filter examples bench:check /tmp/resultados.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark
+          path: /tmp/resultados.json

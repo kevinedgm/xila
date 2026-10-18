@@ -7,12 +7,17 @@
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "bench": "node bench/run.mjs",
-    "bench:visual": "node bench/visual.mjs"
+    "bench:visual": "node bench/visual.mjs",
+    "test:visual": "playwright test",
+    "preview": "vite preview",
+    "bench:check": "node bench/check.mjs"
   },
   "dependencies": {
     "@xila/core": "workspace:*"
   },
   "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "^26.6.5",
     "playwright-core": "1.56.1",
     "pngjs": "^7.0.0",
     "uplot": "^1.6.32",

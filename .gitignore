@@ -3,3 +3,5 @@ dist/
 coverage/
 *.log
 .DS_Store
+examples/test-results/
+examples/playwright-report/
