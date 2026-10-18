@@ -13,6 +13,8 @@ export type { DecimatedSeries } from './data/decimate';
 export { lowerBound } from './data/search';
 export { parseCsv, fetchCsv, parseIsoDate, CsvError } from './data/csv';
 export type { CsvOptions, CsvResult } from './data/csv';
+export { filterRows, takeRows, groupBy, bucketTime, pivot, splitBy } from './data/transform';
+export type { Aggregation, AggregationSpec, Condition } from './data/transform';
 
 export { resolveConfig, DEFAULTS } from './config';
 export type {
@@ -36,7 +38,8 @@ export {
   pickInterval,
   TIME_INTERVALS,
 } from './scales/time';
-export type { TimeInterval } from './scales/time';
+export { floorTime } from './scales/time';
+export type { TimeInterval, TimeUnit } from './scales/time';
 export { bandScale } from './scales/band';
 export type { BandScale } from './scales/band';
 

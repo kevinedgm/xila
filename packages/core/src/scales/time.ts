@@ -186,3 +186,36 @@ export function timeScale(domain: Domain, range: Range): ContinuousScale {
   };
   return scale;
 }
+
+export type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+
+/** Inicio de la unidad de calendario (UTC) que contiene `ms`; la semana empieza en lunes. */
+export function floorTime(ms: number, unit: TimeUnit): number {
+  if (ms !== ms) return ms;
+  switch (unit) {
+    case 'second':
+      return Math.floor(ms / SECOND) * SECOND;
+    case 'minute':
+      return Math.floor(ms / MINUTE) * MINUTE;
+    case 'hour':
+      return Math.floor(ms / HOUR) * HOUR;
+    case 'day':
+      return Math.floor(ms / DAY) * DAY;
+    case 'week': {
+      // La época (jueves) está a 3 días del lunes anterior.
+      return Math.floor((ms - 3 * DAY) / (7 * DAY)) * 7 * DAY + 3 * DAY;
+    }
+    case 'month':
+    case 'quarter':
+    case 'year': {
+      const d = new Date(ms);
+      const m =
+        unit === 'year'
+          ? 0
+          : unit === 'quarter'
+            ? Math.floor(d.getUTCMonth() / 3) * 3
+            : d.getUTCMonth();
+      return Date.UTC(d.getUTCFullYear(), m, 1);
+    }
+  }
+}
