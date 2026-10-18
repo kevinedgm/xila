@@ -281,6 +281,7 @@ export class Chart {
       getViewDomain: (axis) => this.view[axis],
       setViewDomain: (axis, domain) => this.setViewDomain(axis, domain),
       update: (patch) => this.update(patch as Partial<ChartConfig>),
+      requestLayout: () => this.resize(),
       getSelection: () => this.selection,
       setSelection: (range) => this.setSelection(range),
       countSelection: (range) => this.countSelection(range),
@@ -1050,7 +1051,7 @@ export class Chart {
       outY,
       0,
       no,
-      { fill: config.theme.grid, radius: layout.radius },
+      { fill: config.theme.muted ?? config.theme.grid, radius: layout.radius },
       identity,
     );
     renderer.drawPointSeries(

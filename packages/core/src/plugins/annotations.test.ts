@@ -35,6 +35,7 @@ function context(scales: { x: typeof x | ReturnType<typeof bandScale>; y: typeof
     getViewDomain: () => null,
     setViewDomain: vi.fn(),
     update: vi.fn(),
+    requestLayout: vi.fn(),
     getSelection: () => null,
     setSelection: vi.fn(),
     countSelection: () => ({ count: 0, total: 0 }),

@@ -63,6 +63,8 @@ export function summaryPlugin(options: SummaryOptions = {}): ChartPlugin {
   let clear: HTMLButtonElement | null = null;
   let stale = true;
   let side: 'right' | 'bottom' = 'right';
+  let reservedHeight = 0;
+  let observer: ResizeObserver | null = null;
 
   const placement = (): 'right' | 'bottom' => {
     if (options.position && options.position !== 'auto') return options.position;
@@ -268,11 +270,20 @@ export function summaryPlugin(options: SummaryOptions = {}): ChartPlugin {
       c.renderer.element.appendChild(el);
       place();
       render();
+      // Si el panel cambia de alto (carga la fuente, cambia el texto) y está abajo, el área
+      // reservada ya no coincide: se pide otro layout, solo cuando de verdad cambió.
+      if (typeof ResizeObserver !== 'undefined') {
+        observer = new ResizeObserver(() => {
+          if (side === 'bottom' && el && el.offsetHeight !== reservedHeight) ctx?.requestLayout();
+        });
+        observer.observe(el);
+      }
     },
     reserveSpace(c) {
       ctx = c;
       place();
-      return side === 'right' ? { right: width } : { bottom: (el?.offsetHeight ?? 0) + 12 };
+      reservedHeight = el?.offsetHeight ?? 0;
+      return side === 'right' ? { right: width } : { bottom: reservedHeight + 12 };
     },
     afterLayout(_l, c) {
       ctx = c;
@@ -289,6 +300,8 @@ export function summaryPlugin(options: SummaryOptions = {}): ChartPlugin {
       }
     },
     uninstall() {
+      observer?.disconnect();
+      observer = null;
       el?.remove();
       el = big = sub = kv = modes = null;
       clear = null;

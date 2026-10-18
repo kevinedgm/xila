@@ -48,6 +48,8 @@ export interface PluginContext {
   readonly setViewDomain: (axis: 'x' | 'y', domain: Domain | null) => void;
   /** Mezcla cambios en la configuración y redibuja (lo mismo que `chart.update`). */
   readonly update: (patch: Record<string, unknown>) => void;
+  /** Vuelve a calcular el layout en el siguiente dibujo (p. ej. cambió el espacio que reserva un plugin). */
+  readonly requestLayout: () => void;
   /** Rango seleccionado en X (plugin de selección): los datos fuera se dibujan atenuados. */
   readonly getSelection: () => Domain | null;
   /** Fija (o quita) la selección; emite `selection` con el conteo. */
