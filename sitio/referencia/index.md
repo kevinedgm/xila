@@ -2,7 +2,7 @@
 
 `new Chart(contenedor, config)` recibe un `ChartConfig`, una unión discriminada por `type`:
 el editor solo sugiere las claves del tipo elegido. Todo lo opcional tiene un valor por defecto
-en `DEFAULTS`, exportado por `@xila/core`.
+en `DEFAULTS`, exportado por `xilaplot`.
 
 ## Claves comunes
 

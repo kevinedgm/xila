@@ -1,4 +1,4 @@
-import { tooltipPlugin, type ChartConfig } from '@xila/core';
+import { tooltipPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 
 /** Box plot: la distribución 1950–2024 de toneladas por persona, por país, directo del formato largo. */

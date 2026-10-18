@@ -2,14 +2,14 @@
 
 Librería de gráficos en TypeScript para dashboards y datos científicos, con identidad inspirada en los textiles de Oaxaca.
 
-> **Estado:** experimental (Etapa 1 · Fundación). La API cambiará sin aviso. "Xila" es un nombre provisional.
+> **Estado:** experimental (0.x). La API puede cambiar entre versiones. Paquetes en npm: `xilaplot` (núcleo) y `xilaplot-vue` (Vue 3). Documentación: <https://kevinedgm.github.io/xila/>.
 
 ## Estructura
 
 ```
 packages/
-  core/      # @xila/core: motor, datos, escalas, renderer Canvas
-  vue/       # @xila/vue: componente <XilaChart>
+  core/      # xilaplot: motor, datos, escalas, renderer Canvas
+  vue/       # xilaplot-vue: componente <XilaChart>
 examples/    # app Vite para probar la librería a mano
 ```
 
@@ -103,7 +103,7 @@ dibuja la barra de color. `colormap()` está exportada para usar los mismos colo
 
 ## Plugins
 
-Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en
+Tooltip, leyenda, zoom/pan y anotaciones vienen en `xilaplot`; opciones y mecanismo en
 [`docs/plugins.md`](docs/plugins.md).
 
 ## Dashboards para clientes
@@ -119,6 +119,12 @@ El flujo completo, sin escribir código de gráficos:
 Ejemplos funcionando con `pnpm dev`: `/dashboard.html` (ventas sintéticas) y
 `/dashboard.html?config=co2/dashboard.json` (emisiones de CO₂ de Our World in Data,
 generado con `python3 python/ejemplo_co2.py`: descarga, limpia, exporta; el JSON no tiene código).
+
+## Publicar en npm
+
+`git tag v0.1.0 && git push origin v0.1.0` lanza `.github/workflows/publicar.yml`, que construye,
+prueba y publica los dos paquetes con procedencia. Requiere el secreto `NPM_TOKEN`. Antes de
+etiquetar, subir `version` en `packages/*/package.json` y en `packages/core/src/index.ts`.
 
 ## Licencia
 

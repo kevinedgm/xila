@@ -32,7 +32,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @xila/core --filter @xila/vue build
+      - run: pnpm --filter xilaplot --filter xilaplot-vue build
       - run: pnpm --filter sitio build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

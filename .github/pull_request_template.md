@@ -12,4 +12,4 @@
 
 - [ ] `pnpm typecheck`, `pnpm lint` y `pnpm test` pasan
 - [ ] Hay tests para lo que cambia (o explico por qué no)
-- [ ] Sin dependencias nuevas en `@xila/core`
+- [ ] Sin dependencias nuevas en `xilaplot`

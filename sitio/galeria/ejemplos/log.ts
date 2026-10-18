@@ -1,4 +1,4 @@
-import { legendPlugin, pivot, tooltipPlugin, type ChartConfig } from '@xila/core';
+import { legendPlugin, pivot, tooltipPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 
 /** Escala logarítmica: siete países que difieren en dos órdenes de magnitud, todos legibles. */

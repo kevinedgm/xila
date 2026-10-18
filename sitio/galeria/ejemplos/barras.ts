@@ -1,4 +1,4 @@
-import { filterRows, tooltipPlugin, type ChartConfig } from '@xila/core';
+import { filterRows, tooltipPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 
 /** Barras: emisiones de 2023 por país. `filterRows` acepta condiciones declarativas con rango inclusivo. */

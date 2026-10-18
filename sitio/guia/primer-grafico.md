@@ -5,18 +5,20 @@ datos, crear el gráfico.
 
 ## 1. Instalar
 
-Xila todavía no está en npm, así que se usa desde el monorepo (requiere Node 20 y pnpm 10):
+```bash
+npm install xilaplot          # núcleo
+npm install xilaplot-vue      # opcional: componentes para Vue 3
+```
+
+Para trabajar sobre el código fuente (requiere Node 20 y pnpm 10):
 
 ```bash
 git clone https://github.com/kevinedgm/xila
 cd xila
 pnpm install
-pnpm build          # construye @xila/core y @xila/vue
+pnpm build          # construye xilaplot y xilaplot-vue
 pnpm dev            # ejemplos en http://localhost:5173
 ```
-
-Para usarla en un proyecto propio dentro del monorepo, añade la dependencia
-`"@xila/core": "workspace:*"` a su `package.json` (así funciona `examples/` y este sitio).
 
 ## 2. Cargar datos
 
@@ -30,7 +32,7 @@ de pandas con `df.to_csv(index=False)`. Tipos por columna, inferidos del conteni
 | `México`, `0123` (cero a la izquierda) | `category` | códigos `Uint32Array` + lista |
 
 ```ts
-import { fetchCsv } from '@xila/core';
+import { fetchCsv } from 'xilaplot';
 
 const { table } = await fetchCsv('/data/co2.csv');
 table.names(); // ['fecha', 'pais', 'co2_mt', ...]
@@ -43,7 +45,7 @@ También se construye en memoria con `new DataTable({ x: numberColumn([...]), ..
 ## 3. Crear el gráfico
 
 ```ts
-import { Chart, fetchCsv, splitBy, tooltipPlugin, zoomPanPlugin } from '@xila/core';
+import { Chart, fetchCsv, splitBy, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 
 const { table } = await fetchCsv('/data/co2.csv');
 const mexico = splitBy(table, 'pais').get('México')!;
@@ -80,7 +82,7 @@ import linea from '../galeria/ejemplos/linea';
 - `chart.events.on('hover', (h) => ...)` da el dato bajo el cursor; `'zoom'`, `'click'`,
   `'draw'` y `'resize'` también se emiten.
 - `chart.destroy()` quita listeners y nodos.
-- En Vue, `<XilaChart :config="config" />` de `@xila/vue` hace lo mismo con el ciclo de vida
+- En Vue, `<XilaChart :config="config" />` de `xilaplot-vue` hace lo mismo con el ciclo de vida
   del componente.
 
 Siguiente: [Tipos de gráfico](./tipos) o la [Galería](../galeria/) con el código de cada ejemplo.

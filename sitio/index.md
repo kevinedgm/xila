@@ -26,7 +26,6 @@ features:
 ---
 
 ::: warning Estado
-Xila es experimental y su API cambia sin aviso. "Xila" es un nombre provisional y el paquete
-aún no está publicado en npm: por ahora se usa desde el monorepo. La galería corre con el
-código actual del repositorio.
+Xila es experimental (0.x) y su API puede cambiar entre versiones. Paquetes en npm: `xilaplot`
+(núcleo) y `xilaplot-vue` (Vue 3). La galería corre con el código actual del repositorio.
 :::

@@ -5,7 +5,7 @@ import {
   pivot,
   tooltipPlugin,
   type ChartConfig,
-} from '@xila/core';
+} from 'xilaplot';
 import { co2, conDecada } from './datos';
 
 /**

@@ -1,5 +1,5 @@
-import { Chart, DataTable, categoryColumn, numberColumn, tooltipPlugin } from '@xila/core';
-import type { ColormapName } from '@xila/core';
+import { Chart, DataTable, categoryColumn, numberColumn, tooltipPlugin } from 'xilaplot';
+import type { ColormapName } from 'xilaplot';
 
 /**
  * Heatmap grande para medir el dibujo (E6.07: 500 × 500 en menos de 16 ms). `window.grafico`

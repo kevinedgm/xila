@@ -53,11 +53,11 @@ export default defineConfig({
     docFooter: { prev: 'Anterior', next: 'Siguiente' },
     lastUpdated: { text: 'Actualizado' },
     search: { provider: 'local' },
-    footer: { message: 'Licencia MIT. "Xila" es un nombre provisional.' },
+    footer: { message: 'Licencia MIT.' },
   },
   vite: {
     // Los ejemplos se sirven con la versión del monorepo, sin publicar en npm.
     resolve: { dedupe: ['vue'] },
-    optimizeDeps: { exclude: ['@xila/core', '@xila/vue'] },
+    optimizeDeps: { exclude: ['xilaplot', 'xilaplot-vue'] },
   },
 });

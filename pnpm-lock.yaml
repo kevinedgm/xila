@@ -35,15 +35,15 @@ importers:
 
   examples:
     dependencies:
-      '@xila/core':
-        specifier: workspace:*
-        version: link:../packages/core
-      '@xila/vue':
-        specifier: workspace:*
-        version: link:../packages/vue
       vue:
         specifier: ^3.5.44
         version: 3.5.44(typescript@7.0.2)
+      xilaplot:
+        specifier: workspace:*
+        version: link:../packages/core
+      xilaplot-vue:
+        specifier: workspace:*
+        version: link:../packages/vue
     devDependencies:
       '@playwright/test':
         specifier: 1.56.1
@@ -80,8 +80,8 @@ importers:
 
   packages/vue:
     dependencies:
-      '@xila/core':
-        specifier: workspace:*
+      xilaplot:
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       vue:
@@ -90,15 +90,15 @@ importers:
 
   plantilla:
     dependencies:
-      '@xila/core':
-        specifier: workspace:*
-        version: link:../packages/core
-      '@xila/vue':
-        specifier: workspace:*
-        version: link:../packages/vue
       vue:
         specifier: ^3.5.44
         version: 3.5.44(typescript@7.0.2)
+      xilaplot:
+        specifier: workspace:*
+        version: link:../packages/core
+      xilaplot-vue:
+        specifier: workspace:*
+        version: link:../packages/vue
     devDependencies:
       vite:
         specifier: ^8.3.4
@@ -106,15 +106,15 @@ importers:
 
   sitio:
     dependencies:
-      '@xila/core':
-        specifier: workspace:*
-        version: link:../packages/core
-      '@xila/vue':
-        specifier: workspace:*
-        version: link:../packages/vue
       vue:
         specifier: ^3.5.44
         version: 3.5.44(typescript@6.0.3)
+      xilaplot:
+        specifier: workspace:*
+        version: link:../packages/core
+      xilaplot-vue:
+        specifier: workspace:*
+        version: link:../packages/vue
     devDependencies:
       typedoc:
         specifier: 0.28.20

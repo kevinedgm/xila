@@ -1,7 +1,7 @@
 # Contrato de CSV en formato largo
 
 Reglas que cumplen los CSV que salen de los notebooks (pandas) y que lee `parseCsv` de
-`@xila/core`. El lector es estricto a propósito: un archivo que rompe una regla falla con
+`xilaplot`. El lector es estricto a propósito: un archivo que rompe una regla falla con
 número de fila y nombre de columna en vez de dibujar algo incorrecto en silencio.
 
 ## Reglas

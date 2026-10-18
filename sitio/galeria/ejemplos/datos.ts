@@ -1,4 +1,4 @@
-import { categoryColumn, DataTable, fetchCsv, splitBy, type Column } from '@xila/core';
+import { categoryColumn, DataTable, fetchCsv, splitBy, type Column } from 'xilaplot';
 
 /**
  * Emisiones de CO₂ 1950–2024 de siete países (Our World in Data, limpiado con pandas según

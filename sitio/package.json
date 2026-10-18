@@ -12,8 +12,8 @@
     "api": "typedoc"
   },
   "dependencies": {
-    "@xila/core": "workspace:*",
-    "@xila/vue": "workspace:*",
+    "xilaplot": "workspace:*",
+    "xilaplot-vue": "workspace:*",
     "vue": "^3.5.44"
   },
   "devDependencies": {

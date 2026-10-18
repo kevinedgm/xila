@@ -1,4 +1,4 @@
-import { Chart, DataTable, syncPlugin, tooltipPlugin, zoomPanPlugin } from '@xila/core';
+import { Chart, DataTable, syncPlugin, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 import { generateSeries } from './bench/synthetic';
 
 /** Tres gráficos con el mismo eje de tiempo en el grupo "sensores". */

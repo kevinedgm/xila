@@ -1,4 +1,4 @@
-import { annotationsPlugin, tooltipPlugin, zoomPanPlugin, type ChartConfig } from '@xila/core';
+import { annotationsPlugin, tooltipPlugin, zoomPanPlugin, type ChartConfig } from 'xilaplot';
 import { pais } from './datos';
 
 /** Anotaciones en valores de datos: siguen al zoom y al cambio de tamaño sin recalcular nada. */

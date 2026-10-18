@@ -1,4 +1,4 @@
-import { tooltipPlugin, zoomPanPlugin, type ChartConfig } from '@xila/core';
+import { tooltipPlugin, zoomPanPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 
 /** Dispersión: PIB per cápita contra toneladas por persona, un punto por país y año. */

@@ -1,6 +1,6 @@
 {
-  "name": "@xila/core",
-  "version": "0.0.0",
+  "name": "xilaplot",
+  "version": "0.1.0",
   "description": "Motor de gráficos de Xila.",
   "license": "MIT",
   "type": "module",
@@ -14,10 +14,32 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinedgm/xila.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://kevinedgm.github.io/xila/",
+  "bugs": "https://github.com/kevinedgm/xila/issues",
+  "keywords": [
+    "charts",
+    "plot",
+    "canvas",
+    "webgl",
+    "dashboard",
+    "typescript",
+    "csv",
+    "pandas"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

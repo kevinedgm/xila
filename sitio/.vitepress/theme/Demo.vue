@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Chart, type ChartConfig } from '@xila/core';
+import { Chart, type ChartConfig } from 'xilaplot';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 /**

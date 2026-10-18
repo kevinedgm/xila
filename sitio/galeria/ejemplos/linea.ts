@@ -1,4 +1,4 @@
-import { tooltipPlugin, zoomPanPlugin, type ChartConfig } from '@xila/core';
+import { tooltipPlugin, zoomPanPlugin, type ChartConfig } from 'xilaplot';
 import { pais } from './datos';
 
 /** Serie temporal: emisiones anuales de México. Rueda para hacer zoom, arrastrar para mover. */

@@ -98,6 +98,6 @@ Las barras necesitan una categoría por barra: si `x` es tiempo hay que dar `agr
 ## Mecanismo de los filtros
 
 Los filtros viven en un estado compartido como lista de condiciones (`Condition` de
-`@xila/core`). Cada panel deriva sus series con `buildChart(panel, tabla, condiciones)` o
+`xilaplot`). Cada panel deriva sus series con `buildChart(panel, tabla, condiciones)` o
 `buildKpi(...)`; ningún panel conoce a los demás. Cambiar un filtro recalcula todos los
 paneles desde la tabla original, que nunca se modifica.

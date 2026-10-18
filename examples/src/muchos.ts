@@ -1,4 +1,4 @@
-import { Chart, DataTable, tooltipPlugin } from '@xila/core';
+import { Chart, DataTable, tooltipPlugin } from 'xilaplot';
 import { generateSeries } from './bench/synthetic';
 
 /**

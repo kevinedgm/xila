@@ -2,14 +2,14 @@
 
 Un plugin es un objeto con `id` y hooks opcionales (`install`, `reserveSpace`, `afterLayout`,
 `beforeDraw`, `afterDraw`, `onEvent`, `uninstall`). Se pasan en `plugins` al crear el gráfico y
-corren en orden de registro. Todos los de esta lista viven en `@xila/core`.
+corren en orden de registro. Todos los de esta lista viven en `xilaplot`.
 
 Cada gráfico necesita **sus propias instancias**: un plugin guarda estado y nodos del DOM, así
 que compartir `tooltipPlugin()` entre dos gráficos deja al primero sin tooltip. Lo práctico es
 una función `const plugins = () => [tooltipPlugin(), legendPlugin()]` y llamarla por gráfico.
 
 ```ts
-import { Chart, tooltipPlugin, legendPlugin, zoomPanPlugin, annotationsPlugin } from '@xila/core';
+import { Chart, tooltipPlugin, legendPlugin, zoomPanPlugin, annotationsPlugin } from 'xilaplot';
 
 new Chart(el, {
   type: 'line',

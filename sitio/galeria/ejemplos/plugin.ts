@@ -1,4 +1,4 @@
-import { legendPlugin, pivot, tooltipPlugin, type ChartConfig } from '@xila/core';
+import { legendPlugin, pivot, tooltipPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 import { ultimoValorPlugin } from './ultimo-valor';
 

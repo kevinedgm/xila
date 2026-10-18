@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Chart, version } from './index';
 
-describe('@xila/core', () => {
+describe('xilaplot', () => {
   it('exporta la versión', () => {
     expect(typeof version).toBe('string');
   });

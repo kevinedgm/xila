@@ -1,0 +1,33 @@
+name: publicar
+
+# Publica xilaplot y xilaplot-vue en npm con procedencia (provenance). Se lanza a mano desde
+# Actions (workflow_dispatch) o al empujar una etiqueta v*. Necesita el secreto NPM_TOKEN
+# (token "granular" con permiso de publicar en los dos paquetes) en Settings → Secrets.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter xilaplot --filter xilaplot-vue build
+      - run: pnpm typecheck && pnpm exec vitest run
+      # --no-git-checks: la etiqueta no es una rama. workspace:^ se sustituye por la versión real.
+      - run: pnpm --filter xilaplot --filter xilaplot-vue publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'

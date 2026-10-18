@@ -5,7 +5,7 @@ import {
   minMaxDecimate,
   numberColumn,
   type DecimatedSeries,
-} from '@xila/core';
+} from 'xilaplot';
 import { Chart as ChartJS } from 'chart.js/auto';
 import * as echarts from 'echarts';
 import Plotly from 'plotly.js-dist-min';

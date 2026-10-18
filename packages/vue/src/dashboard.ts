@@ -17,7 +17,7 @@ import {
   type PanelGrafico,
   type PanelKpi,
   type ValidationError,
-} from '@xila/core';
+} from 'xilaplot';
 import { computed, defineComponent, h, markRaw, shallowRef, type PropType, type VNode } from 'vue';
 import { XilaChart } from './chart';
 

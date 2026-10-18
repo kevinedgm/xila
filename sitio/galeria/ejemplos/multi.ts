@@ -1,4 +1,4 @@
-import { legendPlugin, pivot, tooltipPlugin, type ChartConfig } from '@xila/core';
+import { legendPlugin, pivot, tooltipPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 
 /** Varias series: toneladas por persona. `pivot` pasa de formato largo a una columna por país. */

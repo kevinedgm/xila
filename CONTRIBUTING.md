@@ -22,7 +22,7 @@ Requiere Node 20 o superior y pnpm 10.
 git clone https://github.com/kevinedgm/xila
 cd xila
 pnpm install
-pnpm build        # construye @xila/core y @xila/vue
+pnpm build        # construye xilaplot y xilaplot-vue
 pnpm dev          # ejemplos en http://localhost:5173
 ```
 
@@ -49,7 +49,7 @@ solo por eso, dilo en el PR.
   transformaciones; un caso en `examples/tests/visual.spec.ts` si cambia el dibujo.
 - Comentarios en español, como el resto del código, que expliquen el **porqué** (una decisión,
   un límite del navegador), no el qué.
-- Nada de dependencias nuevas en `@xila/core` sin discutirlo: el núcleo no tiene ninguna en
+- Nada de dependencias nuevas en `xilaplot` sin discutirlo: el núcleo no tiene ninguna en
   tiempo de ejecución y queremos que siga así.
 - Si cambias el dibujo a propósito, regenera las capturas con `--update-snapshots` y revisa el
   diff de las imágenes en el commit.

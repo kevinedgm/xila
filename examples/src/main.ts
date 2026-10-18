@@ -12,13 +12,13 @@ import {
   accessibilityPlugin,
   histogramTable,
   type ChartConfig,
-} from '@xila/core';
+} from 'xilaplot';
 import { generateSeries } from './bench/synthetic';
 
 const plugins = () => [tooltipPlugin(), legendPlugin(), accessibilityPlugin()];
 
 const estado = document.getElementById('estado');
-if (estado) estado.textContent = `@xila/core ${version}`;
+if (estado) estado.textContent = `xilaplot ${version}`;
 
 const charts: Record<string, Chart> = {};
 function mount(id: string, config: ChartConfig): Chart {

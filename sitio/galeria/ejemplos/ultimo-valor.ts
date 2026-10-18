@@ -1,4 +1,4 @@
-import { formatNumber, type ChartPlugin } from '@xila/core';
+import { formatNumber, type ChartPlugin } from 'xilaplot';
 
 /**
  * Plugin de ejemplo: escribe el último valor de cada serie visible a la derecha de su punto

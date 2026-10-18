@@ -1,6 +1,6 @@
 {
-  "name": "@xila/vue",
-  "version": "0.0.0",
+  "name": "xilaplot-vue",
+  "version": "0.1.0",
   "description": "Componentes Vue para Xila.",
   "license": "MIT",
   "type": "module",
@@ -14,19 +14,42 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean --external vue",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@xila/core": "workspace:*"
+    "xilaplot": "workspace:^"
   },
   "peerDependencies": {
     "vue": "^3.4.0"
   },
   "devDependencies": {
     "vue": "^3.5.44"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinedgm/xila.git",
+    "directory": "packages/vue"
+  },
+  "homepage": "https://kevinedgm.github.io/xila/",
+  "bugs": "https://github.com/kevinedgm/xila/issues",
+  "keywords": [
+    "charts",
+    "plot",
+    "canvas",
+    "webgl",
+    "dashboard",
+    "typescript",
+    "csv",
+    "pandas",
+    "vue"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

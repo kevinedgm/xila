@@ -1,4 +1,4 @@
-import { Chart, DataTable, numberColumn, tooltipPlugin, zoomPanPlugin } from '@xila/core';
+import { Chart, DataTable, numberColumn, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 import { mulberry32 } from './bench/synthetic';
 
 /**

@@ -1,4 +1,4 @@
-import { Chart, type ChartConfig } from '@xila/core';
+import { Chart, type ChartConfig } from 'xilaplot';
 import {
   defineComponent,
   h,
@@ -30,7 +30,7 @@ function injectStyle(): void {
 
 /**
  * Envoltorio delgado: traduce el ciclo de vida de Vue al de `Chart`. Toda la lógica vive
- * en `@xila/core`. La configuración se trata con `markRaw` para que Vue no envuelva los
+ * en `xilaplot`. La configuración se trata con `markRaw` para que Vue no envuelva los
  * `Float64Array` en proxies reactivos, lo que arruinaría el rendimiento.
  *
  * Mientras el gráfico no se ha dibujado (datos cargando, o fuera de pantalla con render

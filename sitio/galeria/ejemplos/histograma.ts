@@ -1,4 +1,4 @@
-import { histogramTable, tooltipPlugin, type ChartConfig } from '@xila/core';
+import { histogramTable, tooltipPlugin, type ChartConfig } from 'xilaplot';
 import { co2 } from './datos';
 
 /** Histograma: distribución de toneladas por persona en todos los país-año (Freedman–Diaconis). */
