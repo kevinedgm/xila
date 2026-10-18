@@ -15,12 +15,13 @@ test('tira y cubetas se dibujan y la transición termina en la posición objetiv
 }) => {
   await listo(page);
   await expect(page.locator('#unidades')).toHaveScreenshot('unidades-tira.png');
-  await page.click('#m-binned');
+  await page.click('#unidades .xila-summary-modes button[data-mode="binned"]');
   // La transición dura 600 ms; después del tiempo las posiciones deben ser las finales.
   await page.waitForTimeout(900);
   await expect(page.locator('#unidades')).toHaveScreenshot('unidades-cubetas.png');
-  const lectura = page.locator('#unidades .xila-readout');
-  await expect(lectura).toContainText('1,240 casos en total');
+  const panel = page.locator('#unidades .xila-summary');
+  await expect(panel).toContainText('1,240');
+  await expect(panel).toContainText('casos en total');
 });
 
 test('arrastrar cuenta los casos del rango y la lectura es accesible', async ({ page }) => {
@@ -32,11 +33,13 @@ test('arrastrar cuenta los casos del rango y la lectura es accesible', async ({ 
   await page.mouse.down();
   await page.mouse.move(caja.x + caja.width * 0.5, y, { steps: 5 });
   await page.mouse.up();
-  const lectura = page.locator('#unidades .xila-readout');
+  const lectura = page.locator('#unidades .xila-summary');
   await expect(lectura).toHaveAttribute('aria-live', 'polite');
-  await expect(lectura).toContainText(/\d+ casos \(\d+\.\d %\) entre/);
+  await expect(lectura).toContainText(/casos · \d+\.\d % del total/);
   const texto = (await lectura.textContent()) ?? '';
-  const cuenta = Number(texto.match(/^([\d,]+) casos/)?.[1]?.replace(/,/g, ''));
+  const cuenta = Number(
+    (await page.locator('#unidades .xila-summary-count').textContent())?.replace(/,/g, ''),
+  );
   expect(cuenta).toBeGreaterThan(0);
   expect(cuenta).toBeLessThan(1240);
   const evento = await page.evaluate(() => {
@@ -50,8 +53,14 @@ test('arrastrar cuenta los casos del rango y la lectura es accesible', async ({ 
   await page.keyboard.press('End');
   const fin = (await lectura.textContent()) ?? '';
   expect(fin).not.toBe(texto);
-  await page.keyboard.press('Escape');
-  await expect(lectura).toContainText('en total');
+  // "Quitar selección" es la acción visible; deja el total.
+  await page.click('#unidades .xila-summary-clear');
+  await expect(lectura).toContainText('casos en total');
+  expect(
+    await page.evaluate(() =>
+      (window as unknown as { grafico: { getSelection(): unknown } }).grafico.getSelection(),
+    ),
+  ).toBeNull();
 });
 
 test('en modo cubetas la selección salta a los bordes de cubeta', async ({ page }) => {

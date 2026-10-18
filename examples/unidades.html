@@ -27,25 +27,6 @@
         gap: 16px;
         flex-wrap: wrap;
       }
-      .seg {
-        display: inline-flex;
-        border: 1px solid #cfcfcf;
-        border-radius: 4px;
-        overflow: hidden;
-      }
-      .seg button {
-        border: 0;
-        background: #fff;
-        padding: 0 12px;
-        min-height: 36px;
-        cursor: pointer;
-        color: #555;
-        font: inherit;
-      }
-      .seg button[aria-pressed='true'] {
-        background: #1f2933;
-        color: #fff;
-      }
       .chart {
         height: 360px;
       }
@@ -59,11 +40,10 @@
     <div class="barra">
       <div>
         <h1>Tiempo de atención por caso</h1>
-        <p class="sub">Minutos · <span id="n"></span> casos · cada punto es un caso</p>
-      </div>
-      <div class="seg" role="group" aria-label="Forma">
-        <button id="m-strip" aria-pressed="true">Casos sueltos</button>
-        <button id="m-binned" aria-pressed="false">Agrupados</button>
+        <p class="sub">
+          Minutos · <span id="n"></span> casos · cada punto es un caso · el panel resume el rango
+          seleccionado
+        </p>
       </div>
     </div>
     <div id="unidades" class="chart"></div>

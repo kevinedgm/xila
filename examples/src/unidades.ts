@@ -1,10 +1,18 @@
-import { Chart, DataTable, numberColumn, selectionPlugin, tooltipPlugin } from 'xilaplot';
+import {
+  Chart,
+  DataTable,
+  numberColumn,
+  selectionPlugin,
+  summaryPlugin,
+  tooltipPlugin,
+} from 'xilaplot';
 import { mulberry32 } from './bench/synthetic';
 
 /**
- * Gráfico de unidades (E8.01): un punto por caso, con transición entre tira y cubetas y una
- * selección que cuenta en vez de hacer zoom. `window.grafico` y `window.modo(m)` sirven a las
- * pruebas; `?n=` cambia el número de casos (el wireframe original tenía 1 240).
+ * Gráfico de unidades (E8.01) con la estructura "A · Resumen al lado" elegida en la ronda r01:
+ * un punto por caso, transición entre tira y cubetas, selección que cuenta en vez de hacer zoom y
+ * un panel con cifra, porcentaje, rango, mediana, forma y "Quitar selección". `window.grafico` y
+ * `window.modo(m)` sirven a las pruebas; `?n=` cambia el número de casos (el wireframe tenía 1 240).
  */
 const params = new URLSearchParams(location.search);
 const n = Number(params.get('n') ?? 1240);
@@ -25,7 +33,8 @@ const grafico = new Chart(document.getElementById('unidades') as HTMLElement, {
   series: [{ id: 'casos', name: 'Caso', x: 'minutos' }],
   dots: { mode: 'strip' },
   plugins: [
-    selectionPlugin({ unit: ['caso', 'casos'] }),
+    selectionPlugin({ unit: ['caso', 'casos'], readout: false }),
+    summaryPlugin({ unit: ['caso', 'casos'], format: (v) => `${v.toFixed(1)} min` }),
     tooltipPlugin({ mode: 'nearest', formatY: (v) => `${v} min` }),
   ],
   axes: { x: { title: 'Minutos de atención' }, y: { title: 'Casos' } },
@@ -33,12 +42,7 @@ const grafico = new Chart(document.getElementById('unidades') as HTMLElement, {
 
 function modo(m: 'strip' | 'binned'): void {
   grafico.update({ dots: { mode: m } });
-  for (const id of ['strip', 'binned']) {
-    document.getElementById(`m-${id}`)?.setAttribute('aria-pressed', String(id === m));
-  }
 }
-document.getElementById('m-strip')?.addEventListener('click', () => modo('strip'));
-document.getElementById('m-binned')?.addEventListener('click', () => modo('binned'));
 
 declare global {
   interface Window {

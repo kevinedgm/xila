@@ -36,6 +36,7 @@ function context(raw: ChartConfig): PluginContext {
     getDataDomain: domain,
     getViewDomain: () => null,
     setViewDomain: vi.fn(),
+    update: vi.fn(),
     getSelection: () => null,
     setSelection: vi.fn(),
     countSelection: () => ({ count: 0, total: 0 }),

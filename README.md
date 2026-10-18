@@ -91,7 +91,8 @@ en columnas: el histograma explicado como pila de casos). Cambiar de modo con `u
 cada punto de su posición anterior a la nueva durante `dots.transition` ms (600; se omite con
 `prefers-reduced-motion`). `dots.bins` acepta las mismas reglas que `histogram` y
 `dots.radius` fija el radio o lo ajusta (`'auto'`) para que la cubeta más alta quepa. Con
-`selectionPlugin` arrastrar cuenta los casos de un rango en vez de hacer zoom. Ejemplo:
+`selectionPlugin` arrastrar cuenta los casos de un rango en vez de hacer zoom, y `summaryPlugin`
+pone al lado la cifra, el porcentaje, el rango, la mediana y los botones de forma. Ejemplo:
 `examples/unidades.html`.
 
 ## Box plot
@@ -115,7 +116,7 @@ dibuja la barra de color. `colormap()` está exportada para usar los mismos colo
 
 ## Plugins
 
-Tooltip, leyenda, zoom/pan, selección que cuenta y anotaciones vienen en `xilaplot`; opciones y mecanismo en
+Tooltip, leyenda, zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
 [`docs/plugins.md`](docs/plugins.md).
 
 ## Dashboards para clientes

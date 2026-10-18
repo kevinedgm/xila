@@ -280,6 +280,7 @@ export class Chart {
       getDataDomain: (axis) => this.domain(axis),
       getViewDomain: (axis) => this.view[axis],
       setViewDomain: (axis, domain) => this.setViewDomain(axis, domain),
+      update: (patch) => this.update(patch as Partial<ChartConfig>),
       getSelection: () => this.selection,
       setSelection: (range) => this.setSelection(range),
       countSelection: (range) => this.countSelection(range),

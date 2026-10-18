@@ -67,7 +67,7 @@ código completo que lo produce; todos empiezan por cargar la tabla una sola vez
 ## Casos como unidades
 
 El mismo histograma, pero cada país-año es un punto: arrastra para contar cuántos caen en un
-rango (o usa ← → y Escape con el gráfico enfocado).
+rango (o usa ← → con el gráfico enfocado); el panel de al lado resume el rango.
 
 <Demo :cargar="unidades" :alto="320" />
 

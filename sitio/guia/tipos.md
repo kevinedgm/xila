@@ -61,7 +61,8 @@ posición anterior a la nueva durante `dots.transition` ms, y se respeta `prefer
 
 El eje Y en cubetas cuenta casos y es lineal en píxeles: el radio (`dots.radius`, `'auto'` por
 defecto) baja hasta que la cubeta más alta cabe en el área. Con `selectionPlugin` arrastrar
-cuenta y resume el rango; en cubetas la selección salta a los bordes.
+cuenta el rango y `summaryPlugin` lo resume en un panel al lado (cifra, porcentaje, rango,
+mediana, forma); en cubetas la selección salta a los bordes.
 
 ## Escalas y ejes
 

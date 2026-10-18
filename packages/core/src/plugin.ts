@@ -46,6 +46,8 @@ export interface PluginContext {
   readonly getViewDomain: (axis: 'x' | 'y') => Domain | null;
   /** Fija (o quita, con `null`) el rango mostrado: es lo que usan zoom y pan. */
   readonly setViewDomain: (axis: 'x' | 'y', domain: Domain | null) => void;
+  /** Mezcla cambios en la configuración y redibuja (lo mismo que `chart.update`). */
+  readonly update: (patch: Record<string, unknown>) => void;
   /** Rango seleccionado en X (plugin de selección): los datos fuera se dibujan atenuados. */
   readonly getSelection: () => Domain | null;
   /** Fija (o quita) la selección; emite `selection` con el conteo. */

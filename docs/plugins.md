@@ -88,6 +88,36 @@ traduce gestos a `ctx.setSelection(rango)`; el núcleo guarda el rango, emite el
 el código de la página, puede leer `chart.getSelection()` o fijar la selección sin pasar por el
 ratón. Con Shift arrastrar sigue siendo del `zoomPanPlugin` si está instalado.
 
+## `summaryPlugin(opciones)`
+
+Panel de resumen de la selección, la estructura "A · Resumen al lado" elegida en la ronda r01 del
+gráfico de unidades: cifra grande con el conteo, porcentaje del total, rango, estadísticos del
+rango, botones "Sueltos / Agrupados" cuando el gráfico es de unidades y un botón "Quitar
+selección". Lee la selección que guarda el núcleo, así que va junto a
+`selectionPlugin({ readout: false })` (o a `chart.setSelection`).
+
+```ts
+plugins: [
+  selectionPlugin({ unit: ['caso', 'casos'], readout: false }),
+  summaryPlugin({ unit: ['caso', 'casos'], format: (v) => `${v.toFixed(1)} min` }),
+];
+```
+
+| Opción     | Por defecto         | Qué hace                                                                               |
+| ---------- | ------------------- | -------------------------------------------------------------------------------------- |
+| `unit`     | `['dato', 'datos']` | Singular y plural de la cifra                                                          |
+| `position` | `'auto'`            | `'right'` reserva una columna; `'bottom'` una franja; auto: columna a partir de 700 px |
+| `width`    | `240`               | Ancho de la columna                                                                    |
+| `stats`    | `['median']`        | Estadísticos del rango: `median`, `mean`, `min`, `max`                                 |
+| `modes`    | `true`              | Botones de forma (solo con `type: 'dots'`)                                             |
+| `format`   | formato del eje X   | Texto del rango y los estadísticos                                                     |
+| `labels`   | español             | Textos de la interfaz (`total`, `range`, `all`, `clear`, `strip`, `binned`, …)         |
+
+Mecanismo: el panel es un `div` con `role="region"` y `aria-live="polite"` colgado del gráfico;
+`reserveSpace` descuenta su ancho (o su alto) del área de dibujo, y se rellena en cada evento
+`selection`, en el primer dibujo y tras `dataChanged`. Los botones de forma llaman a
+`ctx.update({ dots: { mode } })`, el mismo `update` del gráfico.
+
 ## `annotationsPlugin(anotaciones)`
 
 Marca eventos sobre el gráfico. Las anotaciones guardan su posición en **valores de datos**
