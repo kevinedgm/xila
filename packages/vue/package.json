@@ -1,0 +1,32 @@
+{
+  "name": "@xila/vue",
+  "version": "0.0.0",
+  "description": "Componentes Vue para Xila.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean --external vue",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xila/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "vue": "^3.5.44"
+  }
+}
