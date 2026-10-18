@@ -48,7 +48,8 @@ devuelve los mismos números para usarlos fuera.
 
 `x` e `y` categóricas más `value` numérica. Se dibuja como una imagen de un píxel por celda
 escalada sin suavizado, por eso 500 × 500 celdas cuestan lo mismo que 10 × 10.
-`heatmap.colormap`: `viridis`, `magma`, `inferno`, `plasma` (perceptuales), `rdbu`
+`heatmap.colormap`: `cobalto` (por defecto, un solo tono claro → oscuro), `viridis`, `magma`,
+`inferno`, `plasma` (perceptuales), `rdbu`
 (divergente) o una lista de hexadecimales. `center: 0` hace el dominio simétrico, útil para
 correlaciones. `legend: false` quita la barra de color.
 

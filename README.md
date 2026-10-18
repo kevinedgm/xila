@@ -109,8 +109,9 @@ series se colocan lado a lado; el tooltip muestra mediana, cuartiles y `n`. `box
 `type: 'heatmap'` toma datos en formato largo: `x` e `y` son las columnas categóricas (columna y
 fila de la celda) y `value` la numérica. Se dibuja como una imagen de un píxel por celda
 escalada sin suavizado, así 500 × 500 celdas cuestan milisegundos. `heatmap.colormap` acepta
-`viridis` (por defecto), `magma`, `inferno`, `plasma` (perceptuales: la luminosidad crece de
-forma uniforme, legibles con daltonismo y en blanco y negro), `rdbu` (divergente) o paradas
+`cobalto` (por defecto: un solo tono de la paleta, de casi blanco a marino), `viridis`, `magma`,
+`inferno`, `plasma` (perceptuales: la luminosidad crece de forma uniforme, legibles con
+daltonismo y en blanco y negro), `rdbu` (divergente) o paradas
 hexadecimales propias. `center: 0` hace el dominio simétrico para correlaciones; `legend`
 dibuja la barra de color. `colormap()` está exportada para usar los mismos colores fuera.
 

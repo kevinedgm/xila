@@ -100,7 +100,7 @@ export interface HeatmapChartConfig extends BaseChartConfig {
    * celda) y `value` la numérica. Celdas sin fila en la tabla quedan vacías.
    */
   readonly heatmap?: {
-    /** Mapa de color por nombre o paradas hexadecimales propias. `viridis` por defecto. */
+    /** Mapa de color por nombre o paradas hexadecimales propias. `cobalto` por defecto. */
     readonly colormap?: ColormapName | readonly string[];
     /** Rango de valores que cubre el mapa; `'auto'` usa min y max de los datos. */
     readonly domain?: readonly [number, number] | 'auto';
@@ -189,7 +189,7 @@ export const DEFAULTS = {
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2 },
   scatter: { radius: 3, ring: 1.5 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
-  heatmap: { colormap: 'viridis', domain: 'auto', center: null, legend: true },
+  heatmap: { colormap: 'cobalto', domain: 'auto', center: null, legend: true },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
 } as const;
 

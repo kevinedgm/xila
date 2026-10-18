@@ -10,9 +10,13 @@
  *
  * `rdbu` es divergente (ColorBrewer RdBu): para correlaciones y cualquier variable con un centro
  * significativo (0), donde el color debe decir "cuánto y hacia qué lado".
+ *
+ * `cobalto` es el secuencial de un solo tono de la paleta (de casi blanco al azul de la serie
+ * 1 y de ahí a marino): la magnitud se lee como claro → oscuro y el mapa no compite con la
+ * paleta categórica del resto del tablero. Es el valor por defecto.
  */
 
-export type ColormapName = 'viridis' | 'magma' | 'inferno' | 'plasma' | 'rdbu';
+export type ColormapName = 'cobalto' | 'viridis' | 'magma' | 'inferno' | 'plasma' | 'rdbu';
 
 /** `t` en [0, 1] → `[r, g, b]` en [0, 255]. */
 export type Colormap = (t: number) => readonly [number, number, number];
@@ -57,6 +61,7 @@ const PLASMA: Poly = [
 ];
 
 const RDBU = ['#b2182b', '#ef8a62', '#fddbc7', '#f7f7f7', '#d1e5f0', '#67a9cf', '#2166ac'];
+const COBALTO = ['#eef2fb', '#c3d0f3', '#8fa8e8', '#5a7ede', '#2456d6', '#1a3f9e', '#102a6e'];
 
 function polynomial(p: Poly): Colormap {
   return (t) => {
@@ -109,6 +114,7 @@ export function stopsColormap(stops: readonly string[]): Colormap {
 }
 
 const NAMED: Record<ColormapName, Colormap> = {
+  cobalto: stopsColormap(COBALTO),
   viridis: polynomial(VIRIDIS),
   magma: polynomial(MAGMA),
   inferno: polynomial(INFERNO),

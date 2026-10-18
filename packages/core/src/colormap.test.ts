@@ -35,6 +35,19 @@ describe('colormap', () => {
     }
   });
 
+  it('cobalto es un solo tono con luminosidad decreciente de forma monótona', () => {
+    const map = colormap('cobalto');
+    let prev = Infinity;
+    for (let i = 0; i <= 20; i++) {
+      const [r, g, b] = map(i / 20);
+      const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      expect(lum).toBeLessThan(prev);
+      prev = lum;
+    }
+    expect(map(0)).toEqual([238, 242, 251]);
+    expect(map(1)).toEqual([16, 42, 110]);
+  });
+
   it('rdbu es divergente con gris neutro en el centro y recorta fuera de [0, 1]', () => {
     const map = colormap('rdbu');
     expect(map(0.5)).toEqual([247, 247, 247]);

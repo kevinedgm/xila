@@ -7,7 +7,7 @@ import type { ColormapName } from 'xilaplot';
  */
 const params = new URLSearchParams(location.search);
 const n = Number(params.get('n') ?? 500);
-const mapa = (params.get('colormap') ?? 'viridis') as ColormapName;
+const mapa = (params.get('colormap') ?? 'cobalto') as ColormapName;
 
 const total = n * n;
 const col = new Array<string>(total);
