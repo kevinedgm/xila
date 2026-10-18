@@ -14,7 +14,7 @@
     "decision_r01": "Kevin eligió 'A · Resumen al lado' (2026-10-18 21:34); B y C descartadas"
   },
   "lima": {
-    "tokens": "pendientes (design_system: NEW); usa el tema actual de xilaplot"
+    "tokens": ".fruti/tokens.json (paleta Cobalto, confirmada por Kevin 2026-10-18 23:55; 'Tinta y grana' descartada)"
   },
   "coco": {
     "implementation": [
@@ -23,7 +23,10 @@
       "packages/core/src/chart.ts (drawDots, dotsScale, selection)",
       "packages/core/src/plugins/summary.ts (panel A)"
     ],
-    "tests": ["packages/core/src/dots.test.ts", "examples/tests/unidades.spec.ts"],
+    "tests": [
+      "packages/core/src/dots.test.ts",
+      "examples/tests/unidades.spec.ts"
+    ],
     "example": "examples/unidades.html"
   },
   "mora": {
@@ -35,9 +38,11 @@
       "docs/plugins.md#summaryplugin"
     ],
     "review_required": [
-      "paleta y radio mínimo del punto (E0/E4.07)",
       "texto por defecto de la lectura"
     ],
-    "missing_evidence": ["tokens aprobados", "prueba con usuarios externos (E7.09)"]
+    "missing_evidence": [
+      "tokens aprobados",
+      "prueba con usuarios externos (E7.09)"
+    ]
   }
 }
