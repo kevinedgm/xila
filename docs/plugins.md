@@ -85,8 +85,13 @@ annotationsPlugin([
 ]);
 ```
 
-Campos comunes: `label`, `color` (por defecto el texto del tema) y `opacity` (líneas 0.8,
-bandas 0.12). En un gráfico de barras `value`, `from` y `to` admiten el nombre de la categoría
+Campos comunes: `label`, `description` (detalle al pasar el cursor), `color` (por defecto el
+texto del tema), `opacity` (líneas 0.8, bandas 0.12) y `labelPosition` (`'start'`, arriba o a la
+izquierda, o `'end'`). Una etiqueta que no cabe de su lado natural se coloca hacia dentro: la
+de una línea vertical pegada al borde derecho pasa a la izquierda de la línea, y la de una
+horizontal en el borde superior pasa debajo. Al pasar el cursor por una línea, banda o texto
+aparece un recuadro con `label` y `description` (`annotationsPlugin(items, { hover: false })`
+lo desactiva). En un gráfico de barras `value`, `from` y `to` admiten el nombre de la categoría
 (`'sur'`) o su índice.
 
 El plugin devuelve `set(anotaciones)` para reemplazarlas en caliente (pide un redibujo) y

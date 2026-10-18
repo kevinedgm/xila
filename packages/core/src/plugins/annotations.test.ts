@@ -6,7 +6,7 @@ import type { PluginContext } from '../plugin';
 import type { Renderer } from '../renderer';
 import { bandScale } from '../scales/band';
 import { linearScale } from '../scales/linear';
-import { annotationPixel, annotationsPlugin } from './annotations';
+import { annotationAt, annotationBoxes, annotationPixel, annotationsPlugin } from './annotations';
 
 const x = linearScale([0, 100], [10, 110]);
 const y = linearScale([0, 10], [60, 10]);
@@ -16,6 +16,7 @@ function context(scales: { x: typeof x | ReturnType<typeof bandScale>; y: typeof
     drawRule: vi.fn(),
     drawRect: vi.fn(),
     drawText: vi.fn(),
+    measureText: vi.fn(() => 30),
   } as unknown as Renderer;
   const data = new DataTable({ a: numberColumn([0, 1]), b: numberColumn([1, 2]) });
   const ctx: PluginContext = {
@@ -110,7 +111,8 @@ describe('annotationsPlugin', () => {
 
   it('set() reemplaza y pide redibujo', () => {
     const { ctx } = context({ x, y });
-    const plugin = annotationsPlugin();
+    // Sin `hover` no hace falta DOM (vitest corre en Node).
+    const plugin = annotationsPlugin([], { hover: false });
     plugin.install?.(ctx);
     plugin.set([{ type: 'text', x: 1, y: 1, text: 'hola' }]);
     expect(plugin.get()).toHaveLength(1);
@@ -134,5 +136,50 @@ describe('annotationsPlugin', () => {
       60,
       expect.anything(),
     );
+  });
+});
+
+describe('etiquetas y detalle', () => {
+  it('una línea cerca del borde derecho pone su etiqueta a la izquierda', () => {
+    const { ctx, renderer } = context({ x, y });
+    // x=95 → píxel 105; el área termina en 110 y el texto mide 30: no cabe a la derecha.
+    annotationsPlugin([{ type: 'line', axis: 'x', value: 95, label: 'fin' }]).afterDraw?.(ctx);
+    expect(renderer.drawText).toHaveBeenCalledWith(
+      'data',
+      'fin',
+      101,
+      14,
+      expect.objectContaining({ align: 'right' }),
+    );
+  });
+
+  it('labelPosition: end baja la etiqueta al pie de la línea', () => {
+    const { ctx, renderer } = context({ x, y });
+    annotationsPlugin([
+      { type: 'line', axis: 'x', value: 10, label: 'a', labelPosition: 'end' },
+    ]).afterDraw?.(ctx);
+    expect(renderer.drawText).toHaveBeenCalledWith(
+      'data',
+      'a',
+      24,
+      56,
+      expect.objectContaining({ baseline: 'bottom' }),
+    );
+  });
+
+  it('annotationAt encuentra la anotación bajo el cursor, la última encima', () => {
+    const area = { x: 10, y: 10, width: 100, height: 50 };
+    const boxes = annotationBoxes(
+      [
+        { type: 'band', axis: 'x', from: 20, to: 60, id: 'banda' },
+        { type: 'line', axis: 'x', value: 50, id: 'linea' },
+      ],
+      { x, y },
+      area,
+      [],
+    );
+    expect(annotationAt(boxes, 60, 30)?.id).toBe('linea');
+    expect(annotationAt(boxes, 40, 30)?.id).toBe('banda');
+    expect(annotationAt(boxes, 100, 30)).toBeNull();
   });
 });

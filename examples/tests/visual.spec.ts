@@ -73,3 +73,25 @@ test('redimensionar el contenedor redibuja con el nuevo tamaño', async ({ page 
   for (const [w, h] of sizes) expect([w, h]).toEqual([500, 220]);
   await expect(chart).toHaveScreenshot('barras-500x220.png');
 });
+
+test('pasar el cursor por una anotación muestra su detalle', async ({ page }) => {
+  await abrir(page);
+  const chart = page.locator('#fechas');
+  await chart.scrollIntoViewIfNeeded();
+  const box = (await chart.boundingBox()) as {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  // La línea "Buen Fin" está el 17 de noviembre: ~87.6 % del año; el área de dibujo
+  // empieza tras el eje Y, así que se busca el píxel con un pequeño barrido.
+  const tip = chart.locator('.xila-annotation-tip');
+  for (let f = 0.85; f <= 0.93; f += 0.002) {
+    await page.mouse.move(box.x + box.width * f, box.y + box.height * 0.5);
+    if (await tip.isVisible()) break;
+  }
+  await expect(tip).toBeVisible();
+  await expect(tip).toContainText('Buen Fin');
+  await expect(tip).toContainText('14 al 17 de noviembre');
+});

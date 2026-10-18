@@ -105,7 +105,12 @@ export type { TooltipOptions } from './plugins/tooltip';
 export { legendPlugin } from './plugins/legend';
 export { zoomPanPlugin, zoomDomain, panDomain, clampDomain } from './plugins/zoom-pan';
 export type { ZoomPanOptions } from './plugins/zoom-pan';
-export { annotationsPlugin, annotationPixel } from './plugins/annotations';
+export {
+  annotationsPlugin,
+  annotationPixel,
+  annotationBoxes,
+  annotationAt,
+} from './plugins/annotations';
 export { accessibilityPlugin, chartSummary } from './plugins/accessibility';
 export { syncPlugin, syncGroupSize } from './plugins/sync';
 export type { SyncOptions } from './plugins/sync';
@@ -117,6 +122,9 @@ export type {
   BandAnnotation,
   TextAnnotation,
   AnnotationsPlugin,
+  AnnotationsOptions,
+  AnnotationBox,
+  LabelPosition,
 } from './plugins/annotations';
 export type { LegendOptions } from './plugins/legend';
 

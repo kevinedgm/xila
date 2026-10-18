@@ -138,6 +138,7 @@ mount('fechas', {
         from: new Date(Date.UTC(2025, 6, 7)),
         to: new Date(Date.UTC(2025, 6, 20)),
         label: 'Campaña de verano',
+        description: 'Anuncios en redes del 7 al 20 de julio.',
         color: '#f59e0b',
       },
       {
@@ -145,6 +146,7 @@ mount('fechas', {
         axis: 'x',
         value: new Date(Date.UTC(2025, 10, 17)),
         label: 'Buen Fin',
+        description: 'Fin de semana de descuentos: 14 al 17 de noviembre.',
         dash: [4, 3],
       },
       { type: 'line', axis: 'y', value: 1000, label: 'Meta', color: '#10b981' },
