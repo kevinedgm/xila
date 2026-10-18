@@ -124,3 +124,18 @@ gráfico:
 | `table`     | `boolean` | `true`           |
 
 `chartSummary(ctx)` genera el resumen por separado, por si se quiere mostrar en pantalla.
+
+## `syncPlugin({ group, cursor, zoom })`
+
+Varios gráficos con el mismo eje X se mueven juntos: el cursor marca el mismo instante en todos
+(con su tooltip) y el zoom o pan de uno se aplica a los demás. Se sincroniza en **valores de
+datos**, no en píxeles, así que los gráficos pueden tener distinto tamaño o márgenes.
+
+```ts
+// En cada gráfico del grupo:
+plugins: [tooltipPlugin(), zoomPanPlugin(), syncPlugin({ group: 'sensores' })];
+```
+
+`cursor: false` o `zoom: false` desactivan una de las dos cosas. Mecanismo: el plugin escucha
+los eventos `hover` y `zoom` del gráfico y llama a `hoverAt` / `setViewDomain` en los demás
+miembros; una bandera por grupo evita que esos cambios reboten. Ejemplo: `examples/sincronia.html`.

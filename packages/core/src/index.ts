@@ -107,6 +107,8 @@ export { zoomPanPlugin, zoomDomain, panDomain, clampDomain } from './plugins/zoo
 export type { ZoomPanOptions } from './plugins/zoom-pan';
 export { annotationsPlugin, annotationPixel } from './plugins/annotations';
 export { accessibilityPlugin, chartSummary } from './plugins/accessibility';
+export { syncPlugin, syncGroupSize } from './plugins/sync';
+export type { SyncOptions } from './plugins/sync';
 export type { AccessibilityOptions } from './plugins/accessibility';
 export type {
   Annotation,

@@ -23,6 +23,8 @@ export function tooltipPlugin(options: TooltipOptions = {}): ChartPlugin {
   let el: HTMLDivElement | null = null;
   let off: (() => void) | null = null;
   let hostStyle = '';
+  /** Contexto del último layout: el de `install` tiene el área de dibujo todavía vacía. */
+  let latest: PluginContext | null = null;
 
   const hide = (): void => {
     if (el) el.style.display = 'none';
@@ -73,8 +75,11 @@ export function tooltipPlugin(options: TooltipOptions = {}): ChartPlugin {
         if (!payload) return hide();
         const hits = mode === 'nearest' ? [payload.nearest] : payload.hits;
         const visible = hits.filter((h): h is Hit => h !== null && h.distance <= maxDistance);
-        show(visible, ctx);
+        show(visible, latest ?? ctx);
       });
+    },
+    afterLayout(_layout, ctx) {
+      latest = ctx;
     },
     uninstall(ctx) {
       off?.();

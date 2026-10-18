@@ -9,6 +9,7 @@ export default defineConfig({
         bench: resolve(import.meta.dirname, 'bench.html'),
         dashboard: resolve(import.meta.dirname, 'dashboard.html'),
         muchos: resolve(import.meta.dirname, 'muchos.html'),
+        sincronia: resolve(import.meta.dirname, 'sincronia.html'),
       },
     },
   },
