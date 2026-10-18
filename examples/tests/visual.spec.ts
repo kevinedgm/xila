@@ -14,6 +14,7 @@ const CASOS = [
   'log',
   'banda',
   'errores',
+  'histograma',
 ] as const;
 
 async function abrir(page: Page): Promise<void> {

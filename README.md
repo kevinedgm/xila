@@ -63,6 +63,14 @@ Una serie puede declarar su error: `yError` (simétrico, `y ± error`) o `yLow` 
 dibuja como banda sombreada bajo la línea; en dispersión, como barras de error con remates. El
 dominio Y incluye los límites y el tooltip muestra el intervalo entre paréntesis.
 
+## Histogramas
+
+`histogram(valores, { bins })` cuenta en cubetas iguales (los `NaN` se ignoran; el último borde
+es inclusivo, como `numpy.histogram`). `bins` acepta un entero o una regla: `'fd'`
+(Freedman–Diaconis, por defecto: ancho `2·IQR/n^(1/3)`, robusto a atípicos), `'sturges'` o
+`'sqrt'`. `histogramTable` devuelve una `DataTable` con la etiqueta de cada cubeta y su conteo,
+lista para un gráfico `bar` con `bar: { padding: 0 }`.
+
 ## Plugins
 
 Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en

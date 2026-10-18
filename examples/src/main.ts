@@ -10,6 +10,7 @@ import {
   zoomPanPlugin,
   annotationsPlugin,
   accessibilityPlugin,
+  histogramTable,
   type ChartConfig,
 } from '@xila/core';
 import { generateSeries } from './bench/synthetic';
@@ -226,3 +227,23 @@ mount('errores', {
 });
 
 Object.assign(window, { charts });
+
+// 9. Histograma: la distribución de una variable. `histogramTable` elige el número de cubetas con
+// Freedman–Diaconis (2·IQR/n^(1/3)) y devuelve una tabla de barras; `bins: 30` lo fijaría a mano.
+const muestra = new Float64Array(10_000);
+let semillaH = 11;
+const uniforme = () => (semillaH = (semillaH * 16807) % 2147483647) / 2147483647;
+for (let i = 0; i < muestra.length; i += 2) {
+  const r = Math.sqrt(-2 * Math.log(uniforme() || 1e-12));
+  const a = 2 * Math.PI * uniforme();
+  muestra[i] = 50 + 10 * r * Math.cos(a);
+  if (i + 1 < muestra.length) muestra[i + 1] = 50 + 10 * r * Math.sin(a);
+}
+mount('histograma', {
+  type: 'bar',
+  plugins: [tooltipPlugin(), accessibilityPlugin()],
+  data: histogramTable(muestra, { binColumn: 'rango', countColumn: 'n' }),
+  series: [{ id: 'n', name: 'Frecuencia', x: 'rango', y: 'n' }],
+  bar: { padding: 0 },
+  axes: { x: { title: 'Valor' }, y: { title: 'Frecuencia' } },
+});
