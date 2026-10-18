@@ -1,0 +1,14 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Xila · API",
+  "entryPoints": ["../packages/core/src/index.ts", "../packages/vue/src/index.ts"],
+  "tsconfig": "typedoc.tsconfig.json",
+  "out": "public/api",
+  "lang": "en",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "skipErrorChecking": true,
+  "treatWarningsAsErrors": false,
+  "navigationLinks": { "Documentación": "../", "GitHub": "https://github.com/kevinedgm/xila" }
+}

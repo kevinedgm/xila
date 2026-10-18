@@ -42,6 +42,7 @@ export default defineConfig({
             { text: 'Configuración de dashboards', link: '/referencia/dashboard' },
             { text: 'Despliegue', link: '/referencia/despliegue' },
             { text: 'Benchmarks', link: '/referencia/benchmarks' },
+            { text: 'Contribuir', link: '/referencia/contribuir' },
             { text: 'API (TypeDoc)', link: '/api/', target: '_self' },
           ],
         },

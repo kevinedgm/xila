@@ -1,0 +1,29 @@
+name: Reporte de error
+description: Algo no se dibuja, se dibuja mal o lanza un error.
+labels: [error]
+body:
+  - type: textarea
+    id: que-pasa
+    attributes:
+      label: Qué pasa
+      description: Qué esperabas ver y qué ves. Una captura ayuda.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducir
+    attributes:
+      label: Cómo reproducirlo
+      description: Configuración del gráfico y, si se puede, un CSV pequeño o datos de ejemplo.
+      render: ts
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versión o commit
+      placeholder: 'ej. main en 4f9280e'
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador y sistema
+      placeholder: 'ej. Chrome 141 en macOS 15'

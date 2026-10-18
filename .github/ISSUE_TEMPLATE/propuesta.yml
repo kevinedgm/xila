@@ -1,0 +1,22 @@
+name: Propuesta
+description: Una función, un tipo de gráfico o un cambio en la API.
+labels: [propuesta]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qué problema resuelve
+      description: Describe la situación antes que la solución. ¿Qué no puedes hacer hoy?
+    validations:
+      required: true
+  - type: textarea
+    id: solucion
+    attributes:
+      label: Cómo lo imaginas
+      description: Un fragmento de configuración o de código con la API que te gustaría usar.
+      render: ts
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas
+      description: ¿Se puede hacer hoy con un plugin o con una transformación de datos? ¿Por qué no basta?

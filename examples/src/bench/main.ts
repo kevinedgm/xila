@@ -1,5 +1,14 @@
-import { decimatedCanvas, naiveCanvas, uplotRenderer, type BenchRenderer } from './renderers';
-import { generateSeries, toObjects } from './synthetic';
+import {
+  chartjsRenderer,
+  decimatedCanvas,
+  echartsRenderer,
+  naiveCanvas,
+  plotlyRenderer,
+  uplotRenderer,
+  xilaRenderer,
+  type BenchRenderer,
+} from './renderers';
+import { generateSeries, toObjects, type ColumnarSeries } from './synthetic';
 
 declare global {
   interface Window {
@@ -7,8 +16,8 @@ declare global {
       loadMemory(mode: 'objects' | 'columns', n: number): number;
       traverse(): number;
       setupRenderer(kind: string, n: number): void;
-      firstRender(): { ms: number; vertices: number };
-      pan(frames: number): Promise<PanStats>;
+      firstRender(): Promise<{ ms: number; vertices: number }>;
+      pan(frames: number, maxMs?: number): Promise<PanStats>;
     };
   }
 }
@@ -19,6 +28,8 @@ interface PanStats {
   intervalMedian: number;
   intervalP95: number;
   vertices: number;
+  /** Fotogramas medidos (menos que los pedidos si se alcanzó `maxMs`). */
+  frames: number;
 }
 
 let held: unknown = null;
@@ -62,26 +73,33 @@ window.bench = {
     host.innerHTML = '';
     const s = generateSeries(n);
     domain = [s.x[0] as number, s.x[n - 1] as number];
-    renderer =
-      kind === 'naive'
-        ? naiveCanvas(host, s)
-        : kind === 'decimated'
-          ? decimatedCanvas(host, s)
-          : uplotRenderer(host, s);
+    const factories: Record<string, (h: HTMLElement, s: ColumnarSeries) => BenchRenderer> = {
+      naive: naiveCanvas,
+      decimated: decimatedCanvas,
+      xila: xilaRenderer,
+      uplot: uplotRenderer,
+      chartjs: chartjsRenderer,
+      echarts: echartsRenderer,
+      plotly: plotlyRenderer,
+    };
+    const factory = factories[kind];
+    if (!factory) throw new Error(`renderer desconocido: ${kind}`);
+    renderer = factory(host, s);
   },
 
-  firstRender() {
+  async firstRender() {
     if (!renderer) throw new Error('renderer no inicializado');
     const t = performance.now();
-    const vertices = renderer.draw(domain[0], domain[1]);
+    const vertices = await renderer.draw(domain[0], domain[1]);
     renderer.flush();
     return { ms: performance.now() - t, vertices };
   },
 
-  pan(frames) {
+  pan(frames, maxMs = Infinity) {
     const r = renderer;
     if (!r) throw new Error('renderer no inicializado');
-    // Pan sobre la vista completa: cada fotograma desplaza 0.2 % del rango.
+    // Pan sobre la vista completa: cada fotograma desplaza 0.2 % del rango. Con `maxMs` se
+    // corta antes de `frames` para que una librería lenta no tarde minutos (menos muestras).
     const span = domain[1] - domain[0];
     const step = span * 0.002;
     const work: number[] = [];
@@ -89,16 +107,17 @@ window.bench = {
     let vertices = 0;
     let offset = 0;
     let last = 0;
+    const start = performance.now();
     return new Promise((resolve) => {
-      const tick = (now: number) => {
+      const tick = async (now: number) => {
         if (last) intervals.push(now - last);
         last = now;
         offset += step;
         const t = performance.now();
-        vertices = r.draw(domain[0] - span * 0.1 + offset, domain[1] - span * 0.1 + offset);
+        vertices = await r.draw(domain[0] - span * 0.1 + offset, domain[1] - span * 0.1 + offset);
         r.flush();
         work.push(performance.now() - t);
-        if (work.length < frames) requestAnimationFrame(tick);
+        if (work.length < frames && performance.now() - start < maxMs) requestAnimationFrame(tick);
         else
           resolve({
             workMedian: percentile(work, 50),
@@ -106,6 +125,7 @@ window.bench = {
             intervalMedian: percentile(intervals, 50),
             intervalP95: percentile(intervals, 95),
             vertices,
+            frames: work.length,
           });
       };
       requestAnimationFrame(tick);

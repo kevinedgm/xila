@@ -6,9 +6,10 @@
   "description": "Sitio de documentación de Xila (VitePress).",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "vitepress build",
+    "build": "typedoc && vitepress build",
     "preview": "vitepress preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "api": "typedoc"
   },
   "dependencies": {
     "@xila/core": "workspace:*",
@@ -16,6 +17,8 @@
     "vue": "^3.5.44"
   },
   "devDependencies": {
+    "typedoc": "0.28.20",
+    "typescript": "^6.0.3",
     "vite": "5.4.21",
     "vitepress": "^1.6.4"
   }

@@ -10,9 +10,13 @@ const DIST = resolve(import.meta.dirname, '../dist');
 const OUT = process.argv[2] ?? resolve(import.meta.dirname, 'resultados.json');
 // En CI se acorta con BENCH_RENDERERS=decimated BENCH_REPEATS=3 (ver bench/check.mjs).
 const SIZES = [10_000, 100_000, 1_000_000];
-const RENDERERS = (process.env.BENCH_RENDERERS ?? 'naive,decimated,uplot').split(',');
+const RENDERERS = (
+  process.env.BENCH_RENDERERS ?? 'naive,decimated,xila,uplot,chartjs,echarts,plotly'
+).split(',');
 const REPEATS = Number(process.env.BENCH_REPEATS ?? 5);
 const PAN_FRAMES = 120;
+// Tope de tiempo por pan: una librería a 2 s por fotograma no debe tardar minutos por repetición.
+const PAN_MAX_MS = Number(process.env.BENCH_PAN_MAX_MS ?? 15_000);
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 const server = createServer(async (req, res) => {
@@ -97,10 +101,11 @@ for (const kind of RENDERERS) {
       const page = await freshPage();
       await page.evaluate(([k, size]) => window.bench.setupRenderer(k, size), [kind, n]);
       first.push(await page.evaluate(() => window.bench.firstRender()));
-      pans.push(await page.evaluate((f) => window.bench.pan(f), PAN_FRAMES));
+      pans.push(await page.evaluate(([f, m]) => window.bench.pan(f, m), [PAN_FRAMES, PAN_MAX_MS]));
       await page.close();
     }
     const fr = { kind, n, ms: median(first.map((f) => f.ms)), vertices: first[0].vertices };
+    const frames = pans[0].frames;
     const pan = {
       kind,
       n,
@@ -109,6 +114,7 @@ for (const kind of RENDERERS) {
       intervalMedian: median(pans.map((p) => p.intervalMedian)),
       intervalP95: median(pans.map((p) => p.intervalP95)),
       vertices: pans[0].vertices,
+      frames,
     };
     results.firstRender.push(fr);
     results.pan.push(pan);

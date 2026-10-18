@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentación
+    url: https://kevinedgm.github.io/xila/
+    about: Guías, galería con código y referencia de la API.

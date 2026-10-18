@@ -1,11 +1,21 @@
-import { lowerBound, minMaxDecimate, type DecimatedSeries } from '@xila/core';
+import {
+  Chart,
+  DataTable,
+  lowerBound,
+  minMaxDecimate,
+  numberColumn,
+  type DecimatedSeries,
+} from '@xila/core';
+import { Chart as ChartJS } from 'chart.js/auto';
+import * as echarts from 'echarts';
+import Plotly from 'plotly.js-dist-min';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import type { ColumnarSeries } from './synthetic';
 
 export interface BenchRenderer {
-  /** Dibuja el rango visible `[x0, x1]` y devuelve cuántos vértices se trazaron. */
-  draw(x0: number, x1: number): number;
+  /** Dibuja el rango visible `[x0, x1]` y devuelve cuántos vértices se trazaron (o cuántos puntos caen en el rango). */
+  draw(x0: number, x1: number): number | Promise<number>;
   /** Fuerza a que el navegador termine de rasterizar, para medir el costo real. */
   flush(): void;
 }
@@ -124,6 +134,148 @@ export function uplotRenderer(host: HTMLElement, series: ColumnarSeries): BenchR
     },
     flush() {
       ctx?.getImageData(0, 0, 1, 1);
+    },
+  };
+}
+
+/** Xila completa (`Chart` con ejes y grid), no solo el canvas decimado: es lo que paga el usuario. */
+export function xilaRenderer(host: HTMLElement, series: ColumnarSeries): BenchRenderer {
+  host.style.width = `${WIDTH}px`;
+  host.style.height = `${HEIGHT}px`;
+  const chart = new Chart(host, {
+    type: 'line',
+    lazy: false,
+    data: new DataTable({ x: numberColumn(series.x), y: numberColumn(series.y) }),
+    series: [{ id: 's', name: 'serie', x: 'x', y: 'y' }],
+    scales: { x: { type: 'linear' } },
+  });
+  return {
+    draw(x0, x1) {
+      chart.setViewDomain('x', [x0, x1]);
+      chart.drawNow();
+      return Math.min(series.x.length, lowerBound(series.x, x1)) - lowerBound(series.x, x0);
+    },
+    flush() {
+      host.querySelector('canvas')?.getContext('2d')?.getImageData(0, 0, 1, 1);
+    },
+  };
+}
+
+/**
+ * Chart.js con su plugin de decimación min-max (requiere `parsing: false`, datos `{x, y}` y eje
+ * lineal) y sin animación: la configuración que su documentación recomienda para series grandes.
+ */
+export function chartjsRenderer(host: HTMLElement, series: ColumnarSeries): BenchRenderer {
+  const canvas = document.createElement('canvas');
+  canvas.width = WIDTH;
+  canvas.height = HEIGHT;
+  host.appendChild(canvas);
+  const [yMin, yMax] = yRange(series);
+  const data = new Array<{ x: number; y: number }>(series.x.length);
+  for (let i = 0; i < data.length; i++)
+    data[i] = { x: series.x[i] as number, y: series.y[i] as number };
+  const chart = new ChartJS(canvas, {
+    type: 'line',
+    data: { datasets: [{ data, borderColor: '#1f6f8b', borderWidth: 1, pointRadius: 0 }] },
+    options: {
+      animation: false,
+      parsing: false,
+      normalized: true,
+      responsive: false,
+      spanGaps: true,
+      scales: { x: { type: 'linear' }, y: { min: yMin, max: yMax } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false },
+        decimation: { enabled: true, algorithm: 'min-max' },
+      },
+    },
+  });
+  const ctx = canvas.getContext('2d');
+  return {
+    draw(x0, x1) {
+      const x = chart.options.scales?.['x'];
+      if (x) {
+        x.min = x0;
+        x.max = x1;
+      }
+      chart.update('none');
+      return Math.min(series.x.length, lowerBound(series.x, x1)) - lowerBound(series.x, x0);
+    },
+    flush() {
+      ctx?.getImageData(0, 0, 1, 1);
+    },
+  };
+}
+
+/** ECharts con `sampling: 'lttb'`, `large: true` y las columnas tipadas en un `dataset`. */
+export function echartsRenderer(host: HTMLElement, series: ColumnarSeries): BenchRenderer {
+  const chart = echarts.init(host, undefined, { renderer: 'canvas', width: WIDTH, height: HEIGHT });
+  const [yMin, yMax] = yRange(series);
+  chart.setOption({
+    animation: false,
+    grid: { left: 0, right: 0, top: 0, bottom: 0 },
+    dataset: { source: { x: series.x, y: series.y } },
+    xAxis: { type: 'value', show: false },
+    yAxis: { type: 'value', min: yMin, max: yMax, show: false },
+    series: [
+      {
+        type: 'line',
+        encode: { x: 'x', y: 'y' },
+        showSymbol: false,
+        sampling: 'lttb',
+        large: true,
+        lineStyle: { width: 1, color: '#1f6f8b' },
+      },
+    ],
+  });
+  const canvas = host.querySelector('canvas');
+  const ctx = canvas?.getContext('2d');
+  return {
+    draw(x0, x1) {
+      chart.setOption({ xAxis: { min: x0, max: x1 } });
+      // ECharts dibuja en el siguiente fotograma; flush() de zrender lo hace síncrono para medirlo.
+      chart.getZr().flush();
+      return Math.min(series.x.length, lowerBound(series.x, x1)) - lowerBound(series.x, x0);
+    },
+    flush() {
+      ctx?.getImageData(0, 0, 1, 1);
+    },
+  };
+}
+
+/** Plotly con `scattergl` (WebGL) y `staticPlot`, que es su camino para series grandes. */
+export function plotlyRenderer(host: HTMLElement, series: ColumnarSeries): BenchRenderer {
+  const ready = Plotly.newPlot(
+    host,
+    [
+      {
+        type: 'scattergl',
+        mode: 'lines',
+        x: series.x,
+        y: series.y,
+        line: { width: 1, color: '#1f6f8b' },
+      },
+    ],
+    {
+      width: WIDTH,
+      height: HEIGHT,
+      margin: { l: 0, r: 0, t: 0, b: 0 },
+      xaxis: { visible: false },
+      yaxis: { visible: false, range: yRange(series) },
+      showlegend: false,
+    },
+    { staticPlot: true, displayModeBar: false },
+  );
+  return {
+    async draw(x0, x1) {
+      await ready;
+      await Plotly.relayout(host, { 'xaxis.range': [x0, x1] });
+      return Math.min(series.x.length, lowerBound(series.x, x1)) - lowerBound(series.x, x0);
+    },
+    flush() {
+      const gl = host.querySelector('canvas')?.getContext('webgl');
+      if (gl) gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
     },
   };
 }

@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["../packages/core/src/**/*.ts", "../packages/vue/src/**/*.ts"],
+  "exclude": ["../packages/**/*.test.ts"],
+  "compilerOptions": { "noEmit": true, "declaration": false }
+}
