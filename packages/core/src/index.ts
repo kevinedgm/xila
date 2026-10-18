@@ -16,6 +16,26 @@ export type { CsvOptions, CsvResult } from './data/csv';
 export { filterRows, takeRows, groupBy, bucketTime, pivot, splitBy } from './data/transform';
 export type { Aggregation, AggregationSpec, Condition } from './data/transform';
 
+export {
+  parseDashboard,
+  validateDashboard,
+  DashboardConfigError,
+  suggest,
+} from './dashboard/config';
+export type {
+  DashboardConfig,
+  PanelConfig,
+  PanelKpi,
+  PanelGrafico,
+  FiltroConfig,
+  FiltroFechas,
+  FiltroCategoria,
+  FormatoValor,
+  ValidationError,
+} from './dashboard/config';
+export { buildChart, buildKpi, applyFilters, formatter } from './dashboard/build';
+export type { KpiResult } from './dashboard/build';
+
 export { resolveConfig, DEFAULTS } from './config';
 export type {
   ChartConfig,
