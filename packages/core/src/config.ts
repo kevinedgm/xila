@@ -37,6 +37,12 @@ interface BaseChartConfig {
   readonly theme?: ThemeName | Theme;
   /** Margen exterior. Los márgenes para ejes se calculan aparte (E3.13). */
   readonly padding?: Partial<Padding>;
+  /**
+   * Render diferido: no dibuja hasta que el contenedor está (casi) en pantalla, y no redibuja
+   * mientras está fuera. Así una página con 30 gráficos solo paga los que se ven. `true` por
+   * defecto; `false` dibuja siempre (por ejemplo, para exportar sin mostrar).
+   */
+  readonly lazy?: boolean;
 }
 
 export interface LineChartConfig extends BaseChartConfig {

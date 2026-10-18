@@ -8,6 +8,7 @@ export default defineConfig({
         main: resolve(import.meta.dirname, 'index.html'),
         bench: resolve(import.meta.dirname, 'bench.html'),
         dashboard: resolve(import.meta.dirname, 'dashboard.html'),
+        muchos: resolve(import.meta.dirname, 'muchos.html'),
       },
     },
   },

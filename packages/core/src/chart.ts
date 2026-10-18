@@ -53,6 +53,10 @@ export class Chart {
   private readonly plugins: PluginRegistry;
   private readonly container: HTMLElement;
   private readonly observer: ResizeObserver | null;
+  private readonly visibility: IntersectionObserver | null;
+  /** Con render diferido, `false` hasta que el contenedor entra en pantalla. */
+  private visible = true;
+  private pendingDraw = false;
   private layout: Layout;
   private scales: ChartScales | null = null;
   private frame = 0;
@@ -91,7 +95,30 @@ export class Chart {
             this.requestDraw();
           });
     this.observer?.observe(container);
+    // Render diferido: el primer dibujo (y los siguientes) esperan a que el contenedor se vea.
+    // `rootMargin` adelanta el dibujo a lo que está a punto de entrar al hacer scroll.
+    this.visibility =
+      config.lazy === false || typeof IntersectionObserver === 'undefined'
+        ? null
+        : new IntersectionObserver(
+            (entries) => {
+              const visible = entries.some((e) => e.isIntersecting);
+              if (visible === this.visible) return;
+              this.visible = visible;
+              if (visible && this.pendingDraw) this.requestDraw();
+            },
+            { rootMargin: '200px' },
+          );
+    if (this.visibility) {
+      this.visible = false;
+      this.visibility.observe(container);
+    }
     this.requestDraw();
+  }
+
+  /** `true` si el gráfico está (casi) en pantalla o no usa render diferido. */
+  isVisible(): boolean {
+    return this.visible;
   }
 
   /** Mezcla cambios sobre la configuración actual y redibuja. */
@@ -155,7 +182,10 @@ export class Chart {
    */
   toDataURL(type?: string, pixelRatio?: number): string {
     this.assertAlive();
-    if (pixelRatio === undefined) return this.renderer.toDataURL(type);
+    if (pixelRatio === undefined) {
+      if (this.pendingDraw) this.drawNow();
+      return this.renderer.toDataURL(type);
+    }
     const { width, height } = this.layout;
     this.renderer.resize(width, height, pixelRatio);
     this.draw();
@@ -172,11 +202,18 @@ export class Chart {
       cancelAnimationFrame(this.frame);
       this.frame = 0;
     }
+    this.pendingDraw = false;
     this.draw();
   }
 
   requestDraw(): void {
     if (this.destroyed || this.frame) return;
+    if (!this.visible) {
+      // Fuera de pantalla no se dibuja; queda pendiente para cuando entre.
+      this.pendingDraw = true;
+      return;
+    }
+    this.pendingDraw = false;
     this.frame = requestAnimationFrame(() => {
       this.frame = 0;
       this.draw();
@@ -188,6 +225,7 @@ export class Chart {
     this.destroyed = true;
     if (this.frame) cancelAnimationFrame(this.frame);
     this.observer?.disconnect();
+    this.visibility?.disconnect();
     const el = this.renderer.element;
     el.removeEventListener('pointermove', this.onPointerMove);
     el.removeEventListener('pointerleave', this.onPointerLeave);

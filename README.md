@@ -39,6 +39,13 @@ pnpm --filter examples test:visual                         # o con CHROMIUM_PATH
 pnpm --filter examples test:visual --update-snapshots      # aceptar cambios
 ```
 
+## Render diferido
+
+Por defecto un gráfico no se dibuja hasta que su contenedor está a menos de 200 px de la
+pantalla, y no redibuja mientras está fuera (`IntersectionObserver`). Una página con 30
+gráficos solo paga los visibles: `examples/muchos.html` lo muestra con un contador. Para
+dibujar siempre (por ejemplo, exportar sin mostrar) se pasa `lazy: false`.
+
 ## Plugins
 
 Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en

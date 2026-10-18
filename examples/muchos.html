@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · 30 gráficos con render diferido</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 24px;
+        color: #1f2933;
+      }
+      .chart {
+        height: 260px;
+        margin-bottom: 16px;
+        border: 1px solid #e4e7eb;
+      }
+      .chart::before {
+        content: attr(data-nombre);
+        font-size: 13px;
+        padding: 4px 8px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>30 gráficos, render diferido <small id="estado"></small></h1>
+    <p>
+      Solo se dibujan los que están en pantalla (más un margen de 200 px); el resto al hacer scroll.
+      Abrir la pestaña Performance y recargar: la carga inicial muestra solo los primeros dibujos.
+    </p>
+    <div id="lista"></div>
+    <script type="module" src="/src/muchos.ts"></script>
+  </body>
+</html>
