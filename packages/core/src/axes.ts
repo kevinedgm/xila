@@ -169,15 +169,18 @@ export function drawAxes(
       });
     });
     if (xAxis.title) {
+      // Debajo de las etiquetas, no al borde del lienzo: así respeta el espacio que un plugin
+      // reserva abajo (leyenda o panel de resumen).
+      const line = theme.fontSize * 1.2;
       renderer.drawText(
         'background',
         xAxis.title,
         area.x + area.width / 2,
-        layout.height - theme.fontSize * 0.4,
+        bottom + TICK_SIZE + TICK_GAP + line + TITLE_GAP,
         {
           ...label,
           align: 'center',
-          baseline: 'bottom',
+          baseline: 'top',
         },
       );
     }
