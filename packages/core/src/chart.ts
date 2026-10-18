@@ -147,8 +147,20 @@ export class Chart {
     return this.scales;
   }
 
-  toDataURL(type?: string): string {
-    return this.renderer.toDataURL(type);
+  /**
+   * Imagen del gráfico. Con `pixelRatio` se redibuja a esa densidad (2 para diapositivas)
+   * y se vuelve a la de la pantalla; sin él, se toma lo que hay en pantalla.
+   */
+  toDataURL(type?: string, pixelRatio?: number): string {
+    this.assertAlive();
+    if (pixelRatio === undefined) return this.renderer.toDataURL(type);
+    const { width, height } = this.layout;
+    this.renderer.resize(width, height, pixelRatio);
+    this.draw();
+    const url = this.renderer.toDataURL(type);
+    this.renderer.resize(width, height, window.devicePixelRatio || 1);
+    this.draw();
+    return url;
   }
 
   /** Dibuja ahora, sin esperar al siguiente fotograma. Útil en tests y exportaciones. */

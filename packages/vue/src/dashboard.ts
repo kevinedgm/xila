@@ -1,6 +1,11 @@
 import {
   buildChart,
   buildKpi,
+  chartToCsv,
+  chartToPng,
+  downloadFile,
+  slugify,
+  type Chart,
   legendPlugin,
   tooltipPlugin,
   type ChartConfig,
@@ -35,6 +40,11 @@ const CSS = `
 .xila-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
 .xila-panel{grid-column:span var(--span,12);background:var(--xila-panel,#fff);border:1px solid var(--xila-border,#e4e7eb);border-radius:8px;padding:12px 16px;box-sizing:border-box;min-width:0}
 .xila-panel h2{font-size:14px;font-weight:600;margin:0 0 8px;color:var(--xila-muted,#52606d)}
+.xila-panel-body{position:relative}
+.xila-panel-tools{position:absolute;top:-30px;right:0;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.xila-panel:hover .xila-panel-tools,.xila-panel:focus-within .xila-panel-tools{opacity:1}
+.xila-panel-tools button{font:11px system-ui,sans-serif;padding:2px 6px;border:1px solid var(--xila-border,#cbd2d9);border-radius:4px;background:var(--xila-panel,#fff);color:var(--xila-muted,#52606d);cursor:pointer}
+.xila-panel-tools button:hover{color:var(--xila-text,#1f2933)}
 .xila-panel-chart{height:320px}
 .xila-kpi-value{font-size:28px;font-weight:700;line-height:1.2}
 .xila-kpi-change{font-size:13px;margin-top:4px}
@@ -123,7 +133,44 @@ export const XilaPanelChart = defineComponent({
       const plugins = [tooltipPlugin(), ...(base.series.length > 1 ? [legendPlugin()] : [])];
       return markRaw({ ...base, plugins, theme: props.theme });
     });
-    return () => h('div', { class: 'xila-panel-chart' }, [h(XilaChart, { config: config.value })]);
+    let chart: Chart | null = null;
+    const name = () => slugify(props.panel.titulo ?? `${props.panel.tipo}-${props.panel.y}`);
+    const png = async (): Promise<void> => {
+      if (!chart) return;
+      const blob = await chartToPng(chart, { scale: 2, title: props.panel.titulo ?? '' });
+      downloadFile(`${name()}.png`, blob);
+    };
+    const csv = (): void => {
+      if (chart) downloadFile(`${name()}.csv`, chartToCsv(chart), 'text/csv');
+    };
+    return () =>
+      h('div', { class: 'xila-panel-body' }, [
+        h('div', { class: 'xila-panel-tools' }, [
+          h(
+            'button',
+            {
+              type: 'button',
+              'data-export': 'png',
+              title: 'Descargar imagen (PNG a 2x)',
+              onClick: png,
+            },
+            'PNG',
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              'data-export': 'csv',
+              title: 'Descargar datos mostrados (CSV)',
+              onClick: csv,
+            },
+            'CSV',
+          ),
+        ]),
+        h('div', { class: 'xila-panel-chart' }, [
+          h(XilaChart, { config: config.value, onReady: (c: Chart) => (chart = c) }),
+        ]),
+      ]);
   },
 });
 

@@ -13,6 +13,9 @@ export type { DecimatedSeries } from './data/decimate';
 export { lowerBound } from './data/search';
 export { parseCsv, fetchCsv, parseIsoDate, CsvError } from './data/csv';
 export type { CsvOptions, CsvResult } from './data/csv';
+export { tableToCsv } from './data/csv-write';
+export { chartToPng, chartToCsv, downloadFile, slugify } from './export';
+export type { PngOptions } from './export';
 export { filterRows, takeRows, groupBy, bucketTime, pivot, splitBy } from './data/transform';
 export type { Aggregation, AggregationSpec, Condition } from './data/transform';
 
