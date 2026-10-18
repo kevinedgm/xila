@@ -15,6 +15,8 @@ export interface ZoomPanOptions {
   readonly minSpanRatio?: number;
   /** Doble clic vuelve al rango automático. */
   readonly doubleClickReset?: boolean;
+  /** Arrastrar con la tecla `modifier` apretada selecciona un rango y hace zoom a él. */
+  readonly select?: boolean;
   /** Sensibilidad de la rueda: factor por cada 100 px de desplazamiento. */
   readonly wheelFactor?: number;
 }
@@ -63,6 +65,8 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
   let touchAction = '';
   const pointers = new Map<number, { x: number; y: number }>();
   let dragged = false;
+  /** Selección en curso (zoom por rectángulo): origen en píxeles y el recuadro HTML. */
+  let selection: { start: { x: number; y: number }; box: HTMLDivElement } | null = null;
   let pinchStart: { distance: number; mid: number; x: Domain; y: Domain } | null = null;
 
   const continuous = (which: 'x' | 'y'): ContinuousScale | null => {
@@ -111,12 +115,19 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
     return !!a && p.x >= a.x && p.x <= a.x + a.width && p.y >= a.y && p.y <= a.y + a.height;
   };
 
+  const isModified = (e: {
+    shiftKey: boolean;
+    ctrlKey: boolean;
+    metaKey: boolean;
+    altKey: boolean;
+  }) =>
+    modifier === 'shift' ? e.shiftKey : modifier === 'ctrl' ? e.ctrlKey || e.metaKey : e.altKey;
+
   const onWheel = (e: WheelEvent): void => {
     const p = local(e);
     if (!insidePlot(p)) return;
     e.preventDefault();
-    const modified =
-      modifier === 'shift' ? e.shiftKey : modifier === 'ctrl' ? e.ctrlKey || e.metaKey : e.altKey;
+    const modified = isModified(e);
     // deltaMode 1 = líneas (Firefox); se normaliza a píxeles.
     const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
     const k = Math.pow(wheelFactor, -delta / 100);
@@ -132,9 +143,24 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
     if (e.button !== 0 || !el) return;
     const p = local(e);
     if (!insidePlot(p)) return;
-    pointers.set(e.pointerId, p);
     el.setPointerCapture(e.pointerId);
     dragged = false;
+    if (options.select !== false && isModified(e) && pointers.size === 0 && ctx) {
+      const box = document.createElement('div');
+      box.className = 'xila-zoom-selection';
+      Object.assign(box.style, {
+        position: 'absolute',
+        pointerEvents: 'none',
+        border: `1px dashed ${ctx.config.theme.axis}`,
+        background: ctx.config.theme.axis,
+        opacity: '0.25',
+      });
+      el.appendChild(box);
+      selection = { start: p, box };
+      updateSelection(p);
+      return;
+    }
+    pointers.set(e.pointerId, p);
     if (pointers.size === 2 && options.pinch !== false) {
       const [a, b] = [...pointers.values()] as [{ x: number; y: number }, { x: number; y: number }];
       const sx = continuous('x');
@@ -150,7 +176,46 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
     }
   };
 
+  /** Recuadro de selección: en `axis: 'x'` ocupa todo el alto del área (y viceversa). */
+  const updateSelection = (p: { x: number; y: number }): void => {
+    const a = ctx?.layout.plotArea;
+    if (!selection || !a) return;
+    const axes = axesFor(false);
+    const x0 = axes.includes('x') ? Math.min(selection.start.x, p.x) : a.x;
+    const x1 = axes.includes('x') ? Math.max(selection.start.x, p.x) : a.x + a.width;
+    const y0 = axes.includes('y') ? Math.min(selection.start.y, p.y) : a.y;
+    const y1 = axes.includes('y') ? Math.max(selection.start.y, p.y) : a.y + a.height;
+    Object.assign(selection.box.style, {
+      left: `${x0}px`,
+      top: `${y0}px`,
+      width: `${x1 - x0}px`,
+      height: `${y1 - y0}px`,
+    });
+  };
+
+  const finishSelection = (p: { x: number; y: number }): void => {
+    if (!selection) return;
+    const { start, box } = selection;
+    box.remove();
+    selection = null;
+    for (const which of axesFor(false)) {
+      const s = continuous(which);
+      if (!s) continue;
+      const [a, b] = which === 'x' ? [start.x, p.x] : [start.y, p.y];
+      // Un clic con la tecla apretada no cuenta como selección.
+      if (Math.abs(b - a) < 4) continue;
+      const v0 = valueAt(which, s, a);
+      const v1 = valueAt(which, s, b);
+      apply(which, [Math.min(v0, v1), Math.max(v0, v1)]);
+    }
+  };
+
   const onPointerMove = (e: PointerEvent): void => {
+    if (selection) {
+      updateSelection(local(e));
+      dragged = true;
+      return;
+    }
     const prev = pointers.get(e.pointerId);
     if (!prev) return;
     const p = local(e);
@@ -189,6 +254,7 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
   };
 
   const onPointerUp = (e: PointerEvent): void => {
+    if (selection) finishSelection(local(e));
     pointers.delete(e.pointerId);
     if (pointers.size < 2) pinchStart = null;
     if (pointers.size === 0 && el) el.style.cursor = '';
@@ -235,6 +301,8 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
       el.removeEventListener('click', onClickCapture, true);
       el.removeEventListener('dblclick', onDoubleClick);
       el.style.touchAction = touchAction;
+      selection?.box.remove();
+      selection = null;
       el = null;
       ctx = null;
     },

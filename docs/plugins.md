@@ -37,8 +37,9 @@ oculta la serie y el eje Y se recalcula con las visibles.
 
 ## `zoomPanPlugin(opciones)`
 
-Zoom con la rueda centrado en el cursor, pan arrastrando, pellizco en pantallas táctiles y
-doble clic para volver al rango automático.
+Zoom con la rueda centrado en el cursor, pan arrastrando, pellizco en pantallas táctiles,
+selección de un rango arrastrando con la tecla `modifier` (Shift) apretada y doble clic para
+volver al rango automático.
 
 | Opción                     | Valores                          | Por defecto |
 | -------------------------- | -------------------------------- | ----------- |
@@ -48,6 +49,7 @@ doble clic para volver al rango automático.
 | `limits`                   | `'data'` \| `'none'`             | `'data'`    |
 | `minSpanRatio`             | fracción del rango de datos      | `1e-6`      |
 | `doubleClickReset`         | `boolean`                        | `true`      |
+| `select`                   | `boolean`                        | `true`      |
 | `wheelFactor`              | factor por cada 100 px de rueda  | `2`         |
 
 Mecanismo: el plugin no toca los datos; fija un _dominio de vista_ por eje con

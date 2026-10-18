@@ -133,3 +133,33 @@ test('no se puede salir de los datos', async ({ page }) => {
   const despues = await dominio(page, 'linea');
   expect(despues.x[0]).toBeGreaterThanOrEqual(datos.x[0] - 1);
 });
+
+test('arrastrar con Shift selecciona un rango; doble clic restaura el dominio inicial', async ({
+  page,
+}) => {
+  const p = await abrir(page);
+  const inicial = await dominio(page, 'linea');
+  const desde = p.x - 150;
+  const hasta = p.x + 50;
+  const vDesde = await valorEn(page, 'linea', desde);
+  const vHasta = await valorEn(page, 'linea', hasta);
+  await page.keyboard.down('Shift');
+  await page.mouse.move(desde, p.y);
+  await page.mouse.down();
+  await page.mouse.move(hasta, p.y, { steps: 4 });
+  await expect(page.locator('#linea .xila-zoom-selection')).toBeVisible();
+  await page.mouse.up();
+  await page.keyboard.up('Shift');
+  await page.evaluate(() => new Promise(requestAnimationFrame));
+  await expect(page.locator('#linea .xila-zoom-selection')).toHaveCount(0);
+  const despues = await dominio(page, 'linea');
+  // El rango queda en los valores de los dos píxeles (±1 px del rango inicial).
+  const porPx = (inicial.x[1] - inicial.x[0]) / p.w;
+  expect(Math.abs(despues.x[0] - vDesde)).toBeLessThan(porPx);
+  expect(Math.abs(despues.x[1] - vHasta)).toBeLessThan(porPx);
+  expect(despues.y).toEqual(inicial.y);
+
+  await page.mouse.dblclick(p.x, p.y);
+  await page.evaluate(() => new Promise(requestAnimationFrame));
+  expect(await dominio(page, 'linea')).toEqual(inicial);
+});
