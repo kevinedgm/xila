@@ -23,6 +23,9 @@ const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PAT
 
 async function shot(kind) {
   const page = await browser.newPage({
+    // uPlot llama Intl.NumberFormat(navigator.language) al cargar; el headless shell de CI
+    // reporta "en-US@posix", que no es una etiqueta válida, y el módulo nunca termina de cargar.
+    locale: 'es-MX',
     viewport: { width: 1100, height: 500 },
     deviceScaleFactor: 1,
   });

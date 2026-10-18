@@ -15,7 +15,8 @@ export interface Theme {
 
 export type ThemeName = 'light' | 'dark';
 
-const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+// Inter primero: es la fuente que instala CI (fonts-inter) para que las capturas coincidan.
+const FONT = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
 // Paleta provisional, legible para daltonismo (derivada de Okabe-Ito). E0.07 la reemplaza.
 const PALETTE = ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#56B4E9', '#D55E00', '#F0E442'];

@@ -29,8 +29,9 @@ pnpm typecheck  # TypeScript estricto en todos los paquetes
 ### Tests visuales
 
 Comparan capturas de cada ejemplo contra las referencias en `examples/tests/__capturas__`
-(generadas en Linux; CI corre en Ubuntu). Si un cambio de dibujo es intencional, se
-regeneran con `--update-snapshots` y se revisan en el diff del commit.
+(generadas en Ubuntu 24.04 con la fuente Inter 4.0, paquete `fonts-inter`; CI la instala). Con
+otra fuente el texto mide distinto y las capturas no coinciden. Si un cambio de dibujo es
+intencional, se regeneran con `--update-snapshots` y se revisan en el diff del commit.
 
 ```bash
 pnpm build && pnpm --filter examples build
@@ -81,6 +82,15 @@ es inclusivo, como `numpy.histogram`). `bins` acepta un entero o una regla: `'fd
 `'sqrt'`. `histogramTable` devuelve una `DataTable` con la etiqueta de cada cubeta y su conteo,
 lista para un gráfico `bar` con `bar: { padding: 0 }`.
 
+## Box plot
+
+`type: 'box'` recibe datos en formato largo (una fila por medición): `x` es la columna
+categórica del grupo y `y` la del valor. Por grupo calcula Q1, mediana y Q3 con la misma
+interpolación que `df.describe()`, bigotes hasta el último dato dentro de `1.5·IQR` (ajustable
+con `box.whisker`) y dibuja los atípicos como puntos (`box.outliers: false` los quita). Varias
+series se colocan lado a lado; el tooltip muestra mediana, cuartiles y `n`. `boxStats` y
+`boxGroups` están disponibles por separado.
+
 ## Plugins
 
 Tooltip, leyenda, zoom/pan y anotaciones vienen en `@xila/core`; opciones y mecanismo en
@@ -117,4 +127,6 @@ CI corre el benchmark en un job aparte (solo el renderer decimado, 3 repeticione
 1M puntos tardan más de 30 ms por frame, el primer render más de 200 ms o las columnas pesan
 más de 25 MB. Son umbrales holgados: atrapan regresiones grandes, no variaciones del runner.
 
-Resultados y decisiones en `docs/adr/`.
+Resultados y decisiones en `docs/adr/`. La comparación Canvas contra WebGL para dispersiones
+de 100K a 5M puntos está en [`docs/benchmarks.md`](docs/benchmarks.md)
+(`node examples/bench/dispersion.mjs`).

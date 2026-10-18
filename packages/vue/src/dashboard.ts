@@ -32,7 +32,7 @@ import { XilaChart } from './chart';
 
 const STYLE_ID = 'xila-dashboard-style';
 const CSS = `
-.xila-dashboard{font-family:system-ui,sans-serif;color:var(--xila-text,#1f2933);background:var(--xila-bg,#f5f7fa);min-height:100vh;padding:16px 24px;box-sizing:border-box}
+.xila-dashboard{font-family:Inter,system-ui,sans-serif;color:var(--xila-text,#1f2933);background:var(--xila-bg,#f5f7fa);min-height:100vh;padding:16px 24px;box-sizing:border-box}
 .xila-dashboard[data-theme=dark]{--xila-text:#e6e8eb;--xila-bg:#15191e;--xila-panel:#1f252c;--xila-border:#2c343d;--xila-muted:#9aa5b1}
 .xila-dashboard h1{font-size:22px;margin:0 0 12px}
 .xila-filters{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:16px}
