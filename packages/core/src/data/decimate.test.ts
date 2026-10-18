@@ -56,10 +56,23 @@ describe('minMaxDecimate', () => {
     }
   });
 
-  it('ignora valores NaN', () => {
-    const { x, y } = series(8, (i) => (i % 2 ? Number.NaN : i));
-    const out = minMaxDecimate(x, y, 0, 8, 0, 1);
-    expect(Array.from(out.y.subarray(0, out.length))).toEqual([0, 2, 4, 6]);
+  it('conserva un corte por cada tramo de NaN, sin duplicarlo', () => {
+    const { x, y } = series(10, (i) => (i >= 3 && i <= 5 ? Number.NaN : i));
+    const out = minMaxDecimate(x, y, 0, 10, 0, 1);
+    expect(Array.from(out.y.subarray(0, out.length))).toEqual([0, 1, 2, NaN, 6, 7, 8, 9]);
+  });
+
+  it('no empieza con un corte si la serie arranca en NaN', () => {
+    const { x, y } = series(4, (i) => (i < 2 ? Number.NaN : i));
+    const out = minMaxDecimate(x, y, 0, 4, 0, 1);
+    expect(Array.from(out.y.subarray(0, out.length))).toEqual([2, 3]);
+  });
+
+  it('crece el buffer cuando los cortes superan la estimación', () => {
+    const { x, y } = series(200, (i) => (i % 2 ? Number.NaN : i));
+    const out = minMaxDecimate(x, y, 0, 200, 0, 0.01); // 2 columnas estimadas, ~100 cortes
+    expect(out.length).toBeGreaterThan(8);
+    expect(out.x.length).toBeGreaterThanOrEqual(out.length);
   });
 
   it('reutiliza el buffer de salida si alcanza', () => {

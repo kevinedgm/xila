@@ -24,7 +24,9 @@ export interface ResolvedSeries {
 }
 
 export function resolveSeries(table: DataTable, spec: SeriesSpec): ResolvedSeries {
-  const x = table.numeric(spec.x);
+  // En X se admite una columna categórica (barras): se usan sus códigos como posición.
+  const xc = table.column(spec.x);
+  const x = xc.kind === 'category' ? Float64Array.from(xc.codes) : xc.values;
   const y = table.numeric(spec.y);
   const size = spec.size === undefined ? undefined : table.numeric(spec.size);
   return { id: spec.id, name: spec.name ?? spec.id, x, y, size, length: table.length };

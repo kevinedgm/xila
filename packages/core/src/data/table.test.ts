@@ -59,8 +59,9 @@ describe('resolveSeries', () => {
     expect(s.size).toBeUndefined();
   });
 
-  it('rechaza una columna categórica en un eje continuo', () => {
-    expect(() => resolveSeries(t, { id: 's', x: 'r', y: 'y' })).toThrow(/categórica/);
+  it('en x acepta categorías como códigos; en y las rechaza', () => {
+    expect(Array.from(resolveSeries(t, { id: 's', x: 'r', y: 'y' }).x)).toEqual([0, 1, 0]);
+    expect(() => resolveSeries(t, { id: 's', x: 'x', y: 'r' })).toThrow(/categórica/);
   });
 
   it('detecta si x está ordenado', () => {

@@ -4,11 +4,64 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Xila · Ejemplos</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 24px;
+        color: #1f2933;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 24px 0 6px;
+      }
+      .chart {
+        height: 300px;
+        border: 1px solid #e4e7eb;
+        resize: both;
+        overflow: hidden;
+      }
+      .fila {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      #fechas {
+        background: #15191e;
+      }
+    </style>
   </head>
   <body>
-    <h1>Xila · Ejemplos</h1>
-    <p id="estado"></p>
-    <div id="chart" style="width: 600px; height: 300px; border: 1px solid #ccc"></div>
+    <h1>Xila · Ejemplos <small id="estado"></small></h1>
+    <p>Los contenedores se pueden redimensionar desde la esquina inferior derecha.</p>
+
+    <h2>1 · Serie temporal: 100 000 lecturas a 1 kHz (decimación min/max)</h2>
+    <div id="linea" class="chart"></div>
+
+    <h2>2 · Varias series, una con hueco</h2>
+    <div id="multi" class="chart"></div>
+
+    <div class="fila">
+      <div>
+        <h2>3a · Barras agrupadas</h2>
+        <div id="barras" class="chart"></div>
+      </div>
+      <div>
+        <h2>3b · Barras apiladas (con un valor negativo)</h2>
+        <div id="apiladas" class="chart"></div>
+      </div>
+    </div>
+
+    <div class="fila">
+      <div>
+        <h2>4 · Dispersión: 20 000 puntos</h2>
+        <div id="dispersion" class="chart"></div>
+      </div>
+      <div>
+        <h2>5 · Eje de fechas, tema oscuro</h2>
+        <div id="fechas" class="chart"></div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

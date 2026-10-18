@@ -1,7 +1,8 @@
 export const version = '0.0.0';
 
 export { Chart } from './chart';
-export type { ChartOptions } from './chart';
+export type { ChartScales } from './chart';
+export { CanvasRenderer } from './renderer-canvas';
 
 export { DataTable, numberColumn, timeColumn, categoryColumn, columnLength } from './data/table';
 export type { Column, ColumnKind, NumberColumn, TimeColumn, CategoryColumn } from './data/table';
@@ -23,6 +24,22 @@ export type {
   AxisConfig,
   Padding,
 } from './config';
+
+export { linearScale, niceStep } from './scales/linear';
+export type { ContinuousScale, Domain, Range } from './scales/linear';
+export { bandScale } from './scales/band';
+export type { BandScale } from './scales/band';
+
+export {
+  formatNumber,
+  formatSI,
+  formatScientific,
+  formatPercent,
+  formatCurrency,
+  tickFormatter,
+  decimalsForStep,
+} from './format/number';
+export type { NumberFormatter, NumberFormatOptions } from './format/number';
 
 export { themes, resolveTheme } from './theme';
 export type { Theme, ThemeName } from './theme';

@@ -12,8 +12,9 @@ export interface DecimatedSeries {
  * vertical entre su mínimo y su máximo, más la entrada y la salida), así que el resultado
  * se ve igual que la serie completa, incluidos los picos.
  *
- * La columna de un punto es `floor((x - xOrigin) * pxPerUnit)`. Los valores `NaN` de `y`
- * se ignoran. `out` permite reutilizar buffers entre fotogramas y evitar basura.
+ * La columna de un punto es `floor((x - xOrigin) * pxPerUnit)`. Un tramo de `NaN` en `y`
+ * se conserva como un solo punto `NaN`, para que el renderer corte la línea ahí. `out`
+ * permite reutilizar buffers entre fotogramas y evitar basura.
  */
 export function minMaxDecimate(
   xs: Float64Array,
@@ -37,9 +38,22 @@ export function minMaxDecimate(
   let minI = -1;
   let maxI = -1;
 
+  let gap = false;
+
   for (let i = from; i < to; i++) {
     const y = ys[i] as number;
-    if (y !== y) continue; // NaN
+    if (y !== y) {
+      // NaN: cerrar la columna pendiente y dejar una marca de corte (una sola por tramo).
+      if (first >= 0) emitColumn(xs, ys, result, first, minI, maxI, last);
+      first = -1;
+      col = Number.NaN;
+      if (!gap && result.length > 0) {
+        push(xs, ys, result, i);
+        gap = true;
+      }
+      continue;
+    }
+    gap = false;
     const c = Math.floor(((xs[i] as number) - xOrigin) * pxPerUnit);
     if (c !== col) {
       if (first >= 0) emitColumn(xs, ys, result, first, minI, maxI, last);
@@ -92,7 +106,18 @@ function emitColumn(
 }
 
 function push(xs: Float64Array, ys: Float64Array, out: DecimatedSeries, i: number): void {
+  if (out.length >= out.x.length) grow(out);
   out.x[out.length] = xs[i] as number;
   out.y[out.length] = ys[i] as number;
   out.length++;
+}
+
+// Las marcas de corte por NaN no entran en la estimación inicial; se crece al doble si hace falta.
+function grow(out: DecimatedSeries): void {
+  const x = new Float64Array(Math.max(8, out.x.length * 2));
+  const y = new Float64Array(x.length);
+  x.set(out.x);
+  y.set(out.y);
+  out.x = x;
+  out.y = y;
 }
