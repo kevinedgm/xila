@@ -70,6 +70,10 @@ export interface BarChartConfig extends BaseChartConfig {
     readonly orientation?: 'vertical' | 'horizontal';
     /** Fracción de la banda que queda vacía entre barras, de 0 a 1. */
     readonly padding?: number;
+    /** Radio del extremo de datos de cada barra en píxeles (4); 0 para esquinas rectas. */
+    readonly radius?: number;
+    /** Hueco en píxeles del color del fondo entre barras vecinas y entre segmentos apilados (2). */
+    readonly gap?: number;
   };
 }
 
@@ -135,7 +139,10 @@ export interface DotsChartConfig extends Omit<BaseChartConfig, 'series'> {
 export interface ScatterChartConfig extends BaseChartConfig {
   readonly type: 'scatter';
   readonly scatter?: {
+    /** Radio en píxeles (3). */
     readonly radius?: number;
+    /** Anillo del color del fondo alrededor de cada punto, en píxeles (1.5); 0 lo quita. */
+    readonly ring?: number;
   };
 }
 
@@ -179,8 +186,8 @@ export interface ResolvedAxisConfig {
 export const DEFAULTS = {
   padding: { top: 8, right: 8, bottom: 8, left: 8 } satisfies Padding,
   line: { width: 2, area: false, step: false },
-  bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2 },
-  scatter: { radius: 3 },
+  bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2 },
+  scatter: { radius: 3, ring: 1.5 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
   heatmap: { colormap: 'viridis', domain: 'auto', center: null, legend: true },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },

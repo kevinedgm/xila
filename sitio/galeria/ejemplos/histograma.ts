@@ -6,7 +6,7 @@ export default async function histograma(): Promise<ChartConfig> {
   const tabla = await co2();
   return {
     type: 'bar',
-    bar: { padding: 0 },
+    bar: { padding: 0, radius: 0, gap: 1 },
     data: histogramTable(tabla.numeric('co2_t_por_persona'), {
       binColumn: 'rango',
       countColumn: 'n',

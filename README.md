@@ -80,7 +80,7 @@ Mecanismo y límites en [`docs/adr/0004-webgl-hibrido-para-puntos.md`](docs/adr/
 es inclusivo, como `numpy.histogram`). `bins` acepta un entero o una regla: `'fd'`
 (Freedman–Diaconis, por defecto: ancho `2·IQR/n^(1/3)`, robusto a atípicos), `'sturges'` o
 `'sqrt'`. `histogramTable` devuelve una `DataTable` con la etiqueta de cada cubeta y su conteo,
-lista para un gráfico `bar` con `bar: { padding: 0 }`.
+lista para un gráfico `bar` con `bar: { padding: 0, radius: 0, gap: 1 }`.
 
 ## Gráfico de unidades
 

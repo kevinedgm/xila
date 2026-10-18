@@ -890,13 +890,21 @@ export class Chart {
             transform,
           );
         }
+        // Anillo del color del fondo para distinguir puntos que se encima; se omite en nubes
+        // grandes, donde el trazo por punto cuesta y la densidad es lo que se lee.
+        const ring = to - from <= RING_MAX_POINTS ? config.scatter.ring : 0;
         renderer.drawPointSeries(
           'data',
           sx,
           ty ? mapValues(s.y, from, to, ty) : s.y,
           from,
           to,
-          { fill: color, radius: config.scatter.radius, opacity: 0.85 },
+          {
+            fill: color,
+            radius: config.scatter.radius,
+            opacity: 0.85,
+            ...(ring > 0 ? { stroke: config.theme.background, strokeWidth: ring } : {}),
+          },
           transform,
         );
         continue;
@@ -1157,6 +1165,19 @@ export class Chart {
     const slot = stacked ? x.bandwidth : x.bandwidth / Math.max(1, visible.length);
     const positive = new Float64Array(x.count);
     const negative = new Float64Array(x.count);
+    // Apiladas: solo el segmento exterior de cada pila lleva el extremo redondeado.
+    const topPositive = new Int32Array(x.count).fill(-1);
+    const topNegative = new Int32Array(x.count).fill(-1);
+    if (stacked) {
+      visible.forEach(({ series: s }, si) => {
+        const count = Math.min(s.length, x.count);
+        for (let i = 0; i < count; i++) {
+          const v = s.y[i] as number;
+          if (v > 0) topPositive[i] = si;
+          else if (v < 0) topNegative[i] = si;
+        }
+      });
+    }
 
     visible.forEach(({ series: s, index: colorIndex }, si) => {
       const count = Math.min(s.length, x.count);
@@ -1164,6 +1185,7 @@ export class Chart {
       const px1 = new Float64Array(count);
       const y0 = new Float64Array(count);
       const y1 = new Float64Array(count);
+      const inner = stacked ? new Float64Array(count).fill(NaN) : null;
       for (let i = 0; i < count; i++) {
         const v = s.y[i] as number;
         const start = x.start(i) + (stacked ? 0 : si * slot);
@@ -1175,13 +1197,35 @@ export class Chart {
           y0[i] = acc[i] as number;
           y1[i] = (acc[i] as number) + v;
           acc[i] = y1[i] as number;
+          const top = v >= 0 ? topPositive[i] : topNegative[i];
+          if (top !== si && inner) {
+            inner[i] = y1[i] as number;
+            y1[i] = NaN;
+          }
         } else {
           y0[i] = 0;
           y1[i] = v;
         }
       }
       const color = palette[colorIndex % palette.length] ?? '#000';
-      renderer.drawBars('data', px0, px1, y0, y1, 0, count, { fill: color }, transform);
+      // Hueco del color del fondo entre barras vecinas o, apiladas, entre segmentos.
+      const style = {
+        fill: color,
+        gap: stacked ? 0 : config.bar.gap,
+        gapStart: stacked && si > 0 ? config.bar.gap : 0,
+      };
+      renderer.drawBars(
+        'data',
+        px0,
+        px1,
+        y0,
+        y1,
+        0,
+        count,
+        { ...style, radius: config.bar.radius },
+        transform,
+      );
+      if (inner) renderer.drawBars('data', px0, px1, y0, inner, 0, count, style, transform);
     });
   }
 }
@@ -1216,6 +1260,9 @@ function legendLabels(domain: readonly [number, number], center: number | null):
   if (center !== null) out.push(formatNumber(center, { step }));
   return out;
 }
+
+/** Puntos de dispersión hasta los que se dibuja el anillo de fondo alrededor de cada punto. */
+const RING_MAX_POINTS = 5_000;
 
 /** Umbral de puntos a partir del cual `renderer: 'auto'` elige WebGL para dispersiones. */
 export const WEBGL_AUTO_THRESHOLD = 50_000;

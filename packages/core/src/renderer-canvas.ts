@@ -3,6 +3,7 @@ import {
   type Layer,
   type LineStyle,
   type PointStyle,
+  type BarStyle,
   type RectStyle,
   type Renderer,
   type TextStyle,
@@ -221,20 +222,54 @@ export class CanvasRenderer implements Renderer {
     y1: Float64Array,
     from: number,
     to: number,
-    style: RectStyle,
+    style: BarStyle,
     t: Transform,
   ): void {
     const ctx = this.ctx(layer);
     ctx.globalAlpha = style.opacity ?? 1;
+    const half = (style.gap ?? 0) / 2;
+    const gapStart = style.gapStart ?? 0;
+    const radius = style.radius ?? 0;
     ctx.beginPath();
     for (let i = from; i < to; i++) {
       const b = y1[i] as number;
       if (b !== b) continue;
-      const px0 = applyMap(t.x, x0[i] as number);
-      const px1 = applyMap(t.x, x1[i] as number);
+      const px0 = applyMap(t.x, x0[i] as number) + half;
+      const px1 = applyMap(t.x, x1[i] as number) - half;
       const py0 = applyMap(t.y, y0[i] as number);
       const py1 = applyMap(t.y, b);
-      ctx.rect(Math.min(px0, px1), Math.min(py0, py1), Math.abs(px1 - px0), Math.abs(py1 - py0));
+      // El hueco de la base se quita del lado `y0`, hacia el extremo de datos.
+      const base = py1 < py0 ? py0 - gapStart : py0 + gapStart;
+      const w = Math.abs(px1 - px0);
+      const h = Math.abs(py1 - base);
+      if (w <= 0 || h <= 0) continue;
+      const left = Math.min(px0, px1);
+      const top = Math.min(py1, base);
+      const r = Math.min(radius, w / 2, h);
+      if (r <= 0) {
+        ctx.rect(left, top, w, h);
+        continue;
+      }
+      const right = left + w;
+      const bottom = top + h;
+      if (py1 < base) {
+        // Barra hacia arriba: esquinas redondeadas en el borde superior.
+        ctx.moveTo(left, bottom);
+        ctx.lineTo(left, top + r);
+        ctx.arcTo(left, top, left + r, top, r);
+        ctx.lineTo(right - r, top);
+        ctx.arcTo(right, top, right, top + r, r);
+        ctx.lineTo(right, bottom);
+      } else {
+        // Barra hacia abajo (valores negativos): redondeo en el borde inferior.
+        ctx.moveTo(left, top);
+        ctx.lineTo(right, top);
+        ctx.lineTo(right, bottom - r);
+        ctx.arcTo(right, bottom, right - r, bottom, r);
+        ctx.lineTo(left + r, bottom);
+        ctx.arcTo(left, bottom, left, bottom - r, r);
+      }
+      ctx.closePath();
     }
     ctx.fillStyle = style.fill;
     ctx.fill();

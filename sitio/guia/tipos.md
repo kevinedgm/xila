@@ -24,16 +24,18 @@ entran en el dominio Y.
 
 ## Dispersión
 
-`scatter.radius` fija el radio. A partir de 50 000 puntos conviene `renderer: 'webgl'` (o
+`scatter.radius` fija el radio (3) y `scatter.ring` el anillo del color del fondo que separa
+puntos encimados (1,5 px; se omite a partir de 5 000 puntos). A partir de 50 000 puntos conviene `renderer: 'webgl'` (o
 `'auto'`, que lo decide por el tamaño): los puntos suben una vez a la GPU y el pan solo cambia
 dos uniforms. En dispersión las barras de error se dibujan con remates.
 
 ## Barras
 
 `bar.mode: 'grouped' | 'stacked'`, `bar.orientation`, `bar.padding` (fracción vacía de la
-banda). Una barra por categoría de `x` y una serie por columna `y`; del formato largo se llega
+banda), `bar.radius` (extremo de datos redondeado, 4 px) y `bar.gap` (hueco del color del
+fondo entre barras vecinas y entre segmentos apilados, 2 px). Una barra por categoría de `x` y una serie por columna `y`; del formato largo se llega
 con `pivot(tabla, { index, columns, values, agg })`. Un histograma es `histogramTable(valores)`
-más un gráfico `bar` con `padding: 0`.
+más un gráfico `bar` con `padding: 0, radius: 0, gap: 1` (barras pegadas, sin redondeo).
 
 ## Box plot
 

@@ -48,6 +48,16 @@ export interface RectStyle {
   readonly opacity?: number;
 }
 
+/** Estilo de un lote de barras: el extremo de datos (lado `y1`) puede ir redondeado. */
+export interface BarStyle extends RectStyle {
+  /** Radio de las dos esquinas del lado `y1`, acotado a la mitad del ancho y al alto. */
+  readonly radius?: number;
+  /** Píxeles que se quitan a lo ancho (la mitad por cada lado) para separar barras vecinas. */
+  readonly gap?: number;
+  /** Píxeles que se quitan del lado `y0` (la base): hueco entre segmentos apilados. */
+  readonly gapStart?: number;
+}
+
 export interface TextStyle {
   readonly font: string;
   readonly fill: string;
@@ -105,7 +115,7 @@ export interface Renderer {
     y1: Float64Array,
     from: number,
     to: number,
-    style: RectStyle,
+    style: BarStyle,
     transform: Transform,
   ): void;
 
@@ -117,7 +127,7 @@ export interface Renderer {
     high: Float64Array,
     from: number,
     to: number,
-    style: RectStyle,
+    style: BarStyle,
     transform: Transform,
   ): void;
 

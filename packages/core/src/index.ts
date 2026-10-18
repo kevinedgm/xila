@@ -106,6 +106,7 @@ export type {
   LineStyle,
   PointStyle,
   RectStyle,
+  BarStyle,
   TextStyle,
 } from './renderer';
 

@@ -245,7 +245,7 @@ mount('histograma', {
   plugins: [tooltipPlugin(), accessibilityPlugin()],
   data: histogramTable(muestra, { binColumn: 'rango', countColumn: 'n' }),
   series: [{ id: 'n', name: 'Frecuencia', x: 'rango', y: 'n' }],
-  bar: { padding: 0 },
+  bar: { padding: 0, radius: 0, gap: 1 },
   axes: { x: { title: 'Valor' }, y: { title: 'Frecuencia' } },
 });
 
