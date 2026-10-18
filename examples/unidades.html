@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Casos como unidades</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #1f2933;
+        max-width: 1100px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      .sub {
+        color: #52606d;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      .barra {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .seg {
+        display: inline-flex;
+        border: 1px solid #cfcfcf;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .seg button {
+        border: 0;
+        background: #fff;
+        padding: 0 12px;
+        min-height: 36px;
+        cursor: pointer;
+        color: #555;
+        font: inherit;
+      }
+      .seg button[aria-pressed='true'] {
+        background: #1f2933;
+        color: #fff;
+      }
+      .chart {
+        height: 360px;
+      }
+      .pista {
+        color: #7a7a7a;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="barra">
+      <div>
+        <h1>Tiempo de atención por caso</h1>
+        <p class="sub">Minutos · <span id="n"></span> casos · cada punto es un caso</p>
+      </div>
+      <div class="seg" role="group" aria-label="Forma">
+        <button id="m-strip" aria-pressed="true">Casos sueltos</button>
+        <button id="m-binned" aria-pressed="false">Agrupados</button>
+      </div>
+    </div>
+    <div id="unidades" class="chart"></div>
+    <p class="pista">
+      Arrastra para contar un rango. Teclado: ← → mueven la selección, Shift+← → la amplían, Escape
+      la quita. <code>?n=50000</code> cambia el número de casos.
+    </p>
+    <script type="module" src="/src/unidades.ts"></script>
+  </body>
+</html>

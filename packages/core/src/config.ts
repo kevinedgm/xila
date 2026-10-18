@@ -2,9 +2,10 @@ import type { DataTable } from './data/table';
 import type { SeriesSpec } from './data/series';
 import type { ChartPlugin } from './plugin';
 import type { ColormapName } from './colormap';
+import type { BinRule } from './data/histogram';
 import { resolveTheme, type Theme, type ThemeName } from './theme';
 
-export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap';
+export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap' | 'dots';
 
 export interface ScaleConfig {
   /** `band` solo tiene sentido para barras; `time` requiere una columna de tiempo. */
@@ -109,6 +110,28 @@ export interface HeatmapChartConfig extends BaseChartConfig {
   };
 }
 
+/** Serie de un gráfico de unidades: solo hace falta la columna del valor (`x`). */
+export type DotsSeriesSpec = Omit<SeriesSpec, 'y'> & { readonly y?: string };
+
+export interface DotsChartConfig extends Omit<BaseChartConfig, 'series'> {
+  readonly type: 'dots';
+  /**
+   * Un punto por caso. `x` es la columna del valor; `y` no se usa. `mode: 'strip'` dispersa los
+   * puntos en una tira; `'binned'` los apila por cubeta como un histograma de unidades. Cambiar
+   * el modo con `update` anima cada punto a su nueva posición durante `transition` ms (0 o
+   * `prefers-reduced-motion` lo hacen instantáneo).
+   */
+  readonly series: readonly DotsSeriesSpec[];
+  readonly dots?: {
+    readonly mode?: 'strip' | 'binned';
+    /** Cubetas del modo apilado: número o regla (`'fd'` por defecto). */
+    readonly bins?: number | BinRule;
+    /** Radio en píxeles, o `'auto'` (hasta 4 en cubetas, 1.5–3 en tira, según el ancho). */
+    readonly radius?: number | 'auto';
+    readonly transition?: number;
+  };
+}
+
 export interface ScatterChartConfig extends BaseChartConfig {
   readonly type: 'scatter';
   readonly scatter?: {
@@ -121,7 +144,12 @@ export interface ScatterChartConfig extends BaseChartConfig {
  * editor solo sugiere `line`, `bar` o `scatter` según el gráfico elegido.
  */
 export type ChartConfig =
-  LineChartConfig | BarChartConfig | ScatterChartConfig | BoxChartConfig | HeatmapChartConfig;
+  | LineChartConfig
+  | BarChartConfig
+  | ScatterChartConfig
+  | BoxChartConfig
+  | HeatmapChartConfig
+  | DotsChartConfig;
 
 /** Lo mismo, con todos los valores por defecto aplicados. Es lo que usa el núcleo. */
 export interface ResolvedChartConfig {
@@ -138,6 +166,7 @@ export interface ResolvedChartConfig {
   readonly scatter: Required<NonNullable<ScatterChartConfig['scatter']>>;
   readonly box: Required<NonNullable<BoxChartConfig['box']>>;
   readonly heatmap: Required<NonNullable<HeatmapChartConfig['heatmap']>>;
+  readonly dots: Required<NonNullable<DotsChartConfig['dots']>>;
 }
 
 export interface ResolvedAxisConfig {
@@ -154,6 +183,7 @@ export const DEFAULTS = {
   scatter: { radius: 3 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
   heatmap: { colormap: 'viridis', domain: 'auto', center: null, legend: true },
+  dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
 } as const;
 
 export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
@@ -161,7 +191,11 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     throw new RangeError('La configuración necesita al menos una serie');
   }
   const ids = new Set<string>();
-  for (const s of config.series) {
+  // Un gráfico de unidades solo necesita el valor: `y` se rellena con `x` para que el resto del
+  // núcleo (series resueltas, tooltip) vea la misma forma que en los demás tipos.
+  const series: readonly SeriesSpec[] =
+    config.type === 'dots' ? config.series.map((s) => ({ ...s, y: s.y ?? s.x })) : config.series;
+  for (const s of series) {
     if (ids.has(s.id)) throw new RangeError(`Hay dos series con el id "${s.id}"`);
     ids.add(s.id);
     // Falla aquí, con el nombre de la columna, y no más tarde al dibujar.
@@ -171,7 +205,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
   }
 
   // Sin `scales.x.type`, el tipo sale de los datos: barras → banda; columna `time` → tiempo.
-  const firstX = config.series[0]?.x ?? '';
+  const firstX = series[0]?.x ?? '';
   const defaultX =
     config.type === 'bar' || config.type === 'box' || config.type === 'heatmap'
       ? 'band'
@@ -181,7 +215,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
   return {
     type: config.type,
     data: config.data,
-    series: config.series,
+    series,
     scales: {
       x: resolveScale(config.scales?.x, defaultX),
       y: resolveScale(config.scales?.y, 'linear'),
@@ -195,6 +229,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     scatter: { ...DEFAULTS.scatter, ...(config.type === 'scatter' ? config.scatter : undefined) },
     box: { ...DEFAULTS.box, ...(config.type === 'box' ? config.box : undefined) },
     heatmap: { ...DEFAULTS.heatmap, ...(config.type === 'heatmap' ? config.heatmap : undefined) },
+    dots: { ...DEFAULTS.dots, ...(config.type === 'dots' ? config.dots : undefined) },
   };
 }
 

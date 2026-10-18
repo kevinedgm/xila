@@ -6,6 +6,7 @@ import apiladas from './ejemplos/apiladas';
 import dispersion from './ejemplos/dispersion';
 import log from './ejemplos/log';
 import histograma from './ejemplos/histograma';
+import unidades from './ejemplos/unidades';
 import cajas from './ejemplos/cajas';
 import calor from './ejemplos/calor';
 import anotaciones from './ejemplos/anotaciones';
@@ -15,7 +16,7 @@ import accesible from './ejemplos/accesible';
 
 # Galería
 
-Doce gráficos con un mismo CSV real: emisiones de CO₂ de siete países entre 1950 y 2024
+Trece gráficos con un mismo CSV real: emisiones de CO₂ de siete países entre 1950 y 2024
 (Our World in Data, limpiado con pandas por `python/ejemplo_co2.py`). Cada ejemplo muestra el
 código completo que lo produce; todos empiezan por cargar la tabla una sola vez:
 
@@ -62,6 +63,15 @@ código completo que lo produce; todos empiezan por cargar la tabla una sola vez
 <Demo :cargar="histograma" />
 
 <<< @/galeria/ejemplos/histograma.ts
+
+## Casos como unidades
+
+El mismo histograma, pero cada país-año es un punto: arrastra para contar cuántos caen en un
+rango (o usa ← → y Escape con el gráfico enfocado).
+
+<Demo :cargar="unidades" :alto="320" />
+
+<<< @/galeria/ejemplos/unidades.ts
 
 ## Box plot
 

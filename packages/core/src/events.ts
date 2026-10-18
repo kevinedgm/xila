@@ -20,6 +20,12 @@ export interface ChartEventMap {
   zoom: { readonly x: readonly [number, number]; readonly y: readonly [number, number] };
   dataChanged: { readonly reason: 'update' | 'filter' };
   resize: { readonly width: number; readonly height: number };
+  /** Rango seleccionado en X (plugin de selección) y cuántos datos visibles caen dentro. */
+  selection: {
+    readonly x: readonly [number, number] | null;
+    readonly count: number;
+    readonly total: number;
+  };
   /** Tras cada dibujo completo; `first` en el primero (sirve para quitar un esqueleto). */
   draw: { readonly first: boolean };
 }

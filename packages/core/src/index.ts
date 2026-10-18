@@ -60,6 +60,8 @@ export type {
   LineChartConfig,
   BarChartConfig,
   ScatterChartConfig,
+  DotsChartConfig,
+  DotsSeriesSpec,
   ResolvedChartConfig,
   ScaleConfig,
   AxisConfig,
@@ -114,6 +116,11 @@ export { sortedHitTester, gridHitTester, bandHitTester } from './hit-test';
 export type { Hit, HitTester } from './hit-test';
 
 export { tooltipPlugin } from './plugins/tooltip';
+export { selectionPlugin } from './plugins/selection';
+export type { SelectionOptions, SelectionSummary } from './plugins/selection';
+export { dotsLayout, countInRange, snapToEdges, jitter } from './dots';
+export type { DotsLayout, DotsMode, DotsOptions } from './dots';
+export { pixelHitTester } from './hit-test';
 export type { TooltipOptions } from './plugins/tooltip';
 export { legendPlugin } from './plugins/legend';
 export { zoomPanPlugin, zoomDomain, panDomain, clampDomain } from './plugins/zoom-pan';

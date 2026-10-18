@@ -61,6 +61,33 @@ con `{ x, y }`; sirve para sincronizar gráficos.
 
 Para gráficos de barras el eje X es categórico y no hace zoom; sí el eje Y con `axis: 'y'`.
 
+## `selectionPlugin(opciones)`
+
+Selección que **cuenta en vez de hacer zoom**: arrastrar sobre el área marca un rango en X, los
+datos fuera se atenúan y una línea de texto encima del gráfico responde "cuántos y qué
+porcentaje". Pensado para `type: 'dots'`, pero funciona con cualquier gráfico de escala X
+continua (cuenta los datos visibles cuya `x` cae en el rango).
+
+```ts
+plugins: [selectionPlugin({ unit: ['caso', 'casos'] })];
+// Lectura: "312 casos (25.2 %) entre 8 y 15"
+```
+
+| Opción     | Por defecto         | Qué hace                                                                                   |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------ |
+| `unit`     | `['dato', 'datos']` | Singular y plural para la lectura                                                          |
+| `format`   | lectura en español  | `(resumen, formatX) => string`; `resumen` trae rango, conteo, total y porcentaje           |
+| `readout`  | `true`              | Línea de texto con `role="status"` y `aria-live="polite"`                                  |
+| `snap`     | `'auto'`            | En modo cubetas la selección salta a los bordes de cubeta                                  |
+| `keyboard` | `true`              | ← → mueven, Shift+← → amplían por la derecha, Alt+← → por la izquierda, Inicio/Fin, Escape |
+| `onChange` |                     | Recibe el mismo resumen cada vez que cambia                                                |
+
+Un clic sin arrastre (menos del 0.5 % del rango) quita la selección. Mecanismo: el plugin solo
+traduce gestos a `ctx.setSelection(rango)`; el núcleo guarda el rango, emite el evento
+`selection` con `{ x, count, total }` y atenúa lo que queda fuera al dibujar. Así otro plugin, o
+el código de la página, puede leer `chart.getSelection()` o fijar la selección sin pasar por el
+ratón. Con Shift arrastrar sigue siendo del `zoomPanPlugin` si está instalado.
+
 ## `annotationsPlugin(anotaciones)`
 
 Marca eventos sobre el gráfico. Las anotaciones guardan su posición en **valores de datos**

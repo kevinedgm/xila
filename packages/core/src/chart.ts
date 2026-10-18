@@ -10,6 +10,7 @@ import {
 import { formatNumber } from './format/number';
 import { resolveConfig, type ChartConfig, type ResolvedChartConfig } from './config';
 import { colormap, type Colormap } from './colormap';
+import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
@@ -22,6 +23,7 @@ import {
   sortedHitTester,
   type Hit,
   type HitTester,
+  pixelHitTester,
 } from './hit-test';
 import { PluginRegistry, type Layout, type PluginContext, type Rect } from './plugin';
 import { applyMap, type Renderer, type Transform } from './renderer';
@@ -80,6 +82,12 @@ export class Chart {
   /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
   private cells: Int32Array = new Int32Array(0);
   private readonly hidden = new Set<string>();
+  /** Gráfico de unidades: posiciones objetivo del último layout y las que se muestran. */
+  private dots: DotsLayout | null = null;
+  private dotsShown: { x: Float64Array; y: Float64Array; mode: string } | null = null;
+  private dotsAnim: { fromX: Float64Array; fromY: Float64Array; start: number } | null = null;
+  /** Rango seleccionado en X (plugin de selección); los datos fuera se atenúan. */
+  private selection: Domain | null = null;
   private hitTester: HitTester | null = null;
   private lastHover: HoverPayload | null = null;
   /** Rangos fijados por zoom o pan; `null` = automático desde los datos. */
@@ -149,6 +157,7 @@ export class Chart {
     this.dirty.data = true;
     this.dirty.layout = true;
     this.events.emit('dataChanged', { reason: 'update' });
+    this.plugins.onEvent('dataChanged', { reason: 'update' }, this.context());
     this.requestDraw();
   }
 
@@ -271,7 +280,43 @@ export class Chart {
       getDataDomain: (axis) => this.domain(axis),
       getViewDomain: (axis) => this.view[axis],
       setViewDomain: (axis, domain) => this.setViewDomain(axis, domain),
+      getSelection: () => this.selection,
+      setSelection: (range) => this.setSelection(range),
+      countSelection: (range) => this.countSelection(range),
+      getBinEdges: () => this.dots?.edges ?? null,
     };
+  }
+
+  /** Rango seleccionado en X; `null` lo quita. Emite `selection` con el conteo de datos dentro. */
+  setSelection(range: Domain | null): void {
+    this.assertAlive();
+    const current = this.selection;
+    if (
+      current === range ||
+      (current && range && current[0] === range[0] && current[1] === range[1])
+    ) {
+      return;
+    }
+    this.selection = range;
+    const payload = { x: range, ...this.countSelection(range) };
+    this.events.emit('selection', payload);
+    this.plugins.onEvent('selection', payload, this.context());
+    this.requestDraw();
+  }
+
+  getSelection(): Domain | null {
+    return this.selection;
+  }
+
+  /** Datos visibles cuya `x` cae en el rango, y el total de datos visibles. */
+  countSelection(range: Domain | null): { count: number; total: number } {
+    let count = 0;
+    let total = 0;
+    for (const { series: s } of this.visibleSeries()) {
+      for (let i = 0; i < s.length; i++) if ((s.x[i] as number) === (s.x[i] as number)) total++;
+      if (range) count += countInRange(s.x, range[0], range[1]);
+    }
+    return { count: range ? count : total, total };
   }
 
   /** Rango mostrado en un eje; `null` vuelve al automático. Emite `zoom`. */
@@ -332,7 +377,9 @@ export class Chart {
       return;
     }
     const hits =
-      this.config.type === 'scatter' || this.config.type === 'heatmap'
+      this.config.type === 'scatter' ||
+      this.config.type === 'heatmap' ||
+      this.config.type === 'dots'
         ? nearest
           ? [nearest]
           : []
@@ -378,7 +425,7 @@ export class Chart {
       );
       return;
     }
-    if (config.type !== 'scatter') {
+    if (config.type !== 'scatter' && config.type !== 'dots') {
       renderer.drawRule('overlay', first.px, plotArea.y, first.px, plotArea.y + plotArea.height, {
         stroke: config.theme.axis,
         width: 1,
@@ -512,11 +559,14 @@ export class Chart {
               scales,
               config.type === 'bar' && config.bar.mode === 'stacked',
             )
-          : config.type === 'scatter'
-            ? gridHitTester(visible, scales, plotArea)
-            : sortedHitTester(visible, scales);
+          : config.type === 'dots' && firstVisible && this.dotsShown
+            ? pixelHitTester(firstVisible, 0, this.dotsShown.x, this.dotsShown.y, plotArea)
+            : config.type === 'scatter'
+              ? gridHitTester(visible, scales, plotArea)
+              : sortedHitTester(visible, scales);
     if (this.lastHover) this.drawHoverOverlay(this.lastHover);
     this.events.emit('draw', { first: !this.drawn });
+    this.plugins.onEvent('draw', { first: !this.drawn }, this.context());
     this.drawn = true;
   }
 
@@ -535,7 +585,11 @@ export class Chart {
     const xRange = [area.x, area.x + area.width] as const;
     const yRange = [area.y + area.height, area.y] as const;
     if (previous) {
-      return { x: previous.x.withRange(xRange), y: previous.y.withRange(yRange) };
+      const x = previous.x.withRange(xRange);
+      if (config.type === 'dots' && x.kind !== 'band') {
+        return { x, y: this.dotsScale(area, x, yRange) };
+      }
+      return { x, y: previous.y.withRange(yRange) };
     }
 
     // Con zoom (view) el rango es exacto: redondearlo a ticks "bonitos" lo haría saltar.
@@ -563,7 +617,29 @@ export class Chart {
           : linearScale;
     let x = make(this.view.x ?? this.domain('x'), xRange);
     if (!this.view.x && config.scales.x.nice && config.scales.x.domain === 'auto') x = x.nice(6);
+    if (config.type === 'dots') return { x, y: this.dotsScale(area, x, yRange) };
     return { x, y };
+  }
+
+  /**
+   * Gráfico de unidades: calcula el layout de los puntos para esta área y devuelve un eje Y en
+   * unidades (`[0, capacidad]`), lineal con los píxeles para que los ticks sean "bonitos". En
+   * modo tira el eje es `[0, 1]` y no se rotula.
+   */
+  private dotsScale(
+    area: Rect,
+    x: ContinuousScale,
+    yRange: readonly [number, number],
+  ): ContinuousScale {
+    const { config } = this;
+    const first = this.visibleSeries()[0]?.series;
+    const values = first ? first.x : new Float64Array(0);
+    this.dots = dotsLayout(values, area, x, {
+      mode: config.dots.mode,
+      bins: config.dots.bins,
+      radius: config.dots.radius,
+    });
+    return linearScale([0, this.dots.capacity], yRange);
   }
 
   private buildTicks(scales: ChartScales): { x: AxisTicks; y: AxisTicks } {
@@ -579,6 +655,9 @@ export class Chart {
         x,
         y: { values, labels: [...rows], positions: values.map((v) => scales.y.toPixel(v)) },
       };
+    }
+    if (config.type === 'dots' && config.dots.mode === 'strip') {
+      return { x, y: { values: [], labels: [], positions: [] } };
     }
     const y = continuousTicks(scales.y, 5, config.axes.y);
     return { x, y };
@@ -772,6 +851,10 @@ export class Chart {
       this.drawHeatmap(scales, area);
       return;
     }
+    if (config.type === 'dots') {
+      this.drawDots(scales);
+      return;
+    }
     if (scales.x.kind === 'band') {
       if (config.type === 'box') this.drawBoxes(scales.x, { x: IDENTITY, y: yMap }, renderer);
       else this.drawBars(scales.x, { x: IDENTITY, y: yMap }, renderer);
@@ -879,6 +962,107 @@ export class Chart {
    * Box plot de Tukey: caja de Q1 a Q3, raya en la mediana, bigotes hasta el último dato dentro
    * de 1.5·IQR y atípicos como puntos. Varias series se colocan lado a lado en cada categoría.
    */
+  /**
+   * Gráfico de unidades. Las posiciones objetivo vienen del layout; si el modo cambió desde el
+   * último dibujo, cada punto viaja de su posición anterior a la nueva durante
+   * `dots.transition` ms (un fotograma por `requestDraw`), salvo con `prefers-reduced-motion`.
+   * Con una selección activa, los puntos fuera del rango se pintan con el color del grid.
+   */
+  private drawDots(scales: ChartScales): void {
+    const { config, renderer } = this;
+    const layout = this.dots;
+    const first = this.visibleSeries()[0];
+    if (!layout || !first || scales.x.kind === 'band') return;
+    const n = layout.px.length;
+    const shown = this.dotsShown;
+    const sameSize = shown !== null && shown.x.length === n;
+    const now = performance.now();
+
+    // Arranque de la transición: el modo cambió y hay posiciones anteriores que interpolar.
+    if (sameSize && shown.mode !== layout.mode && !this.dotsAnim) {
+      const reduced =
+        typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (config.dots.transition > 0 && !reduced) {
+        this.dotsAnim = { fromX: shown.x.slice(), fromY: shown.y.slice(), start: now };
+      }
+    }
+    let x = layout.px;
+    let y = layout.py;
+    if (this.dotsAnim && sameSize) {
+      const t = (now - this.dotsAnim.start) / config.dots.transition;
+      if (t >= 1) {
+        this.dotsAnim = null;
+      } else {
+        const k = easeOutCubic(t);
+        x = new Float64Array(n);
+        y = new Float64Array(n);
+        const { fromX, fromY } = this.dotsAnim;
+        for (let i = 0; i < n; i++) {
+          x[i] = (fromX[i] as number) + ((layout.px[i] as number) - (fromX[i] as number)) * k;
+          y[i] = (fromY[i] as number) + ((layout.py[i] as number) - (fromY[i] as number)) * k;
+        }
+        this.requestDraw();
+      }
+    } else {
+      this.dotsAnim = null;
+    }
+    this.dotsShown = { x, y, mode: layout.mode };
+
+    const color = config.theme.palette[first.index % config.theme.palette.length] ?? '#000';
+    const identity: Transform = { x: IDENTITY, y: IDENTITY };
+    const sel = this.selection;
+    if (!sel) {
+      renderer.drawPointSeries(
+        'data',
+        x,
+        y,
+        0,
+        n,
+        { fill: color, radius: layout.radius },
+        identity,
+      );
+      return;
+    }
+    // Dos pasadas: primero los atenuados y encima los seleccionados, para que no los tapen.
+    const lo = Math.min(sel[0], sel[1]);
+    const hi = Math.max(sel[0], sel[1]);
+    const inX = new Float64Array(n);
+    const inY = new Float64Array(n);
+    const outX = new Float64Array(n);
+    const outY = new Float64Array(n);
+    let ni = 0;
+    let no = 0;
+    const values = first.series.x;
+    for (let i = 0; i < n; i++) {
+      const v = values[i] as number;
+      if (v >= lo && v <= hi) {
+        inX[ni] = x[i] as number;
+        inY[ni++] = y[i] as number;
+      } else {
+        outX[no] = x[i] as number;
+        outY[no++] = y[i] as number;
+      }
+    }
+    renderer.drawPointSeries(
+      'data',
+      outX,
+      outY,
+      0,
+      no,
+      { fill: config.theme.grid, radius: layout.radius },
+      identity,
+    );
+    renderer.drawPointSeries(
+      'data',
+      inX,
+      inY,
+      0,
+      ni,
+      { fill: color, radius: layout.radius },
+      identity,
+    );
+  }
+
   private drawBoxes(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
     const { palette, background } = config.theme;

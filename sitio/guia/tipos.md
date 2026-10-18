@@ -1,6 +1,6 @@
 # Tipos de gráfico
 
-Cinco tipos, todos sobre la misma `DataTable`. Lo que cambia entre ellos es qué columnas pide
+Seis tipos, todos sobre la misma `DataTable`. Lo que cambia entre ellos es qué columnas pide
 cada serie y qué escala X va por defecto.
 
 | `type`    | Serie                         | Escala X por defecto | Datos                                              |
@@ -10,6 +10,7 @@ cada serie y qué escala X va por defecto.
 | `bar`     | `x` categórica, `y`           | banda                | ancho (una columna por serie) o largo tras `pivot` |
 | `box`     | `x` categórica, `y`           | banda                | largo: una fila por medición, el gráfico agrupa    |
 | `heatmap` | `x`, `y` categóricas, `value` | banda                | largo: una fila por celda                          |
+| `dots`    | `x` numérica                  | lineal               | una fila por caso; un punto por fila               |
 
 ## Línea
 
@@ -48,6 +49,19 @@ escalada sin suavizado, por eso 500 × 500 celdas cuestan lo mismo que 10 × 10.
 `heatmap.colormap`: `viridis`, `magma`, `inferno`, `plasma` (perceptuales), `rdbu`
 (divergente) o una lista de hexadecimales. `center: 0` hace el dominio simétrico, útil para
 correlaciones. `legend: false` quita la barra de color.
+
+## Unidades
+
+Un punto por caso. `dots.mode: 'strip'` reparte los puntos en vertical con una dispersión
+determinista (el índice decide la altura, así el gráfico no "baila" al redibujar) y muestra la
+nube real con su cola. `'binned'` manda cada punto a su cubeta (`dots.bins`, las reglas de
+`histogram`) y lo apila en columnas: es el histograma, pero cada barra se lee como pila de
+casos. Al cambiar de modo con `chart.update({ dots: { mode } })` cada punto viaja de su
+posición anterior a la nueva durante `dots.transition` ms, y se respeta `prefers-reduced-motion`.
+
+El eje Y en cubetas cuenta casos y es lineal en píxeles: el radio (`dots.radius`, `'auto'` por
+defecto) baja hasta que la cubeta más alta cabe en el área. Con `selectionPlugin` arrastrar
+cuenta y resume el rango; en cubetas la selección salta a los bordes.
 
 ## Escalas y ejes
 

@@ -82,6 +82,18 @@ es inclusivo, como `numpy.histogram`). `bins` acepta un entero o una regla: `'fd
 `'sqrt'`. `histogramTable` devuelve una `DataTable` con la etiqueta de cada cubeta y su conteo,
 lista para un gráfico `bar` con `bar: { padding: 0 }`.
 
+## Gráfico de unidades
+
+`type: 'dots'` dibuja **un punto por caso** de una columna numérica (`x`; `y` no hace falta).
+Dos modos sobre la misma lista de puntos: `dots.mode: 'strip'` (tira con dispersión vertical
+determinista, para ver la nube y su cola) y `'binned'` (cada punto va a su cubeta y se apila
+en columnas: el histograma explicado como pila de casos). Cambiar de modo con `update` mueve
+cada punto de su posición anterior a la nueva durante `dots.transition` ms (600; se omite con
+`prefers-reduced-motion`). `dots.bins` acepta las mismas reglas que `histogram` y
+`dots.radius` fija el radio o lo ajusta (`'auto'`) para que la cubeta más alta quepa. Con
+`selectionPlugin` arrastrar cuenta los casos de un rango en vez de hacer zoom. Ejemplo:
+`examples/unidades.html`.
+
 ## Box plot
 
 `type: 'box'` recibe datos en formato largo (una fila por medición): `x` es la columna
@@ -103,7 +115,7 @@ dibuja la barra de color. `colormap()` está exportada para usar los mismos colo
 
 ## Plugins
 
-Tooltip, leyenda, zoom/pan y anotaciones vienen en `xilaplot`; opciones y mecanismo en
+Tooltip, leyenda, zoom/pan, selección que cuenta y anotaciones vienen en `xilaplot`; opciones y mecanismo en
 [`docs/plugins.md`](docs/plugins.md).
 
 ## Dashboards para clientes

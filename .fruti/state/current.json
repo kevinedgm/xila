@@ -1,0 +1,38 @@
+{
+  "artifact": "dots-chart",
+  "round": "r01",
+  "stage": "mora",
+  "origin": "design-hub/lab/histograma-unidades (propuesta-A.html, 'Casos como unidades')",
+  "kiwi": {
+    "purpose": "Un punto por caso: tira para ver la nube y su cola, cubetas para leer el histograma como pila de casos; seleccionar cuenta en vez de hacer zoom.",
+    "patterns_taken": [
+      "transición tira↔cubetas con easeOutCubic",
+      "selección que cuenta y atenúa lo de fuera",
+      "lectura aria-live",
+      "ajuste a bordes de cubeta"
+    ]
+  },
+  "lima": { "tokens": "pendientes (design_system: NEW); usa el tema actual de xilaplot" },
+  "coco": {
+    "implementation": [
+      "packages/core/src/dots.ts",
+      "packages/core/src/plugins/selection.ts",
+      "packages/core/src/chart.ts (drawDots, dotsScale, selection)"
+    ],
+    "tests": ["packages/core/src/dots.test.ts", "examples/tests/unidades.spec.ts"],
+    "example": "examples/unidades.html"
+  },
+  "mora": {
+    "documented_delta": [
+      "README.md#gráfico-de-unidades",
+      "docs/plugins.md#selectionplugin",
+      "sitio/guia/tipos.md#unidades",
+      "sitio/galeria/index.md#casos-como-unidades"
+    ],
+    "review_required": [
+      "paleta y radio mínimo del punto (E0/E4.07)",
+      "texto por defecto de la lectura"
+    ],
+    "missing_evidence": ["tokens aprobados", "prueba con usuarios externos (E7.09)"]
+  }
+}

@@ -1,0 +1,30 @@
+# Alcance del rediseño. Estados: not-reviewed · proposed · approved · excluded · preserve · completed.
+# Solo lo `approved` entra al plan. Kevin aprueba o cambia cada línea.
+artifact: xila-graficos-rediseno
+round: r01
+items:
+  - id: foundations
+    status: proposed
+    why: sin paleta y tokens propios todo lo demás hereda lo provisional; es el primer paso del orden foundations → primitives → patterns
+  - id: axes-grid
+    status: proposed
+  - id: marks
+    status: proposed
+  - id: tooltip
+    status: proposed
+  - id: legend
+    status: proposed
+  - id: annotations
+    status: proposed
+  - id: states
+    status: proposed
+  - id: dashboard-shell
+    status: proposed
+    note: solo lo visual; estructura de filtros y paneles se conserva
+  - id: docs-site
+    status: excluded
+    why: no es el producto; hereda los tokens de los gráficos por propagación global, sin rediseño directo
+  - id: examples
+    status: preserve
+    why: son bancos de prueba; las capturas de referencia cambiarán solo por el rediseño de los gráficos
+global_token_propagation: true

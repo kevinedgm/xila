@@ -1,0 +1,14 @@
+{
+  "artifact": "dots-chart",
+  "round": "r01",
+  "checks": {
+    "typecheck": "pass",
+    "lint": "pass",
+    "unit_tests": "pass (dots.test.ts: layout lineal, radio que cabe, conteo, ajuste a bordes)",
+    "visual_tests": "pass (unidades.spec.ts: tira, cubetas tras transición, selección con lectura y teclado)",
+    "accessibility": "partial: lectura role=status aria-live=polite, teclado completo, tabindex; sin tokens de contraste aprobados",
+    "reduced_motion": "pass: sin transición con prefers-reduced-motion",
+    "visual_tokens": "fail: design_system NEW sin foundations aprobadas"
+  },
+  "verdict": "PARTIAL"
+}

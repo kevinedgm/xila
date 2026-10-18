@@ -1,0 +1,19 @@
+# Dirección de diseño del rediseño de los gráficos de Xila. Estado: PROPUESTA (Kiwi, 2026-10-18),
+# pendiente de aprobación de Kevin. Es dirección, no tokens: los valores viven en .fruti/tokens.json.
+status: proposed
+source_request: "rediseñar los gráficos para hacerlos más modernos" (Kevin, 2026-10-18)
+perception:
+  - moderno y pulcro: mucho aire, pocas líneas, nada decorativo
+  - preciso y científico: el dato manda; ejes y grid discretos, nunca compiten con las series
+  - profesional sin ser genérico: identidad propia (textiles de Oaxaca como referencia de color), no "look Excel" ni "look Bootstrap"
+quality_target: producción (clientes freelance lo ven en su dashboard)
+primary_device: escritorio para dashboards; debe seguir legible en 390 px
+composition:
+  - jerarquía: título > series > ejes > grid
+  - tipografía única (Inter) con dos tamaños: etiquetas 11–12 px, títulos 13–14 px
+  - color: paleta categórica propia de 6–7 tonos + neutros cálidos; secuenciales viridis/magma ya existen
+avoid:
+  - gradientes, sombras pesadas, bordes 3D, grid de líneas negras
+  - colores saturados por defecto en fondos; tooltips con marco grueso
+  - cambiar geometría o comportamiento (zoom, hover, teclado) como efecto secundario del rediseño
+references: pendiente (Kevin indicará productos cuyas cualidades le gusten; se extraen cualidades, no se copian componentes)

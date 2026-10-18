@@ -253,3 +253,65 @@ export function bandHitTester(
     },
   };
 }
+
+/**
+ * Índice para puntos cuya posición en píxeles ya está calculada (gráfico de unidades): la
+ * misma rejilla que `gridHitTester`, pero el acierto devuelve el valor del dato, no el píxel.
+ */
+export function pixelHitTester(
+  series: ResolvedSeries,
+  seriesIndex: number,
+  px: Float64Array,
+  py: Float64Array,
+  area: Rect,
+  cellSize = 16,
+): HitTester {
+  const cols = Math.max(1, Math.ceil(area.width / cellSize) + 2);
+  const rows = Math.max(1, Math.ceil(area.height / cellSize) + 2);
+  const cells: number[][] = Array.from({ length: cols * rows }, () => []);
+  const cellOf = (x: number, y: number): number => {
+    const c = Math.floor((x - area.x) / cellSize) + 1;
+    const r = Math.floor((y - area.y) / cellSize) + 1;
+    if (c < 0 || c >= cols || r < 0 || r >= rows) return -1;
+    return r * cols + c;
+  };
+  for (let i = 0; i < px.length; i++) {
+    const x = px[i] as number;
+    if (x !== x) continue;
+    const cell = cellOf(x, py[i] as number);
+    if (cell >= 0) (cells[cell] as number[]).push(i);
+  }
+  const hit = (i: number, d: number): Hit => ({
+    seriesIndex,
+    seriesId: series.id,
+    index: i,
+    x: series.x[i] as number,
+    y: series.y[i] as number,
+    px: px[i] as number,
+    py: py[i] as number,
+    distance: d,
+  });
+  const nearest = (x: number, y: number, maxDistance: number): Hit | null => {
+    const reach = Math.ceil(maxDistance / cellSize);
+    const c0 = Math.floor((x - area.x) / cellSize) + 1;
+    const r0 = Math.floor((y - area.y) / cellSize) + 1;
+    let best: Hit | null = null;
+    for (let r = r0 - reach; r <= r0 + reach; r++) {
+      for (let c = c0 - reach; c <= c0 + reach; c++) {
+        if (c < 0 || c >= cols || r < 0 || r >= rows) continue;
+        for (const i of cells[r * cols + c] as number[]) {
+          const d = Math.hypot((px[i] as number) - x, (py[i] as number) - y);
+          if (d <= maxDistance && (!best || d < best.distance)) best = hit(i, d);
+        }
+      }
+    }
+    return best;
+  };
+  return {
+    nearest,
+    nearestX: (x, maxDistance) => {
+      const h = nearest(x, area.y + area.height / 2, Math.max(maxDistance, area.height));
+      return h ? [h] : [];
+    },
+  };
+}

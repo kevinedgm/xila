@@ -46,6 +46,14 @@ export interface PluginContext {
   readonly getViewDomain: (axis: 'x' | 'y') => Domain | null;
   /** Fija (o quita, con `null`) el rango mostrado: es lo que usan zoom y pan. */
   readonly setViewDomain: (axis: 'x' | 'y', domain: Domain | null) => void;
+  /** Rango seleccionado en X (plugin de selección): los datos fuera se dibujan atenuados. */
+  readonly getSelection: () => Domain | null;
+  /** Fija (o quita) la selección; emite `selection` con el conteo. */
+  readonly setSelection: (range: Domain | null) => void;
+  /** Datos visibles dentro del rango (o todos, con `null`) y el total de datos visibles. */
+  readonly countSelection: (range: Domain | null) => { count: number; total: number };
+  /** Gráfico de unidades en modo cubetas: bordes de las cubetas; `null` en otros casos. */
+  readonly getBinEdges: () => Float64Array | null;
 }
 
 /** Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. */

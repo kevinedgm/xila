@@ -1,0 +1,62 @@
+{
+  "generated_by": "kiwi",
+  "date": "2026-10-18",
+  "note": "Inventario rápido de superficies de diseño de Xila. Es descubrimiento, no autoridad visual.",
+  "surfaces": [
+    {
+      "id": "foundations",
+      "name": "Fundamentos: paleta de series, fondo, texto, ejes, grid, tipografía, tema claro/oscuro",
+      "evidence": ["packages/core/src/theme.ts"],
+      "notes": "Paleta provisional Okabe-Ito; E0.07/E4.07 pendientes"
+    },
+    {
+      "id": "axes-grid",
+      "name": "Ejes, ticks, títulos de eje y grid",
+      "evidence": ["packages/core/src/chart.ts (drawAxes)", "packages/core/src/format/number.ts"]
+    },
+    {
+      "id": "marks",
+      "name": "Marcas: líneas y áreas, puntos, barras, cajas, heatmap y su leyenda de color, bandas de error",
+      "evidence": ["packages/core/src/chart.ts", "packages/core/src/colormap.ts"]
+    },
+    {
+      "id": "tooltip",
+      "name": "Tooltip HTML (caja, tipografía, fila por serie, intervalo)",
+      "evidence": ["packages/core/src/plugins/tooltip.ts"]
+    },
+    {
+      "id": "legend",
+      "name": "Leyenda HTML interactiva (chips, estado oculto)",
+      "evidence": ["packages/core/src/plugins/legend.ts"]
+    },
+    {
+      "id": "annotations",
+      "name": "Anotaciones: bandas, líneas, textos y su recuadro de hover",
+      "evidence": ["packages/core/src/plugins/annotations.ts"]
+    },
+    {
+      "id": "states",
+      "name": "Estados: esqueleto de carga, vacío, error, cursor/hover, foco de teclado, selección de rango",
+      "evidence": [
+        "packages/vue/src/chart.ts",
+        "packages/core/src/plugins/zoom-pan.ts",
+        "packages/core/src/plugins/accessibility.ts"
+      ]
+    },
+    {
+      "id": "dashboard-shell",
+      "name": "Plantilla de dashboard: cabecera, filtros, KPI, rejilla de paneles, tarjetas",
+      "evidence": ["packages/vue/src/dashboard.ts", "plantilla/"]
+    },
+    {
+      "id": "docs-site",
+      "name": "Sitio de documentación (VitePress) y componente Demo",
+      "evidence": ["sitio/.vitepress/theme/"]
+    },
+    {
+      "id": "examples",
+      "name": "Páginas de ejemplos y bancos de prueba",
+      "evidence": ["examples/*.html"]
+    }
+  ]
+}
