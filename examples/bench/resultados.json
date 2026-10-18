@@ -9,73 +9,145 @@
     {
       "mode": "objects",
       "n": 1000000,
-      "heapMB": 45.790679931640625,
+      "heapMB": 45.79179763793945,
       "externalMB": 0,
-      "totalMB": 45.790679931640625,
-      "traverseMs": 17.799999999813735
+      "totalMB": 45.79179763793945,
+      "traverseMs": 13.599999999627471
     },
     {
       "mode": "columns",
       "n": 1000000,
-      "heapMB": 0.012542724609375,
+      "heapMB": 0.013874053955078125,
       "externalMB": 15.2587890625,
-      "totalMB": 15.271331787109375,
-      "traverseMs": 15.600000000093132
+      "totalMB": 15.272663116455078,
+      "traverseMs": 13.700000001117587
     }
   ],
   "firstRender": [
     {
       "kind": "naive",
       "n": 10000,
-      "ms": 2.8999999999068677,
+      "ms": 3.800000000745058,
       "vertices": 10000
     },
     {
       "kind": "naive",
       "n": 100000,
-      "ms": 15,
+      "ms": 19,
       "vertices": 100000
     },
     {
       "kind": "naive",
       "n": 1000000,
-      "ms": 158,
+      "ms": 139.19999999925494,
       "vertices": 1000000
     },
     {
       "kind": "decimated",
       "n": 10000,
-      "ms": 4.100000000093132,
+      "ms": 4.800000000745058,
       "vertices": 3586
     },
     {
       "kind": "decimated",
       "n": 100000,
-      "ms": 5.099999999627471,
+      "ms": 4.299999998882413,
       "vertices": 3935
     },
     {
       "kind": "decimated",
       "n": 1000000,
-      "ms": 13.5,
+      "ms": 11,
       "vertices": 3971
+    },
+    {
+      "kind": "xila",
+      "n": 10000,
+      "ms": 3.300000000745058,
+      "vertices": 9999
+    },
+    {
+      "kind": "xila",
+      "n": 100000,
+      "ms": 5.400000000372529,
+      "vertices": 99999
+    },
+    {
+      "kind": "xila",
+      "n": 1000000,
+      "ms": 20,
+      "vertices": 999999
     },
     {
       "kind": "uplot",
       "n": 10000,
-      "ms": 3.5,
+      "ms": 2.799999998882413,
       "vertices": 9999
     },
     {
       "kind": "uplot",
       "n": 100000,
-      "ms": 6.7999999998137355,
+      "ms": 7.199999999254942,
       "vertices": 99999
     },
     {
       "kind": "uplot",
       "n": 1000000,
-      "ms": 17.90000000037253,
+      "ms": 22.799999998882413,
+      "vertices": 999999
+    },
+    {
+      "kind": "chartjs",
+      "n": 10000,
+      "ms": 10.300000000745058,
+      "vertices": 9999
+    },
+    {
+      "kind": "chartjs",
+      "n": 100000,
+      "ms": 14.399999998509884,
+      "vertices": 99999
+    },
+    {
+      "kind": "chartjs",
+      "n": 1000000,
+      "ms": 32.5,
+      "vertices": 999999
+    },
+    {
+      "kind": "echarts",
+      "n": 10000,
+      "ms": 6.099999999627471,
+      "vertices": 9999
+    },
+    {
+      "kind": "echarts",
+      "n": 100000,
+      "ms": 7.5,
+      "vertices": 99999
+    },
+    {
+      "kind": "echarts",
+      "n": 1000000,
+      "ms": 31.699999999254942,
+      "vertices": 999999
+    },
+    {
+      "kind": "plotly",
+      "n": 10000,
+      "ms": 248.09999999962747,
+      "vertices": 9999
+    },
+    {
+      "kind": "plotly",
+      "n": 100000,
+      "ms": 2190.5,
+      "vertices": 99999
+    },
+    {
+      "kind": "plotly",
+      "n": 1000000,
+      "ms": 21196.099999999627,
       "vertices": 999999
     }
   ],
@@ -83,83 +155,212 @@
     {
       "kind": "naive",
       "n": 10000,
-      "workMedian": 1.6000000000931323,
-      "workP95": 2.3000000002793968,
-      "intervalMedian": 16.69999999999999,
-      "intervalP95": 16.799999999999955,
-      "vertices": 8601
-    },
-    {
-      "kind": "naive",
-      "n": 100000,
-      "workMedian": 14,
-      "workP95": 19.800000000279397,
-      "intervalMedian": 16.69999999999999,
-      "intervalP95": 16.799999999999955,
-      "vertices": 86001
-    },
-    {
-      "kind": "naive",
-      "n": 1000000,
-      "workMedian": 134.1999999997206,
-      "workP95": 192.89999999990687,
-      "intervalMedian": 133.39999999999964,
-      "intervalP95": 200,
-      "vertices": 860001
-    },
-    {
-      "kind": "decimated",
-      "n": 10000,
-      "workMedian": 0.8999999999068677,
-      "workP95": 1.3999999999068677,
-      "intervalMedian": 16.699999999999932,
-      "intervalP95": 16.700000000000273,
-      "vertices": 3078
-    },
-    {
-      "kind": "decimated",
-      "n": 100000,
       "workMedian": 1.5,
-      "workP95": 2.2999999998137355,
-      "intervalMedian": 16.69999999999999,
-      "intervalP95": 16.700000000000273,
-      "vertices": 3389
+      "workP95": 2.100000001490116,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 8601,
+      "frames": 120
+    },
+    {
+      "kind": "naive",
+      "n": 100000,
+      "workMedian": 12.299999998882413,
+      "workP95": 17.300000000745058,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 86001,
+      "frames": 120
+    },
+    {
+      "kind": "naive",
+      "n": 1000000,
+      "workMedian": 123.89999999850988,
+      "workP95": 167.90000000037253,
+      "intervalMedian": 133.29999999999927,
+      "intervalP95": 166.69999999999982,
+      "vertices": 862001,
+      "frames": 119
+    },
+    {
+      "kind": "decimated",
+      "n": 10000,
+      "workMedian": 0.8000000007450581,
+      "workP95": 1.200000001117587,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 3078,
+      "frames": 120
+    },
+    {
+      "kind": "decimated",
+      "n": 100000,
+      "workMedian": 1.3999999985098839,
+      "workP95": 2,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 3389,
+      "frames": 120
     },
     {
       "kind": "decimated",
       "n": 1000000,
-      "workMedian": 4.599999999627471,
-      "workP95": 7.300000000279397,
-      "intervalMedian": 16.699999999999932,
+      "workMedian": 3.900000000372529,
+      "workP95": 6.5,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 3415,
+      "frames": 120
+    },
+    {
+      "kind": "xila",
+      "n": 10000,
+      "workMedian": 1.200000001117587,
+      "workP95": 1.800000000745058,
+      "intervalMedian": 16.699999999999818,
       "intervalP95": 16.700000000000273,
-      "vertices": 3415
+      "vertices": 8600,
+      "frames": 120
+    },
+    {
+      "kind": "xila",
+      "n": 100000,
+      "workMedian": 2.900000000372529,
+      "workP95": 4.5,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.700000000000273,
+      "vertices": 86000,
+      "frames": 120
+    },
+    {
+      "kind": "xila",
+      "n": 1000000,
+      "workMedian": 16.90000000037253,
+      "workP95": 24.700000001117587,
+      "intervalMedian": 33.299999999999955,
+      "intervalP95": 33.40000000000009,
+      "vertices": 860000,
+      "frames": 120
     },
     {
       "kind": "uplot",
       "n": 10000,
-      "workMedian": 1.1000000000931323,
-      "workP95": 1.8999999999068677,
-      "intervalMedian": 16.69999999999999,
-      "intervalP95": 16.700000000000045,
-      "vertices": 8600
+      "workMedian": 1,
+      "workP95": 2,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.700000000000273,
+      "vertices": 8600,
+      "frames": 120
     },
     {
       "kind": "uplot",
       "n": 100000,
-      "workMedian": 2.2999999998137355,
-      "workP95": 3.5,
-      "intervalMedian": 16.699999999999932,
-      "intervalP95": 16.799999999999955,
-      "vertices": 86000
+      "workMedian": 2,
+      "workP95": 3.199999999254942,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 86000,
+      "frames": 120
     },
     {
       "kind": "uplot",
       "n": 1000000,
-      "workMedian": 11.299999999813735,
-      "workP95": 17.100000000093132,
-      "intervalMedian": 16.699999999999932,
+      "workMedian": 10.399999998509884,
+      "workP95": 16.5,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 860000,
+      "frames": 120
+    },
+    {
+      "kind": "chartjs",
+      "n": 10000,
+      "workMedian": 3.099999999627471,
+      "workP95": 4.599999999627471,
+      "intervalMedian": 16.699999999999818,
       "intervalP95": 16.700000000000273,
-      "vertices": 860000
+      "vertices": 8600,
+      "frames": 120
+    },
+    {
+      "kind": "chartjs",
+      "n": 100000,
+      "workMedian": 4.699999999254942,
+      "workP95": 8.100000001490116,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 86000,
+      "frames": 120
+    },
+    {
+      "kind": "chartjs",
+      "n": 1000000,
+      "workMedian": 16.09999999962747,
+      "workP95": 24.600000001490116,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 33.30000000000018,
+      "vertices": 860000,
+      "frames": 120
+    },
+    {
+      "kind": "echarts",
+      "n": 10000,
+      "workMedian": 1.8999999985098839,
+      "workP95": 3.199999999254942,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999955,
+      "vertices": 8600,
+      "frames": 120
+    },
+    {
+      "kind": "echarts",
+      "n": 100000,
+      "workMedian": 3.200000001117587,
+      "workP95": 5.300000000745058,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 16.799999999999727,
+      "vertices": 86000,
+      "frames": 120
+    },
+    {
+      "kind": "echarts",
+      "n": 1000000,
+      "workMedian": 15,
+      "workP95": 20.800000000745058,
+      "intervalMedian": 16.699999999999818,
+      "intervalP95": 33.30000000000018,
+      "vertices": 860000,
+      "frames": 120
+    },
+    {
+      "kind": "plotly",
+      "n": 10000,
+      "workMedian": 231.90000000037253,
+      "workP95": 254.69999999925494,
+      "intervalMedian": 250,
+      "intervalP95": 283.40000000000055,
+      "vertices": 9800,
+      "frames": 60
+    },
+    {
+      "kind": "plotly",
+      "n": 100000,
+      "workMedian": 2079.699999999255,
+      "workP95": 2132.4000000003725,
+      "intervalMedian": 2099.9000000000005,
+      "intervalP95": 2166.5,
+      "vertices": 91600,
+      "frames": 8
+    },
+    {
+      "kind": "plotly",
+      "n": 1000000,
+      "workMedian": 20443.900000000373,
+      "workP95": 20443.900000000373,
+      "intervalMedian": null,
+      "intervalP95": null,
+      "vertices": 902000,
+      "frames": 1
     }
   ]
 }
