@@ -94,6 +94,11 @@ export class Chart {
   private dirty = { data: true, layout: true };
   private destroyed = false;
   private decimation: DecimatedSeries[] = [];
+  /**
+   * Dominio de los datos por eje. Recorrerlo cuesta O(n) y el pan lo pedía tres veces por
+   * fotograma; solo cambia con los datos, la configuración o las series visibles.
+   */
+  private dataDomains: { x?: Domain; y?: Domain } = {};
   /** Por serie, si su X no decrece: solo entonces vale recortar por búsqueda binaria. */
   private sortedX: boolean[] = [];
   /** Box plot: estadísticos por serie y por categoría, calculados al resolver los datos. */
@@ -188,6 +193,7 @@ export class Chart {
       this.plugins.install(this.context());
     }
     this.config = resolveConfig(this.plugins.beforeUpdate(next, this.context()));
+    this.dataDomains = {};
     this.dirty.data = true;
     this.dirty.layout = true;
     this.events.emit('dataChanged', { reason: 'update' });
@@ -225,6 +231,7 @@ export class Chart {
     if (hidden === this.hidden.has(seriesId)) return;
     if (hidden) this.hidden.add(seriesId);
     else this.hidden.delete(seriesId);
+    this.dataDomains = {};
     this.events.emit('visibility', { seriesId, hidden });
     this.plugins.onEvent('visibility', { seriesId, hidden }, this.context());
     this.requestDraw();
@@ -529,6 +536,7 @@ export class Chart {
 
   private resolveData(): void {
     this.series = this.config.series.map((spec) => resolveSeries(this.config.data, spec));
+    this.dataDomains = {};
     this.decimation = [];
     this.sortedX = this.series.map((s) => isSorted(s.x));
     this.boxes =
@@ -771,6 +779,10 @@ export class Chart {
   private domain(axis: 'x' | 'y'): Domain {
     const configured = this.config.scales[axis].domain;
     if (configured !== 'auto') return configured;
+    return (this.dataDomains[axis] ??= this.scanDomain(axis));
+  }
+
+  private scanDomain(axis: 'x' | 'y'): Domain {
     let min = Infinity;
     let max = -Infinity;
     const log = this.config.scales[axis].type === 'log';

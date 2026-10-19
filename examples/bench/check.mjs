@@ -15,6 +15,13 @@ const LIMITS = [
     value: pan('decimated', 1_000_000)?.workMedian,
     max: 30,
   },
+  // La gráfica completa (ejes, escalas, eventos): ~10 ms. Atrapa trabajo O(n) por fotograma
+  // fuera de la decimación, como el recorrido del dominio que costaba 13 ms antes de cachearlo.
+  {
+    name: 'pan 1M Chart completa (ms/frame, mediana)',
+    value: pan('xila', 1_000_000)?.workMedian,
+    max: 40,
+  },
   { name: 'primer render 1M decimado (ms)', value: first('decimated', 1_000_000)?.ms, max: 200 },
   { name: 'memoria 1M puntos en columnas (MB)', value: mem('columns')?.totalMB, max: 25 },
 ];

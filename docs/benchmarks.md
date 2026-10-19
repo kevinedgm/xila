@@ -85,11 +85,11 @@ recomienda para series grandes:
 
 Lectura honesta:
 
-1. **A 1M puntos Xila pierde contra uPlot en el pan** (16.9 contra 10.4 ms) y queda a la par de
-   Chart.js y ECharts. El motor decimado solo cuesta 3.9 ms, así que los 13 ms restantes están
-   en lo que `Chart` hace alrededor: recalcular dominios, ticks, layout y el índice de
-   búsqueda del hover en cada fotograma. Es trabajo que no depende del zoom y se puede cachear;
-   queda anotado como tarea. A 100K y 10K Xila y uPlot están dentro del ruido de medición.
+1. **A 1M puntos Xila perdía contra uPlot en el pan** (16.9 contra 10.4 ms). El motor decimado
+   solo cuesta 3.9 ms; los 13 ms restantes eran tres recorridos completos de los datos por
+   fotograma para calcular el dominio (dos al emitir `zoom`, uno al construir el eje Y). Desde
+   el 2026-10-19 el dominio se guarda hasta que cambian los datos o las series visibles y el
+   pan baja a 9.0 ms (ver la sección siguiente).
 2. **Chart.js y ECharts aguantan 1M puntos** si se configuran como su documentación indica
    (decimación o muestreo explícitos, sin animación, sin `parsing`). Con la configuración por
    defecto no (Chart.js sin `decimation` dibuja todos los puntos, como `naive`). Chart.js además
@@ -114,3 +114,29 @@ CHROMIUM_PATH=/ruta/a/chrome pnpm --filter examples bench   # escribe examples/b
 `BENCH_RENDERERS=xila,uplot` limita los renderers, `BENCH_REPEATS` las repeticiones y
 `BENCH_PAN_MAX_MS` (15 s) corta el pan de una librería lenta, por eso Plotly tiene menos
 fotogramas medidos.
+
+## Cómo crece el pan con N (2026-10-19)
+
+Mismo contenedor y protocolo, pan sobre la vista completa, 2 repeticiones, mediana en ms por
+fotograma. `BENCH_SIZES=1000000,2000000,5000000,10000000 BENCH_RENDERERS=decimated,xila`.
+
+|     Puntos | decimated | xila antes | xila con dominio en caché |
+| ---------: | --------: | ---------: | ------------------------: |
+|  1 000 000 |       5.3 |       17.4 |                       9.7 |
+|  2 000 000 |       9.7 |       37.4 |                      17.0 |
+|  5 000 000 |      17.5 |       97.1 |                      43.1 |
+| 10 000 000 |      33.8 |      202.5 |                      77.0 |
+
+Lectura:
+
+1. **La decimación ya es M4** (primero, mínimo, máximo y último por columna de píxel físico,
+   `packages/core/src/data/decimate.ts`), así que el dibujo ya no depende de N: lo que crece
+   es el recorrido O(n) del rango visible, unos 3.4 ms por millón de puntos en este contenedor.
+2. **Antes, `Chart` sumaba otros tres recorridos O(n)** por fotograma (el dominio de X y de Y).
+   Con el dominio en caché queda un solo recorrido y Xila vuelve a quedar por debajo de uPlot
+   a 1M (9.0 contra 10.6 ms en la corrida de 3 repeticiones de `bench:check`).
+3. **Por encima de ~3M puntos en vista** el recorrido ya no cabe en 16 ms. Ahí el siguiente
+   paso no es otro decimador sino no recorrer: una pirámide de min/max precalculada, o mover
+   el recorrido a un Worker para no bloquear la interacción.
+
+CI mide ahora también la gráfica completa (`xila`) y falla si el pan a 1M pasa de 40 ms.

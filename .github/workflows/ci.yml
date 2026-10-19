@@ -51,7 +51,7 @@ jobs:
       - run: pnpm --filter examples exec playwright install --with-deps chromium
       - run: pnpm --filter examples bench /tmp/resultados.json
         env:
-          BENCH_RENDERERS: decimated
+          BENCH_RENDERERS: decimated,xila
           BENCH_REPEATS: 3
       - run: pnpm --filter examples bench:check /tmp/resultados.json
       - uses: actions/upload-artifact@v4

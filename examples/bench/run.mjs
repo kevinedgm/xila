@@ -8,8 +8,9 @@ import { chromium } from 'playwright-core';
 
 const DIST = resolve(import.meta.dirname, '../dist');
 const OUT = process.argv[2] ?? resolve(import.meta.dirname, 'resultados.json');
-// En CI se acorta con BENCH_RENDERERS=decimated BENCH_REPEATS=3 (ver bench/check.mjs).
-const SIZES = [10_000, 100_000, 1_000_000];
+// En CI se acorta con BENCH_RENDERERS=decimated,xila BENCH_REPEATS=3 (ver bench/check.mjs).
+// BENCH_SIZES=1000000,10000000 mide cómo crece el costo con N (docs/benchmarks.md).
+const SIZES = (process.env.BENCH_SIZES ?? '10000,100000,1000000').split(',').map(Number);
 const RENDERERS = (
   process.env.BENCH_RENDERERS ?? 'naive,decimated,xila,uplot,chartjs,echarts,plotly'
 ).split(',');
