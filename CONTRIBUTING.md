@@ -23,7 +23,7 @@ git clone https://github.com/kevinedgm/xila
 cd xila
 pnpm install
 pnpm build        # construye xilaplot y xilaplot-vue
-pnpm dev          # ejemplos en http://localhost:5173
+pnpm dev          # ejemplos en http://localhost:5173 (u otro puerto si está ocupado)
 ```
 
 ## Antes de abrir un pull request

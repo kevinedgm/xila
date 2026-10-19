@@ -9,12 +9,14 @@ npm install xilaplot
 ```
 
 ```ts
-import { Chart, fetchCsv, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
+import { Chart, fetchCsv, groupBy, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 
 const { table } = await fetchCsv('/data/ventas.csv');
+// Varias filas por fecha (región y canal): una línea necesita un valor por x.
+const porDia = groupBy(table, 'fecha', { agg: 'sum', column: 'monto' });
 new Chart(document.getElementById('grafico')!, {
   type: 'line',
-  data: table,
+  data: porDia,
   series: [{ id: 'v', name: 'Ventas', x: 'fecha', y: 'monto' }],
   plugins: [tooltipPlugin(), zoomPanPlugin()],
 });

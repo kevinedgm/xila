@@ -51,7 +51,7 @@ parseCsv(texto, { types: { codigo_postal: 'category' } });
 ## Por qué formato largo
 
 El mismo archivo sirve para líneas por región, barras por mes o una tabla, cambiando solo
-la configuración del gráfico (`splitBy('region')`, `groupBy('mes', 'sum', 'monto')`). En
+la configuración del gráfico (`splitBy(tabla, 'region')`, `groupBy(tabla, 'mes', { agg: 'sum', column: 'monto' })`). En
 formato ancho (una columna por región) añadir una región cambia la estructura del archivo y
 rompe la configuración.
 

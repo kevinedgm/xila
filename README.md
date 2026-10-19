@@ -12,7 +12,7 @@ Librería de gráficos en TypeScript para dashboards y datos científicos: lee t
 extiende con plugins. Es la base de un kit de dashboards estáticos para clientes y, sobre todo,
 un lugar donde proponer formas de representar datos que salen de la línea y la barra clásicas.
 
-> **Estado:** experimental (0.x). La API puede cambiar entre versiones. Paquetes en npm: `xilaplot` (núcleo) y `xilaplot-vue` (Vue 3). Documentación: <https://kevinedgm.github.io/xila/>.
+> **Estado:** experimental (0.x). La API puede cambiar entre versiones. Paquetes para npm, todavía sin publicar: `xilaplot` (núcleo) y `xilaplot-vue` (Vue 3). Documentación: <https://kevinedgm.github.io/xila/>. Guía técnica completa en un archivo: [`docs/documentacion-tecnica.md`](docs/documentacion-tecnica.md).
 
 ## Qué es Xila hoy
 
@@ -73,7 +73,7 @@ Requiere Node 20 o superior y pnpm 10.
 ```bash
 pnpm install
 pnpm build      # construye core y vue
-pnpm dev        # abre los ejemplos en http://localhost:5173
+pnpm dev        # abre los ejemplos en http://localhost:5173 (u otro puerto si está ocupado)
 pnpm test       # tests con Vitest
 pnpm lint       # ESLint
 pnpm typecheck  # TypeScript estricto en todos los paquetes

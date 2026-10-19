@@ -7,7 +7,10 @@ export interface SeriesSpec {
   readonly name?: string;
   readonly x: string;
   readonly y: string;
-  /** Columna categórica que separa la serie en una por categoría (Etapa 4). */
+  /**
+   * Reservado: `Chart` todavía no lo lee. Para una serie por categoría, pasa la tabla por
+   * `pivot` o `splitBy` (la clave `color` de un panel de `dashboard.json` hace ese `pivot`).
+   */
   readonly color?: string;
   /** Color fijo de la serie (CSS). Por defecto, el de su posición en la paleta del tema. */
   readonly stroke?: string;

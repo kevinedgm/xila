@@ -1,6 +1,6 @@
 # Tipos de gráfico
 
-Seis tipos, todos sobre la misma `DataTable`. Lo que cambia entre ellos es qué columnas pide
+Siete tipos, todos sobre la misma `DataTable`. Lo que cambia entre ellos es qué columnas pide
 cada serie y qué escala X va por defecto.
 
 | `type`    | Serie                         | Escala X por defecto | Datos                                              |
@@ -11,6 +11,7 @@ cada serie y qué escala X va por defecto.
 | `box`     | `x` categórica, `y`           | banda                | largo: una fila por medición, el gráfico agrupa    |
 | `heatmap` | `x`, `y` categóricas, `value` | banda                | largo: una fila por celda                          |
 | `dots`    | `x` numérica                  | lineal               | una fila por caso; un punto por fila               |
+| `waffle`  | `x` categórica, `y`           | banda (sin ejes)     | una fila por categoría; un cuadro por cada `unit`  |
 
 ## Línea
 

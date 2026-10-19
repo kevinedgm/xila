@@ -14,7 +14,7 @@ public/
 ```bash
 pnpm nuevo-cliente acme        # copia esta plantilla a clientes/acme
 cd clientes/acme
-pnpm dev                       # http://localhost:5173 con recarga al editar el JSON o los CSV
+pnpm dev                       # http://localhost:5173 (u otro puerto si está ocupado) con recarga al editar el JSON o los CSV
 pnpm build                     # genera dist/ lista para subir
 ```
 

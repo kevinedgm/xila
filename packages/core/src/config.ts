@@ -74,7 +74,8 @@ export interface BarChartConfig extends BaseChartConfig {
   readonly type: 'bar';
   readonly bar?: {
     readonly mode?: 'grouped' | 'stacked';
-    readonly orientation?: 'vertical' | 'horizontal';
+    /** Solo `'vertical'` por ahora: las barras horizontales todavía no están implementadas. */
+    readonly orientation?: 'vertical';
     /** Fracción de la banda que queda vacía entre barras, de 0 a 1. */
     readonly padding?: number;
     /** Radio del extremo de datos de cada barra en píxeles (4); 0 para esquinas rectas. */
