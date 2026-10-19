@@ -13,13 +13,40 @@ export interface Theme {
   readonly fontSize: number;
 }
 
-export type ThemeName = 'light' | 'dark';
+/**
+ * `light` y `dark`: tema neutro provisional (paleta Okabe-Ito). `xila` y `xila-dark`: identidad
+ * "Tinta y grana", aprobada el 2026-10-19 (fuente: `.fruti/tokens.json`).
+ */
+export type ThemeName = 'light' | 'dark' | 'xila' | 'xila-dark';
 
 // Inter primero: es la fuente que instala CI (fonts-inter) para que las capturas coincidan.
 const FONT = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
 // Paleta provisional, legible para daltonismo (derivada de Okabe-Ito). E0.07 la reemplaza.
 const PALETTE = ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#56B4E9', '#D55E00', '#F0E442'];
+
+// "Tinta y grana": orden fijo validado (daltonismo, contraste, separación) en claro y oscuro.
+// Nombres de slot: añil, cempasúchil, jade, pericón, grana rosa, milpa, caracol, grana.
+const XILA_LIGHT = [
+  '#3366D6',
+  '#E8692F',
+  '#119872',
+  '#E5A000',
+  '#E0679E',
+  '#2F8A2A',
+  '#7A4FD6',
+  '#D6404F',
+];
+const XILA_DARK = [
+  '#5A86EC',
+  '#D9622A',
+  '#1BA980',
+  '#B98408',
+  '#D1578A',
+  '#3B9A35',
+  '#8A70E6',
+  '#E5595F',
+];
 
 export const themes: Readonly<Record<ThemeName, Theme>> = {
   light: {
@@ -37,6 +64,24 @@ export const themes: Readonly<Record<ThemeName, Theme>> = {
     text: '#e4e7eb',
     axis: '#9aa5b1',
     grid: '#2b323a',
+    fontFamily: FONT,
+    fontSize: 12,
+  },
+  xila: {
+    palette: XILA_LIGHT,
+    background: '#FBFAF7', // papel
+    text: '#14161A', // tinta
+    axis: '#6B7079', // 4.77:1 sobre papel: sirve también para etiquetas
+    grid: '#E7E5E0',
+    fontFamily: FONT,
+    fontSize: 12,
+  },
+  'xila-dark': {
+    palette: XILA_DARK,
+    background: '#121418',
+    text: '#ECEBE6',
+    axis: '#8B9099', // 5.75:1
+    grid: '#262A31',
     fontFamily: FONT,
     fontSize: 12,
   },

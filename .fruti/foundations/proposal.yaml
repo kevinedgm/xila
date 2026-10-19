@@ -1,0 +1,92 @@
+# Foundations · Xila · propuesta r01
+# Estado: APROBADA por Kevin el 2026-10-19 ("A, B y C": incluye "3) Aprobar la paleta"). Canónico: .fruti/tokens.json
+# Encargo (Kevin, 2026-10-18): "defínela tú la paleta, debe ser moderno, tecnológico, editorial, pulcro".
+
+status: approved
+approved_by: Kevin Eduardo García Martínez
+approved_at: 2026-10-19
+round: r01
+date: 2026-10-18
+name: "Tinta y grana"
+
+identity:
+  feeling: moderno, tecnológico, editorial, pulcro
+  idea: >
+    Papel y tinta para todo lo que no es dato (neutros sobrios, mucho aire, una sola familia
+    tipográfica de interfaz); el color se reserva a los datos. Un único acento de marca, grana,
+    se usa para selección, foco y lo que hay que mirar primero.
+  avoid: estética SaaS genérica, degradados, sombras decorativas, arcoíris, color usado como adorno,
+    "folclor" decorativo (grecas o bordados como textura de fondo)
+  cultural_link: >
+    Los nombres y la familia de color de cuatro slots vienen de tintes textiles de Oaxaca: grana
+    cochinilla (rojo carmín, insecto Dactylopius coccus), añil (azul, Indigofera suffruticosa),
+    caracol púrpura (Plicopurpura pansa, teñido mixteco de la costa) y pericón (amarillo, Tagetes
+    lucida). Los hex NO reproducen el tinte: son pasos validados para lectura de datos dentro de
+    esa familia de color.
+  sources_to_document:   # pendiente: citar fuentes primarias antes de publicar el relato de marca
+    - grana cochinilla en el tejido de Teotitlán del Valle
+    - teñido con caracol púrpura en Pinotepa de Don Luis
+    - añil en Oaxaca (producción y uso textil)
+    - pericón como tinte amarillo
+    - consulta sugerida: Museo Textil de Oaxaca
+
+color:
+  neutrals:
+    light:
+      surface: "#FBFAF7"      # papel
+      surface_2: "#F2F1EC"
+      grid: "#E7E5E0"
+      axis: "#8A8F98"         # 3.11:1 (líneas y marcas de eje, no texto pequeño)
+      text_muted: "#6B7079"   # 4.77:1
+      text_secondary: "#4A4F57" # 7.90:1
+      text: "#14161A"         # tinta · 17.35:1
+    dark:
+      surface: "#121418"
+      surface_2: "#1A1D22"
+      grid: "#262A31"
+      axis: "#6B7079"
+      text_muted: "#8B9099"   # 5.75:1
+      text_secondary: "#B4B8BF" # 9.26:1
+      text: "#ECEBE6"         # 15.45:1
+  accent:
+    grana: { light: "#D6404F", dark: "#E5595F", text_on_light: "#B3303F" }  # selección, foco, énfasis
+  categorical:   # orden fijo, nunca ciclado; el 9.º pasa a "Otros" o a small multiples
+    - { slot: 1, name: añil,        light: "#3366D6", dark: "#5A86EC" }
+    - { slot: 2, name: cempasúchil, light: "#E8692F", dark: "#D9622A" }
+    - { slot: 3, name: jade,        light: "#119872", dark: "#1BA980" }
+    - { slot: 4, name: pericón,     light: "#E5A000", dark: "#B98408" }
+    - { slot: 5, name: grana rosa,  light: "#E0679E", dark: "#D1578A" }
+    - { slot: 6, name: milpa,       light: "#2F8A2A", dark: "#3B9A35" }
+    - { slot: 7, name: caracol,     light: "#7A4FD6", dark: "#8A70E6" }
+    - { slot: 8, name: grana,       light: "#D6404F", dark: "#E5595F" }
+  sequential:
+    anil: ["#E6EDFB", "#C2D2F5", "#94AFEB", "#6489DF", "#3366D6", "#2449A6", "#183172"]
+    ordinal_use: pasos 3–7 (el extremo claro de los primeros pasos queda < 2:1 sobre papel)
+  diverging:
+    negative: grana ["#6E1A27", "#A32A3A", "#D6404F", "#E48890"]
+    midpoint: "#E7E5E0"
+    positive: añil ["#94AFEB", "#3366D6", "#2449A6", "#183172"]
+
+validation:   # dataviz/scripts/validate_palette.js (OKLab ×100, Machado 2009)
+  categorical_light: { surface: "#FBFAF7", result: PASS, worst_cvd_adjacent: 8.3, worst_normal: 22.7,
+                       contrast_warn: ["pericón #E5A000 2.15:1 → requiere etiquetas o tabla (Xila ya tiene ambas)"] }
+  categorical_dark:  { surface: "#121418", result: PASS, worst_cvd_adjacent: 9.1, worst_normal: 18.1, contrast: "todos >= 3:1" }
+  all_pairs_first_3: { light: PASS, dark: PASS }   # dispersión/mapas: máximo 3 series
+  ordinal_anil_3_7:  PASS
+  ordinal_grana:     PASS
+
+typography:
+  ui_and_data: "Inter"            # tabular-nums en ejes, tooltips y lecturas
+  numbers_and_code: "JetBrains Mono" # ticks opcionales, código en docs
+  display_editorial: NONE         # pulcro: una sola familia; jerarquía por tamaño y peso
+  scale_mode: recommended
+
+geometry:
+  radius: { s: 4, m: 6, l: 10 }
+  marks: { line: 2, point_min: 8, gap_between_fills: 2 }
+  shadows: none   # profundidad por superficie y borde de 1 px
+
+motion:
+  ui: { duration_ms: 160, easing: "cubic-bezier(.2,0,0,1)" }
+  data_morph: { duration_ms: 700, easing: easeInOutCubic, stagger: 0.25 }
+  reduced_motion: instantáneo

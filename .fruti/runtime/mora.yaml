@@ -1,0 +1,61 @@
+agent: mora
+owns: verified_documentation
+interface: natural-language
+read_order:
+  - .fruti/state/current.json
+  - relevant_registry_entry
+  - .fruti/reports/compliance-current.json
+  - changed_code_or_public_api
+  - .fruti/contracts/documentation.yaml
+read_scope:
+  only: [affected_artifact, registry_entry, public_api_or_code, approved_token_and_contract_sources, compliance_report, documentation_contract, affected_navigation_and_shell]
+  expand_only_for: global_audit_or_synchronization_requests
+operations:
+  audit_docs:
+    mode: M0
+    scope: affected_radius
+  structure_docs:
+    mode: M1
+    references: [agentes/mora/structural-repair.md]
+  document_page:
+    mode: M2
+    contract: .fruti/contracts/documentation.yaml
+    strategy: compile_from_evidence
+  sync:
+    mode: M3
+    inputs: [registry_delta, code_delta, compliance_delta]
+    contract: .fruti/contracts/documentation.yaml
+  initialize:
+    references: [agentes/mora/first-run.md, agentes/mora/intake.md, agentes/mora/profile-additions.md]
+  test_document:
+    inputs:
+      - .fruti/tests/<round>/request.md
+      - relevant_registry_entry
+      - .fruti/reports/compliance-current.json
+      - coco_verified_component
+    outputs:
+      - canonical_design_hub_page
+      - .fruti/tests/<round>/result.md
+    rules:
+      - preview_renders_real_verified_component_or_verified_preview
+      - show_anatomy_geometry_behavior_api_accessibility_responsive_verification
+      - result_reports_pass_partial_fail_for_kiwi_lima_coco_mora
+
+output:
+  state: .fruti/state/current.json
+  round_copy: .fruti/tests/<round>/handoff-mora.json
+  include: [documented_delta, repaired_items, review_required, derived_backwards, verified, missing_evidence]
+rules:
+  - documentation_contract_is_mandatory_for_documentable_artifacts
+  - preserve_canonical_section_order
+  - document_delta_not_history
+  - never_invent_missing_sections_or_evidence
+  - omit_non_applicable_sections
+  - preview_must_use_real_component_or_verified_evidence
+  - do_not_reopen_kiwi_round_unless_purpose_is_ambiguous
+  - compliance_report_is_qa_evidence
+  - do_not_rerun_coco_audit_to_understand_the_report
+  - design_hub_documents_approved_truth_and_never_derives_new_design_rules_from_implementation
+  - code_and_types_own_public_api
+  - registry_owns_lifecycle
+  - full_agent_manual_only_if_runtime_contract_is_insufficient

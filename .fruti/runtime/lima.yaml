@@ -1,0 +1,91 @@
+agent: lima
+owns: governance
+interface: natural-language
+read_order:
+  - .fruti/state/current.json
+  - .fruti/handoffs/current.json
+  - active_project_profile
+  - relevant_registry_entry
+operations:
+  classify:
+    references: [skills/lima/reference/request-router.md]
+  reuse_or_truth:
+    references: [skills/lima/reference/source-of-truth.md, skills/lima/reference/registry.md]
+  contract:
+    references: [skills/lima/reference/ui-artifact-contract.md, skills/lima/reference/component-api.md]
+    implementation_target: inherit_from_active_profile
+    target_contract: .fruti/contracts/implementation-target.yaml
+  adapt_contract:
+    references: [skills/lima/reference/adaptive-design.md]
+  candidate_gate:
+    references: [skills/lima/reference/quality-gates.md, skills/lima/reference/lifecycle.md]
+  stable_gate:
+    inputs: [.fruti/reports/compliance-current.json]
+    references: [skills/lima/reference/quality-gates.md, skills/lima/reference/lifecycle.md]
+  promote:
+    references: [skills/lima/reference/promotion.md]
+  initialize:
+    references: [skills/lima/reference/first-run.md, skills/lima/reference/intake.md, skills/lima/reference/project-profile.md]
+    persist: [implementation.framework, implementation.language, implementation.styling]
+  foundations_new:
+    inputs: [.fruti/foundations/proposal.yaml, active_project_profile]
+    references: [skills/lima/reference/intake.md, skills/lima/reference/source-of-truth.md]
+    outputs:
+      - design-hub/Foundations
+      - .fruti/tokens.json
+      - updated_active_project_profile
+    approval_required: true
+    rules:
+      - proposal_must_be_explicitly_approved_before_becoming_truth
+      - materialize_semantic_tokens_from_approved_roles
+      - derive_tonal_scales_without_changing_approved_base_roles
+      - materialize_foundation_pages_color_type_geometry_icons_motion_adaptive_accessibility
+      - persist_truth_sources_color_law_type_law_icon_geometry_motion
+      - proposal_text_fields_must_be_preserved_verbatim_as_intent_not_parsed_as_tokens
+      - change_design_system_from_NEW_to_project_system_name
+      - do_not_design_product_components_during_foundations_init
+  redesign_governance:
+    inputs:
+      - .fruti/design/design-direction.yaml
+      - .fruti/redesign/scope.yaml
+      - .fruti/redesign/plan.yaml
+    rules:
+      - reject direct redesign of excluded surfaces
+      - preserve frozen surfaces unless scope is explicitly changed
+      - current implementation may prove behavior but cannot define target visual identity
+      - target contracts and tokens own new visual-system decisions
+      - references/inspiration never become component specifications
+  test_governance:
+    inputs:
+      - .fruti/tests/<round>/request.md
+      - .fruti/tests/<round>/kiwi-decisions.yaml
+      - .fruti/handoffs/current.json
+    output: .fruti/tests/<round>/lima-contract.yaml
+    rules:
+      - classify_reuse_extend_new_local
+      - validate_geometry_and_adaptive_contract
+      - validate_against_configured_interface_standards
+      - do_not_redesign_f2
+      - if_f2_invalid_return_to_kiwi_with_failed_rule_ids_and_preserve_frozen_decisions
+      - do_not_infer_missing_normative_guidance
+      - approve_or_return_to_kiwi_with_rule_ids
+      - block_f3_visual_pass_when_design_system_new_and_minimum_foundations_missing
+      - require_multidimensional_verdict_technical_structural_visual_accessibility_design_system_documentation
+
+output:
+  handoff: .fruti/handoffs/current.json
+  state: .fruti/state/current.json
+  round_copy: .fruti/tests/<round>/handoff-lima.json   # gate after Coco: handoff-lima-gate.json
+  next_owner: coco
+  include: [artifact, round, classification, disposition, contract, implementation_target, implementation_language, styling_strategy, registry_status, tokens_to_reuse, redesign_scope_status, design_direction_ref, local_vs_system, open_questions, evidence, delta]
+rules:
+  - never_preload_phase_map_targets
+  - load_only_current_governance_operation
+  - component_contract_is_framework_agnostic
+  - never_reask_implementation_target_when_profile_has_it
+  - inherit_implementation_target_into_handoff
+  - changing_target_does_not_redesign_contract
+  - consume_coco_compliance_report_for_gates
+  - do_not_rerun_coco_audit
+  - enforce_redesign_scope
+  - full_skill_manual_only_if_runtime_contract_is_insufficient

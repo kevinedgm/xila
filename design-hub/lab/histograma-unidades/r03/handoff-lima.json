@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "artifact": "histograma-unidades",
+  "round": "r03",
+  "from": "lima",
+  "to": "coco",
+  "operation": "r3_implement",
+  "frozen_decisions": [
+    "estructura F2 r02 + enmiendas K-01..K-06 (declaracion.md)",
+    "3 piezas de sistema: transitions, brush, units; ejemplo local",
+    "bins por defecto regla fd; eje x lineal o log",
+    "target vanilla-ts / typescript / theme-tokens"
+  ],
+  "pieces": [
+    {
+      "id": "transitions",
+      "disposition": "new"
+    },
+    {
+      "id": "brush",
+      "disposition": "new",
+      "reuse": [
+        "zoom-pan.clampDomain"
+      ]
+    },
+    {
+      "id": "units",
+      "disposition": "new"
+    },
+    {
+      "id": "ejemplo-tiempo-atencion",
+      "disposition": "local"
+    }
+  ],
+  "required_states": [
+    "reposo",
+    "seleccionando",
+    "seleccion-fija",
+    "loose",
+    "stacked",
+    "transicion",
+    "vacio",
+    "reduced-motion"
+  ],
+  "adaptive_contract": [
+    "compact <600: header apilado, alto 220, sin pista de teclado",
+    "medium 600-1023: alto 280",
+    "expanded >=1024: alto 340"
+  ],
+  "open_questions": [
+    "motion tokens (B-01)",
+    "color seleccionado/atenuado (B-01)"
+  ],
+  "blockers": [
+    "B-01 design_system NEW: pase visual F3 bloqueado hasta aprobar foundations"
+  ],
+  "evidence_paths": [
+    "design-hub/lab/histograma-unidades/r02/index.html",
+    "design-hub/lab/histograma-unidades/r03/declaracion.md",
+    "design-hub/lab/histograma-unidades/r03/lima-contract.yaml",
+    "design-hub/system/registry.json"
+  ],
+  "delta": [
+    "registry: +transitions,+brush,+units (draft)",
+    "perfil: implementation resuelto"
+  ]
+}

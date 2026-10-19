@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Casos como unidades</title>
+    <!-- Gráfica con el tema "xila" (Tinta y grana, .fruti/tokens.json); la página usa papel y tinta. -->
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #14161a;
+        background: #fbfaf7;
+      }
+      .hist {
+        container-type: inline-size;
+        max-width: 1100px;
+      }
+      .hist-head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 24px;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+      .hist-title {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+      }
+      .hist-sub {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: #52606d;
+      }
+      .seg {
+        display: inline-flex;
+        border: 1px solid #cbd2d9;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .seg button {
+        border: 0;
+        background: #fff;
+        color: #3e4c59;
+        font: inherit;
+        padding: 0 12px;
+        min-height: 36px;
+        cursor: pointer;
+      }
+      .seg button[aria-pressed='true'] {
+        background: #1f2933;
+        color: #fff;
+      }
+      .seg button:focus-visible {
+        outline: 2px solid #1f2933;
+        outline-offset: -4px;
+      }
+      .readout {
+        font-size: 13px;
+        color: #52606d;
+        margin: 10px 0 4px;
+        min-height: 1.4em;
+        font-variant-numeric: tabular-nums;
+      }
+      .readout b {
+        color: #1f2933;
+      }
+      .chart {
+        height: 340px;
+      }
+      .hint {
+        font-size: 12px;
+        color: #52606d;
+        margin: 6px 0 0;
+      }
+      .empty {
+        font-size: 13px;
+        color: #52606d;
+      }
+      /* Layout modes del contrato adaptativo (K): compact < 600, medium 600–1023, expanded ≥ 1024. */
+      @container (max-width: 1023px) {
+        .chart {
+          height: 280px;
+        }
+      }
+      @container (max-width: 599px) {
+        .hist-head {
+          flex-direction: column;
+        }
+        .chart {
+          height: 220px;
+        }
+        .hint {
+          display: none;
+        }
+        .seg button {
+          min-height: 44px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hist" aria-labelledby="titulo">
+      <div class="hist-head">
+        <div>
+          <h1 class="hist-title" id="titulo">Tiempo de atención por caso</h1>
+          <p class="hist-sub" id="sub">Minutos · cada punto es un caso</p>
+        </div>
+        <div class="seg" role="group" aria-label="Forma">
+          <button type="button" id="m-loose" aria-pressed="true">Casos sueltos</button>
+          <button type="button" id="m-stacked" aria-pressed="false">Agrupados</button>
+        </div>
+      </div>
+      <p class="readout" id="read"></p>
+      <div id="grafica" class="chart"></div>
+      <p class="hint">
+        Teclado: ← → mueven la selección, Shift+← → ajustan el final, Alt+← → el inicio, Esc la
+        limpia.
+      </p>
+    </section>
+    <script type="module" src="/src/unidades.ts"></script>
+  </body>
+</html>

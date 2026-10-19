@@ -31,6 +31,15 @@ import { bandScale, type BandScale } from './scales/band';
 import { linearScale, type ContinuousScale, type Domain } from './scales/linear';
 import { logScale } from './scales/log';
 import { timeScale } from './scales/time';
+import { MarkTransition } from './transitions';
+import {
+  loosePositions,
+  stackGeometry,
+  stackedPositions,
+  unitBins,
+  type StackGeometry,
+  type UnitBins,
+} from './data/units';
 
 const IDENTITY = { offset: 0, scale: 1, base: 0 } as const;
 const FALLBACK_WIDTH = 600;
@@ -82,6 +91,11 @@ export class Chart {
   private readonly hidden = new Set<string>();
   private hitTester: HitTester | null = null;
   private lastHover: HoverPayload | null = null;
+  /** Unidades: cubetas (en caché por datos y regla), geometría apilada y transición entre modos. */
+  private unitCache: { source: Float64Array; key: string; bins: UnitBins } | null = null;
+  private unitGeometry: StackGeometry | null = null;
+  private unitTransition: MarkTransition | null = null;
+  private unitMode: 'loose' | 'stacked' | null = null;
   /** Rangos fijados por zoom o pan; `null` = automático desde los datos. */
   private readonly view: { x: Domain | null; y: Domain | null } = { x: null, y: null };
   private readonly onPointerMove = (e: PointerEvent): void => this.handlePointer(e, 'move');
@@ -271,6 +285,8 @@ export class Chart {
       getDataDomain: (axis) => this.domain(axis),
       getViewDomain: (axis) => this.view[axis],
       setViewDomain: (axis, domain) => this.setViewDomain(axis, domain),
+      getBinEdges: () => this.getBinEdges(),
+      reconfigure: () => this.update({}),
     };
   }
 
@@ -458,7 +474,8 @@ export class Chart {
     let ticks = this.buildTicks(scales);
 
     // 2. Medir etiquetas, fijar el área de dibujo y recalcular con el rango definitivo.
-    const margins = axisMargins(renderer, theme, ticks.x, ticks.y, config.axes.x, config.axes.y);
+    const axisY = this.axisY();
+    const margins = axisMargins(renderer, theme, ticks.x, ticks.y, config.axes.x, axisY);
     // Heatmap con barra de color a la derecha: su ancho más la etiqueta más ancha.
     const legendWidth =
       config.type === 'heatmap' && config.heatmap.legend
@@ -488,7 +505,7 @@ export class Chart {
     renderer.clear('background');
     renderer.clear('data');
     renderer.clear('overlay');
-    drawAxes(renderer, theme, this.layout, ticks.x, ticks.y, config.axes.x, config.axes.y);
+    drawAxes(renderer, theme, this.layout, ticks.x, ticks.y, config.axes.x, axisY);
     this.plugins.beforeDraw(ctx);
     renderer.clip('data', plotArea.x - 1, plotArea.y - 1, plotArea.width + 2, plotArea.height + 2);
     this.drawSeries(scales, plotArea);
@@ -497,24 +514,27 @@ export class Chart {
     // 4. Índice espacial para hover y click, sobre las series visibles.
     const visible = this.visibleSeries().map((v) => v.series);
     const firstVisible = visible[0];
+    // Unidades: sin índice de hover por ahora (las marcas se mueven; el brush es la lectura).
     this.hitTester =
-      config.type === 'heatmap' && firstVisible
-        ? heatmapHitTester(
-            firstVisible,
-            this.cells,
-            this.categories().length,
-            this.categoriesY().length,
-            scales,
-          )
-        : scales.x.kind === 'band'
-          ? bandHitTester(
-              config.type === 'box' ? this.boxSeries() : visible,
+      config.type === 'units'
+        ? null
+        : config.type === 'heatmap' && firstVisible
+          ? heatmapHitTester(
+              firstVisible,
+              this.cells,
+              this.categories().length,
+              this.categoriesY().length,
               scales,
-              config.type === 'bar' && config.bar.mode === 'stacked',
             )
-          : config.type === 'scatter'
-            ? gridHitTester(visible, scales, plotArea)
-            : sortedHitTester(visible, scales);
+          : scales.x.kind === 'band'
+            ? bandHitTester(
+                config.type === 'box' ? this.boxSeries() : visible,
+                scales,
+                config.type === 'bar' && config.bar.mode === 'stacked',
+              )
+            : config.type === 'scatter'
+              ? gridHitTester(visible, scales, plotArea)
+              : sortedHitTester(visible, scales);
     if (this.lastHover) this.drawHoverOverlay(this.lastHover);
     this.events.emit('draw', { first: !this.drawn });
     this.drawn = true;
@@ -534,6 +554,7 @@ export class Chart {
     const { config } = this;
     const xRange = [area.x, area.x + area.width] as const;
     const yRange = [area.y + area.height, area.y] as const;
+    if (config.type === 'units') return this.unitScales(area, previous);
     if (previous) {
       return { x: previous.x.withRange(xRange), y: previous.y.withRange(yRange) };
     }
@@ -772,6 +793,10 @@ export class Chart {
       this.drawHeatmap(scales, area);
       return;
     }
+    if (config.type === 'units') {
+      this.drawUnits(scales, area);
+      return;
+    }
     if (scales.x.kind === 'band') {
       if (config.type === 'box') this.drawBoxes(scales.x, { x: IDENTITY, y: yMap }, renderer);
       else this.drawBars(scales.x, { x: IDENTITY, y: yMap }, renderer);
@@ -846,6 +871,146 @@ export class Chart {
         transform,
       );
     }
+  }
+
+  /** Eje Y efectivo: las marcas sueltas no tienen escala en Y (su altura no significa nada). */
+  private axisY(): ResolvedChartConfig['axes']['y'] {
+    const { config } = this;
+    if (config.type === 'units' && config.units.mode === 'loose') {
+      return { ...config.axes.y, show: false, grid: false };
+    }
+    return config.axes.y;
+  }
+
+  /** Cubetas de la primera serie visible del gráfico de unidades (en caché). */
+  private unitBins(): UnitBins | null {
+    const first = this.visibleSeries()[0];
+    if (!first) return null;
+    const { units, scales } = this.config;
+    const key = `${String(units.bins)}|${scales.x.type}`;
+    const cache = this.unitCache;
+    if (cache && cache.source === first.series.x && cache.key === key) return cache.bins;
+    const bins = unitBins(first.series.x, units.bins, scales.x.type === 'log');
+    this.unitCache = { source: first.series.x, key, bins };
+    return bins;
+  }
+
+  /**
+   * Casos que representa cada marca del gráfico de unidades: 1, salvo que en modo apilado la
+   * columna más alta no quepa ni con el radio mínimo (entonces hay que decirlo en la leyenda).
+   */
+  getUnitsPerMark(): number {
+    return this.config.type === 'units' && this.config.units.mode === 'stacked'
+      ? (this.unitGeometry?.perMark ?? 1)
+      : 1;
+  }
+
+  /**
+   * Bordes de las cubetas cuando el gráfico de unidades está apilado; `null` en cualquier otro
+   * caso. El plugin brush los usa para ajustar la selección a columnas enteras.
+   */
+  getBinEdges(): Float64Array | null {
+    if (this.config.type !== 'units' || this.config.units.mode !== 'stacked') return null;
+    if (this.dirty.data) this.resolveData();
+    return this.unitBins()?.edges ?? null;
+  }
+
+  /**
+   * Escalas del gráfico de unidades. X va por valor como en una dispersión. Y depende del modo:
+   * apilado, cuenta casos (de 0 a lo que cabe en una columna de alto completo, así los ticks
+   * caen en filas reales); suelto, no significa nada y va de 0 a 1.
+   */
+  private unitScales(area: Rect, previous?: ChartScales): ChartScales {
+    const { config } = this;
+    const xRange = [area.x, area.x + area.width] as const;
+    const yRange = [area.y + area.height, area.y] as const;
+    let x: ContinuousScale;
+    if (previous && previous.x.kind !== 'band') {
+      x = previous.x.withRange(xRange);
+    } else {
+      const make = config.scales.x.type === 'log' ? logScale : linearScale;
+      x = make(this.view.x ?? this.domain('x'), xRange);
+      if (!this.view.x && config.scales.x.nice && config.scales.x.domain === 'auto') x = x.nice(6);
+    }
+    this.unitGeometry = null;
+    const bins = this.unitBins();
+    if (config.units.mode !== 'stacked' || !bins || bins.max === 0) {
+      return { x, y: linearScale([0, 1], yRange) };
+    }
+    let column = Infinity;
+    for (let i = 0; i + 1 < bins.edges.length; i++) {
+      const w = x.toPixel(bins.edges[i + 1] as number) - x.toPixel(bins.edges[i] as number);
+      if (w < column) column = w;
+    }
+    const geometry = stackGeometry(bins.max, Math.max(1, column), area.height, {
+      maxRadius: config.units.maxRadius,
+    });
+    this.unitGeometry = geometry;
+    // Cada fila de marcas mide `unit` px y lleva `cols · perMark` casos: el alto completo del área
+    // equivale a esta cantidad, así un tick en "100" cae justo donde termina el caso 100.
+    const perPixel = (geometry.cols * geometry.perMark) / geometry.unit;
+    return { x, y: linearScale([0, area.height * perPixel], yRange) };
+  }
+
+  /**
+   * Una marca por fila, en su posición suelta o apilada. Cambiar de modo anima cada marca desde
+   * donde está hasta su nuevo lugar; un resize o datos nuevos la colocan sin animar.
+   */
+  private drawUnits(scales: ChartScales, area: Rect): void {
+    const { config, renderer } = this;
+    const first = this.visibleSeries()[0];
+    const bins = this.unitBins();
+    if (!first || !bins || scales.x.kind === 'band') return;
+    const x = scales.x;
+    const mode = config.units.mode;
+    const geometry = this.unitGeometry;
+    // Destino de cada marca. Durante una transición no se recalcula: con un millón de marcas
+    // costaría tanto como el propio fotograma.
+    const target = (): { x: Float64Array; y: Float64Array; radius: number } => {
+      if (mode === 'stacked' && geometry) {
+        const edgePx = Float64Array.from(bins.edges, (e) => x.toPixel(e));
+        const p = stackedPositions(bins, edgePx, area.y + area.height, geometry);
+        return { ...p, radius: geometry.radius };
+      }
+      const r = config.units.radius;
+      const p = loosePositions(
+        first.series.x,
+        (v) => x.toPixel(v),
+        area.y,
+        area.height,
+        r,
+        bins.bin,
+      );
+      return { ...p, radius: r };
+    };
+
+    const now = performance.now();
+    let t = this.unitTransition;
+    if (!t) {
+      t = new MarkTransition({ duration: config.units.duration });
+      this.unitTransition = t;
+      const p = target();
+      t.jump(p.x, p.y, p.radius);
+    } else if (this.unitMode !== null && this.unitMode !== mode) {
+      const p = target();
+      t.animateTo(p.x, p.y, p.radius, now);
+    } else if (!t.running) {
+      const p = target();
+      t.jump(p.x, p.y, p.radius);
+    }
+    this.unitMode = mode;
+    const running = t.sample(now);
+    const color = config.theme.palette[first.index % config.theme.palette.length] ?? '#000';
+    renderer.drawPointSeries(
+      'data',
+      t.x,
+      t.y,
+      0,
+      t.x.length,
+      { fill: color, radius: t.radius, opacity: 0.9 },
+      { x: IDENTITY, y: IDENTITY },
+    );
+    if (running) this.requestDraw();
   }
 
   /** Estadísticos del box plot por serie visible y categoría (vacío si no es un box plot). */
@@ -1038,6 +1203,9 @@ function useWebGL(config: ChartConfig): boolean {
   const mode = config.renderer ?? 'canvas';
   if (mode === 'webgl') return true;
   if (mode === 'auto')
-    return config.type === 'scatter' && config.data.length >= WEBGL_AUTO_THRESHOLD;
+    return (
+      (config.type === 'scatter' || config.type === 'units') &&
+      config.data.length >= WEBGL_AUTO_THRESHOLD
+    );
   return false;
 }

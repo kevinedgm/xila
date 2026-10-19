@@ -1,0 +1,51 @@
+version: 1
+purpose: implementation_target_contract
+
+source:
+  owner: active_project_profile
+  setup_fields:
+    framework: implementation.framework
+    styling: implementation.styling
+  optional_fields:
+    language: implementation.language
+    component_library: implementation.component_library
+
+principles:
+  - design_contract_is_framework_agnostic
+  - implementation_target_is_project_configuration
+  - ask_once_during_setup_then_persist
+  - lima_does_not_reask_target_when_classifying_components
+  - coco_implements_using_active_target
+  - explicit_user_override_wins_and_updates_profile_when_persistent
+  - changing_framework_does_not_redesign_the_component_contract
+
+resolution:
+  unresolved_values: [null, "", AUTO]   # a profile value in this set counts as missing, never as the target
+  order:
+    - explicit_current_user_instruction
+    - active_project_profile.implementation
+    - legacy_profile.framework_and_styling
+    - repository_detection
+  unresolved: ask_once_and_persist
+
+handoff_fields:
+  - implementation_target
+  - implementation_language
+  - styling_strategy
+
+examples:
+  vue:
+    framework: vue3
+    language: typescript
+    styling: css
+    expected_component: Component.vue
+  react:
+    framework: react
+    language: typescript
+    styling: css-modules
+    expected_component: Component.tsx
+  web:
+    framework: html-css
+    language: html
+    styling: css
+    expected_component: [component.html, component.css]

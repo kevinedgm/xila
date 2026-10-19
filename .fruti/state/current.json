@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "project": "xila",
+  "active_artifact": "histograma-unidades",
+  "round": "r03",
+  "phase": "coco-implemented",
+  "owner": "coco",
+  "next_owner": "lima",
+  "profile_path": ".claude/skills/lima/profiles/xila.md",
+  "registry_path": "design-hub/system/registry.json",
+  "canonical_evidence": [
+    ".fruti/reports/compliance-current.json",
+    "design-hub/lab/histograma-unidades/r03/compliance.json",
+    "design-hub/lab/histograma-unidades/r03/evidencia/"
+  ],
+  "frozen_decisions": [
+    "estructura F2 r02 + enmiendas K-01..K-06 (declaracion.md)",
+    "3 piezas de sistema: transitions, brush, units; ejemplo local",
+    "bins por defecto regla fd; eje x lineal o log",
+    "target vanilla-ts / typescript / theme-tokens",
+    "foundations 'Tinta y grana' aprobadas 2026-10-19 → .fruti/tokens.json; tema xila/xila-dark en theme.ts"
+  ],
+  "open_questions": [],
+  "last_handoff": ".fruti/handoffs/current.json",
+  "note": "Operational cache only. Canonical profile, registry, code/types and QA evidence always win on conflict.",
+  "note_2026_10_19": "B-01 resuelto. Falta auditoría F3 visual de coco con el tema xila para el Candidate Gate."
+}

@@ -22,6 +22,19 @@ export interface ChartEventMap {
   resize: { readonly width: number; readonly height: number };
   /** Tras cada dibujo completo; `first` en el primero (sirve para quitar un esqueleto). */
   draw: { readonly first: boolean };
+  /** El plugin brush cambió la selección; `range` es `null` al limpiarla. */
+  brush: BrushPayload;
+}
+
+export interface BrushPayload {
+  readonly range: readonly [number, number] | null;
+  /** Valores (de las series visibles) dentro del rango; sin rango, igual a `total`. */
+  readonly count: number;
+  readonly total: number;
+  /** `count / total`, de 0 a 1. */
+  readonly share: number;
+  /** Texto de la lectura: el mismo que se anuncia al lector de pantalla. */
+  readonly text: string;
 }
 
 export type Listener<K extends keyof ChartEventMap> = (payload: ChartEventMap[K]) => void;

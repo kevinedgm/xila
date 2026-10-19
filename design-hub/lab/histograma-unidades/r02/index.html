@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Propuesta A · Casos como unidades</title>
+<style>:root{--g0:#fff;--g1:#f5f5f5;--g2:#e6e6e6;--g3:#cfcfcf;--g4:#a8a8a8;--g5:#7a7a7a;--g6:#555;--g7:#333;--g8:#1f1f1f;--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--r:4px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--g1);color:var(--g8);font-family:var(--font);font-size:15px;line-height:1.4}
+button,input{font:inherit;color:inherit}:focus-visible{outline:3px solid var(--g8);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wf-bar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px 16px;background:var(--g0);border-bottom:1px solid var(--g2);position:sticky;top:0;z-index:5}
+.wf-bar h1{font-size:14px;font-weight:600;margin:0 8px 0 0;color:var(--g6)}.wf-bar .grp{display:flex;gap:4px;align-items:center;flex-wrap:wrap}.wf-bar .grp span{font-size:12px;color:var(--g5);margin-right:4px}
+.chip{border:1px solid var(--g3);background:var(--g0);border-radius:999px;padding:6px 12px;min-height:36px;cursor:pointer}.chip[aria-pressed="true"]{background:var(--g8);color:var(--g0);border-color:var(--g8)}
+.stage{padding:24px 16px 48px;overflow-x:auto}.device{margin:0 auto;background:var(--g0);border:1px solid var(--g3);border-radius:12px;box-shadow:0 0 0 6px var(--g2);transition:width .25s}
+.device-label{text-align:center;font-size:12px;color:var(--g5);margin:0 0 10px}.wf-note{font-size:12px;color:var(--g6);background:var(--g1);border-left:3px solid var(--g4);padding:6px 10px;margin:16px auto 0;max-width:720px}.notes{max-width:720px;margin:24px auto 0}
+.hist{container-type:inline-size;padding:20px}.hist-head{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-start;justify-content:space-between}
+.hist-title{margin:0;font-size:17px;font-weight:600}.hist-sub{margin:2px 0 0;font-size:13px;color:var(--g5)}
+.btn{border:1px solid var(--g3);background:var(--g0);border-radius:var(--r);min-height:36px;padding:0 12px;cursor:pointer;color:var(--g7)}.btn:hover{background:var(--g1)}.btn.primary{background:var(--g8);color:var(--g0);border-color:var(--g8)}
+.seg{display:inline-flex;border:1px solid var(--g3);border-radius:var(--r);overflow:hidden}.seg button{border:0;background:var(--g0);padding:0 12px;min-height:36px;cursor:pointer;color:var(--g6)}.seg button[aria-pressed="true"]{background:var(--g8);color:var(--g0)}
+.hist-plot{position:relative;margin-top:12px}.hist-plot svg{display:block;width:100%;height:auto;overflow:visible}
+.grid line{stroke:var(--g2);stroke-width:1}.axis text{fill:var(--g5);font-size:11px;font-variant-numeric:tabular-nums}.axis .ttl{fill:var(--g6)}
+.readout{font-size:13px;color:var(--g5);margin-top:10px}.readout b{color:var(--g8);font-weight:600;font-variant-numeric:tabular-nums}.hero{font-size:34px;font-weight:600;color:var(--g8);line-height:1.1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@container (max-width:520px){.hist{padding:16px}.hist-head{flex-direction:column}}
+
+.dot{fill:var(--g6);transition:transform .7s cubic-bezier(.2,.8,.2,1)}.dot.sel{fill:var(--g8)}.dot.dim{fill:var(--g3)}
+.brush{fill:var(--g8);fill-opacity:.06;stroke:var(--g8);stroke-width:1}
+.plotarea{cursor:crosshair}.plotarea:focus{outline:none}.plotarea.kb:focus{outline:3px solid var(--g8)}
+.hint{font-size:12px;color:var(--g5);margin:6px 0 0}
+</style></head><body>
+<div class="wf-bar"><h1>Propuesta A · Casos como unidades · F2 · r02</h1>
+ <div class="grp"><span>Tamaño</span><button class="chip" data-w="393" aria-pressed="false">Teléfono 393</button><button class="chip" data-w="834" aria-pressed="false">Tablet 834</button><button class="chip" data-w="1440" aria-pressed="true">Escritorio 1440</button></div></div>
+<div class="stage"><p class="device-label" id="devlabel">Escritorio · 1440 px</p>
+<div class="device" id="device" style="width:1440px">
+<section class="hist" id="hist">
+ <div class="hist-head"><div><h2 class="hist-title">Tiempo de atención por caso</h2><p class="hist-sub">Minutos · 1,240 casos · cada punto es un caso</p></div>
+  <div class="seg" role="group" aria-label="Forma"><button id="m-dots" aria-pressed="true">Casos sueltos</button><button id="m-bins" aria-pressed="false">Agrupados</button></div></div>
+ <div class="readout" id="read">Arrastra sobre la gráfica para contar un rango. <b>1,240</b> casos en total.</div>
+ <div class="hist-plot"><svg id="svg" role="img" aria-label="Distribución del tiempo de atención; 1,240 casos"></svg></div>
+ <p class="hint" id="hint">Teclado: ← → mueven la selección, Shift+← → la amplían.</p>
+</section></div>
+<div class="notes">
+ <p class="wf-note"><b>Idea.</b> El lector ve primero la nube real de casos (nada abstracto). "Agrupados" mueve cada punto a su columna: la barra queda explicada como pila de casos, no como forma.</p>
+ <p class="wf-note"><b>Interacción.</b> Arrastrar = contar. El conteo vivo es la respuesta; la gráfica no exige entender ejes para usarse.</p>
+ <p class="wf-note"><b>Riesgo.</b> Con &gt;5k casos la animación de puntos deja de ser viable; habría que muestrear o pasar a unidades de 10 casos.</p>
+</div></div>
+<script>window.WF=(function(){
+  function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+  const rnd=mulberry(42),data=[];
+  for(let i=0;i<1240;i++){const u1=Math.max(rnd(),1e-9),u2=rnd();const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);let v=Math.exp(2.6+0.45*z);if(rnd()<0.03)v+=40+rnd()*60;data.push(Math.round(v*10)/10)}
+  const sorted=[...data].sort((a,b)=>a-b),n=data.length,min=sorted[0],max=sorted[n-1],median=(sorted[n/2-1]+sorted[n/2])/2;
+  const fmt=v=>v.toLocaleString('es-MX',{maximumFractionDigits:1}),fmtInt=v=>v.toLocaleString('es-MX');
+  const NS='http://www.w3.org/2000/svg',el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+  function bins(k){const w=(max-min)/k,out=[];for(let i=0;i<k;i++)out.push({lo:min+i*w,hi:min+(i+1)*w,c:0,idx:[]});data.forEach((v,j)=>{const i=Math.min(k-1,Math.floor((v-min)/w));out[i].c++;out[i].idx.push(j)});return out}
+  function nice(c){const p=Math.pow(10,Math.floor(Math.log10(c)));return [1,1.2,1.5,2,2.5,3,4,5,6,8,10].find(s=>s*p>=c)*p}
+  function frame(onResize){const d=document.getElementById('device'),l=document.getElementById('devlabel');
+    document.querySelectorAll('.chip[data-w]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip[data-w]').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');d.style.width=b.dataset.w+'px';l.textContent=b.textContent.replace(' ',' · ')+' px';setTimeout(onResize,280)})}
+  function axes(svg,m,W,H,pw,ph,ymax,k,bs,yl){const g=el('g',{class:'grid'}),ax=el('g',{class:'axis'});
+    for(let i=0;i<=4;i++){const v=ymax*i/4,yy=m.t+ph-(v/ymax)*ph;g.append(el('line',{x1:m.l,x2:W-m.r,y1:yy,y2:yy}));const t=el('text',{x:m.l-8,y:yy+4,'text-anchor':'end'});t.textContent=v>=1000?(v/1000)+'K':fmtInt(v);ax.append(t)}
+    const bw=pw/k,every=Math.ceil((k+1)/Math.max(4,Math.floor(pw/64)));bs.forEach((b,i)=>{if(i%every===0){const t=el('text',{x:m.l+i*bw,y:m.t+ph+16,'text-anchor':'middle'});t.textContent=fmt(b.lo);ax.append(t)}});
+    const last=el('text',{x:m.l+pw,y:m.t+ph+16,'text-anchor':'middle'});last.textContent=fmt(max);ax.append(last);
+    const xt=el('text',{x:m.l+pw/2,y:H-4,'text-anchor':'middle',class:'ttl'});xt.textContent='Minutos de atención';ax.append(xt);
+    const yt=el('text',{x:m.l-8,y:m.t-14,'text-anchor':'end',class:'ttl'});yt.textContent=yl||'Casos';ax.append(yt);svg.append(g,ax)}
+  return {data,sorted,n,min,max,median,fmt,fmtInt,el,bins,nice,frame,axes};
+})();
+
+(function(){const {data,n,min,max,fmt,fmtInt,el,bins,nice,frame,axes}=WF;
+const hist=document.getElementById('hist'),svg=document.getElementById('svg'),read=document.getElementById('read');
+let mode='dots',sel=null,k=20,dots=[],geo={},gAxes,gDots,brush,area;
+function build(){const W=Math.max(320,hist.clientWidth-40),H=Math.min(340,Math.max(220,Math.round(W*.4)));const m={t:30,r:12,b:44,l:44},pw=W-m.l-m.r,ph=H-m.t-m.b;const x=v=>m.l+(v-min)/(max-min)*pw;
+ svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.style.height=H+'px';svg.replaceChildren();
+ const bs=bins(k),cmax=Math.max(...bs.map(b=>b.c)),bw=pw/k;
+ let r=4,u,cols;for(;r>=1;r-=.25){u=2*r+1;cols=Math.max(1,Math.floor((bw-2)/u));if(Math.ceil(cmax/cols)*u<=ph)break}
+ u=2*r+1;cols=Math.max(1,Math.floor((bw-2)/u));const ymaxPix=Math.floor(ph/u)*cols;
+ geo={W,H,m,pw,ph,x,bs,ymaxPix,r};
+ gAxes=el('g');svg.append(gAxes);
+ area=el('rect',{class:'plotarea',x:m.l,y:m.t,width:pw,height:ph,fill:'transparent',tabindex:0,role:'slider','aria-label':'Selección de rango'});svg.append(area);
+ brush=el('rect',{class:'brush',x:0,y:m.t,width:0,height:ph,visibility:'hidden'});svg.append(brush);
+ gDots=el('g');dots=[];const rd=Math.max(1.5,Math.min(3,pw/400));const counters=new Array(k).fill(0);
+ data.forEach((v,j)=>{const bi=Math.min(k-1,Math.floor((v-min)/((max-min)/k)));const slot=counters[bi]++;
+  const c=el('circle',{class:'dot',r:rd,cx:0,cy:0});c._v=v;
+  c._pd=[x(v),m.t+ph-rd-((j*7919)%1000)/1000*(ph-2*rd)];c._pb=[m.l+bi*bw+1+r+(slot%cols)*u,m.t+ph-r-Math.floor(slot/cols)*u];c._rd=rd;c._rb=r;
+  gDots.append(c);dots.push(c)});
+ svg.append(gDots);
+ let drag=null;const toV=px=>min+(px-m.l)/pw*(max-min);
+ const pt=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());return Math.max(m.l,Math.min(m.l+pw,q.x))};
+ area.addEventListener('pointerdown',e=>{area.classList.remove('kb');drag=pt(e);area.setPointerCapture(e.pointerId);sel=[toV(drag),toV(drag)];paint()});
+ area.addEventListener('pointermove',e=>{if(drag==null)return;const px=pt(e);sel=[toV(Math.min(drag,px)),toV(Math.max(drag,px))];paint()});
+ area.addEventListener('pointerup',()=>{drag=null;if(sel&&sel[1]-sel[0]<0.2)sel=null;paint()});
+ area.addEventListener('keydown',e=>{area.classList.add('kb');const step=(max-min)/40;if(!sel)sel=[min,min+(max-min)/4];
+  if(e.key==='ArrowRight'){e.shiftKey?sel[1]=Math.min(max,sel[1]+step):(sel=[sel[0]+step,sel[1]+step])}else if(e.key==='ArrowLeft'){e.shiftKey?sel[1]=Math.max(sel[0]+step,sel[1]-step):(sel=[sel[0]-step,sel[1]-step])}else if(e.key==='Escape'){sel=null}else return;e.preventDefault();paint()});
+ applyMode(false);paint()}
+function applyMode(animate){const {W,H,m,pw,ph,x,bs,ymaxPix}=geo;gAxes.replaceChildren();
+ if(mode==='bins'){const tmp=el('g');axes(tmp,m,W,H,pw,ph,ymaxPix,k,bs);gAxes.append(...tmp.childNodes)}
+ else{const ax=el('g',{class:'axis'});for(let i=0;i<=6;i++){const v=min+(max-min)*i/6;const t=el('text',{x:x(v),y:m.t+ph+16,'text-anchor':'middle'});t.textContent=fmt(v);ax.append(t)}const xt=el('text',{x:m.l+pw/2,y:H-4,'text-anchor':'middle',class:'ttl'});xt.textContent='Minutos de atención';ax.append(xt);gAxes.append(ax,el('line',{x1:m.l,x2:m.l+pw,y1:m.t+ph,y2:m.t+ph,stroke:'var(--g3)'}))}
+ dots.forEach(c=>{const p=mode==='dots'?c._pd:c._pb;if(!animate)c.style.transition='none';c.style.transform=`translate(${p[0]}px,${p[1]}px)`;c.setAttribute('r',mode==='dots'?c._rd:c._rb);if(!animate)requestAnimationFrame(()=>c.style.transition='')})}
+function paint(){const {x}=geo;if(!sel){brush.setAttribute('visibility','hidden');dots.forEach(d=>d.classList.remove('sel','dim'));read.replaceChildren('Arrastra sobre la gráfica para contar un rango. ');const b=document.createElement('b');b.textContent=fmtInt(n);read.append(b,' casos en total.');area.removeAttribute('aria-valuetext');return}
+ brush.setAttribute('visibility','visible');brush.setAttribute('x',x(sel[0]));brush.setAttribute('width',x(sel[1])-x(sel[0]));
+ let c=0;dots.forEach(d=>{const inn=d._v>=sel[0]&&d._v<=sel[1];d.classList.toggle('sel',inn);d.classList.toggle('dim',!inn);if(inn)c++});
+ read.replaceChildren();const b=document.createElement('b');b.textContent=fmtInt(c)+' casos';read.append(b,` (${(c/n*100).toFixed(1)} %) entre ${fmt(sel[0])} y ${fmt(sel[1])} min`);area.setAttribute('aria-valuetext',read.textContent)}
+function setMode(mo){mode=mo;document.getElementById('m-dots').setAttribute('aria-pressed',String(mo==='dots'));document.getElementById('m-bins').setAttribute('aria-pressed',String(mo==='bins'));applyMode(true)}
+document.getElementById('m-dots').onclick=()=>setMode('dots');document.getElementById('m-bins').onclick=()=>setMode('bins');
+frame(build);new ResizeObserver(()=>build()).observe(hist);build();
+})();
+</script></body></html>

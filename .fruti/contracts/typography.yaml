@@ -1,0 +1,151 @@
+version: 1
+kind: typography-foundation
+purpose: >-
+  Define a framework-agnostic typography contract for Fruti Squad. The user chooses
+  identity-level typography; Fruti derives and freezes semantic roles so agents do
+  not invent font sizes or weights per screen.
+
+init:
+  questions:
+    - id: typography.primary_family
+      prompt: "¿Cuál es la tipografía principal de la interfaz?"
+      required: true
+      default: "Inter"
+    - id: typography.secondary_enabled
+      prompt: "¿Quieres una tipografía secundaria de identidad?"
+      type: boolean
+      default: false
+    - id: typography.secondary_family
+      prompt: "¿Cuál es la tipografía secundaria de identidad?"
+      required_when: typography.secondary_enabled
+    - id: typography.scale_mode
+      prompt: "¿Quieres usar la escala tipográfica recomendada o personalizarla?"
+      choices: [recommended, custom]
+      default: recommended
+    - id: typography.editorial_accent
+      prompt: "¿Quieres usar la tipografía secundaria como acento editorial limitado?"
+      type: boolean
+      default: false
+      ask_when: typography.secondary_enabled
+
+recommended_scale:
+  display:
+    size: 56px
+    line_height: 60px
+    weight: 700
+    tracking: -0.03em
+    role: hero-title
+    medium_override:
+      size: 48px
+      line_height: 52px
+    compact_override:
+      size: 38px
+      line_height: 40px
+  heading_1:
+    size: 36px
+    line_height: 40px
+    weight: 700
+    tracking: -0.025em
+    role: page-title
+    compact_override:
+      size: 30px
+      line_height: 34px
+  heading_2:
+    size: 26px
+    line_height: 32px
+    weight: 700
+    tracking: -0.02em
+    role: section-heading
+  heading_3:
+    size: 18px
+    line_height: 24px
+    weight: 700
+    tracking: -0.015em
+    role: block-heading
+  body_large:
+    size: 18px
+    line_height: 28px
+    weight: 400
+    role: lead
+  body:
+    size: 16px
+    line_height: 24px
+    weight: 400
+    role: body
+  body_small:
+    size: 14px
+    line_height: 20px
+    weight: 500
+    role: metadata
+  label:
+    size: 13px
+    line_height: 16px
+    weight: 600
+    role: field-label
+  caption:
+    size: 12px
+    line_height: 16px
+    weight: 500
+    role: caption
+  price:
+    size: 20px
+    line_height: 24px
+    weight: 700
+    tracking: -0.02em
+    role: price-total
+    numeric_variant: tabular-nums
+  kpi:
+    size: 30px
+    line_height: 32px
+    weight: 700
+    tracking: -0.03em
+    role: metric
+    numeric_variant: tabular-nums
+
+authority:   # who owns which typography decision (resolves profile type_law vs this contract)
+  family: profile.typography.primary_family, else profile.type_law.body / display
+  scale: >-
+    this contract's recommended_scale (semantic roles with fixed sizes) unless the profile
+    persists typography.scale_mode: custom, in which case profile typography.roles win.
+  type_law_scale_line: >-
+    a free-text scale in profile.type_law (e.g. "1.20 modular scale") is descriptive only; it never
+    overrides the roles. To change sizes, set typography.scale_mode: custom and persist typography.roles.
+  default_scale_mode: recommended
+
+secondary_family_rules:
+  default_scope: brand-only
+  allowed_roles: [brand, editorial-accent]
+  editorial_accent:
+    enabled_only_when: typography.editorial_accent
+    max_occurrences_per_page: 1
+  forbidden_by_default: [body, form, navigation, metadata, data]
+
+semantic_rules:
+  - "Mode resolution: expanded (>=1024) always uses the base values; medium (600-1023) uses medium_override when the role defines one, else the base values; compact (<600) uses compact_override when defined, else the base values. A role with no override in a mode deliberately keeps its base size there (heading_1 is 36/40 in medium and expanded)."
+  - "Sizes must not increase as the space shrinks: compact <= medium <= expanded for every role."
+  - "medium_override follows the same rules as compact_override: omitted properties keep the base value and a size change MUST also set line_height."
+  - "compact_override applies in layout mode compact (<600); properties it omits keep the base value, and when it changes size it MUST also set line_height."
+  - "In compact, page-title (heading_1) stays larger than section-heading (heading_2, 26px); do not shrink heading_1 below it."
+  - "Agents MUST choose a semantic typography role before choosing rendered values."
+  - "Coco MUST NOT invent arbitrary font sizes, weights, line-heights, or tracking when a semantic role exists."
+  - "Kiwi may name semantic text hierarchy in wireframes but MUST NOT apply visual font styling."
+  - "Lima freezes the typography contract and governs additions or exceptions."
+  - "Mora documents semantic roles and actual implementations; it does not create a competing scale."
+  - "Use balanced wrapping for headings where supported."
+  - "Target readable prose lines of roughly 45-65 characters where layout permits."
+  - "Never reduce caption below 12px in the recommended scale."
+
+custom_mode:
+  rule: >-
+    When scale_mode=custom, preserve the same semantic role names unless the user
+    explicitly changes the taxonomy. Custom values must be persisted in the project
+    profile so later agents consume them without asking again.
+
+persistence:
+  profile_fields:
+    - typography.primary_family
+    - typography.secondary_family
+    - typography.editorial_accent
+    - typography.scale_mode
+    - typography.roles
+  principle: "identity in, semantic scale out"

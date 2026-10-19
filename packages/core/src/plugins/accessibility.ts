@@ -1,6 +1,7 @@
 import type { ChartPlugin, PluginContext } from '../plugin';
 import type { ResolvedSeries } from '../data/series';
 import { formatNumber } from '../format/number';
+import { median } from '../stats';
 
 export interface AccessibilityOptions {
   /** Descripción fija; si falta se genera un resumen (tipo, series, rangos). */
@@ -20,6 +21,7 @@ const TYPE_NAMES: Record<string, string> = {
   line: 'Gráfico de líneas',
   bar: 'Gráfico de barras',
   scatter: 'Gráfico de dispersión',
+  units: 'Gráfico de unidades (una marca por caso)',
 };
 
 function dateFormatter(locale: string, timeZone: string, spanMs: number): (ms: number) => string {
@@ -64,6 +66,12 @@ export function chartSummary(ctx: PluginContext, locale = 'es-MX', timeZone = 'U
     config.scales.x.type === 'band'
       ? `${count} categorías de ${fx(0)} a ${fx(Math.max(0, count - 1))}`
       : `${formatNumber(count, { locale })} datos de ${fx(x0)} a ${fx(x1)}`;
+  // Unidades: Y no es un valor de los datos (es posición o conteo); lo útil es la mediana.
+  if (config.type === 'units') {
+    const first = series[0];
+    const m = first ? median(first.x) : NaN;
+    return `${type}. ${seriesText}. ${xText}. Mediana ${Number.isFinite(m) ? fx(m) : '—'}.`;
+  }
   const yText = `Valores entre ${formatNumber(y0, { locale })} y ${formatNumber(y1, { locale })}`;
   const yTitle = config.axes.y.title ? ` (${config.axes.y.title})` : '';
   return `${type}. ${seriesText}. ${xText}. ${yText}${yTitle}.`;
@@ -181,11 +189,13 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     const fx = xFormatter(ctx, locale, timeZone);
     const xTitle = ctx.config.axes.x.title || 'X';
     const stride = Math.max(1, Math.ceil(n / tableRows));
+    // Unidades: cada fila es un caso con un solo valor; no hay columna por serie.
+    const units = ctx.config.type === 'units';
     const rows: string[] = [];
     for (let i = 0; i < n; i += stride) {
       const first = series[0];
       const xv = first && i < first.length ? (first.x[i] as number) : NaN;
-      const cells = series.map((s) => {
+      const cells = (units ? [] : series).map((s) => {
         const v = i < s.length ? (s.y[i] as number) : NaN;
         return `<td>${Number.isFinite(v) ? formatNumber(v, { locale }) : ''}</td>`;
       });
@@ -197,7 +207,7 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
       stride > 1
         ? `Datos del gráfico (1 de cada ${stride} filas, ${rows.length} de ${n})`
         : 'Datos del gráfico';
-    const head = `<tr><th scope="col">${xTitle}</th>${series
+    const head = `<tr><th scope="col">${xTitle}</th>${(units ? [] : series)
       .map((s) => `<th scope="col">${s.name}</th>`)
       .join('')}</tr>`;
     table.innerHTML = `<caption>${caption}</caption><thead>${head}</thead><tbody>${rows.join('')}</tbody>`;

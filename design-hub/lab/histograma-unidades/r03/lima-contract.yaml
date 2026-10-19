@@ -1,0 +1,113 @@
+# Lima · contrato · histograma-unidades · r03
+# Entrada: Kiwi F2 r02 (../r02/index.html) + enmienda estructural r03 (declaracion.md).
+# Este contrato es agnóstico de framework; el objetivo de implementación viene del perfil.
+
+artifact: histograma-unidades
+round: r03
+verdict: approved-with-blockers   # estructura aprobada; pase visual F3 bloqueado por foundations NEW
+date: 2026-10-18
+
+request:
+  artifact_type: pattern
+  intent: create
+  scope: design-system
+
+implementation_target:
+  framework: vanilla-ts
+  language: typescript
+  styling: theme-tokens
+  packages: [packages/core (xilaplot), packages/vue (xilaplot-vue, solo reexporta)]
+
+pieces:
+  - id: transitions
+    kind: component          # capacidad del motor, no visible por sí sola
+    disposition: new
+    scope: system
+    why: >
+      xilaplot no interpola nada hoy (chart.ts redibuja en seco). El cambio Sueltos→Agrupados
+      exige mover cada marca de A a B. Tiene que vivir en el motor (Canvas/WebGL), no en nodos SVG,
+      para quitar el techo de ~5k marcas que la nota de riesgo del F2 reconoce.
+    contract:
+      api: interpolación de posiciones y radio por marca entre dos estados del layout; reutilizable por cualquier tipo de gráfico
+      behavior:
+        - una transición nueva interrumpe la anterior desde la posición actual (sin saltos)
+        - prefers-reduced-motion → cambio instantáneo (estado reduced-motion de K)
+        - el redibujo sigue agrupado en requestAnimationFrame (contrato existente de Chart)
+      tokens: [motion.duration.*, motion.easing.*]   # UNRESOLVED: foundations NEW
+      a11y: el movimiento solo explica continuidad; ningún dato depende de verlo
+
+  - id: brush
+    kind: pattern
+    disposition: new
+    reuse: [zoom-pan.clampDomain, PluginContext.getDataDomain, events.Emitter]
+    scope: system
+    why: >
+      zoom-pan ya tiene "select", pero su semántica es hacer zoom. Contar un rango es otra
+      semántica y otra salida (evento + lectura viva), así que es un plugin aparte (no un flag de zoom-pan).
+    contract:
+      api:
+        options: { axis: x, snap: [none, bins] }
+        emits: [brush]          # payload: { range: [a, b] | null, count, share }
+        methods: [setRange(range|null), getRange()]
+      states: [reposo, seleccionando, seleccion-fija, deshabilitado]
+      keyboard: K-02               # ←/→ mover · Shift ajusta fin · Alt ajusta inicio · Home/End · Esc
+      clamping: K-01
+      snapping: K-05               # snap=bins en modo agrupado
+      a11y:
+        - control de rango propio fuera de la imagen (K-03), rol slider con aria-valuetext = lectura viva
+        - lectura viva en región aria-live=polite, con limitación de frecuencia durante el arrastre
+        - selección distinguible sin depender solo del color (borde + relleno + atenuado)
+      touch: arrastre horizontal no bloquea el scroll vertical de la página
+
+  - id: units
+    kind: component
+    disposition: new
+    scope: system
+    why: tipo de gráfico nuevo (ChartType 'units'); ninguno de line/bar/scatter/box/heatmap dibuja una marca por fila apilada
+    contract:
+      api:
+        type: units
+        modes: [loose, stacked]     # Casos sueltos / Agrupados
+        bins: reutiliza data/histogram.ts; regla por defecto 'fd' (no 20 bins de igual ancho fijo)
+        x_scale: [linear, log]      # log recomendado para colas largas
+        unit_size: auto             # K-04: si no cabe, cada marca = k casos y se anuncia
+      states: [loose, stacked, transicion, vacio, un-solo-valor]
+      renderer: canvas y webgl; webgl obligatorio por encima del umbral de marcas que fije Coco con bench
+      y_axis_stacked: marcas "bonitas" con niceStep (defecto r02 #4)
+      a11y: descripción de la imagen con n, mediana y rango; resumen por bin disponible para el plugin de accesibilidad existente
+
+  - id: ejemplo-tiempo-atencion
+    kind: product-application
+    disposition: local
+    scope: product-application
+    why: la página de demostración (1,240 casos de tiempo de atención) es un ejemplo, no pieza del sistema
+    lives_in: examples/unidades.html
+
+adaptive_contract:
+  compact: { lt: 600, header: stacked, plot_height: 220, keyboard_hint: hidden, touch_target_min: 44 }
+  medium: { range: [600, 1023], header: row, plot_height: 280 }
+  expanded: { gte: 1024, header: row, plot_height: 340 }
+  verification_viewports: [1440, 1024, 768, 390]
+
+required_states: [reposo, seleccionando, seleccion-fija, loose, stacked, transicion, vacio, reduced-motion]
+
+routed_to_coco:   # defectos de implementación de r02, no estructurales
+  - C-01 no recrear marcas ni listeners en cada resize; un solo rebuild por cambio de tamaño
+  - C-02 quitar código muerto (median, .hero) en la versión real
+  - C-03 bench del morph con 10k / 100k / 1M marcas en canvas y webgl
+
+blockers:
+  - id: B-01
+    what: design_system NEW — no hay tokens aprobados de color, tipo ni movimiento
+    blocks: pase visual F3 (Coco) y Candidate Gate
+    owner: lima (foundations_new)
+    needs: propuesta de foundations con la identidad de Xila y aprobación explícita de Kevin
+
+open_questions:
+  - motion.duration / motion.easing: dependen de foundations (B-01)
+  - color de "seleccionado" vs "atenuado": depende de la paleta de identidad (B-01)
+
+next_owner: coco
+coco_may_start: >
+  Implementación funcional (motor de transiciones, plugin brush, tipo units, tests, ejemplo) con el
+  tema provisional existente, marcada como visual BLOCKED. No hay pase visual hasta resolver B-01.

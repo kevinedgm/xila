@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Comparar cantidades sin la barra de siempre</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #14161a;
+        background: #fbfaf7;
+        max-width: 1040px;
+      }
+      h1 {
+        font-size: 24px;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 40px 0 2px;
+      }
+      .q {
+        color: #52606d;
+        margin: 0 0 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Comparar cantidades, sin la barra de siempre</h1>
+    <p class="q">Emisiones de CO₂ de siete países en 2024 (Our World in Data).</p>
+
+    <h2>Puntos y promedio</h2>
+    <p class="q">¿Quién está por encima y quién por debajo de lo normal? (toneladas por persona)</p>
+    <div id="puntos"></div>
+
+    <h2>Cien cuadros</h2>
+    <p class="q">¿Qué parte del total le toca a cada uno? Cada cuadro es el 1 %.</p>
+    <div id="cuadros"></div>
+
+    <script type="module" src="/src/comparar.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="wf-fidelidad" content="F2">
+<title>Wireframe · anatomia-grafica · r01</title>
+<link rel="stylesheet" href="vendor/wireframe-kit.css">
+<style>
+/* Composición local del wireframe (solo grises del kit). */
+.wf-frame{min-height:0}
+.wf-main{padding:var(--wf-s5)}
+.prop-tabs{display:flex;gap:var(--wf-s1);flex-wrap:wrap}
+.kicker{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--wf-g6);margin:0 0 var(--wf-s1)}
+.title-finding{font-size:24px;line-height:1.25;margin:0 0 var(--wf-s1);max-width:30ch}
+.sub{font-size:14px;color:var(--wf-g6);margin:0 0 var(--wf-s3)}
+.foot{display:flex;flex-wrap:wrap;gap:var(--wf-s2) var(--wf-s4);font-size:12px;color:var(--wf-g6);margin-top:var(--wf-s2);align-items:center}
+.foot a{min-height:24px;display:inline-flex;align-items:center}
+.plot{position:relative}
+.plot svg{display:block;width:100%;height:auto;overflow:visible}
+.plot text{font:11px var(--wf-font);fill:var(--wf-g6);font-variant-numeric:tabular-nums}
+.plot .lbl{font-size:12px;fill:var(--wf-g9);font-weight:600}
+.plot .lbl-v{font-size:11px;fill:var(--wf-g6);font-weight:400}
+.plot .ann{font-size:11px;fill:var(--wf-g8)}
+.card{border:1px solid var(--wf-g3);border-radius:var(--wf-r);padding:var(--wf-s4)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--wf-s3)}
+.card-head h1{font-size:16px;margin:0}
+.kpi{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--wf-s1) var(--wf-s3);margin:var(--wf-s2) 0 var(--wf-s3)}
+.kpi b{font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:var(--wf-s1);flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid var(--wf-g4);border-radius:999px;background:var(--wf-g0);font-size:13px}
+.chip[aria-pressed="false"]{border-style:dashed;color:var(--wf-g6);text-decoration:line-through}
+.plot svg.sw,svg.sw{width:22px;height:8px;display:inline-block;vertical-align:middle;margin-right:4px}
+.seg{display:inline-flex;border:1px solid var(--wf-g4);border-radius:var(--wf-r);overflow:hidden}
+.seg button{border:0;background:var(--wf-g0);min-height:36px;padding:0 12px;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--wf-g8);color:var(--wf-g0)}
+.ctrl-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--wf-s2);margin-bottom:var(--wf-s3)}
+.tip{position:absolute;background:var(--wf-g0);border:1px solid var(--wf-g6);border-radius:4px;padding:6px 8px;font-size:12px;pointer-events:none;box-shadow:0 2px 0 var(--wf-g3);min-width:150px}
+.tip table{border-collapse:collapse;width:100%}
+.tip td{padding:1px 0}.tip td+td{text-align:right;font-variant-numeric:tabular-nums;padding-left:12px}
+.explore{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:var(--wf-s4)}
+.toolbar{display:flex;flex-wrap:wrap;gap:var(--wf-s2);align-items:center;justify-content:space-between;margin-bottom:var(--wf-s3)}
+.toolbar h1{font-size:18px;margin:0}
+.panel{border-left:1px solid var(--wf-g3);padding-left:var(--wf-s4)}
+.panel h2{font-size:14px;margin:0 0 var(--wf-s2)}
+.stat{font-size:13px;width:100%;border-collapse:collapse}
+.stat td,.stat th{padding:6px 4px;border-bottom:1px solid var(--wf-g2);text-align:right;font-variant-numeric:tabular-nums}
+.stat th{font-size:11px;color:var(--wf-g6);font-weight:600}
+.stat td:first-child,.stat th:first-child{text-align:left}
+.overview{margin-top:var(--wf-s2)}
+.sheet-handle{display:none}
+.abc-label{font-size:12px;color:var(--wf-g6);margin:0 0 var(--wf-s3)}
+@container wf (max-width:1023px){
+  .explore{grid-template-columns:1fr}
+  .panel{border-left:0;border-top:1px solid var(--wf-g3);padding:var(--wf-s3) 0 0}
+}
+@container wf (max-width:599px){
+  .wf-main{padding:var(--wf-s4)}
+  .title-finding{font-size:20px}
+  .kpi b{font-size:28px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+  .chip{flex:none;min-height:44px}
+  .seg{width:100%}.seg button{flex:1;min-height:44px}
+  .panel-full{display:none}
+  .sheet-handle{display:flex;width:100%;justify-content:space-between;align-items:center;min-height:44px;border:1px solid var(--wf-g4);border-radius:var(--wf-r);padding:0 var(--wf-s3);background:var(--wf-g1);margin-top:var(--wf-s3)}
+  .toolbar .wf-btn{min-height:44px}
+}
+</style>
+</head>
+<body class="wf">
+<div class="wf-ctl" role="region" aria-label="Controles del wireframe">
+  <strong>anatomia-grafica · r01 · F2 · R2</strong>
+  <fieldset><legend>Propuesta</legend>
+    <button data-p="A" aria-pressed="true">A · Editorial</button>
+    <button data-p="B" aria-pressed="false">B · Tarjeta de panel</button>
+    <button data-p="C" aria-pressed="false">C · Exploración</button>
+  </fieldset>
+  <fieldset><legend>Espacio</legend>
+    <button data-w="1440" aria-pressed="true">expanded 1440</button>
+    <button data-w="834" aria-pressed="false">medium 834</button>
+    <button data-w="393" aria-pressed="false">compact 393</button>
+  </fieldset>
+  <label>Estado
+    <select id="wf-state" data-wf-states>
+      <option value="default">Default</option>
+      <option value="hover">Detalle (cursor/toque)</option>
+      <option value="loading">Carga</option>
+      <option value="empty">Vacío</option>
+      <option value="error">Error</option>
+      <option value="offline">Sin conexión</option>
+      <option value="long">Contenido largo</option>
+    </select>
+  </label>
+  <label><input type="checkbox" id="wf-notes" checked> Notas</label>
+</div>
+
+<div class="wf-stage">
+  <p class="wf-frame-label" id="wf-label"></p>
+  <div class="wf-frame" id="wf-frame">
+    <div id="wf-banner"></div>
+    <main class="wf-main" id="wf-view" tabindex="-1"></main>
+  </div>
+</div>
+
+<script>
+const DATA = {"Alemania":[[1970,1026],[1971,1037],[1972,1041],[1973,1086],[1974,1063],[1975,1002],[1976,1091],[1977,1053],[1978,1079],[1979,1118],[1980,1100],[1981,1048],[1982,1016],[1983,1011],[1984,1033],[1985,1044],[1986,1047],[1987,1032],[1988,1029],[1989,1009],[1990,1055],[1991,1017],[1992,969],[1993,959],[1994,943],[1995,940],[1996,960],[1997,932],[1998,923],[1999,895],[2000,899],[2001,915],[2002,899],[2003,895],[2004,877],[2005,868],[2006,886],[2007,846],[2008,857],[2009,790],[2010,827],[2011,805],[2012,814],[2013,832],[2014,793],[2015,801],[2016,798],[2017,785],[2018,759],[2019,709],[2020,647],[2021,678],[2022,668],[2023,594],[2024,572]],"China":[[1970,808],[1971,909],[1972,969],[1973,1008],[1974,1028],[1975,1183],[1976,1226],[1977,1341],[1978,1493],[1979,1525],[1980,1494],[1981,1476],[1982,1606],[1983,1694],[1984,1844],[1985,1997],[1986,2103],[1987,2257],[1988,2424],[1989,2462],[1990,2484],[1991,2619],[1992,2731],[1993,2914],[1994,3094],[1995,3351],[1996,3499],[1997,3512],[1998,3355],[1999,3550],[2000,3644],[2001,3724],[2002,4098],[2003,4835],[2004,5211],[2005,5882],[2006,6486],[2007,6975],[2008,7492],[2009,7881],[2010,8610],[2011,9520],[2012,9767],[2013,9942],[2014,9976],[2015,9858],[2016,9748],[2017,10000],[2018,10347],[2019,10714],[2020,10897],[2021,11284],[2022,11712],[2023,12172],[2024,12289]],"Estados Unidos":[[1970,4340],[1971,4365],[1972,4573],[1973,4778],[1974,4608],[1975,4414],[1976,4622],[1977,4750],[1978,4897],[1979,4909],[1980,4730],[1981,4544],[1982,4312],[1983,4346],[1984,4479],[1985,4495],[1986,4498],[1987,4692],[1988,4898],[1989,4960],[1990,5132],[1991,5076],[1992,5179],[1993,5280],[1994,5362],[1995,5426],[1996,5601],[1997,5673],[1998,5736],[1999,5800],[2000,6023],[2001,5904],[2002,5948],[2003,6006],[2004,6112],[2005,6127],[2006,6045],[2007,6122],[2008,5919],[2009,5486],[2010,5669],[2011,5539],[2012,5331],[2013,5473],[2014,5531],[2015,5368],[2016,5245],[2017,5195],[2018,5361],[2019,5236],[2020,4690],[2021,5020],[2022,5055],[2023,4918],[2024,4904]],"India":[[1970,182],[1971,192],[1972,203],[1973,209],[1974,216],[1975,234],[1976,245],[1977,259],[1978,263],[1979,276],[1980,292],[1981,315],[1982,325],[1983,352],[1984,362],[1985,398],[1986,426],[1987,455],[1988,492],[1989,541],[1990,578],[1991,615],[1992,655],[1993,677],[1994,714],[1995,760],[1996,824],[1997,858],[1998,876],[1999,961],[2000,987],[2001,1001],[2002,1033],[2003,1068],[2004,1135],[2005,1195],[2006,1293],[2007,1393],[2008,1490],[2009,1613],[2010,1679],[2011,1766],[2012,1927],[2013,1995],[2014,2148],[2015,2232],[2016,2353],[2017,2426],[2018,2595],[2019,2611],[2020,2423],[2021,2676],[2022,2831],[2023,3063],[2024,3193]],"M\u00e9xico":[[1970,114],[1971,126],[1972,132],[1973,144],[1974,155],[1975,164],[1976,184],[1977,192],[1978,222],[1979,240],[1980,268],[1981,284],[1982,304],[1983,277],[1984,276],[1985,287],[1986,293],[1987,306],[1988,305],[1989,323],[1990,317],[1991,330],[1992,332],[1993,338],[1994,352],[1995,331],[1996,342],[1997,362],[1998,381],[1999,386],[2000,391],[2001,407],[2002,410],[2003,436],[2004,439],[2005,463],[2006,475],[2007,474],[2008,473],[2009,460],[2010,456],[2011,483],[2012,501],[2013,495],[2014,484],[2015,479],[2016,479],[2017,464],[2018,468],[2019,468],[2020,429],[2021,447],[2022,454],[2023,458],[2024,461]]};
+const ORDER = ['China', 'Estados Unidos', 'India', 'Alemania', 'México'];
+// Series distinguidas por forma (grosor + trazo), nunca por tono.
+const STYLE = {
+  'China': { w: 2.5, dash: '', c: 'var(--wf-g9)' },
+  'Estados Unidos': { w: 2, dash: '7 3', c: 'var(--wf-g8)' },
+  'India': { w: 2, dash: '2 3', c: 'var(--wf-g8)' },
+  'Alemania': { w: 1.5, dash: '12 4', c: 'var(--wf-g6)' },
+  'México': { w: 1.5, dash: '', c: 'var(--wf-g4)' },
+};
+const fmt = (v) => Math.round(v).toLocaleString('es-MX');
+const last = (n) => DATA[n][DATA[n].length - 1];
+const at = (n, y) => (DATA[n].find((p) => p[0] === y) || [y, NaN])[1];
+const crossYear = DATA['China'].find((p) => p[1] > at('Estados Unidos', p[0]))[0];
+const NS = 'http://www.w3.org/2000/svg';
+
+function swatch(n) {
+  const s = STYLE[n];
+  return `<svg class="sw" viewBox="0 0 22 8" aria-hidden="true"><line x1="1" x2="21" y1="4" y2="4" stroke="${s.c}" stroke-width="${s.w}" stroke-dasharray="${s.dash}"/></svg>`;
+}
+
+/** Línea en SVG. o: {series, from, to, h, gridY, gridX, yAxis:'left'|'right'|'inside', direct, ann, hoverYear, brush, mini} */
+function lineChart(width, o) {
+  const H = o.h, m = { t: o.mini ? 4 : 18, r: o.direct ? (width < 600 ? 92 : 128) : o.yAxis === 'right' ? 44 : 12, b: o.mini ? 14 : 24, l: o.yAxis === 'left' ? 48 : o.yAxis === 'inside' ? 4 : 8 };
+  const pw = width - m.l - m.r, ph = H - m.t - m.b;
+  const xs = (y) => m.l + ((y - o.from) / (o.to - o.from)) * pw;
+  let ymax = 0;
+  for (const n of o.series) for (const [y, v] of DATA[n]) if (y >= o.from && y <= o.to && v > ymax) ymax = v;
+  const step = ymax > 8000 ? 4000 : ymax > 4000 ? 2000 : 1000;
+  const top = Math.ceil(ymax / step) * step;
+  const ys = (v) => m.t + ph - (v / top) * ph;
+  let s = `<svg viewBox="0 0 ${width} ${H}" role="img" aria-label="${o.label || 'Emisiones de CO₂ por país'}">`;
+  if (o.gridY !== false) for (let v = 0; v <= top; v += step) {
+    s += `<line x1="${m.l}" x2="${m.l + pw}" y1="${ys(v)}" y2="${ys(v)}" stroke="var(--wf-g${v === 0 ? 6 : 2})" />`;
+    if (!o.mini) {
+      const label = v === top && o.yAxis === 'inside' ? `${fmt(v)} Mt` : fmt(v);
+      if (o.yAxis === 'right') s += `<text x="${m.l + pw + 6}" y="${ys(v) + 4}">${label}</text>`;
+      else if (o.yAxis === 'inside') s += `<text x="${m.l}" y="${ys(v) - 4}">${label}</text>`;
+      else s += `<text x="${m.l - 6}" y="${ys(v) + 4}" text-anchor="end">${label}</text>`;
+    }
+  }
+  if (o.gridX) for (let y = Math.ceil(o.from / 10) * 10; y <= o.to; y += 10) s += `<line x1="${xs(y)}" x2="${xs(y)}" y1="${m.t}" y2="${m.t + ph}" stroke="var(--wf-g2)" />`;
+  const tickEvery = o.to - o.from > 30 ? (width < 600 ? 20 : 10) : 5;
+  for (let y = Math.ceil(o.from / tickEvery) * tickEvery; y <= o.to; y += tickEvery) s += `<text x="${xs(y)}" y="${H - (o.mini ? 2 : 6)}" text-anchor="middle">${y}</text>`;
+  if (o.brush) s += `<rect x="${xs(o.brush[0])}" y="${m.t}" width="${xs(o.brush[1]) - xs(o.brush[0])}" height="${ph}" fill="var(--wf-g1)" stroke="var(--wf-g6)" />`;
+  for (const n of o.series) {
+    const st = STYLE[n];
+    const pts = DATA[n].filter((p) => p[0] >= o.from && p[0] <= o.to).map((p) => `${xs(p[0]).toFixed(1)},${ys(p[1]).toFixed(1)}`).join(' ');
+    s += `<polyline points="${pts}" fill="none" stroke="${st.c}" stroke-width="${o.mini ? 1 : st.w}" stroke-dasharray="${o.mini ? '' : st.dash}" />`;
+  }
+  if (o.direct) {
+    // Etiquetas directas al final, separadas para no chocar (mín. 26 px).
+    const items = o.series.map((n) => ({ n, v: at(n, o.to), y: ys(at(n, o.to)) })).sort((a, b) => a.y - b.y);
+    const show = width < 600 ? items.slice(0, 3) : items;
+    for (let i = 1; i < show.length; i++) if (show[i].y - show[i - 1].y < 26) show[i].y = show[i - 1].y + 26;
+    // Si la última se sale por abajo, se sube el bloque desde el fondo del área.
+    const floor = m.t + ph - 14;
+    for (let i = show.length - 1; i >= 0; i--) {
+      const max = floor - (show.length - 1 - i) * 26;
+      if (show[i].y > max) show[i].y = max;
+    }
+    for (const it of show) {
+      s += `<line x1="${xs(o.to)}" x2="${xs(o.to) + 6}" y1="${ys(it.v)}" y2="${it.y}" stroke="var(--wf-g4)"/>`;
+      s += `<text class="lbl" x="${xs(o.to) + 8}" y="${it.y}">${it.n}</text><text class="lbl-v" x="${xs(o.to) + 8}" y="${it.y + 12}">${fmt(it.v)} Mt</text>`;
+    }
+  }
+  if (o.ann) for (const a of o.ann) {
+    const x = xs(a.year), y = ys(at('China', a.year));
+    s += `<circle cx="${x}" cy="${y}" r="4" fill="var(--wf-g0)" stroke="var(--wf-g9)" stroke-width="1.5"/>`;
+    s += `<line x1="${x}" x2="${x - 30}" y1="${y - 6}" y2="${y - 40}" stroke="var(--wf-g6)"/>`;
+    s += `<text class="ann" x="${x - 34}" y="${y - 44}" text-anchor="end">${a.text}</text>`;
+  }
+  if (o.hoverYear) {
+    const x = xs(o.hoverYear);
+    s += `<line x1="${x}" x2="${x}" y1="${m.t}" y2="${m.t + ph}" stroke="var(--wf-g6)" stroke-dasharray="3 3"/>`;
+    for (const n of o.series) s += `<circle cx="${x}" cy="${ys(at(n, o.hoverYear))}" r="3.5" fill="var(--wf-g0)" stroke="${STYLE[n].c}" stroke-width="2"/>`;
+  }
+  return { svg: s + '</svg>', x: xs, y: ys, m, pw };
+}
+
+const S = { p: 'A', w: innerWidth < 700 ? 393 : innerWidth < 1200 ? 834 : 1440, state: 'default', hidden: new Set(['Alemania', 'México']), range: 'Todo' };
+const longName = (n) => (S.state === 'long' && n === 'Estados Unidos' ? 'Estados Unidos de América (incluye territorios)' : n);
+
+function statePanel() {
+  if (S.state === 'loading') return `<div class="wf-skel" aria-busy="true"><div class="wf-line" style="height:22px;width:55%"></div><div class="wf-line" style="width:30%"></div><div class="wf-img" style="aspect-ratio:auto;height:260px"></div></div><span class="wf-note">Esqueleto con la misma huella: título, área y eje. El tamaño no salta al llegar los datos.</span>`;
+  if (S.state === 'empty') return `<div class="wf-state"><h2>No hay series visibles</h2><p class="wf-muted">Ocultaste todas las series. La gráfica vuelve en cuanto muestres una.</p><button class="wf-btn wf-btn--primary">Mostrar todas</button></div>`;
+  if (S.state === 'error') return `<div class="wf-state" role="alert"><h2>No pudimos leer co2.csv</h2><p class="wf-muted">Fila 214: la columna <code>co2_mt</code> tiene texto («n/d»). Corrige el archivo o ignora esa fila.</p><div class="wf-actions" style="justify-content:center"><button class="wf-btn wf-btn--primary">Reintentar</button><button class="wf-btn">Ignorar filas inválidas</button></div></div>`;
+  return null;
+}
+
+const V = {
+  A(width) {
+    const series = ORDER;
+    const hover = S.state === 'hover' ? 2006 : null;
+    const ch = lineChart(width, { series, from: 1970, to: 2024, h: width < 600 ? 260 : 340, yAxis: 'inside', direct: true, ann: width < 600 ? null : [{ year: crossYear, text: `${crossYear}: China supera a EE. UU.` }], hoverYear: hover });
+    const title = S.state === 'long' ? 'China emite hoy 2.5 veces lo que Estados Unidos de América, y la brecha sigue creciendo desde que lo superó a mediados de los años 2000' : 'China emite hoy 2.5 veces lo que Estados Unidos';
+    const read = hover ? `<p class="wf-small" aria-live="polite"><b>2006</b> · China ${fmt(at('China', 2006))} · EE. UU. ${fmt(at('Estados Unidos', 2006))} · India ${fmt(at('India', 2006))} Mt</p>` : '';
+    return `
+      <p class="kicker">Emisiones de CO₂ · 1970–2024</p>
+      <h1 class="title-finding">${title}</h1>
+      <p class="sub">Millones de toneladas (Mt) por año, por país</p>
+      ${read}
+      <div class="plot">${ch.svg}</div>
+      <div class="foot"><span>Fuente: Our World in Data</span><a href="#">Descargar PNG</a><a href="#">Datos (CSV)</a>${width < 600 ? '<span>+ Alemania 572, México 461 Mt</span>' : ''}</div>
+      <span class="wf-note">El título dice el hallazgo, no el tema. Sin caja de leyenda: cada línea se nombra al final con su último valor. Rejilla solo en Y, eje Y dentro del área (gana ancho).</span>
+      <span class="wf-note">Detalle: al pasar el cursor (o tocar) aparece una regla vertical y la lectura del año arriba del área, en texto; no tapa la gráfica.</span>
+      <span class="wf-note">compact: solo las 3 etiquetas mayores; las demás pasan al pie. La anotación se oculta para no chocar.</span>`;
+  },
+  B(width) {
+    const visible = ORDER.filter((n) => !S.hidden.has(n));
+    const from = S.range === '10A' ? 2014 : S.range === '25A' ? 1999 : 1970;
+    const hover = S.state === 'hover' ? (from > 2000 ? 2019 : 2006) : null;
+    const ch = lineChart(width - 2 * 16 - 2, { series: visible, from, to: 2024, h: width < 600 ? 220 : 280, yAxis: 'right', hoverYear: hover });
+    const tip = hover ? `<div class="tip" style="left:${Math.min(ch.x(hover) + 12, width - 220)}px;top:24px"><b>${hover}</b><table>${visible.map((n) => `<tr><td>${swatch(n)} ${n}</td><td>${fmt(at(n, hover))}</td></tr>`).join('')}</table></div>` : '';
+    const prev = DATA['China'][DATA['China'].length - 2][1];
+    return `
+      <div class="card">
+        <div class="card-head"><h1>Emisiones anuales de CO₂</h1><button class="wf-btn wf-btn--quiet" aria-label="Más acciones: exportar PNG, CSV">⋯</button></div>
+        <div class="kpi"><b>${fmt(last('China')[1])} Mt</b><span>▲ ${(((last('China')[1] - prev) / prev) * 100).toFixed(1)} % vs 2023</span><span class="wf-muted">China · 2024 · mayor emisor</span></div>
+        <div class="ctrl-row">
+          <div class="chips" role="group" aria-label="Series">${ORDER.map((n) => `<button class="chip" data-s="${n}" aria-pressed="${!S.hidden.has(n)}">${swatch(n)}${longName(n)}</button>`).join('')}</div>
+          <div class="seg" role="group" aria-label="Rango">${['10A', '25A', 'Todo'].map((r) => `<button data-r="${r}" aria-pressed="${S.range === r}">${r === 'Todo' ? 'Todo' : r.replace('A', ' años')}</button>`).join('')}</div>
+        </div>
+        <div class="plot">${ch.svg}${tip}</div>
+      </div>
+      <span class="wf-note">La cifra clave responde "¿cuánto vale hoy?" antes de mirar la línea. La leyenda son chips: también filtran (tachado + borde discontinuo = oculta, no solo tono). Pruébalos.</span>
+      <span class="wf-note">Rangos rápidos en vez de zoom libre: el panel se lee, no se explora. Eje Y a la derecha, junto al valor más reciente.</span>
+      <span class="wf-note">compact: chips en una fila con desplazamiento horizontal, rango a ancho completo, objetivos de 44 px. Exportar vive en el menú ⋯.</span>`;
+  },
+  C(width) {
+    const narrow = width < 1024;
+    const mainW = narrow ? width - 2 * 24 : width - 2 * 24 - 300 - 16;
+    const visible = ['China', 'Estados Unidos', 'India'];
+    const hover = S.state === 'hover' ? 2015 : null;
+    const ch = lineChart(mainW, { series: visible, from: 2000, to: 2024, h: width < 600 ? 230 : 300, yAxis: 'left', gridX: true, hoverYear: hover, label: 'Detalle 2000–2024' });
+    const ov = lineChart(mainW, { series: visible, from: 1970, to: 2024, h: 56, yAxis: 'inside', gridY: false, mini: true, brush: [2000, 2024], label: 'Contexto 1970–2024; ventana 2000–2024' });
+    const tip = hover ? `<div class="tip" style="left:${Math.min(ch.x(hover) + 12, mainW - 170)}px;top:20px"><b>${hover}</b><table>${visible.map((n) => `<tr><td>${swatch(n)} ${n}</td><td>${fmt(at(n, hover))}</td></tr>`).join('')}</table></div>` : '';
+    const rows = visible.map((n) => { const a = at(n, 2000), b = at(n, 2024); return `<tr><td>${swatch(n)} ${longName(n)}</td><td>${fmt(b)}</td><td>${b >= a ? '+' : ''}${Math.round(((b - a) / a) * 100)} %</td></tr>`; }).join('');
+    const panel = `<h2>Rango 2000–2024</h2><table class="stat"><thead><tr><th>Serie</th><th>2024 (Mt)</th><th>Δ rango</th></tr></thead><tbody>${rows}</tbody></table><p class="wf-small wf-muted" style="margin-top:8px">Arrastra en el área para cambiar el rango; doble clic restablece.</p>`;
+    return `
+      <div class="toolbar"><h1>Emisiones de CO₂ · exploración</h1><div class="wf-actions"><button class="wf-btn">Restablecer zoom</button><button class="wf-btn wf-btn--quiet">Exportar</button></div></div>
+      <div class="explore">
+        <div><div class="plot">${ch.svg}${tip}</div><div class="plot overview">${ov.svg}</div>
+          <button class="sheet-handle" aria-expanded="false">Estadísticos del rango <span>China +${Math.round(((at('China', 2024) - at('China', 2000)) / at('China', 2000)) * 100)} %</span></button></div>
+        <aside class="panel panel-full" aria-label="Estadísticos">${panel}</aside>
+      </div>
+      <span class="wf-note">Overview + detalle: el minimapa conserva el contexto 1970–2024 mientras el área principal muestra la ventana. Arrastrar la ventana = pan; sus bordes = zoom (usa el plugin brush/zoom-pan existente).</span>
+      <span class="wf-note">El panel convierte la selección en números (último valor y Δ del rango): la exploración termina en una respuesta citable.</span>
+      <span class="wf-note">medium: el panel baja debajo de la gráfica. compact: el panel es una hoja inferior que se abre desde "Estadísticos del rango" (resumen visible en el botón).</span>`;
+  },
+};
+
+function render() {
+  const f = document.getElementById('wf-frame');
+  f.style.setProperty('--wf-w', S.w + 'px');
+  const lab = document.getElementById('wf-label');
+  lab.style.setProperty('--wf-w', S.w + 'px');
+  lab.textContent = `Propuesta ${S.p} · marco ${S.w}px · ${S.w < 600 ? 'compact' : S.w < 1024 ? 'medium' : 'expanded'} (referencia declarada)`;
+  const inner = S.w - 2 * (S.w < 600 ? 16 : 24);
+  const sp = statePanel();
+  document.getElementById('wf-view').innerHTML = sp ?? V[S.p](inner);
+  document.getElementById('wf-banner').innerHTML = S.state === 'offline' ? '<p class="wf-banner" role="status"><b>Sin conexión.</b> Ves los datos descargados el 18 oct, 14:02. La gráfica sigue operativa.</p>' : '';
+  document.querySelectorAll('[data-w]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.w === S.w)));
+  document.querySelectorAll('[data-p]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === S.p)));
+}
+document.addEventListener('click', (e) => {
+  const w = e.target.closest('[data-w]'); if (w) { S.w = +w.dataset.w; render(); return; }
+  const p = e.target.closest('[data-p]'); if (p) { S.p = p.dataset.p; render(); return; }
+  const c = e.target.closest('[data-s]'); if (c) { const n = c.dataset.s; S.hidden.has(n) ? S.hidden.delete(n) : S.hidden.add(n); if (S.hidden.size === ORDER.length) S.hidden.delete(n); render(); return; }
+  const r = e.target.closest('[data-r]'); if (r) { S.range = r.dataset.r; render(); }
+});
+document.getElementById('wf-state').addEventListener('change', (e) => { S.state = e.target.value; render(); });
+document.getElementById('wf-notes').addEventListener('change', (e) => document.body.classList.toggle('wf-no-notes', !e.target.checked));
+const q = new URLSearchParams(location.search);
+if (q.get('p')) S.p = q.get('p');
+if (q.get('w')) S.w = +q.get('w');
+if (q.get('estado')) { S.state = q.get('estado'); document.getElementById('wf-state').value = S.state; }
+render();
+</script>
+</body>
+</html>

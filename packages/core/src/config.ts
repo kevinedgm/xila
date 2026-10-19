@@ -2,9 +2,10 @@ import type { DataTable } from './data/table';
 import type { SeriesSpec } from './data/series';
 import type { ChartPlugin } from './plugin';
 import type { ColormapName } from './colormap';
+import type { BinRule } from './data/histogram';
 import { resolveTheme, type Theme, type ThemeName } from './theme';
 
-export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap';
+export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap' | 'units';
 
 export interface ScaleConfig {
   /** `band` solo tiene sentido para barras; `time` requiere una columna de tiempo. */
@@ -48,7 +49,7 @@ interface BaseChartConfig {
    * Backend de dibujo. `'canvas'` (por defecto) usa Canvas 2D para todo; `'webgl'` dibuja los
    * puntos de dispersión en la GPU (ejes, líneas y barras siguen en Canvas) y cae a Canvas con
    * un aviso si WebGL2 no está disponible; `'auto'` elige WebGL para dispersiones de 50 000
-   * puntos o más.
+   * puntos o más (también para gráficos de unidades).
    */
   readonly renderer?: 'auto' | 'canvas' | 'webgl';
 }
@@ -117,11 +118,37 @@ export interface ScatterChartConfig extends BaseChartConfig {
 }
 
 /**
+ * Gráfico de unidades: una marca por fila de la tabla. `x` es la columna del valor (la serie pide
+ * `y` como las demás; basta repetir la misma columna). En `loose` cada marca va en x por su
+ * valor; en `stacked` se apila en la columna de su cubeta, y cambiar de modo anima cada marca a
+ * su nuevo lugar: la barra del histograma se ve como la pila de casos que es.
+ */
+export interface UnitsChartConfig extends BaseChartConfig {
+  readonly type: 'units';
+  readonly units?: {
+    readonly mode?: 'loose' | 'stacked';
+    /** Cubetas del modo apilado: número fijo o regla. `'fd'` (Freedman–Diaconis) por defecto. */
+    readonly bins?: number | BinRule;
+    /** Radio de las marcas sueltas, en píxeles. */
+    readonly radius?: number;
+    /** Radio máximo de las marcas apiladas; baja (y luego agrupa casos) para que todo quepa. */
+    readonly maxRadius?: number;
+    /** Duración de la transición entre modos, en ms. 0 la desactiva. */
+    readonly duration?: number;
+  };
+}
+
+/**
  * Configuración que escribe el usuario. Es una unión discriminada por `type`, así el
  * editor solo sugiere `line`, `bar` o `scatter` según el gráfico elegido.
  */
 export type ChartConfig =
-  LineChartConfig | BarChartConfig | ScatterChartConfig | BoxChartConfig | HeatmapChartConfig;
+  | LineChartConfig
+  | BarChartConfig
+  | ScatterChartConfig
+  | BoxChartConfig
+  | HeatmapChartConfig
+  | UnitsChartConfig;
 
 /** Lo mismo, con todos los valores por defecto aplicados. Es lo que usa el núcleo. */
 export interface ResolvedChartConfig {
@@ -138,6 +165,7 @@ export interface ResolvedChartConfig {
   readonly scatter: Required<NonNullable<ScatterChartConfig['scatter']>>;
   readonly box: Required<NonNullable<BoxChartConfig['box']>>;
   readonly heatmap: Required<NonNullable<HeatmapChartConfig['heatmap']>>;
+  readonly units: Required<NonNullable<UnitsChartConfig['units']>>;
 }
 
 export interface ResolvedAxisConfig {
@@ -154,6 +182,8 @@ export const DEFAULTS = {
   scatter: { radius: 3 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
   heatmap: { colormap: 'viridis', domain: 'auto', center: null, legend: true },
+  // Duración provisional: pasa a token de movimiento cuando se aprueben los foundations.
+  units: { mode: 'loose', bins: 'fd', radius: 2.5, maxRadius: 4, duration: 700 },
 } as const;
 
 export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
@@ -195,6 +225,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     scatter: { ...DEFAULTS.scatter, ...(config.type === 'scatter' ? config.scatter : undefined) },
     box: { ...DEFAULTS.box, ...(config.type === 'box' ? config.box : undefined) },
     heatmap: { ...DEFAULTS.heatmap, ...(config.type === 'heatmap' ? config.heatmap : undefined) },
+    units: { ...DEFAULTS.units, ...(config.type === 'units' ? config.units : undefined) },
   };
 }
 

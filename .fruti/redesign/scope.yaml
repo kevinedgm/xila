@@ -1,0 +1,49 @@
+# Kiwi · rediseño · alcance (understand → inventory → scope)
+# Estado: PROPUESTO, pendiente de que Kevin apruebe: (1) foundations "Tinta y grana", (2) anatomía A/B/C.
+# Pedido de Kevin (2026-10-18): "después continúas con el rediseño de las demás gráficas".
+
+status: proposed
+date: 2026-10-18
+depends_on:
+  - .fruti/foundations/proposal.yaml        # paleta, tipo, movimiento → tema "xila" en xilaplot
+  - design-hub/propuestas/anatomia-grafica/r01  # elección A/B/C
+
+principle: >
+  El rediseño entra por el tema y la anatomía compartida (tokens + plugins), no gráfica por
+  gráfica. Una vez aprobados, las 13 gráficas heredan el cambio; aquí solo se listan los ajustes
+  propios de cada tipo.
+
+surfaces:
+  # examples/index.html (galería)
+  - { id: g1-serie-1khz,        type: line,     status: approved-pending, own_changes: [decimación intacta, crosshair + lectura] }
+  - { id: g2-multiserie-hueco,  type: line,     status: approved-pending, own_changes: [etiquetas directas o chips según A/B/C, hueco visible sin unir] }
+  - { id: g3a-barras-agrupadas, type: bar,      status: approved-pending, own_changes: [extremos redondeados 4 px, separación 2 px entre barras] }
+  - { id: g3b-barras-apiladas,  type: bar,      status: approved-pending, own_changes: [separación 2 px entre segmentos, línea base marcada para el negativo] }
+  - { id: g4-dispersion-20k,    type: scatter,  status: approved-pending, own_changes: [máx. 3 series (prueba todos-contra-todos), anillo de superficie 2 px en solapes] }
+  - { id: g5-fechas-oscuro,     type: line,     status: approved-pending, own_changes: [tema oscuro "xila" (pasos oscuros validados)] }
+  - { id: g6-log-y,             type: line,     status: approved-pending, own_changes: [ticks log legibles, aviso de ≤ 0 visible] }
+  - { id: g7a-banda-confianza,  type: line,     status: approved-pending, own_changes: [banda en el mismo tono a baja opacidad, sin borde] }
+  - { id: g7b-barras-error,     type: scatter,  status: approved-pending, own_changes: [remates finos en tinta secundaria] }
+  - { id: g8-histograma,        type: bar,      status: approved-pending, own_changes: [opción de modo "units" (Casos como unidades)] }
+  - { id: g9-box-plot,          type: box,      status: approved-pending, own_changes: [caja con relleno tenue, mediana en tinta, atípicos con anillo] }
+  - { id: g10a-heatmap-actividad, type: heatmap, status: approved-pending, own_changes: [secuencial añil en lugar de viridis por defecto] }
+  - { id: g10b-correlacion,     type: heatmap,  status: approved-pending, own_changes: [divergente grana–gris–añil, centro 0] }
+  # otras páginas
+  - { id: dashboard,            type: page,     status: approved-pending, own_changes: [tarjetas según B si se elige, filtros en una fila sobre las gráficas, KPI con ▲▼ + texto (no solo color)] }
+  - { id: calor-500x500,        type: heatmap,  status: preserve, note: "prueba de rendimiento; solo hereda tema" }
+  - { id: muchos,               type: page,     status: preserve, note: "prueba de render diferido; solo hereda tema" }
+  - { id: sincronia,            type: page,     status: approved-pending, own_changes: [crosshair compartido con lectura común] }
+  - { id: webgl-1M,             type: scatter,  status: preserve, note: "prueba de rendimiento; solo hereda tema" }
+  - { id: bench,                type: page,     status: excluded }
+  - { id: unidades,             type: units,    status: approved-pending, own_changes: [F3 con tema xila: selección en grana] }
+
+new_system_pieces_by_choice:
+  A: [plugin directLabels, título-hallazgo + kicker en la anatomía]
+  B: [legendPlugin modo chips con filtrado, rangos rápidos, KPI]
+  C: [plugin overview (reutiliza brush/zoom-pan), panel de estadísticos]
+
+order_after_approval:
+  1: tema "xila" claro/oscuro en packages/core/src/theme.ts desde .fruti/tokens.json
+  2: piezas de la anatomía elegida (lima clasifica, coco implementa con pruebas)
+  3: galería (g1–g10) y dashboard, con capturas antes/después por gráfica
+  4: gate de lima + documentación de mora

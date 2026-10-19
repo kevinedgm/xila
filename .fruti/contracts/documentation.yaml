@@ -1,0 +1,113 @@
+version: 2
+owner: mora
+purpose: canonical_documentation_contract
+
+principles:
+  - documentation_is_compiled_from_evidence
+  - never_invent_missing_content
+  - same_anatomy_for_all_documentable_artifacts
+  - omit_non_applicable_sections_instead_of_filling_noise
+  - preview_uses_real_component_or_verified_evidence
+  - document_delta_not_history
+  - hub_shell_is_neutral_and_project_agnostic
+  - project_design_system_never_styles_the_documentation_shell
+
+hub_shell:
+  ownership: mora
+  mode: fixed_neutral_documentation_ui
+  palette:
+    background: white
+    surface: white
+    text: black
+    muted_text: gray
+    borders: light_gray
+    code_surface: very_light_gray
+  visual_rules:
+    - monochrome_only
+    - white_black_gray_only
+    - no_project_brand_colors
+    - no_project_typography_dependency
+    - no_project_radius_dependency
+    - no_project_shadow_dependency
+    - no_project_navigation_shell
+    - no_decorative_gradients
+    - no_glass_effects
+    - restrained_spacing_and_typography
+    - documentation_first_hierarchy
+  separation_rule: project_styles_are_allowed_only_inside_isolated_previews_of_real_artifacts
+  preview_boundary:
+    required: true
+    purpose: isolate_project_component_rendering_from_hub_shell
+    must_not_leak: [project_css, project_tokens, project_fonts, project_shell]
+  rule: the_design_hub_documents_the_system_but_is_not_styled_by_the_system
+
+sections:
+  - id: overview
+    order: 1
+    required: true
+    fields: [what_it_is, purpose, when_to_use, when_not_to_use]
+    sources: [kiwi_handoff, lima_contract, registry]
+  - id: preview
+    order: 2
+    required: conditional
+    fields: [verified_preview, evidence_path]
+    sources: [real_component, verified_harness, approved_static_evidence]
+    forbid: [recreated_parallel_html, copied_component_css]
+  - id: anatomy
+    order: 3
+    required: true
+    fields: [parts, responsibilities]
+    sources: [lima_contract, real_component]
+  - id: variants
+    order: 4
+    required: conditional
+    fields: [name, purpose, constraints]
+    sources: [registry, lima_contract, public_api]
+  - id: states
+    order: 5
+    required: true
+    fields: [supported_states, trigger, visible_result]
+    sources: [lima_contract, coco_compliance, real_component]
+  - id: behavior
+    order: 6
+    required: true
+    fields: [interactions, rules, edge_cases]
+    sources: [real_component, public_api, kiwi_handoff]
+  - id: adaptive
+    order: 7
+    required: conditional
+    fields: [compact, medium, expanded, focus_and_state_continuity]
+    sources: [kiwi_handoff, lima_contract, real_component]
+  - id: accessibility
+    order: 8
+    required: true
+    fields: [semantics, keyboard, focus, target, contrast, reduced_motion, known_limits]
+    sources: [coco_compliance, audit_manifest, real_component]
+  - id: api
+    order: 9
+    required: conditional
+    fields: [props, events, slots, types]
+    sources: [real_code, public_types]
+    rule: code_owns_api
+  - id: implementation
+    order: 10
+    required: true
+    fields: [source_path, dependencies, usage_example]
+    sources: [real_code, project_profile]
+  - id: lifecycle_qa
+    order: 11
+    required: true
+    fields: [status, version, owner, qa, last_audit, evidence]
+    sources: [registry, coco_compliance]
+    rule: registry_owns_lifecycle
+
+missing_evidence:
+  behavior: mark_missing_or_unverified
+  never: infer_or_fabricate
+
+output_rules:
+  stable_order: true
+  empty_sections: omit
+  n_a: only_when_it_prevents_misinterpretation
+  prose: concise
+  evidence_links: preserve

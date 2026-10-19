@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "artifact": "histograma-unidades",
+  "round": "r03",
+  "agent": "coco",
+  "operation": "r3_implement",
+  "date": "2026-10-18",
+  "implementation_target": {
+    "framework": "vanilla-ts",
+    "language": "typescript",
+    "styling": "theme-tokens"
+  },
+  "verdict": "PARTIAL",
+  "dimensions": {
+    "technical": {
+      "status": "PASS",
+      "evidence": [
+        "pnpm -r typecheck: 5/5",
+        "vitest: 172/172 (24 nuevas)",
+        "playwright: 27/27 (8 nuevas en examples/tests/unidades.spec.ts)",
+        "eslint + prettier limpios"
+      ]
+    },
+    "structural": {
+      "status": "PASS",
+      "evidence": [
+        "K-01..K-06 cubiertas por pruebas Playwright con su id",
+        "estructura F2 r02 preservada (encabezado, lectura viva, segmentado, pista)"
+      ]
+    },
+    "accessibility": {
+      "status": "PASS",
+      "level": "runtime-verified-emulated",
+      "evidence": [
+        "slider fuera de role=img (K-03), probado",
+        "aria-live polite + aria-valuetext",
+        "teclado completo",
+        "resumen con mediana; tabla de unidades sin columna duplicada",
+        "objetivo táctil 44 px en compact"
+      ],
+      "caveat": "sin lector de pantalla real; verificado por árbol de accesibilidad de Chromium"
+    },
+    "visual": {
+      "status": "BLOCKED",
+      "reason": "B-01 design_system NEW: colores, tipografía y movimiento son provisionales (tema light actual + valores neutros en el ejemplo)",
+      "evidence": [
+        "design-hub/lab/histograma-unidades/r03/evidencia/*.png"
+      ]
+    },
+    "design_system": {
+      "status": "BLOCKED",
+      "reason": "sin tokens aprobados (.fruti/tokens.json no existe)"
+    },
+    "documentation": {
+      "status": "NOT GENERATED",
+      "reason": "Mora corre después del gate de Lima"
+    }
+  },
+  "performance": {
+    "C-03": {
+      "js_cost_1M_i9_node_ms": {
+        "unitBins_one_time": 370,
+        "stacked_targets": 22,
+        "loose_targets": 20,
+        "animateTo": 38,
+        "sample_per_frame": 19
+      },
+      "headless_shell_frame_median_ms": {
+        "canvas": {
+          "10k": 27,
+          "100k": 255,
+          "1M": 11258
+        },
+        "webgl": {
+          "10k": 43,
+          "100k": 256,
+          "1M": 1947
+        }
+      },
+      "caveat": "Chromium headless shell sin GPU (rasterizado por software): los cuadros están dominados por el raster, no por el JS. Falta medir en Chrome con GPU real."
+    },
+    "fixes": [
+      "destinos no se recalculan durante la transición",
+      "easing tabulado + deltas precalculados",
+      "cubetas en O(n) sin ordenar (antes 1.4 s con 1M)"
+    ]
+  },
+  "unresolved_exceptions": [
+    "valores provisionales sin token: duración 700 ms, opacidad del atenuado 0.7, opacidad de marcas 0.9",
+    "hover/tooltip no disponible en gráficos units (hitTester nulo)",
+    "SeriesSpec exige y: en units se repite la columna de x"
+  ],
+  "changed_files": [
+    "packages/core/src/transitions.ts",
+    "packages/core/src/data/units.ts",
+    "packages/core/src/plugins/brush.ts",
+    "packages/core/src/chart.ts",
+    "packages/core/src/config.ts",
+    "packages/core/src/events.ts",
+    "packages/core/src/plugin.ts",
+    "packages/core/src/plugins/accessibility.ts",
+    "packages/core/src/index.ts",
+    "examples/unidades.html",
+    "examples/src/unidades.ts",
+    "examples/tests/unidades.spec.ts",
+    "examples/vite.config.ts"
+  ]
+}

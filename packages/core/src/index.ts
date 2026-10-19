@@ -60,6 +60,7 @@ export type {
   LineChartConfig,
   BarChartConfig,
   ScatterChartConfig,
+  UnitsChartConfig,
   ResolvedChartConfig,
   ScaleConfig,
   AxisConfig,
@@ -118,6 +119,31 @@ export type { TooltipOptions } from './plugins/tooltip';
 export { legendPlugin } from './plugins/legend';
 export { zoomPanPlugin, zoomDomain, panDomain, clampDomain } from './plugins/zoom-pan';
 export type { ZoomPanOptions } from './plugins/zoom-pan';
+export { brushPlugin, moveRange, resizeRange, snapRange, countInRange } from './plugins/brush';
+export { focusPlugin, mixHex, spreadLabels } from './plugins/focus';
+export type { FocusOptions, FocusPlugin } from './plugins/focus';
+export { TrailPanel, trailAlpha, deltaText } from './trail-panel';
+export { narratePlugin, findMoments } from './plugins/narrate';
+export type {
+  NarrateOptions,
+  NarratePlugin,
+  Moment,
+  MomentKind,
+  MomentOptions,
+} from './plugins/narrate';
+export { RhythmStrip, rhythm } from './rhythm-strip';
+export { DotRank, deviationRows, rowLabels } from './dot-rank';
+export type { DotRankOptions, DeviationRow } from './dot-rank';
+export { Waffle, waffleParts } from './waffle';
+export type { WaffleOptions, WafflePart } from './waffle';
+export type { RhythmStripOptions, RhythmStripSeries } from './rhythm-strip';
+export type { TrailPanelOptions, TrailPanelSeries } from './trail-panel';
+export type { BrushOptions, BrushPlugin } from './plugins/brush';
+export type { BrushPayload } from './events';
+export { MarkTransition, easeInOutCubic, prefersReducedMotion, staggerDelays } from './transitions';
+export type { Easing, TransitionOptions } from './transitions';
+export { unitBins, stackGeometry, stackedPositions, loosePositions } from './data/units';
+export type { UnitBins, StackGeometry, StackOptions } from './data/units';
 export {
   annotationsPlugin,
   annotationPixel,

@@ -1,0 +1,63 @@
+version: 1
+policy:
+  deterministic_first: true
+  prose_on: [ambiguous, failed, unsupported, exception]
+checks:
+  - id: A11Y-SEMANTICS-001
+    category: accessibility
+    kind: deterministic
+    applies_to: interactive
+    check: native-interactive-semantics
+    severity: error
+  - id: A11Y-FOCUS-001
+    category: accessibility
+    kind: deterministic
+    applies_to: interactive
+    check: focus-visible-not-suppressed
+    severity: error
+  - id: A11Y-TARGET-001
+    category: accessibility
+    kind: deterministic
+    applies_to: interactive
+    check: min-touch-target-from-profile
+    severity: error
+  - id: RESP-OVERFLOW-001
+    category: responsive
+    kind: deterministic
+    check: horizontal-overflow
+    spaces: [compact, medium, expanded]
+    expected: false
+    severity: error
+  - id: DS-TOKEN-001
+    category: design-system
+    kind: deterministic
+    check: no-raw-design-values-when-token-exists
+    severity: error
+  - id: DS-REGISTRY-001
+    category: governance
+    kind: deterministic
+    check: registry-contract-consistency
+    severity: error
+  - id: VIS-HIERARCHY-001
+    category: visual
+    kind: judgment
+    check: hierarchy-supports-primary-task
+    severity: warning
+  - id: VIS-DENSITY-001
+    category: visual
+    kind: judgment
+    check: density-fits-context-and-space
+    severity: warning
+  - id: UX-AFFORDANCE-001
+    category: ux
+    kind: judgment
+    check: actions-and-states-are-understandable
+    severity: warning
+  - id: ADAPT-COMPOSITION-001
+    category: adaptive
+    kind: judgment
+    check: composition-adapts-not-merely-scales
+    severity: warning
+report:
+  output: .fruti/reports/compliance-current.json
+  fields: [rule_id, status, evidence, severity, owner, remediation]

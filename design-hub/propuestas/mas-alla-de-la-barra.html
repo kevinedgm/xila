@@ -1,0 +1,261 @@
+<title>Más allá de la barra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Lámina de propuestas, misma anatomía que la r01: una columna de fichas, gráfico grande + mecanismo al lado */
+:root{
+  --bg:#ffffff; --fg:#15181d; --muted:#5b6470; --line:#e8ebef; --soft:#f3f5f8;
+  --c1:#2456d6; --c2:#e0702a; --c3:#139f82; --c4:#b08c00; --c5:#d05a9c; --c6:#4f8a10; --c7:#6f5be0;
+  --ghost:#c9ced5; --up:#e0702a; --down:#2456d6;
+  --display:"IBM Plex Serif",Georgia,serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121418; --fg:#eceef1; --muted:#9aa3ad; --line:#262b32; --soft:#191c21;
+  --c1:#3f6fe8; --c2:#dc6a30; --c3:#1fa98b; --c4:#ad8a18; --c5:#d4659f; --c6:#5f9a1c; --c7:#8678ea;
+  --ghost:#3a4149; --up:#dc6a30; --down:#3f6fe8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121418; --fg:#eceef1; --muted:#9aa3ad; --line:#262b32; --soft:#191c21;
+  --c1:#3f6fe8; --c2:#dc6a30; --c3:#1fa98b; --c4:#ad8a18; --c5:#d4659f; --c6:#5f9a1c; --c7:#8678ea;
+  --ghost:#3a4149; --up:#dc6a30; --down:#3f6fe8; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:40px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+.lead{max-width:62ch;color:var(--muted);margin:8px 0 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ficha{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;border-top:1px solid var(--line);padding-top:24px}
+.ficha h2{font-family:var(--display);font-weight:500;font-size:24px;margin:4px 0 2px;text-wrap:balance}
+.ficha .pregunta{color:var(--muted);margin:0 0 14px}
+.nota{display:grid;gap:12px;align-content:start;min-width:0}
+.nota h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;font-weight:600}
+.nota p{margin:0;font-size:14px}
+.fig{min-width:0;position:relative}
+canvas{display:block;width:100%;max-width:100%}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:500 12px/1.35 var(--mono);padding:6px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-115%);z-index:2}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin-top:10px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.fin{border-top:1px solid var(--line);padding-top:20px;color:var(--muted);max-width:62ch}
+@media (max-width:760px){.ficha{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Xila · propuestas · ronda r02 · comparar</div>
+    <h1>Cuatro formas de comparar cantidades sin la barra de siempre</h1>
+    <p class="lead">Mismos datos en todas: emisiones de CO₂ de siete países (Our World in Data), 1990 y 2024. "Comparar" esconde varias preguntas distintas; cada ficha responde una y cambia la forma para responderla.</p>
+  </header>
+
+  <section class="ficha">
+    <div class="fig">
+      <div class="eyebrow">Referencia</div>
+      <h2>Las barras clásicas</h2>
+      <p class="pregunta">Millones de toneladas en 2024. Responden "¿quién es más grande?" y poco más.</p>
+      <canvas id="c0" data-h="300"></canvas>
+    </div>
+    <aside class="nota">
+      <div><h3>Qué falla</h3><p>China aplasta a todos y los demás quedan como rayitas indistinguibles. No dice si alguien está "bien" o "mal", ni cómo cambió, ni por qué es grande.</p></div>
+    </aside>
+  </section>
+
+  <section class="ficha">
+    <div class="fig">
+      <div class="eyebrow">Propuesta A</div>
+      <h2>Puntos y promedio</h2>
+      <p class="pregunta">¿Quién está por encima y quién por debajo de lo normal?</p>
+      <canvas id="c1" data-h="320"></canvas><div class="tip" hidden></div>
+    </div>
+    <aside class="nota">
+      <div><h3>Mecanismo</h3><p>Cada país es un punto sobre una regla, ordenado, con una línea en el promedio del grupo (toneladas por persona). El tallo mide cuánto se aleja de esa línea, hacia arriba o hacia abajo.</p></div>
+      <div><h3>Qué gana</h3><p>La comparación tiene un punto de referencia: ya no es "quién es más alto", sino "quién se pasa y por cuánto". Usa la mitad de tinta que una barra.</p></div>
+      <div><h3>Qué pierde</h3><p>La sensación de volumen. Para cantidades que se suman (ventas, toneladas totales) la barra sigue siendo más intuitiva.</p></div>
+    </aside>
+  </section>
+
+  <section class="ficha">
+    <div class="fig">
+      <div class="eyebrow">Propuesta B</div>
+      <h2>Antes y después</h2>
+      <p class="pregunta">¿Cuánto cambió cada uno y en qué dirección?</p>
+      <canvas id="c2" data-h="320"></canvas><div class="tip" hidden></div>
+      <div class="leg"><span><i style="background:var(--down)"></i>bajó ▼</span><span><i style="background:var(--up)"></i>subió ▲</span><span>círculo vacío = 1990 · lleno = 2024</span></div>
+    </div>
+    <aside class="nota">
+      <div><h3>Mecanismo</h3><p>Dos puntos por país, 1990 y 2024, unidos por un tramo. La longitud del tramo es el cambio; la dirección y la flecha dicen si subió o bajó. Ordenado por el valor de hoy.</p></div>
+      <div><h3>Qué gana</h3><p>Dos barras por país (agrupadas) obligan a comparar alturas de a pares. Aquí el cambio es una sola forma: Estados Unidos y Alemania bajan, China se cuadruplica, y se ve de un golpe.</p></div>
+      <div><h3>Qué pierde</h3><p>Lo que pasó entre los dos años. Si hubo picos o crisis en medio, eso es trabajo de una línea narrada.</p></div>
+    </aside>
+  </section>
+
+  <section class="ficha">
+    <div class="fig">
+      <div class="eyebrow">Propuesta C</div>
+      <h2>Cien cuadros</h2>
+      <p class="pregunta">¿Qué parte del total le toca a cada uno?</p>
+      <canvas id="c3" data-h="300"></canvas><div class="tip" hidden></div>
+      <div class="leg" id="leg3"></div>
+    </div>
+    <aside class="nota">
+      <div><h3>Mecanismo</h3><p>Una rejilla de 10 × 10: cada cuadro es el 1 % de las emisiones de los siete países en 2024. Cada país ocupa los cuadros que le tocan, en orden.</p></div>
+      <div><h3>Qué gana</h3><p>Los porcentajes se cuentan, no se estiman: "China es más de la mitad" salta a la vista. Lo entiende cualquier público, a diferencia del pay.</p></div>
+      <div><h3>Qué pierde</h3><p>Precisión fina: menos de medio cuadro (España, 1 %) casi desaparece. Con más de seis partes conviene agrupar en "otros".</p></div>
+    </aside>
+  </section>
+
+  <section class="ficha">
+    <div class="fig">
+      <div class="eyebrow">Propuesta D</div>
+      <h2>Bloques proporcionales</h2>
+      <p class="pregunta">¿Es grande porque son muchos o porque cada uno emite mucho?</p>
+      <canvas id="c4" data-h="340"></canvas><div class="tip" hidden></div>
+    </div>
+    <aside class="nota">
+      <div><h3>Mecanismo</h3><p>Cada país es un rectángulo: el ancho es su población, la altura sus toneladas por persona. El área es el total. Una barra normal mezcla las dos causas; aquí quedan separadas.</p></div>
+      <div><h3>Qué gana</h3><p>Una sola figura cuenta tres datos. Estados Unidos es alto y angosto (pocos, emiten mucho); India es ancha y baja (muchos, emiten poco); China ya es ancha y alta.</p></div>
+      <div><h3>Qué pierde</h3><p>Pide un segundo de lectura la primera vez. Funciona cuando el total es producto de dos factores: precio × cantidad, tasa × población.</p></div>
+    </aside>
+  </section>
+
+  <p class="fin">Las cuatro se pueden construir sobre Xila: A es una marca de punto con línea de referencia (la anotación ya existe), B es un tipo nuevo "tramo", C reutiliza la geometría de "units" en rejilla y D es un tipo nuevo de barra de ancho variable. Ninguna cambia el modelo de datos.</p>
+</div>
+
+<script>
+const D = {"Alemania":{"1990":{"mt":1055,"pc":13.23,"pob":79.7},"2024":{"mt":572,"pc":6.77,"pob":84.6}},"Brasil":{"1990":{"mt":219,"pc":1.47,"pob":149.1},"2024":{"mt":483,"pc":2.28,"pob":212.0}},"China":{"1990":{"mt":2484,"pc":2.15,"pob":1153.6},"2024":{"mt":12289,"pc":8.66,"pob":1419.3}},"España":{"1990":{"mt":229,"pc":5.87,"pob":39.1},"2024":{"mt":220,"pc":4.6,"pob":47.9}},"Estados Unidos":{"1990":{"mt":5132,"pc":20.25,"pob":253.4},"2024":{"mt":4904,"pc":14.2,"pob":345.4}},"India":{"1990":{"mt":578,"pc":0.67,"pob":865.0},"2024":{"mt":3193,"pc":2.2,"pob":1450.9}},"México":{"1990":{"mt":317,"pc":3.83,"pob":82.8},"2024":{"mt":461,"pc":3.52,"pob":130.9}}};
+const ORDER = ['Estados Unidos', 'Alemania', 'España', 'China', 'México', 'Brasil', 'India'];
+const COL = Object.fromEntries(ORDER.map((p, i) => [p, `--c${i + 1}`]));
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const font = (w, s, f = '--body') => `${w} ${s}px ${css(f)}`;
+const fmt = (v, d = 0) => v.toLocaleString('es-MX', { maximumFractionDigits: d, minimumFractionDigits: d });
+const short = (p) => (p === 'Estados Unidos' ? 'EE. UU.' : p);
+const hits = new Map();
+
+function setup(id) {
+  const c = document.getElementById(id), h = +c.dataset.h, W = c.clientWidth || 720, r = devicePixelRatio || 1;
+  c.width = W * r; c.height = h * r; c.style.height = h + 'px';
+  const ctx = c.getContext('2d'); ctx.setTransform(r, 0, 0, r, 0, 0); ctx.clearRect(0, 0, W, h);
+  hits.set(id, []);
+  return { ctx, W, H: h, hit: (x, y, w, hh, text) => hits.get(id).push({ x, y, w, h: hh, text }) };
+}
+function txt(ctx, s, x, y, o = {}) { ctx.font = font(o.w || 400, o.s || 12, o.f); ctx.fillStyle = o.c || css('--muted'); ctx.textAlign = o.a || 'left'; ctx.textBaseline = o.b || 'middle'; ctx.fillText(s, x, y); }
+function hline(ctx, x0, x1, y, color = css('--line')) { ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke(); }
+
+// 0 · barras clásicas
+function clasicas() {
+  const { ctx, W, H } = setup('c0');
+  const a = { x: 48, y: 12, w: W - 60, h: H - 44 }, max = 14000, bw = a.w / ORDER.length;
+  for (const t of [0, 5000, 10000]) { const y = a.y + a.h - (t / max) * a.h; hline(ctx, a.x, a.x + a.w, y); txt(ctx, fmt(t), a.x - 8, y, { a: 'right' }); }
+  ORDER.forEach((p, i) => {
+    const v = D[p][2024].mt, h = (v / max) * a.h, x = a.x + i * bw + bw * 0.18;
+    ctx.fillStyle = css(COL[p]); ctx.fillRect(x, a.y + a.h - h, bw * 0.64, h);
+    txt(ctx, short(p), x + bw * 0.32, H - 14, { a: 'center' });
+  });
+}
+
+// A · puntos y promedio (t por persona)
+function puntos() {
+  const { ctx, W, H, hit } = setup('c1');
+  const rows = ORDER.map((p) => ({ p, v: D[p][2024].pc })).sort((x, y) => y.v - x.v);
+  const mean = rows.reduce((s, r) => s + r.v, 0) / rows.length;
+  const a = { x: 104, y: 26, w: W - 150, h: H - 56 }, max = 16, X = (v) => a.x + (v / max) * a.w, rh = a.h / rows.length;
+  for (const t of [0, 4, 8, 12, 16]) { ctx.strokeStyle = css('--line'); ctx.beginPath(); ctx.moveTo(X(t), a.y); ctx.lineTo(X(t), a.y + a.h); ctx.stroke(); txt(ctx, `${t} t`, X(t), a.y + a.h + 14, { a: 'center' }); }
+  ctx.strokeStyle = css('--fg'); ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(X(mean), a.y - 6); ctx.lineTo(X(mean), a.y + a.h); ctx.stroke(); ctx.setLineDash([]);
+  txt(ctx, `promedio del grupo: ${fmt(mean, 1)} t por persona`, X(mean), a.y - 14, { a: 'center', c: css('--fg'), w: 500 });
+  rows.forEach((r, i) => {
+    const y = a.y + i * rh + rh / 2, above = r.v >= mean, color = css(above ? '--up' : '--down');
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(mean), y); ctx.lineTo(X(r.v), y); ctx.stroke();
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(X(r.v), y, 6, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = css('--bg'); ctx.lineWidth = 2; ctx.stroke();
+    txt(ctx, r.p, a.x - 12, y, { a: 'right', c: css('--fg'), w: 500, s: 13 });
+    const d = r.v - mean;
+    txt(ctx, `${fmt(r.v, 1)}  (${d >= 0 ? '+' : '−'}${fmt(Math.abs(d), 1)})`, X(r.v) + (above ? 12 : -12), y, { a: above ? 'left' : 'right', f: '--mono', s: 11 });
+    hit(Math.min(X(mean), X(r.v)) - 8, y - rh / 2, Math.abs(X(r.v) - X(mean)) + 16, rh, `${r.p} · ${fmt(r.v, 2)} t por persona · ${d >= 0 ? 'por encima' : 'por debajo'} del promedio en ${fmt(Math.abs(d), 1)} t`);
+  });
+}
+
+// B · antes y después (t por persona, 1990 → 2024)
+function antesDespues() {
+  const { ctx, W, H, hit } = setup('c2');
+  const rows = ORDER.map((p) => ({ p, a: D[p][1990].pc, b: D[p][2024].pc })).sort((x, y) => y.b - x.b);
+  const a = { x: 104, y: 14, w: W - 150, h: H - 44 }, max = 22, X = (v) => a.x + (v / max) * a.w, rh = a.h / rows.length;
+  for (const t of [0, 5, 10, 15, 20]) { ctx.strokeStyle = css('--line'); ctx.beginPath(); ctx.moveTo(X(t), a.y); ctx.lineTo(X(t), a.y + a.h); ctx.stroke(); txt(ctx, `${t} t`, X(t), a.y + a.h + 14, { a: 'center' }); }
+  rows.forEach((r, i) => {
+    const y = a.y + i * rh + rh / 2, up = r.b > r.a, color = css(up ? '--up' : '--down');
+    ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(X(r.a), y); ctx.lineTo(X(r.b), y); ctx.stroke();
+    ctx.lineWidth = 2; ctx.fillStyle = css('--bg'); ctx.strokeStyle = color; ctx.beginPath(); ctx.arc(X(r.a), y, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(X(r.b), y, 6, 0, Math.PI * 2); ctx.fill();
+    txt(ctx, r.p, a.x - 12, y, { a: 'right', c: css('--fg'), w: 500, s: 13 });
+    const ratio = r.b / r.a, label = ratio >= 1.5 ? `▲ ×${fmt(ratio, 1)}` : `${up ? '▲' : '▼'} ${up ? '+' : '−'}${fmt(Math.abs((r.b - r.a) / r.a) * 100)} %`;
+    txt(ctx, label, Math.max(X(r.a), X(r.b)) + 12, y, { f: '--mono', s: 11, c: css('--fg') });
+    hit(Math.min(X(r.a), X(r.b)) - 8, y - rh / 2, Math.abs(X(r.b) - X(r.a)) + 16, rh, `${r.p} · 1990: ${fmt(r.a, 2)} t → 2024: ${fmt(r.b, 2)} t por persona`);
+  });
+}
+
+// C · cien cuadros (participación en el total de 2024)
+function waffle() {
+  const { ctx, W, H, hit } = setup('c3');
+  const total = ORDER.reduce((s, p) => s + D[p][2024].mt, 0);
+  const rows = ORDER.map((p) => ({ p, share: (D[p][2024].mt / total) * 100 })).sort((x, y) => y.share - x.share);
+  // Reparto por restos mayores para que sumen exactamente 100 cuadros.
+  let cells = rows.map((r) => ({ ...r, n: Math.floor(r.share) }));
+  let left = 100 - cells.reduce((s, r) => s + r.n, 0);
+  [...cells].sort((x, y) => (y.share % 1) - (x.share % 1)).slice(0, left).forEach((r) => (r.n += 1));
+  const size = Math.min((H - 8) / 10, (W * 0.55) / 10), gap = 3, x0 = 0, y0 = 4;
+  let k = 0;
+  for (const r of cells) for (let j = 0; j < r.n; j++, k++) {
+    const col = Math.floor(k / 10), row = k % 10, x = x0 + col * size, y = y0 + (9 - row) * size;
+    ctx.fillStyle = css(COL[r.p]); ctx.fillRect(x, y, size - gap, size - gap);
+    hit(x, y, size, size, `${r.p} · ${fmt(r.share, 1)} % del total (${fmt(D[r.p][2024].mt)} Mt)`);
+  }
+  const lx = x0 + 10 * size + 24;
+  cells.forEach((r, i) => {
+    const y = y0 + 14 + i * Math.min(38, (H - 20) / cells.length);
+    txt(ctx, `${fmt(r.share, r.share < 10 ? 1 : 0)} %`, lx, y, { f: '--display', w: 600, s: 20, c: css('--fg') });
+    txt(ctx, r.p, lx + 76, y, { s: 13, c: css('--muted') });
+  });
+  document.getElementById('leg3').textContent = `Cada cuadro = 1 % de ${fmt(total)} Mt (los siete países, 2024).`;
+}
+
+// D · bloques proporcionales: ancho = población, alto = t por persona, área = total
+function bloques() {
+  const { ctx, W, H, hit } = setup('c4');
+  const rows = ORDER.map((p) => ({ p, pob: D[p][2024].pob, pc: D[p][2024].pc, mt: D[p][2024].mt })).sort((x, y) => y.pc - x.pc);
+  const totalPob = rows.reduce((s, r) => s + r.pob, 0), gap = 3;
+  const a = { x: 44, y: 14, w: W - 56 - gap * (rows.length - 1), h: H - 70 }, max = 16, Y = (v) => a.y + a.h - (v / max) * a.h;
+  for (const t of [0, 4, 8, 12, 16]) { hline(ctx, a.x, W - 12, Y(t)); txt(ctx, `${t} t`, a.x - 8, Y(t), { a: 'right' }); }
+  let x = a.x;
+  let narrow = 0;
+  rows.forEach((r) => {
+    const w = (r.pob / totalPob) * a.w, top = Y(r.pc);
+    ctx.fillStyle = css(COL[r.p]); ctx.fillRect(x, top, w, Y(0) - top);
+    if (w > 54) {
+      txt(ctx, short(r.p), x + w / 2, top - 22, { a: 'center', c: css('--fg'), w: 600, s: 12 });
+      txt(ctx, `${fmt(r.mt)} Mt`, x + w / 2, top - 9, { a: 'center', f: '--mono', s: 10 });
+    } else {
+      // Bloques angostos: etiquetas escalonadas para que no se encimen.
+      txt(ctx, short(r.p), x + w / 2, top - 9 - (narrow++ % 2) * 14, { a: 'center', c: css('--fg'), w: 600, s: 10 });
+    }
+    hit(x, top, w, Y(0) - top, `${r.p} · ${fmt(r.pob)} M de personas × ${fmt(r.pc, 2)} t = ${fmt(r.mt)} Mt`);
+    x += w + gap;
+  });
+  txt(ctx, '↑ toneladas por persona', a.x, H - 32, { s: 11 });
+  txt(ctx, `ancho = población (${fmt(totalPob / 1000, 2)} mil millones en total) →`, W - 12, H - 32, { a: 'right', s: 11 });
+  txt(ctx, 'área = emisiones totales', W - 12, H - 14, { a: 'right', s: 11, c: css('--fg'), w: 500 });
+}
+
+// Tooltips por zonas de cada lienzo
+for (const id of ['c1', 'c2', 'c3', 'c4']) {
+  const c = document.getElementById(id), tip = c.parentElement.querySelector('.tip');
+  c.addEventListener('pointermove', (e) => {
+    const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    const h = (hits.get(id) || []).find((z) => x >= z.x && x <= z.x + z.w && y >= z.y && y <= z.y + z.h);
+    if (!h) { tip.hidden = true; return; }
+    tip.textContent = h.text; tip.style.left = `${Math.min(Math.max(x, 120), r.width - 120)}px`; tip.style.top = `${c.offsetTop + y}px`; tip.hidden = false;
+  });
+  c.addEventListener('pointerleave', () => (tip.hidden = true));
+}
+
+function all() { clasicas(); puntos(); antesDespues(); waffle(); bloques(); }
+all();
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(all, 150); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', all);
+new MutationObserver(all).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+document.fonts?.ready.then(all);
+</script>

@@ -1,0 +1,107 @@
+agent: kiwi
+owns: structure-and-design-understanding
+interface: natural-language
+read_order:
+  - .fruti/state/current.json
+  - active_lima_profile
+  - .fruti/design/design-direction.yaml
+  - relevant_product_or_code_facts
+operations:
+  understand:
+    purpose: translate natural-language product/design intent into compact approved direction
+    persist:
+      - .fruti/design/product-context.yaml
+      - .fruti/design/design-intent.yaml
+      - .fruti/design/references.yaml
+      - .fruti/design/design-direction.yaml
+    rules:
+      - capture desired perception, usability, quality target, primary device and explicit avoid-list
+      - references are inspiration, never specifications
+      - extract qualities from references; never copy components/layouts blindly
+      - design-direction is the compact approved synthesis consumed by later work
+  inventory:
+    purpose: quick scan of existing design surfaces before redesign
+    inspect:
+      - views
+      - layouts
+      - navigation
+      - controls
+      - components
+      - patterns
+      - feedback-states
+      - data-visualization
+    output: .fruti/redesign/inventory.json
+    rules:
+      - group equivalent implementations into design surfaces instead of dumping file lists
+      - scan is discovery, not authority for target visual design
+      - do not perform deep audit during inventory
+  scope:
+    inputs: [.fruti/redesign/inventory.json]
+    output: .fruti/redesign/scope.yaml
+    statuses: [not-reviewed, proposed, approved, excluded, preserve, completed]
+    approval_required: true
+    rules:
+      - present redesign candidates as a user-reviewable checklist
+      - excluded items are out of scope
+      - preserve means structure/behavior is frozen unless user later changes scope
+      - distinguish unavoidable approved global-token propagation from direct redesign
+  redesign_plan:
+    inputs:
+      - .fruti/design/design-direction.yaml
+      - .fruti/redesign/scope.yaml
+    output: .fruti/redesign/plan.yaml
+    order: [foundations, primitives, patterns, domain-components, views, polish]
+    rules:
+      - only approved scope enters the plan
+      - plan dependencies before page-by-page execution
+      - existing product is evidence of current behavior, not target visual authority
+  brief:
+    references: [agentes/kiwi/references/brief-funcional.md]
+  flow:
+    references: [agentes/kiwi/references/brief-funcional.md, agentes/kiwi/references/user-flow.md]
+  fidelity:
+    references: [agentes/kiwi/references/fidelidad.md]
+  wireframe:
+    references: [agentes/kiwi/references/wireframing.md, agentes/kiwi/references/geometry-contract.md]
+    assets_on_demand: [agentes/kiwi/assets/wireframe-kit.css, agentes/kiwi/assets/wireframe-base.html]
+  validate:
+    references: [agentes/kiwi/references/validacion.md]
+  test_f2:
+    purpose: prove structural reasoning before visual construction
+    inputs: [.fruti/tests/<round>/request.md]
+    references:
+      - agentes/kiwi/references/brief-funcional.md
+      - agentes/kiwi/references/fidelidad.md
+      - agentes/kiwi/references/wireframing.md
+      - agentes/kiwi/references/geometry-contract.md
+      - agentes/kiwi/references/validacion.md
+    outputs:
+      - .fruti/tests/<round>/kiwi-f2.html
+      - .fruti/tests/<round>/kiwi-decisions.yaml
+      - .fruti/handoffs/current.json
+    requirements:
+      - neutral_grayscale_f2
+      - geometry_contract_with_sizes_spacing_density_hierarchy
+      - adaptive_matrix_compact_medium_expanded
+      - realistic_content
+      - loading_empty_error_offline_permissions_long_content_large_list_keyboard
+      - decision_source_rule_product_context_or_inference
+      - no_generic_card_without_grouping_reason
+      - piece_contract_per_piece_with_promote_demote_per_size
+      - adaptation_is_recomposition_not_restacking
+      - configured_interface_standards_are_normative_when_present
+      - missing_normative_standard_is_reported_not_invented
+
+output:
+  handoff: .fruti/handoffs/current.json
+  state: .fruti/state/current.json
+  round_copy: .fruti/tests/<round>/handoff-kiwi.json
+  next_owner: lima
+  include: [artifact, round, frozen_structure, pieces, adaptive_matrix, required_states, data_proposal, design_direction_ref, redesign_scope_ref, open_questions, evidence, delta]
+rules:
+  - never_preload_all_references
+  - never_load_visual_construction_rules
+  - upstream_handoff_is_index_not_full_context
+  - design_direction_guides_structure_but_does_not_author_visual_tokens
+  - redesign_must_respect_excluded_and_preserved_scope
+  - full_agent_manual_only_if_runtime_contract_is_insufficient

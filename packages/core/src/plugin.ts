@@ -46,6 +46,10 @@ export interface PluginContext {
   readonly getViewDomain: (axis: 'x' | 'y') => Domain | null;
   /** Fija (o quita, con `null`) el rango mostrado: es lo que usan zoom y pan. */
   readonly setViewDomain: (axis: 'x' | 'y', domain: Domain | null) => void;
+  /** Bordes de las cubetas si el gráfico agrupa en columnas (unidades apiladas); si no, `null`. */
+  readonly getBinEdges?: () => Float64Array | null;
+  /** Vuelve a pasar la configuración por `beforeUpdate` de todos los plugins y redibuja. */
+  readonly reconfigure?: () => void;
 }
 
 /** Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. */

@@ -1,0 +1,319 @@
+{
+  "transitions": {
+    "documentation": "../lab/histograma-unidades/r03/lima-contract.yaml",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified",
+      "structural": "runtime-verified",
+      "accessibility": {
+        "status": "runtime-verified-emulated",
+        "gateAccepted": false,
+        "caveat": "árbol de accesibilidad de Chromium; sin lector de pantalla real"
+      }
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-18",
+    "sourceRound": "histograma-unidades/r03",
+    "owner": "lima",
+    "kind": "component",
+    "status": "draft",
+    "source": "packages/core/src/transitions.ts",
+    "behavior": "packages/core/src/transitions.ts"
+  },
+  "brush": {
+    "documentation": "../lab/histograma-unidades/r03/lima-contract.yaml",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified",
+      "structural": "runtime-verified",
+      "accessibility": {
+        "status": "runtime-verified-emulated",
+        "gateAccepted": false,
+        "caveat": "árbol de accesibilidad de Chromium; sin lector de pantalla real"
+      }
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-18",
+    "sourceRound": "histograma-unidades/r03",
+    "owner": "lima",
+    "kind": "pattern",
+    "status": "draft",
+    "source": "packages/core/src/plugins/brush.ts",
+    "behavior": "packages/core/src/plugins/brush.ts"
+  },
+  "units": {
+    "documentation": "../lab/histograma-unidades/r03/lima-contract.yaml",
+    "dependencies": [
+      "transitions"
+    ],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified",
+      "structural": "runtime-verified",
+      "accessibility": {
+        "status": "runtime-verified-emulated",
+        "gateAccepted": false,
+        "caveat": "árbol de accesibilidad de Chromium; sin lector de pantalla real"
+      }
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-18",
+    "sourceRound": "histograma-unidades/r03",
+    "owner": "lima",
+    "kind": "component",
+    "status": "draft",
+    "source": "packages/core/src/data/units.ts",
+    "behavior": "packages/core/src/chart.ts"
+  },
+  "focus": {
+    "status": "draft",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified"
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-19",
+    "sourceRound": "cambio-tiempo/r01",
+    "owner": "lima",
+    "documentation": "../lab/cambio-tiempo/r01/evidencia/",
+    "kind": "pattern",
+    "source": "packages/core/src/plugins/focus.ts",
+    "behavior": "packages/core/src/plugins/focus.ts"
+  },
+  "trail-panel": {
+    "status": "draft",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified"
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-19",
+    "sourceRound": "cambio-tiempo/r01",
+    "owner": "lima",
+    "documentation": "../lab/cambio-tiempo/r01/evidencia/",
+    "kind": "component",
+    "source": "packages/core/src/trail-panel.ts",
+    "behavior": "packages/core/src/trail-panel.ts"
+  },
+  "narrate": {
+    "status": "draft",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified"
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-19",
+    "sourceRound": "cambio-tiempo/r01",
+    "owner": "lima",
+    "documentation": "../lab/cambio-tiempo/r01/evidencia/",
+    "kind": "pattern",
+    "source": "packages/core/src/plugins/narrate.ts",
+    "behavior": "packages/core/src/plugins/narrate.ts"
+  },
+  "rhythm-strip": {
+    "status": "draft",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified"
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-19",
+    "sourceRound": "cambio-tiempo/r01",
+    "owner": "lima",
+    "documentation": "../lab/cambio-tiempo/r01/evidencia/",
+    "kind": "component",
+    "source": "packages/core/src/rhythm-strip.ts",
+    "behavior": "packages/core/src/rhythm-strip.ts"
+  },
+  "dot-rank": {
+    "status": "draft",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified"
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-19",
+    "sourceRound": "comparar/r01",
+    "owner": "lima",
+    "documentation": "../lab/comparar/r01/evidencia/",
+    "kind": "component",
+    "source": "packages/core/src/dot-rank.ts",
+    "behavior": "packages/core/src/dot-rank.ts"
+  },
+  "waffle": {
+    "status": "draft",
+    "dependencies": [],
+    "profileDependencies": [
+      "implementation.styling"
+    ],
+    "qa": {
+      "candidate": false,
+      "visual": "blocked",
+      "stable": false,
+      "technical": "runtime-verified"
+    },
+    "refinement": {
+      "critique": "not-run",
+      "distill": "not-run",
+      "adapt": "not-run",
+      "polish": "not-run",
+      "detector": "not-run"
+    },
+    "production": {
+      "framework": null,
+      "path": null
+    },
+    "version": "0.1.0",
+    "replacedBy": null,
+    "updated": "2026-10-19",
+    "sourceRound": "comparar/r01",
+    "owner": "lima",
+    "documentation": "../lab/comparar/r01/evidencia/",
+    "kind": "component",
+    "source": "packages/core/src/waffle.ts",
+    "behavior": "packages/core/src/waffle.ts"
+  }
+}

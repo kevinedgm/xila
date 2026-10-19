@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Cambio en el tiempo sin la línea de siempre</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #14161a;
+        background: #fbfaf7;
+        max-width: 1040px;
+      }
+      h1 {
+        font-size: 24px;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 40px 0 2px;
+      }
+      .q {
+        color: #52606d;
+        margin: 0 0 14px;
+      }
+      .ctrl {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        font-size: 13px;
+        color: #52606d;
+      }
+      .ctrl button {
+        font: inherit;
+        color: #1f2933;
+        background: #f5f7fa;
+        border: 1px solid #cbd2d9;
+        border-radius: 6px;
+        min-height: 36px;
+        padding: 0 12px;
+        cursor: pointer;
+      }
+      .ctrl button[aria-pressed='true'] {
+        background: #1f2933;
+        color: #fff;
+        border-color: #1f2933;
+      }
+      .ctrl button:focus-visible,
+      .ctrl input:focus-visible {
+        outline: 2px solid #1f2933;
+        outline-offset: 2px;
+      }
+      .ctrl input[type='range'] {
+        flex: 1;
+        min-width: 160px;
+        max-width: 320px;
+      }
+      #protagonista,
+      #narrada {
+        height: 340px;
+      }
+      @media (max-width: 599px) {
+        .ctrl button {
+          min-height: 44px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cambio en el tiempo, sin la línea de siempre</h1>
+    <p class="q">Toneladas de CO₂ por persona, siete países, 1950–2024 (Our World in Data).</p>
+
+    <h2>Ahora con estela</h2>
+    <p class="q">¿Dónde está cada país hoy y de dónde viene?</p>
+    <div id="ahora"></div>
+    <div class="ctrl">
+      <button type="button" id="play">Reproducir</button>
+      <input type="range" id="anio" min="0" max="0" value="0" aria-label="Año mostrado" />
+      <output id="anio-label" for="anio"></output>
+    </div>
+
+    <h2>Protagonista y contexto</h2>
+    <p class="q">¿Cómo va este país frente a los demás?</p>
+    <div id="protagonista"></div>
+    <div class="ctrl" id="paises" role="group" aria-label="País protagonista"></div>
+
+    <h2>Tira de ritmo</h2>
+    <p class="q">¿Cuándo se aceleró y cuándo se frenó? (cambio promedio de 3 años, al año)</p>
+    <div id="ritmo"></div>
+    <p class="q" id="ritmo-leyenda" style="font-size: 13px; margin-top: 6px"></p>
+
+    <h2 id="narrada-titulo">Línea narrada</h2>
+    <p class="q">¿Qué pasó y cuándo? Alemania, toneladas de CO₂ por persona.</p>
+    <div id="narrada"></div>
+    <ul class="q" id="narrada-momentos" style="font-size: 13px"></ul>
+
+    <script type="module" src="/src/tiempo.ts"></script>
+  </body>
+</html>

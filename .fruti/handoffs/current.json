@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "artifact": "histograma-unidades",
+  "round": "r03",
+  "from": "coco",
+  "to": "lima",
+  "operation": "candidate_gate",
+  "frozen_decisions": [
+    "API: type 'units' (units.mode loose|stacked, bins, radius, maxRadius, duration); brushPlugin({snap,label,format,describe,steps}) + evento 'brush'; MarkTransition",
+    "Chart.getBinEdges(), Chart.getUnitsPerMark(), PluginContext.getBinEdges"
+  ],
+  "pieces": [
+    {
+      "id": "transitions",
+      "disposition": "new",
+      "path": "packages/core/src/transitions.ts"
+    },
+    {
+      "id": "brush",
+      "disposition": "new",
+      "path": "packages/core/src/plugins/brush.ts"
+    },
+    {
+      "id": "units",
+      "disposition": "new",
+      "path": "packages/core/src/data/units.ts + chart.ts"
+    },
+    {
+      "id": "ejemplo-tiempo-atencion",
+      "disposition": "local",
+      "path": "examples/unidades.html"
+    }
+  ],
+  "required_states": [
+    "reposo",
+    "seleccionando",
+    "seleccion-fija",
+    "loose",
+    "stacked",
+    "transicion",
+    "vacio",
+    "reduced-motion"
+  ],
+  "adaptive_contract": [
+    "verificado en 1440, 768 y 390"
+  ],
+  "open_questions": [
+    "tokens de movimiento y color de selección (B-01)"
+  ],
+  "blockers": [
+    "B-01: Candidate Gate no puede pasar sin foundations aprobados (visual y design_system BLOCKED)"
+  ],
+  "evidence_paths": [
+    ".fruti/reports/compliance-current.json",
+    "design-hub/lab/histograma-unidades/r03/compliance.json",
+    "design-hub/lab/histograma-unidades/r03/evidencia/"
+  ],
+  "delta": [
+    "3 piezas implementadas con pruebas",
+    "compliance PARTIAL: technical/structural/accessibility PASS, visual/design_system BLOCKED"
+  ]
+}
