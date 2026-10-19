@@ -323,9 +323,15 @@ function align(full: Column, keys: Column, values: Float64Array): Column {
   const out = new Float64Array(n).fill(Number.NaN);
   const position = new Map<number, number>();
   if (full.kind === 'category') {
-    full.codes.forEach((code, i) => position.set(code, i));
+    // Por etiqueta, no por código: `groupBy` sobre un subconjunto puede re-codificar las
+    // categorías, y entonces el código 0 de `keys` no es el código 0 de `full`.
+    const byLabel = new Map<string, number>();
+    full.codes.forEach((code, i) => byLabel.set(full.categories[code] as string, i));
     if (keys.kind === 'category')
-      keys.codes.forEach((code, j) => (out[position.get(code) as number] = values[j] as number));
+      keys.codes.forEach((code, j) => {
+        const p = byLabel.get(keys.categories[code] as string);
+        if (p !== undefined) out[p] = values[j] as number;
+      });
   } else {
     full.values.forEach((v, i) => position.set(v, i));
     if (keys.kind !== 'category')

@@ -20,6 +20,8 @@ export interface FiltroFechas {
   readonly tipo: 'fechas';
   readonly datos: string;
   readonly columna: string;
+  /** Otras tablas con la misma columna a las que también se aplica el filtro. */
+  readonly tambien?: readonly string[];
   readonly etiqueta?: string;
 }
 
@@ -27,6 +29,8 @@ export interface FiltroCategoria {
   readonly tipo: 'categoria';
   readonly datos: string;
   readonly columna: string;
+  /** Otras tablas con la misma columna a las que también se aplica el filtro. */
+  readonly tambien?: readonly string[];
   readonly etiqueta?: string;
   /** `true`: permite elegir varias categorías a la vez. */
   readonly multiple?: boolean;
@@ -220,6 +224,11 @@ export function parseDashboard(raw: unknown): DashboardConfig {
         checkEnum(`${p}.tipo`, f['tipo'] ?? null, ['fechas', 'categoria'], 'el tipo de filtro');
         checkTabla(`${p}.datos`, f['datos']);
         checkCol(`${p}.columna`, f['columna']);
+        const tambien = f['tambien'];
+        if (tambien !== undefined) {
+          if (!Array.isArray(tambien)) fail(`${p}.tambien`, 'debe ser una lista de tablas');
+          else tambien.forEach((t: unknown, j) => checkTabla(`${p}.tambien[${j}]`, t));
+        }
       });
     }
   }
@@ -335,12 +344,13 @@ export function validateDashboard(
   };
 
   config.filtros?.forEach((f, i) => {
-    column(
-      `filtros[${i}].columna`,
-      f.datos,
-      f.columna,
-      f.tipo === 'fechas' ? ['time'] : ['category'],
-    );
+    for (const datos of [f.datos, ...(f.tambien ?? [])])
+      column(
+        `filtros[${i}].columna`,
+        datos,
+        f.columna,
+        f.tipo === 'fechas' ? ['time'] : ['category'],
+      );
   });
   config.paneles.forEach((panel, i) => {
     const p = `paneles[${i}]`;

@@ -1,0 +1,145 @@
+{
+  "titulo": "Clima diario de Seattle y Nueva York 2012–2015 · ejemplo de Xila",
+  "tema": "light",
+  "datos": { "clima": "data/clima.csv", "clima_mensual": "data/clima_mensual.csv" },
+  "filtros": [
+    {
+      "tipo": "fechas",
+      "datos": "clima",
+      "columna": "fecha",
+      "etiqueta": "Fechas",
+      "tambien": ["clima_mensual"]
+    },
+    {
+      "tipo": "categoria",
+      "datos": "clima",
+      "columna": "ciudad",
+      "etiqueta": "Ciudad",
+      "multiple": true,
+      "tambien": ["clima_mensual"]
+    }
+  ],
+  "paneles": [
+    {
+      "tipo": "kpi",
+      "titulo": "Máxima promedio del último mes (°C)",
+      "datos": "clima",
+      "valor": { "columna": "temp_max_c", "agregado": "mean", "formato": "numero" },
+      "comparar": { "columna": "fecha", "periodo": "month" },
+      "ancho": 4
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Lluvia del último mes (mm)",
+      "datos": "clima",
+      "valor": { "columna": "lluvia_mm", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "month" },
+      "ancho": 4
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Viento promedio del último mes (m/s)",
+      "datos": "clima",
+      "valor": { "columna": "viento_ms", "agregado": "mean", "formato": "numero" },
+      "comparar": { "columna": "fecha", "periodo": "month" },
+      "ancho": 4
+    },
+    {
+      "tipo": "linea",
+      "forma": "ahora",
+      "titulo": "¿Qué tan caliente está hoy cada ciudad y de dónde viene? · máxima promedio por semana",
+      "datos": "clima",
+      "x": "fecha",
+      "y": "temp_max_c",
+      "color": "ciudad",
+      "agregado": "mean",
+      "periodo": "week",
+      "ejes": { "y": "°C" }
+    },
+    {
+      "tipo": "linea",
+      "forma": "protagonista",
+      "protagonista": "Seattle",
+      "titulo": "¿Llueve tanto en Seattle como dicen? · mm por mes",
+      "datos": "clima_mensual",
+      "x": "fecha",
+      "y": "lluvia_mm",
+      "color": "ciudad",
+      "ejes": { "y": "mm" }
+    },
+    {
+      "tipo": "barras",
+      "forma": "puntos",
+      "titulo": "¿Qué meses se salen del promedio? · máxima diaria promedio",
+      "datos": "clima",
+      "x": "mes",
+      "y": "temp_max_c",
+      "agregado": "mean",
+      "ancho": 6,
+      "ejes": { "y": "°C" }
+    },
+    {
+      "tipo": "barras",
+      "forma": "unidades",
+      "titulo": "¿Qué parte de los días es de sol, lluvia o niebla?",
+      "datos": "clima",
+      "x": "tiempo",
+      "y": "temp_max_c",
+      "agregado": "count",
+      "ancho": 6
+    },
+    {
+      "tipo": "dispersion",
+      "forma": "trayectorias",
+      "protagonista": "Seattle",
+      "titulo": "¿Cómo gira el año en cada ciudad? · temperatura contra lluvia, mes a mes",
+      "datos": "clima_mensual",
+      "x": "temp_max_c",
+      "y": "lluvia_mm",
+      "color": "ciudad",
+      "tiempo": "fecha",
+      "ejes": { "x": "máxima promedio, °C", "y": "lluvia del mes, mm" }
+    },
+    {
+      "tipo": "dispersion",
+      "forma": "tendencia",
+      "titulo": "¿Qué días se salen del patrón? · mínima contra máxima",
+      "datos": "clima",
+      "x": "temp_min_c",
+      "y": "temp_max_c",
+      "color": "ciudad",
+      "ancho": 6,
+      "ejes": { "x": "mínima, °C", "y": "máxima, °C" }
+    },
+    {
+      "tipo": "cajas",
+      "forma": "franja",
+      "titulo": "¿Dónde se concentra la máxima de cada mes?",
+      "datos": "clima",
+      "x": "mes",
+      "y": "temp_max_c",
+      "ancho": 6,
+      "ejes": { "y": "°C" }
+    },
+    {
+      "tipo": "calor",
+      "forma": "filas",
+      "titulo": "¿Cuándo llovió más de lo normal en cada ciudad? · mm por mes, cada fila contra su mediana",
+      "datos": "clima_mensual",
+      "x": "fecha",
+      "y": "ciudad",
+      "valor": "lluvia_mm",
+      "agregado": "sum",
+      "periodo": "month"
+    },
+    {
+      "tipo": "calor",
+      "forma": "tabla",
+      "titulo": "¿Cuántos días llueve cada mes? · promedio 2012–2015",
+      "datos": "clima_mensual",
+      "x": "mes",
+      "y": "ciudad",
+      "valor": "dias_con_lluvia"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+fecha,ciudad,mes,temp_max_c,lluvia_mm,dias_con_lluvia
+2012-01-01,Nueva York,ene,7.0,55.6,8
+2012-01-01,Seattle,ene,7.1,173.3,22
+2012-02-01,Nueva York,feb,8.6,32.0,10
+2012-02-01,Seattle,feb,9.3,92.3,19
+2012-03-01,Nueva York,mar,13.3,28.7,11
+2012-03-01,Seattle,mar,9.6,183.0,22
+2012-04-01,Nueva York,abr,17.2,75.4,6
+2012-04-01,Seattle,abr,14.9,68.1,17
+2012-05-01,Nueva York,may,21.4,180.1,17
+2012-05-01,Seattle,may,17.7,52.2,10
+2012-06-01,Nueva York,jun,26.0,174.7,12
+2012-06-01,Seattle,jun,18.7,75.1,14
+2012-07-01,Nueva York,jul,30.0,39.1,8
+2012-07-01,Seattle,jul,22.9,26.3,7
+2012-08-01,Nueva York,ago,28.9,102.3,8
+2012-08-01,Seattle,ago,25.9,0.0,0
+2012-09-01,Nueva York,sep,24.5,103.0,10
+2012-09-01,Seattle,sep,22.9,0.9,3
+2012-10-01,Nueva York,oct,18.5,56.6,12
+2012-10-01,Seattle,oct,15.8,170.3,16
+2012-11-01,Nueva York,nov,10.1,39.6,6
+2012-11-01,Seattle,nov,11.3,210.5,20
+2012-12-01,Nueva York,dic,8.6,125.4,16
+2012-12-01,Seattle,dic,7.2,174.0,27
+2013-01-01,Nueva York,ene,5.2,60.8,12
+2013-01-01,Seattle,ene,6.1,105.7,17
+2013-02-01,Nueva York,feb,4.5,69.5,12
+2013-02-01,Seattle,feb,9.5,40.3,18
+2013-03-01,Nueva York,mar,8.1,59.0,8
+2013-03-01,Seattle,mar,12.7,69.7,15
+2013-04-01,Nueva York,abr,15.0,45.4,7
+2013-04-01,Seattle,abr,14.2,149.6,16
+2013-05-01,Nueva York,may,20.0,102.5,11
+2013-05-01,Seattle,may,19.6,60.5,12
+2013-06-01,Nueva York,jun,25.4,202.1,15
+2013-06-01,Seattle,jun,23.3,33.1,10
+2013-07-01,Nueva York,jul,30.3,57.6,10
+2013-07-01,Seattle,jul,26.1,0.0,0
+2013-08-01,Nueva York,ago,27.4,69.4,8
+2013-08-01,Seattle,ago,26.1,34.4,9
+2013-09-01,Nueva York,sep,24.4,48.9,7
+2013-09-01,Seattle,sep,21.4,156.8,14
+2013-10-01,Nueva York,oct,19.7,8.5,4
+2013-10-01,Seattle,oct,14.2,39.2,12
+2013-11-01,Nueva York,nov,11.6,64.6,9
+2013-11-01,Seattle,nov,12.1,96.3,15
+2013-12-01,Nueva York,dic,6.9,114.4,11
+2013-12-01,Seattle,dic,7.0,42.4,14
+2014-01-01,Nueva York,ene,2.3,76.5,12
+2014-01-01,Seattle,ene,9.6,94.0,13
+2014-02-01,Nueva York,feb,3.0,116.7,12
+2014-02-01,Seattle,feb,8.2,155.2,19
+2014-03-01,Nueva York,mar,7.7,108.2,7
+2014-03-01,Seattle,mar,12.9,240.0,20
+2014-04-01,Nueva York,abr,14.7,177.3,10
+2014-04-01,Seattle,abr,15.5,106.1,13
+2014-05-01,Nueva York,may,21.4,91.6,12
+2014-05-01,Seattle,may,19.9,80.0,8
+2014-06-01,Nueva York,jun,26.4,66.3,7
+2014-06-01,Seattle,jun,21.6,18.8,9
+2014-07-01,Nueva York,jul,28.1,122.9,13
+2014-07-01,Seattle,jul,26.9,19.6,2
+2014-08-01,Nueva York,ago,27.6,107.5,7
+2014-08-01,Seattle,ago,26.4,46.0,7
+2014-09-01,Nueva York,sep,25.1,36.3,7
+2014-09-01,Seattle,sep,23.2,56.7,9
+2014-10-01,Nueva York,oct,19.2,93.8,12
+2014-10-01,Seattle,oct,18.0,171.5,19
+2014-11-01,Nueva York,nov,11.0,113.8,8
+2014-11-01,Seattle,nov,11.0,123.1,16
+2014-12-01,Nueva York,dic,8.2,178.9,15
+2014-12-01,Seattle,dic,10.1,121.8,15
+2015-01-01,Nueva York,ene,3.0,135.0,11
+2015-01-01,Seattle,ene,10.2,93.0,14
+2015-02-01,Nueva York,feb,0.4,59.9,8
+2015-02-01,Seattle,feb,12.5,134.2,17
+2015-03-01,Nueva York,mar,7.4,123.9,15
+2015-03-01,Seattle,mar,14.4,113.5,16
+2015-04-01,Nueva York,abr,16.1,40.9,9
+2015-04-01,Seattle,abr,15.5,51.6,13
+2015-05-01,Nueva York,may,22.7,11.7,4
+2015-05-01,Seattle,may,20.0,14.8,4
+2015-06-01,Nueva York,jun,25.8,126.7,12
+2015-06-01,Seattle,jun,26.1,5.9,4
+2015-07-01,Nueva York,jul,29.6,58.7,9
+2015-07-01,Seattle,jul,28.1,2.3,2
+2015-08-01,Nueva York,ago,30.2,92.3,4
+2015-08-01,Seattle,ago,26.1,83.3,6
+2015-09-01,Nueva York,sep,27.2,65.6,8
+2015-09-01,Seattle,sep,20.3,21.1,9
+2015-10-01,Nueva York,oct,18.5,106.7,7
+2015-10-01,Seattle,oct,17.5,122.4,14
+2015-11-01,Nueva York,nov,15.6,30.5,6
+2015-11-01,Seattle,nov,9.7,212.6,20
+2015-12-01,Nueva York,dic,13.6,121.7,17
+2015-12-01,Seattle,dic,8.4,284.5,25

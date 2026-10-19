@@ -67,7 +67,11 @@ parser y pasar el objeto a `parseDashboard`; el esquema no cambia.
 | `tema`    | `light` \| `dark`      | Por defecto `light`.                                          |
 | `datos`   | `{ nombre: ruta.csv }` | Al menos una tabla; la ruta es relativa al `index.html`.      |
 | `filtros` | lista                  | `fechas` (columna `time`) o `categoria` (columna `category`). |
-| `paneles` | lista                  | Al menos uno. Se colocan en un grid de 12 columnas.           |
+
+Un filtro lee sus opciones de la tabla `datos`. Con `"tambien": ["otra_tabla"]` se aplica
+además a otras tablas que tienen la misma columna, por ejemplo una tabla diaria y su resumen
+mensual (`examples/public/clima/dashboard.json`).
+| `paneles` | lista | Al menos uno. Se colocan en un grid de 12 columnas. |
 
 ### Panel `kpi`
 

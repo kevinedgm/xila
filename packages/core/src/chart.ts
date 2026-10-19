@@ -977,7 +977,9 @@ export class Chart {
       const colW = (x1 - x0) / nx;
       const font = `500 ${config.theme.fontSize}px ${monoFont(config.theme)}`;
       const [lo2, hi2] = this.heatmapDomain();
-      const step = (hi2 - lo2) / 100;
+      // Conteos y otras cifras enteras se escriben sin decimales ("119", no "119.0").
+      const whole = Array.from(s.value ?? []).every((v) => v !== v || Number.isInteger(v));
+      const step = whole ? Math.max(1, (hi2 - lo2) / 100) : (hi2 - lo2) / 100;
       for (let yi = 0; yi < ny; yi++) {
         // La fila 0 va abajo (el eje Y crece hacia arriba).
         const top = area.y + (ny - 1 - yi) * rowH;

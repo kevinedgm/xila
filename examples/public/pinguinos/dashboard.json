@@ -1,0 +1,133 @@
+{
+  "titulo": "Pingüinos del archipiélago Palmer · ejemplo de Xila",
+  "tema": "light",
+  "datos": { "pinguinos": "data/pinguinos.csv" },
+  "filtros": [
+    {
+      "tipo": "categoria",
+      "datos": "pinguinos",
+      "columna": "especie",
+      "etiqueta": "Especie",
+      "multiple": true
+    },
+    {
+      "tipo": "categoria",
+      "datos": "pinguinos",
+      "columna": "isla",
+      "etiqueta": "Isla",
+      "multiple": true
+    },
+    {
+      "tipo": "categoria",
+      "datos": "pinguinos",
+      "columna": "sexo",
+      "etiqueta": "Sexo",
+      "multiple": true
+    }
+  ],
+  "paneles": [
+    {
+      "tipo": "kpi",
+      "titulo": "Pingüinos medidos",
+      "datos": "pinguinos",
+      "valor": { "columna": "masa_g", "agregado": "count", "formato": "entero" },
+      "ancho": 4
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Masa promedio (g)",
+      "datos": "pinguinos",
+      "valor": { "columna": "masa_g", "agregado": "mean", "formato": "entero" },
+      "ancho": 4
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Aleta promedio (mm)",
+      "datos": "pinguinos",
+      "valor": { "columna": "aleta_mm", "agregado": "mean", "formato": "entero" },
+      "ancho": 4
+    },
+    {
+      "tipo": "barras",
+      "forma": "puntos",
+      "titulo": "¿Cuánto más pesa cada especie que el promedio? · g",
+      "datos": "pinguinos",
+      "x": "especie",
+      "y": "masa_g",
+      "agregado": "mean",
+      "ancho": 6,
+      "ejes": { "y": "g" }
+    },
+    {
+      "tipo": "barras",
+      "forma": "unidades",
+      "titulo": "¿En qué isla se midió a cada pingüino?",
+      "datos": "pinguinos",
+      "x": "isla",
+      "y": "masa_g",
+      "agregado": "count",
+      "ancho": 6
+    },
+    {
+      "tipo": "dispersion",
+      "forma": "tendencia",
+      "titulo": "¿Quién pesa más de lo que su aleta predice?",
+      "datos": "pinguinos",
+      "x": "aleta_mm",
+      "y": "masa_g",
+      "color": "especie",
+      "ancho": 6,
+      "ejes": { "x": "aleta, mm", "y": "masa, g" }
+    },
+    {
+      "tipo": "dispersion",
+      "titulo": "¿Pico más largo, pico más bajo? Depende de la especie",
+      "datos": "pinguinos",
+      "x": "pico_largo_mm",
+      "y": "pico_alto_mm",
+      "color": "especie",
+      "ancho": 6,
+      "ejes": { "x": "largo del pico, mm", "y": "alto del pico, mm" }
+    },
+    {
+      "tipo": "cajas",
+      "forma": "franja",
+      "titulo": "¿Dónde se concentra la masa de cada especie? · g",
+      "datos": "pinguinos",
+      "x": "especie",
+      "y": "masa_g",
+      "ancho": 6,
+      "ejes": { "y": "g" }
+    },
+    {
+      "tipo": "cajas",
+      "titulo": "¿Las aletas más largas son de una sola isla? · mm",
+      "datos": "pinguinos",
+      "x": "isla",
+      "y": "aleta_mm",
+      "ancho": 6,
+      "ejes": { "y": "mm" }
+    },
+    {
+      "tipo": "calor",
+      "forma": "tabla",
+      "titulo": "¿Qué especie vive en qué isla? · individuos medidos",
+      "datos": "pinguinos",
+      "x": "isla",
+      "y": "especie",
+      "valor": "masa_g",
+      "agregado": "count",
+      "ancho": 6
+    },
+    {
+      "tipo": "calor",
+      "forma": "tabla",
+      "titulo": "¿Cuánto más pesan los machos? · masa promedio, g",
+      "datos": "pinguinos",
+      "x": "sexo",
+      "y": "especie",
+      "valor": "masa_g",
+      "ancho": 6
+    }
+  ]
+}

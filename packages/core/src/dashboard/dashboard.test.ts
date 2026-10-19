@@ -88,6 +88,23 @@ describe('validateDashboard', () => {
     expect(errors.map((e) => e.path)).toEqual(['filtros[0].columna', 'paneles[0].color']);
   });
 
+  it('un filtro con `tambien` revisa la columna en cada tabla que nombra', () => {
+    const resumen = parseCsv('mes,monto\n2026-01-01,180\n').table;
+    const cfg = parseDashboard({
+      ...base,
+      datos: { ventas: 'data/ventas.csv', resumen: 'data/resumen.csv' },
+      filtros: [{ tipo: 'categoria', datos: 'ventas', columna: 'region', tambien: ['resumen'] }],
+    });
+    const errors = validateDashboard(cfg, { ventas, resumen });
+    expect(errors.map((e) => e.message)).toEqual(['la columna "region" no existe en resumen']);
+    expect(() =>
+      parseDashboard({
+        ...base,
+        filtros: [{ tipo: 'categoria', datos: 'ventas', columna: 'region', tambien: ['ventaz'] }],
+      }),
+    ).toThrow('filtros[0].tambien[0]');
+  });
+
   it('sin errores con el ejemplo válido', () => {
     expect(validateDashboard(parseDashboard(base), { ventas })).toEqual([]);
   });

@@ -206,6 +206,13 @@ y `/dashboard.html?config=co2/muestra.json`, el dashboard de muestra con las onc
 "Qué es Xila hoy" declaradas con la clave `forma` de cada panel (`ahora`, `protagonista`,
 `puntos`, `unidades`, `trayectorias`, `tendencia`, `cajas` y `calor` con sus formas).
 
+Dashboards de ejemplo con otros datos públicos, cada uno con su script en `python/`:
+
+| Abrir                                             | Datos                                                                | Forma de los datos                          | Script                                |
+| ------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------- |
+| `/dashboard.html?config=clima/dashboard.json`     | Clima diario de Seattle y Nueva York 2012–2015 (NOAA, vega-datasets) | diaria + resumen mensual, filtro en las dos | `python3 python/ejemplo_clima.py`     |
+| `/dashboard.html?config=pinguinos/dashboard.json` | Pingüinos del archipiélago Palmer (palmerpenguins, CC0)              | sin tiempo: grupos y medidas                | `python3 python/ejemplo_pinguinos.py` |
+
 ## Publicar en npm
 
 `git tag v0.1.0 && git push origin v0.1.0` lanza `.github/workflows/publicar.yml`, que construye,

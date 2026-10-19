@@ -79,18 +79,20 @@ export function toConditions(
   filtros.forEach((f, i) => {
     const s = state[i];
     if (!s) return;
-    const list = (out[f.datos] ??= []);
+    let cond: Condition | undefined;
     if (f.tipo === 'fechas') {
       if (s.from || s.to) {
-        const cond: { column: string; min?: string; max?: string } = { column: f.columna };
-        if (s.from) cond.min = s.from;
+        const c: { column: string; min?: string; max?: string } = { column: f.columna };
+        if (s.from) c.min = s.from;
         // `hasta` es inclusivo en días: se toma el final de ese día.
-        if (s.to) cond.max = `${s.to}T23:59:59.999Z`;
-        list.push(cond);
+        if (s.to) c.max = `${s.to}T23:59:59.999Z`;
+        cond = c;
       }
     } else if (s.values && s.values.length > 0) {
-      list.push({ column: f.columna, in: s.values });
+      cond = { column: f.columna, in: s.values };
     }
+    if (!cond) return;
+    for (const datos of [f.datos, ...(f.tambien ?? [])]) (out[datos] ??= []).push(cond);
   });
   return out;
 }

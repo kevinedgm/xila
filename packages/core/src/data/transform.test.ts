@@ -74,6 +74,17 @@ describe('pivot', () => {
     expect(nums(p, 'Sur')).toEqual([80, 120, Number.NaN]);
     expect(nums(p, 'Centro')).toEqual([Number.NaN, Number.NaN, 200]);
   });
+
+  it('índice categórico: una columna que no empieza en la primera categoría cae en su fila', () => {
+    // Barbijo solo vive en Dream: su grupo re-codifica Dream como 0 y antes caía en Biscoe.
+    const t = parseCsv(
+      'especie,isla,masa\nAdelia,Biscoe,1\nAdelia,Dream,2\nBarbijo,Dream,3\nPapua,Biscoe,4',
+    ).table;
+    const p = pivot(t, { index: 'isla', columns: 'especie', values: 'masa', agg: 'count' });
+    expect(cats(p, 'isla')).toEqual(['Biscoe', 'Dream']);
+    expect(nums(p, 'Barbijo')).toEqual([Number.NaN, 1]);
+    expect(nums(p, 'Papua')).toEqual([1, Number.NaN]);
+  });
 });
 
 describe('filterRows', () => {
