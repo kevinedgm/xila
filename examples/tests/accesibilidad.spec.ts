@@ -154,6 +154,12 @@ test('con keyboard:false no hay tabindex, y el zoom responde a + - 0', async ({ 
   // enfocable por sí mismo.
   const dispersion = page.locator('#dispersion .xila-canvas');
   await dispersion.scrollIntoViewIfNeeded();
+  // Render diferido: sin escalas (antes del primer dibujo) las teclas no tienen sobre qué actuar.
+  await page.waitForFunction(() =>
+    (window as unknown as { charts: Record<string, import('xilaplot').Chart> }).charts[
+      'dispersion'
+    ]?.hasDrawn(),
+  );
   await expect(dispersion).toHaveAttribute('tabindex', '0');
   await dispersion.focus();
   const dominio = () =>
