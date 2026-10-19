@@ -13,11 +13,12 @@
     "bench:check": "node bench/check.mjs"
   },
   "dependencies": {
+    "vue": "^3.5.44",
     "xilaplot": "workspace:*",
-    "xilaplot-vue": "workspace:*",
-    "vue": "^3.5.44"
+    "xilaplot-vue": "workspace:*"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.56.1",
     "@types/node": "^26.6.5",
     "@types/pngjs": "^6.0.5",

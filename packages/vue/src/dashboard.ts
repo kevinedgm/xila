@@ -3,6 +3,7 @@ import {
   buildKpi,
   chartToCsv,
   chartToPng,
+  chartToSvg,
   downloadFile,
   slugify,
   type Chart,
@@ -162,6 +163,11 @@ export const XilaPanelChart = defineComponent({
     const csv = (): void => {
       if (chart) downloadFile(`${name()}.csv`, chartToCsv(chart), 'text/csv');
     };
+    const svg = async (): Promise<void> => {
+      if (!chart) return;
+      const texto = await chartToSvg(chart, { title: props.panel.titulo ?? '' });
+      downloadFile(`${name()}.svg`, texto, 'image/svg+xml');
+    };
     return () =>
       h('div', { class: 'xila-panel-body' }, [
         h('div', { class: 'xila-panel-tools' }, [
@@ -174,6 +180,16 @@ export const XilaPanelChart = defineComponent({
               onClick: png,
             },
             'PNG',
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              'data-export': 'svg',
+              title: 'Descargar vectorial (SVG)',
+              onClick: svg,
+            },
+            'SVG',
           ),
           h(
             'button',

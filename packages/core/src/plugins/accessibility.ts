@@ -20,6 +20,10 @@ const TYPE_NAMES: Record<string, string> = {
   line: 'Gráfico de líneas',
   bar: 'Gráfico de barras',
   scatter: 'Gráfico de dispersión',
+  box: 'Diagrama de caja',
+  heatmap: 'Mapa de calor',
+  dots: 'Gráfico de unidades',
+  waffle: 'Gráfico de unidades del total',
 };
 
 function dateFormatter(locale: string, timeZone: string, spanMs: number): (ms: number) => string {
@@ -69,6 +73,19 @@ export function chartSummary(ctx: PluginContext, locale = 'es-MX', timeZone = 'U
   return `${type}. ${seriesText}. ${xText}. ${yText}${yTitle}.`;
 }
 
+/**
+ * Huella barata de una serie (longitud, extremos y unos cuantos valores intermedios) para saber
+ * si la tabla sigue al día: `update()` con otros datos del mismo tamaño también la cambia.
+ */
+function fingerprint(s: ResolvedSeries): string {
+  const n = s.length;
+  if (n === 0) return '0';
+  const step = Math.max(1, Math.floor(n / 16));
+  let acc = `${n}:${s.x[0]}:${s.y[0]}:${s.x[n - 1]}:${s.y[n - 1]}`;
+  for (let i = step; i < n - 1; i += step) acc += `|${s.y[i]}`;
+  return acc;
+}
+
 const HIDDEN_STYLE = {
   position: 'absolute',
   width: '1px',
@@ -83,7 +100,8 @@ const HIDDEN_STYLE = {
 
 /**
  * Hace el gráfico usable sin ratón y sin vista. Un canvas es una imagen para un lector de
- * pantalla, así que el plugin añade tres cosas: un resumen en `aria-label`, navegación con
+ * pantalla, así que el plugin añade tres cosas: un resumen en `aria-label` (sobre `role="figure"`,
+ * con los canvas en `aria-hidden`), navegación con
  * flechas (que mueve el mismo cursor que el ratón, con su tooltip) y una tabla de datos
  * oculta visualmente.
  */
@@ -175,7 +193,7 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     if (!ctx || !table) return;
     const series = ctx.getSeries();
     const n = series.reduce((m, s) => Math.max(m, s.length), 0);
-    const key = `${ctx.config.data.length}:${series.map((s) => s.id).join(',')}`;
+    const key = `${ctx.config.data.length}:${series.map((s) => `${s.id}=${fingerprint(s)}`).join(',')}`;
     if (key === tableKey) return;
     tableKey = key;
     const fx = xFormatter(ctx, locale, timeZone);
@@ -208,8 +226,14 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     install(context) {
       ctx = context;
       el = context.renderer.element;
-      el.setAttribute('role', 'img');
+      // `figure`, no `img`: el elemento también contiene la leyenda (botones) y el tooltip, y
+      // una imagen no puede tener hijos interactivos (axe: nested-interactive).
+      el.setAttribute('role', 'figure');
       el.setAttribute('tabindex', '0');
+      // Los canvas son píxeles: fuera del árbol de accesibilidad, el resumen y la tabla hablan.
+      for (const canvas of Array.from(el.querySelectorAll('canvas'))) {
+        canvas.setAttribute('aria-hidden', 'true');
+      }
       if (options.label) el.setAttribute('aria-label', options.label);
       live = document.createElement('div');
       live.className = 'xila-a11y-live';
@@ -220,7 +244,7 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
         table = document.createElement('table');
         table.className = 'xila-a11y-table';
         Object.assign(table.style, HIDDEN_STYLE);
-        // Fuera del elemento `role="img"`, que para el lector es una sola imagen.
+        // Fuera de la figura, como hermana: la figura se lee como un bloque con su resumen.
         el.insertAdjacentElement('afterend', table);
       }
       if (options.keyboard !== false) {
@@ -243,6 +267,9 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
       el?.removeAttribute('role');
       el?.removeAttribute('tabindex');
       el?.removeAttribute('aria-label');
+      for (const canvas of Array.from(el?.querySelectorAll('canvas') ?? [])) {
+        canvas.removeAttribute('aria-hidden');
+      }
       live?.remove();
       table?.remove();
       el = ctx = live = table = null;

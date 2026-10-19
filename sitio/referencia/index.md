@@ -56,6 +56,7 @@ Los valores exactos están en `packages/core/src/config.ts`; la explicación de 
 | `toggleSeries(id, oculta?)`        | lo que hace la leyenda al hacer clic                                                                       |
 | `hoverAt(px, py)` / `clearHover()` | simular el cursor (pruebas, accesibilidad)                                                                 |
 | `toDataURL(tipo?, pixelRatio?)`    | PNG del gráfico; `chartToPng` y `chartToCsv` descargan                                                     |
+| `toSvg(opciones?)`                 | el mismo dibujo como documento SVG (vectorial); `chartToSvg` añade título, leyenda y fuentes               |
 | `getScales()`, `getLayout()`       | escalas y área de dibujo del último dibujo                                                                 |
 | `getBackend()`                     | `'canvas'` o `'webgl'`, lo que terminó dibujando los puntos                                                |
 | `drawNow()`                        | dibujar de inmediato, sin esperar al siguiente fotograma                                                   |

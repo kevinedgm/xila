@@ -22,6 +22,18 @@ test('descarga PNG a 2x y CSV de los datos filtrados', async ({ page }) => {
   // Más alto que el canvas porque lleva título y leyenda encima.
   expect(imagen.height).toBeGreaterThan(320 * 2);
 
+  const [svg] = await Promise.all([
+    page.waitForEvent('download'),
+    panel.locator('[data-export="svg"]').click(),
+  ]);
+  expect(svg.suggestedFilename()).toBe('ventas-semanales-por-region.svg');
+  const vectorial = (await streamToBuffer(await svg.createReadStream())).toString('utf8');
+  expect(vectorial.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+  // Título encima y la serie como un path vectorial; mismo ancho CSS que el gráfico.
+  expect(vectorial).toContain('Ventas semanales por región');
+  expect(vectorial).toContain('<path d="M');
+  expect(vectorial).toContain(`width="${Math.round(ancho)}"`);
+
   const [csv] = await Promise.all([
     page.waitForEvent('download'),
     panel.locator('[data-export="csv"]').click(),

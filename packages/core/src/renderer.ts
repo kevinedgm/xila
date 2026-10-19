@@ -1,5 +1,5 @@
 /**
- * Contrato que implementan los backends (Canvas ahora; WebGL y SVG después).
+ * Contrato que implementan los backends: Canvas 2D, WebGL (puntos) y SVG (exportación).
  *
  * Las series llegan como lotes: buffers completos más un rango `[from, to)` y una
  * transformación lineal. Ninguna función del contrato se llama una vez por punto. Así
@@ -78,6 +78,8 @@ export interface Renderer {
   readonly element: HTMLElement;
   /** `dpr` es `devicePixelRatio`: el backend escala su superficie interna para verse nítido. */
   resize(width: number, height: number, dpr: number): void;
+  /** Color de fondo sólido con el que se compone la exportación. */
+  setBackground(color: string): void;
   clear(layer: Layer): void;
 
   /** Limita el dibujo al rectángulo (en píxeles CSS) hasta el `clear` siguiente de esa capa. */

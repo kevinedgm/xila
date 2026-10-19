@@ -16,6 +16,7 @@ import {
   histogramTable,
   type ChartConfig,
 } from 'xilaplot';
+import * as xila from 'xilaplot';
 import { generateSeries } from './bench/synthetic';
 
 const plugins = () => [tooltipPlugin(), legendPlugin(), accessibilityPlugin()];
@@ -233,7 +234,7 @@ mount('errores', {
   axes: { x: { title: 'Dosis (mg)' }, y: { title: 'Respuesta' } },
 });
 
-Object.assign(window, { charts });
+Object.assign(window, { charts, xila });
 
 // 9. Histograma: la distribución de una variable. `histogramTable` elige el número de cubetas con
 // Freedman–Diaconis (2·IQR/n^(1/3)) y devuelve una tabla de barras; `bins: 30` lo fijaría a mano.

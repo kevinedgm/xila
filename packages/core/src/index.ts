@@ -3,6 +3,8 @@ export const version = '0.1.0';
 export { Chart } from './chart';
 export type { ChartScales } from './chart';
 export { CanvasRenderer } from './renderer-canvas';
+export { SvgRenderer, parseFont } from './renderer-svg';
+export type { SvgRendererOptions, ParsedFont } from './renderer-svg';
 export { WebGLRenderer, parseColor } from './renderer-webgl';
 export type { Backend } from './renderer-webgl';
 
@@ -26,8 +28,8 @@ export type { NumericArray, Summary } from './stats';
 export { parseCsv, fetchCsv, parseIsoDate, CsvError } from './data/csv';
 export type { CsvOptions, CsvResult } from './data/csv';
 export { tableToCsv } from './data/csv-write';
-export { chartToPng, chartToCsv, downloadFile, slugify } from './export';
-export type { PngOptions } from './export';
+export { chartToPng, chartToSvg, chartToCsv, downloadFile, slugify } from './export';
+export type { PngOptions, SvgOptions } from './export';
 export { filterRows, takeRows, groupBy, bucketTime, pivot, splitBy } from './data/transform';
 export type { Aggregation, AggregationSpec, Condition } from './data/transform';
 

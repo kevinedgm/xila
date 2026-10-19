@@ -351,14 +351,20 @@ Se dibujan en la capa `data`, recortadas al área de dibujo y encima de las seri
 Un canvas es una imagen para un lector de pantalla. El plugin añade tres cosas al elemento del
 gráfico:
 
-1. `role="img"`, `tabindex="0"` y un `aria-label` generado en cada dibujo (o fijo con
+1. `role="figure"`, `tabindex="0"` y un `aria-label` generado en cada dibujo (o fijo con
    `label`): "Gráfico de líneas. 2 series: Norte y Sur. 365 datos de 1 ene 2025 a 31 dic 2025.
    Valores entre 420 y 1,450 (MXN)."
 2. Teclado: con el gráfico enfocado, ← → recorren los datos (con Shift, saltos de 5 %), Inicio y
    Fin van a los extremos, ↑ ↓ cambian de serie y Escape quita el cursor. Mueve el mismo cursor
    que el ratón, así que el tooltip aparece y una región `aria-live` lee "Serie, x: y".
 3. Una `<table>` oculta visualmente (hermana del gráfico) con una fila por dato, muestreada a
-   `tableRows` (200) filas como máximo, y una columna por serie.
+   `tableRows` (200) filas como máximo, y una columna por serie. Se regenera cuando cambian los
+   datos, también si el tamaño es el mismo (una huella de los valores lo detecta).
+
+Los `<canvas>` llevan `aria-hidden="true"`: para el lector hablan el resumen y la tabla, no los
+píxeles. El papel es `figure` y no `img` porque la leyenda (botones) y el tooltip viven dentro
+del mismo elemento, y una imagen no admite hijos interactivos. Nombra los siete tipos (líneas, barras, dispersión, caja, mapa de calor, unidades). La
+prueba `examples/tests/accesibilidad.spec.ts` pasa axe-core sobre un gráfico con el plugin.
 
 | Opción      | Valores   | Por defecto      |
 | ----------- | --------- | ---------------- |

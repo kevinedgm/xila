@@ -68,7 +68,9 @@ export function legendPlugin(options: LegendOptions = {}): ChartPlugin {
     install(ctx) {
       el = document.createElement('div');
       el.className = 'xila-legend';
-      el.setAttribute('role', 'list');
+      // `group` y no `list`: los elementos son botones, no `listitem` (axe: aria-required-children).
+      el.setAttribute('role', 'group');
+      el.setAttribute('aria-label', 'Series');
       Object.assign(el.style, {
         position: 'absolute',
         left: '0',

@@ -41,6 +41,7 @@ import {
 import { PluginRegistry, type Layout, type PluginContext, type Rect } from './plugin';
 import { applyMap, type Renderer, type Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
+import { SvgRenderer, type SvgRendererOptions } from './renderer-svg';
 import { WebGLRenderer, type Backend } from './renderer-webgl';
 import { bandScale, type BandScale } from './scales/band';
 import { linearScale, type ContinuousScale, type Domain } from './scales/linear';
@@ -71,6 +72,9 @@ export interface ChartScales {
 export class Chart {
   readonly events = new Emitter();
   readonly renderer: CanvasRenderer;
+  /** Destino del dibujo: el renderer de pantalla, o uno temporal durante `toSvg()`. */
+  private target: Renderer;
+  private exporting = false;
 
   private raw: ChartConfig;
   private config: ResolvedChartConfig;
@@ -122,6 +126,7 @@ export class Chart {
     this.container = container;
     this.raw = config;
     this.renderer = useWebGL(config) ? new WebGLRenderer(container) : new CanvasRenderer(container);
+    this.target = this.renderer;
     if (this.renderer instanceof WebGLRenderer) {
       this.renderer.onFallback = () => this.requestDraw();
     }
@@ -253,6 +258,32 @@ export class Chart {
     return url;
   }
 
+  /**
+   * El gráfico como documento SVG (texto): mismo dibujo, mismos plugins, pero vectorial. Se
+   * dibuja una vez sobre un `SvgRenderer` temporal y luego se restaura la pantalla. Las partes
+   * en HTML (tooltip, leyenda, controles) no forman parte del canvas y tampoco del SVG;
+   * `chartToSvg` añade título y leyenda encima.
+   */
+  toSvg(options: SvgRendererOptions = {}): string {
+    this.assertAlive();
+    const svg = new SvgRenderer(options);
+    const width = this.container.clientWidth || FALLBACK_WIDTH;
+    const height = this.container.clientHeight || FALLBACK_HEIGHT;
+    svg.resize(width, height);
+    this.target = svg;
+    this.exporting = true;
+    try {
+      this.draw();
+    } finally {
+      this.target = this.renderer;
+      this.exporting = false;
+    }
+    // La pantalla vuelve a dibujarse (el layout pudo cambiar si aún no se había dibujado).
+    this.dirty.layout = true;
+    this.draw();
+    return svg.toString();
+  }
+
   /** Dibuja ahora, sin esperar al siguiente fotograma. Útil en tests y exportaciones. */
   drawNow(): void {
     this.assertAlive();
@@ -296,7 +327,7 @@ export class Chart {
   private context(): PluginContext {
     return {
       config: this.config,
-      renderer: this.renderer,
+      renderer: this.target,
       layout: this.layout,
       events: this.events,
       requestDraw: () => this.requestDraw(),
@@ -439,7 +470,8 @@ export class Chart {
 
   /** Marca en la capa `overlay` los datos bajo el cursor; nunca toca la capa de datos. */
   private drawHoverOverlay(hover: HoverPayload): void {
-    const { renderer, config } = this;
+    const { config } = this;
+    const renderer = this.target;
     const { plotArea } = this.layout;
     renderer.clear('overlay');
     if (hover.hits.length === 0) return;
@@ -543,7 +575,8 @@ export class Chart {
 
   private draw(): void {
     if (this.destroyed) return;
-    const { renderer, config } = this;
+    const { config } = this;
+    const renderer = this.target;
     if (this.dirty.data) this.resolveData();
 
     const width = this.container.clientWidth || FALLBACK_WIDTH;
@@ -636,7 +669,7 @@ export class Chart {
               : config.type === 'scatter'
                 ? gridHitTester(visible, scales, plotArea)
                 : sortedHitTester(visible, scales);
-    if (this.lastHover) this.drawHoverOverlay(this.lastHover);
+    if (this.lastHover && !this.exporting) this.drawHoverOverlay(this.lastHover);
     this.events.emit('draw', { first: !this.drawn });
     this.plugins.onEvent('draw', { first: !this.drawn }, this.context());
     this.drawn = true;
@@ -863,7 +896,8 @@ export class Chart {
    * suavizar. Pintar 250 000 celdas así cuesta lo que llenar un arreglo, no 250 000 rectángulos.
    */
   private drawHeatmap(scales: ChartScales, area: Rect): void {
-    const { config, renderer } = this;
+    const { config } = this;
+    const renderer = this.target;
     const s = this.series[0];
     if (!s || !s.value || scales.x.kind !== 'band') return;
     const nx = this.categories().length;
@@ -947,7 +981,8 @@ export class Chart {
 
   /** Notas a la derecha de cada fila, en la capa de fondo (fuera del recorte de datos). */
   private drawRowNotes(area: Rect, ny: number): void {
-    const { renderer, config } = this;
+    const { config } = this;
+    const renderer = this.target;
     const notes = this.rowNotes();
     const rowH = area.height / ny;
     const style = { ...textStyle(config.theme, config.theme.axis), baseline: 'middle' as const };
@@ -961,7 +996,8 @@ export class Chart {
 
   /** Barra de color vertical a la derecha del área, con el máximo arriba y el mínimo abajo. */
   private drawColorLegend(map: Colormap, area: Rect): void {
-    const { renderer, config } = this;
+    const { config } = this;
+    const renderer = this.target;
     const notes = config.heatmap.rowLabels !== 'none' ? this.rowNotes() : [];
     const notesWidth =
       notes.length > 0
@@ -996,7 +1032,8 @@ export class Chart {
   }
 
   private drawSeries(scales: ChartScales, area: Rect): void {
-    const { config, renderer } = this;
+    const { config } = this;
+    const renderer = this.target;
 
     const yMap = scales.y.map();
 
@@ -1150,7 +1187,8 @@ export class Chart {
    * Con una selección activa, los puntos fuera del rango se pintan con el color del grid.
    */
   private drawDots(scales: ChartScales): void {
-    const { config, renderer } = this;
+    const { config } = this;
+    const renderer = this.target;
     const layout = this.dots;
     const first = this.visibleSeries()[0];
     if (!layout || !first || scales.x.kind === 'band') return;
@@ -1249,7 +1287,8 @@ export class Chart {
    * `valor / unit` cuadros en una cuadrícula continua. Debajo, nombre y porcentaje de cada una.
    */
   private drawWaffle(area: Rect): void {
-    const { config, renderer } = this;
+    const { config } = this;
+    const renderer = this.target;
     const { theme } = config;
     const first = this.visibleSeries()[0];
     this.waffle = null;
