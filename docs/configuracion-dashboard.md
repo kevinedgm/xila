@@ -95,6 +95,53 @@ parser y pasar el objeto a `parseDashboard`; el esquema no cambia.
 Las barras necesitan una categoría por barra: si `x` es tiempo hay que dar `agregado` y
 `periodo`, y cada periodo se vuelve una etiqueta (`ene 26`, `feb 26`).
 
+### Panel `cajas`
+
+Reparto de `y` por grupo `x` (box plot clásico, o una forma de "Qué es Xila hoy").
+
+| Clave    | Tipo                                                           |
+| -------- | -------------------------------------------------------------- |
+| `x`      | columna categórica del grupo                                   |
+| `y`      | columna numérica del valor                                     |
+| `sombra` | columna numérica o de tiempo que da el tono en `forma: puntos` |
+| `forma`  | `puntos` `franja` `hoy` (sin forma: box plot)                  |
+| `ejes`   | `{ x, y }`                                                     |
+
+### Panel `calor`
+
+Una celda por `x` × `y` con `valor` agregado (promedio por defecto).
+
+| Clave      | Tipo                                                                   |
+| ---------- | ---------------------------------------------------------------------- |
+| `x`        | columna categórica, o de tiempo si se da `periodo`                     |
+| `y`        | columna categórica (las filas)                                         |
+| `valor`    | columna numérica                                                       |
+| `agregado` | cómo combinar las filas de cada celda (defecto `mean`)                 |
+| `periodo`  | `year` `decade` …: redondea `x` y la vuelve etiqueta (`1950`, `1950s`) |
+| `forma`    | `filas` (cada fila contra su mediana) `tabla` (cifra en cada celda)    |
+
+### `forma`: las alternativas de "Qué es Xila hoy"
+
+Sin `forma`, cada panel es el gráfico clásico. Con `forma`, el mismo panel responde otra
+pregunta y trae sus propias etiquetas y controles (el dashboard solo añade el tooltip):
+
+| Panel        | `forma`        | Pregunta                                   | Claves extra                                              |
+| ------------ | -------------- | ------------------------------------------ | --------------------------------------------------------- |
+| `linea`      | `ahora`        | ¿Dónde está hoy y de dónde viene?          |                                                           |
+| `linea`      | `protagonista` | ¿Cómo va este frente a los demás?          | `protagonista`: categoría de `color` que empieza en color |
+| `barras`     | `puntos`       | ¿Cuánto más que el promedio o la meta?     | `referencia`: `mean` (defecto), `median` o un número      |
+| `barras`     | `unidades`     | ¿Qué parte del total es de cada uno?       |                                                           |
+| `dispersion` | `trayectorias` | ¿Por dónde ha pasado y hacia dónde va?     | `tiempo` (columna de tiempo), `color`, `protagonista`     |
+| `dispersion` | `tendencia`    | ¿Quién se sale del patrón?                 |                                                           |
+| `cajas`      | `puntos`       | ¿Dónde han estado y dónde están ahora?     | `sombra`                                                  |
+| `cajas`      | `franja`       | ¿Dónde se concentra cada grupo?            |                                                           |
+| `cajas`      | `hoy`          | ¿Dónde cae hoy dentro de su historia?      |                                                           |
+| `calor`      | `filas`        | ¿Cuándo cambió cada uno?                   |                                                           |
+| `calor`      | `tabla`        | ¿Cuánto exactamente, sin perder el patrón? |                                                           |
+
+`examples/public/co2/muestra.json` es un dashboard de muestra con las once formas sobre el CSV
+de CO₂ (`/dashboard.html?config=co2/muestra.json`).
+
 ## Mecanismo de los filtros
 
 Los filtros viven en un estado compartido como lista de condiciones (`Condition` de

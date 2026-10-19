@@ -14,7 +14,7 @@ import {
   type DashboardConfig,
   type DataTable,
   type FiltroConfig,
-  type PanelGrafico,
+  type PanelChart,
   type PanelKpi,
   type ValidationError,
 } from 'xilaplot';
@@ -123,7 +123,7 @@ export const XilaKpi = defineComponent({
 export const XilaPanelChart = defineComponent({
   name: 'XilaPanelChart',
   props: {
-    panel: { type: Object as PropType<PanelGrafico>, required: true },
+    panel: { type: Object as PropType<PanelChart>, required: true },
     table: { type: Object as PropType<DataTable>, required: true },
     conditions: { type: Array as PropType<readonly Condition[]>, default: () => [] },
     theme: { type: String as PropType<'light' | 'dark'>, default: 'light' },
@@ -131,18 +131,29 @@ export const XilaPanelChart = defineComponent({
   setup(props) {
     const config = computed<ChartConfig>(() => {
       const base = buildChart(props.panel, props.table, props.conditions);
-      const plugins = [
-        tooltipPlugin(),
-        ...(base.series.length > 1 ? [legendPlugin()] : []),
-        // Barras no hacen zoom (eje de bandas); líneas en X, dispersión en X e Y.
-        ...(base.type === 'bar'
-          ? []
-          : [zoomPanPlugin({ axis: base.type === 'scatter' ? 'xy' : 'x' })]),
-      ];
+      // Con `forma`, el panel trae sus propios plugins (y sus propias etiquetas y controles):
+      // solo se añade el tooltip. Sin forma, leyenda si hay varias series y zoom donde aplica.
+      const propios = base.plugins ?? [];
+      const plugins =
+        props.panel.forma !== undefined
+          ? [...propios, tooltipPlugin()]
+          : [
+              ...propios,
+              tooltipPlugin(),
+              ...(base.series.length > 1 ? [legendPlugin()] : []),
+              // Barras y cajas no hacen zoom (eje de bandas); líneas en X, dispersión en X e Y.
+              ...(base.type === 'line' || base.type === 'scatter'
+                ? [zoomPanPlugin({ axis: base.type === 'scatter' ? 'xy' : 'x' })]
+                : []),
+            ];
       return markRaw({ ...base, plugins, theme: props.theme });
     });
     let chart: Chart | null = null;
-    const name = () => slugify(props.panel.titulo ?? `${props.panel.tipo}-${props.panel.y}`);
+    const name = () =>
+      slugify(
+        props.panel.titulo ??
+          `${props.panel.tipo}-${props.panel.tipo === 'calor' ? props.panel.valor : String(props.panel.y)}`,
+      );
     const png = async (): Promise<void> => {
       if (!chart) return;
       const blob = await chartToPng(chart, { scale: 2, title: props.panel.titulo ?? '' });

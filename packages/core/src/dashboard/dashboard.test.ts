@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseCsv } from '../data/csv';
 import { buildChart, buildKpi } from './build';
-import { DashboardConfigError, parseDashboard, validateDashboard } from './config';
+import { DashboardConfigError, parseDashboard, validateDashboard, type PanelChart } from './config';
 
 const CSV = `fecha,region,monto
 2026-01-05,Norte,100
@@ -164,5 +164,115 @@ describe('buildChart', () => {
       [{ column: 'fecha', min: '2026-02-01' }],
     );
     expect(Array.from(cfg.data.numeric('monto'))).toEqual([230, 240]);
+  });
+});
+
+describe('formas de "Qué es Xila hoy" en el dashboard', () => {
+  const co2 = parseCsv(`fecha,pais,pib,co2
+2020-01-01,A,10,1
+2021-01-01,A,12,2
+2020-01-01,B,20,3
+2021-01-01,B,22,2
+`).table;
+  const datos = { co2: 'data/co2.csv' };
+
+  it('línea con forma protagonista y barras con puntos traen sus plugins', () => {
+    const cfg = parseDashboard({
+      titulo: 'x',
+      datos,
+      paneles: [
+        {
+          tipo: 'linea',
+          datos: 'co2',
+          x: 'fecha',
+          y: 'co2',
+          color: 'pais',
+          forma: 'protagonista',
+          protagonista: 'B',
+        },
+        { tipo: 'barras', datos: 'co2', x: 'pais', y: 'co2', agregado: 'last', forma: 'puntos' },
+        { tipo: 'barras', datos: 'co2', x: 'pais', y: 'co2', agregado: 'sum', forma: 'unidades' },
+      ],
+    });
+    expect(validateDashboard(cfg, { co2 })).toEqual([]);
+    const linea = buildChart(cfg.paneles[0] as PanelChart, co2);
+    expect(linea.type).toBe('line');
+    expect(linea.plugins).toHaveLength(1);
+    const puntos = buildChart(cfg.paneles[1] as PanelChart, co2);
+    expect(puntos.type).toBe('bar');
+    expect(puntos.type === 'bar' && puntos.bar?.mark).toBe('dot');
+    expect(buildChart(cfg.paneles[2] as PanelChart, co2).type).toBe('waffle');
+  });
+
+  it('trayectorias pivota x e y por categoría sobre el tiempo', () => {
+    const cfg = parseDashboard({
+      titulo: 'x',
+      datos,
+      paneles: [
+        {
+          tipo: 'dispersion',
+          datos: 'co2',
+          x: 'pib',
+          y: 'co2',
+          color: 'pais',
+          tiempo: 'fecha',
+          forma: 'trayectorias',
+          protagonista: 'A',
+        },
+      ],
+    });
+    expect(validateDashboard(cfg, { co2 })).toEqual([]);
+    const chart = buildChart(cfg.paneles[0] as PanelChart, co2);
+    expect(chart.type).toBe('scatter');
+    expect(chart.series.map((s) => s.id)).toEqual(['A', 'B']);
+    expect(chart.data.names()).toEqual(['fecha', 'x A', 'y A', 'x B', 'y B']);
+    expect(Array.from(chart.data.numeric('y B'))).toEqual([3, 2]);
+  });
+
+  it('cajas y calor leen el formato largo; calor agrega por celda y acepta periodo', () => {
+    const cfg = parseDashboard({
+      titulo: 'x',
+      datos,
+      paneles: [
+        { tipo: 'cajas', datos: 'co2', x: 'pais', y: 'co2', forma: 'hoy' },
+        {
+          tipo: 'calor',
+          datos: 'co2',
+          x: 'fecha',
+          y: 'pais',
+          valor: 'co2',
+          periodo: 'year',
+          forma: 'tabla',
+        },
+      ],
+    });
+    expect(validateDashboard(cfg, { co2 })).toEqual([]);
+    const cajas = buildChart(cfg.paneles[0] as PanelChart, co2);
+    expect(cajas.type).toBe('box');
+    expect(cajas.type === 'box' && cajas.box?.mark).toBe('range');
+    const calor = buildChart(cfg.paneles[1] as PanelChart, co2);
+    expect(calor.type).toBe('heatmap');
+    expect(calor.data.length).toBe(4);
+    expect(Array.from(calor.data.numeric('co2'))).toEqual([1, 3, 2, 2]);
+    expect(calor.type === 'heatmap' && calor.heatmap?.values).toBe(true);
+  });
+
+  it('rechaza formas que no son del tipo y trayectorias sin tiempo', () => {
+    let err: DashboardConfigError | undefined;
+    try {
+      parseDashboard({
+        titulo: 'x',
+        datos,
+        paneles: [
+          { tipo: 'linea', datos: 'co2', x: 'fecha', y: 'co2', forma: 'tabla' },
+          { tipo: 'dispersion', datos: 'co2', x: 'pib', y: 'co2', forma: 'trayectorias' },
+        ],
+      });
+    } catch (e) {
+      err = e as DashboardConfigError;
+    }
+    expect(err?.errors.map((e) => e.path)).toEqual(
+      expect.arrayContaining(['paneles[0].forma', 'paneles[1].tiempo', 'paneles[1].color']),
+    );
   });
 });

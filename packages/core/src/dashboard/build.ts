@@ -1,10 +1,22 @@
 import type { ChartConfig } from '../config';
 import type { SeriesSpec } from '../data/series';
-import { DataTable, type Column } from '../data/table';
+import { categoryColumn, DataTable, type Column } from '../data/table';
 import { bucketTime, filterRows, groupBy, pivot, type Condition } from '../data/transform';
 import { formatCurrency, formatNumber, formatPercent } from '../format/number';
+import { focusPlugin } from '../plugins/focus';
+import { nowPlugin } from '../plugins/now';
+import { referencePlugin } from '../plugins/reference';
+import { trajectoryPlugin } from '../plugins/trajectory';
+import { trendPlugin } from '../plugins/trend';
 import { floorTime } from '../scales/time';
-import type { FormatoValor, PanelGrafico, PanelKpi } from './config';
+import type {
+  FormatoValor,
+  PanelCajas,
+  PanelCalor,
+  PanelChart,
+  PanelGrafico,
+  PanelKpi,
+} from './config';
 
 /**
  * Convierte un panel declarativo más el estado de filtros en lo que el núcleo entiende:
@@ -130,12 +142,19 @@ export function formatter(formato: FormatoValor = 'numero'): (v: number) => stri
   }
 }
 
-/** Serie por columna `y`, o una por categoría de `color`; agrega por `x` (y `periodo`) si se pide. */
+/**
+ * Serie por columna `y`, o una por categoría de `color`; agrega por `x` (y `periodo`) si se pide.
+ * Con `forma`, devuelve además los plugins de esa forma (`plugins`), que el panel añade a los
+ * suyos. Las formas responden las preguntas de "Qué es Xila hoy" sin escribir código.
+ */
 export function buildChart(
-  panel: PanelGrafico,
+  panel: PanelChart,
   table: DataTable,
   filters: readonly Condition[] = [],
 ): ChartConfig {
+  if (panel.tipo === 'cajas') return buildBoxes(panel, applyFilters(table, filters));
+  if (panel.tipo === 'calor') return buildHeatmap(panel, applyFilters(table, filters));
+  if (panel.forma === 'trayectorias') return buildTrajectories(panel, applyFilters(table, filters));
   let data = applyFilters(table, filters);
   let x = panel.x;
   const ys = typeof panel.y === 'string' ? [panel.y] : [...panel.y];
@@ -173,6 +192,16 @@ export function buildChart(
   if (panel.tipo === 'barras') {
     // Las barras necesitan una banda por categoría: un eje de tiempo se vuelve etiquetas.
     if (data.column(x).kind !== 'category') data = toCategory(data, x, panel.periodo);
+    if (panel.forma === 'unidades') return { type: 'waffle', data, series, axes };
+    if (panel.forma === 'puntos')
+      return {
+        type: 'bar',
+        data,
+        series,
+        axes,
+        bar: { mode: 'grouped', mark: 'dot' },
+        plugins: [referencePlugin({ value: panel.referencia ?? 'mean' })],
+      };
     return {
       type: 'bar',
       data,
@@ -181,8 +210,123 @@ export function buildChart(
       bar: { mode: panel.apilado ? 'stacked' : 'grouped' },
     };
   }
-  if (panel.tipo === 'dispersion') return { type: 'scatter', data, series, axes };
+  if (panel.tipo === 'dispersion') {
+    if (panel.forma === 'tendencia')
+      return { type: 'scatter', data, series, axes, plugins: [trendPlugin()] };
+    return { type: 'scatter', data, series, axes };
+  }
+  if (panel.forma === 'ahora') return { type: 'line', data, series, axes, plugins: [nowPlugin()] };
+  if (panel.forma === 'protagonista') {
+    const first = series.find((s) => s.id === panel.protagonista) ?? series[0];
+    return {
+      type: 'line',
+      data,
+      series,
+      axes,
+      plugins: [focusPlugin(first ? { series: first.id } : {})],
+    };
+  }
   return { type: 'line', data, series, axes };
+}
+
+/**
+ * Trayectorias: cada categoría necesita su propio par de columnas x/y, así que la tabla larga
+ * se pivota dos veces (x e y por categoría) sobre el tiempo y se junta en una tabla ancha.
+ */
+function buildTrajectories(panel: PanelGrafico, data: DataTable): ChartConfig {
+  const time = panel.tiempo as string;
+  const color = panel.color as string;
+  const y = typeof panel.y === 'string' ? panel.y : (panel.y[0] as string);
+  const xs = pivotRaw(data, time, color, panel.x);
+  const ys = pivotRaw(data, time, color, y);
+  const names = xs.names().filter((n) => n !== time);
+  const columns: Record<string, Column> = { [time]: xs.column(time) };
+  for (const n of names) {
+    columns[`x ${n}`] = xs.column(n);
+    columns[`y ${n}`] = ys.column(n);
+  }
+  const series: SeriesSpec[] = names.map((n) => ({ id: n, name: n, x: `x ${n}`, y: `y ${n}` }));
+  const first = names.includes(panel.protagonista ?? '') ? (panel.protagonista as string) : null;
+  return {
+    type: 'scatter',
+    data: new DataTable(columns),
+    series,
+    axes: { x: { title: panel.ejes?.x ?? '' }, y: { title: panel.ejes?.y ?? '' } },
+    plugins: [trajectoryPlugin(first === null ? { time } : { time, series: first })],
+  };
+}
+
+/** Cajas: el formato largo tal cual; la forma elige la marca. */
+function buildBoxes(panel: PanelCajas, data: DataTable): ChartConfig {
+  const box =
+    panel.forma === 'puntos'
+      ? {
+          mark: 'dots' as const,
+          now: 'last' as const,
+          ...(panel.sombra ? { shade: panel.sombra } : {}),
+        }
+      : panel.forma === 'franja'
+        ? { mark: 'density' as const }
+        : panel.forma === 'hoy'
+          ? { mark: 'range' as const, now: 'last' as const }
+          : {};
+  return {
+    type: 'box',
+    data,
+    series: [{ id: panel.y, name: panel.y, x: panel.x, y: panel.y }],
+    axes: { x: { title: panel.ejes?.x ?? '' }, y: { title: panel.ejes?.y ?? '' } },
+    box,
+  };
+}
+
+/**
+ * Calor: una celda por `x` × `y` con `valor` agregado. `pivot` deja una fila por `x` y una
+ * columna por `y`; de ahí se vuelve al formato largo (x, y, valor) que el heatmap lee.
+ */
+function buildHeatmap(panel: PanelCalor, data: DataTable): ChartConfig {
+  let x = panel.x;
+  if (panel.periodo) {
+    data = bucketTime(data, x, panel.periodo, `${x}_${panel.periodo}`);
+    x = `${x}_${panel.periodo}`;
+  }
+  if (data.column(x).kind !== 'category') data = toCategory(data, x, panel.periodo);
+  const wide = pivot(data, {
+    index: x,
+    columns: panel.y,
+    values: panel.valor,
+    agg: panel.agregado ?? 'mean',
+  });
+  const index = wide.column(x);
+  const labels =
+    index.kind === 'category' ? Array.from(index.codes, (c) => index.categories[c] ?? '') : [];
+  const ys = wide.names().filter((n) => n !== x);
+  const xs: string[] = [];
+  const yl: string[] = [];
+  const values: number[] = [];
+  labels.forEach((label, i) => {
+    for (const name of ys) {
+      xs.push(label);
+      yl.push(name);
+      values.push(wide.numeric(name)[i] as number);
+    }
+  });
+  const heatmap =
+    panel.forma === 'filas'
+      ? { scale: 'row' as const, rowLabels: 'max' as const }
+      : panel.forma === 'tabla'
+        ? { values: true, gap: 2, legend: false }
+        : {};
+  return {
+    type: 'heatmap',
+    data: new DataTable({
+      [x]: categoryColumn(xs),
+      [panel.y]: categoryColumn(yl),
+      [panel.valor]: { kind: 'number', values: Float64Array.from(values) },
+    }),
+    series: [{ id: panel.valor, name: panel.valor, x, y: panel.y, value: panel.valor }],
+    axes: { x: { title: panel.ejes?.x ?? '' }, y: { title: panel.ejes?.y ?? '' } },
+    heatmap,
+  };
 }
 
 /** Sin agregar: una columna por categoría con NaN donde esa categoría no tiene fila para esa x. */
@@ -220,12 +364,13 @@ function toCategory(data: DataTable, x: string, periodo: PanelGrafico['periodo']
       : (v: number) => formatNumber(v, { decimals: 0 });
   const out: Record<string, Column> = {};
   for (const name of data.names()) out[name] = data.column(name);
-  const categories = Array.from(src.values, label);
-  out[x] = { kind: 'category', codes: Uint32Array.from(categories.keys()), categories };
+  // `categoryColumn` deja un código por etiqueta distinta (sin agregar, varias filas comparten periodo).
+  out[x] = categoryColumn(Array.from(src.values, label));
   return new DataTable(out);
 }
 
 function labelForPeriod(ms: number, periodo: PanelGrafico['periodo']): string {
+  if (periodo === 'decade') return `${new Date(ms).getUTCFullYear()}s`;
   const opts: Intl.DateTimeFormatOptions =
     periodo === 'year'
       ? { year: 'numeric' }

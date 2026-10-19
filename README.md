@@ -188,9 +188,12 @@ El flujo completo, sin escribir código de gráficos:
 3. Se edita `public/dashboard.json` (`docs/configuracion-dashboard.md`): tablas, filtros y paneles.
 4. `pnpm build` genera `dist/`; se sube y se protege en el servidor (`docs/despliegue.md`).
 
-Ejemplos funcionando con `pnpm dev`: `/dashboard.html` (ventas sintéticas) y
+Ejemplos funcionando con `pnpm dev`: `/dashboard.html` (ventas sintéticas),
 `/dashboard.html?config=co2/dashboard.json` (emisiones de CO₂ de Our World in Data,
-generado con `python3 python/ejemplo_co2.py`: descarga, limpia, exporta; el JSON no tiene código).
+generado con `python3 python/ejemplo_co2.py`: descarga, limpia, exporta; el JSON no tiene código)
+y `/dashboard.html?config=co2/muestra.json`, el dashboard de muestra con las once alternativas de
+"Qué es Xila hoy" declaradas con la clave `forma` de cada panel (`ahora`, `protagonista`,
+`puntos`, `unidades`, `trayectorias`, `tendencia`, `cajas` y `calor` con sus formas).
 
 ## Publicar en npm
 

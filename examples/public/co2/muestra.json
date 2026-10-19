@@ -1,0 +1,130 @@
+{
+  "titulo": "CO₂ de siete países 1950–2024 · muestra de Xila",
+  "tema": "light",
+  "datos": { "co2": "data/co2.csv" },
+  "filtros": [
+    { "tipo": "fechas", "datos": "co2", "columna": "fecha", "etiqueta": "Años" },
+    { "tipo": "categoria", "datos": "co2", "columna": "pais", "etiqueta": "País", "multiple": true }
+  ],
+  "paneles": [
+    {
+      "tipo": "kpi",
+      "titulo": "CO₂ del último año (Mt)",
+      "datos": "co2",
+      "valor": { "columna": "co2_mt", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "year" },
+      "ancho": 4
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Toneladas por persona (promedio)",
+      "datos": "co2",
+      "valor": { "columna": "co2_t_por_persona", "agregado": "mean", "formato": "numero" },
+      "comparar": { "columna": "fecha", "periodo": "year" },
+      "ancho": 4
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Población (último año)",
+      "datos": "co2",
+      "valor": { "columna": "poblacion", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "year" },
+      "ancho": 4
+    },
+    {
+      "tipo": "linea",
+      "forma": "ahora",
+      "titulo": "¿Dónde está hoy cada país y de dónde viene? · Mt de CO₂",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "co2_mt",
+      "color": "pais",
+      "ejes": { "y": "Mt CO₂" }
+    },
+    {
+      "tipo": "linea",
+      "forma": "protagonista",
+      "protagonista": "China",
+      "titulo": "¿Cómo va China frente a los demás? · t por persona",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "co2_t_por_persona",
+      "color": "pais",
+      "ejes": { "y": "t / persona" }
+    },
+    {
+      "tipo": "barras",
+      "forma": "puntos",
+      "titulo": "¿Cuánto más que el promedio? · t por persona, último año",
+      "datos": "co2",
+      "x": "pais",
+      "y": "co2_t_por_persona",
+      "agregado": "last",
+      "ancho": 6,
+      "ejes": { "y": "t / persona" }
+    },
+    {
+      "tipo": "barras",
+      "forma": "unidades",
+      "titulo": "¿Qué parte del total emite cada uno? · Mt, último año",
+      "datos": "co2",
+      "x": "pais",
+      "y": "co2_mt",
+      "agregado": "last",
+      "ancho": 6
+    },
+    {
+      "tipo": "dispersion",
+      "forma": "trayectorias",
+      "protagonista": "China",
+      "titulo": "¿Por dónde ha pasado cada país? · PIB por persona vs. t de CO₂ por persona",
+      "datos": "co2",
+      "x": "pib_per_capita",
+      "y": "co2_t_por_persona",
+      "color": "pais",
+      "tiempo": "fecha",
+      "ejes": { "x": "PIB por persona, $", "y": "t / persona" }
+    },
+    {
+      "tipo": "dispersion",
+      "forma": "tendencia",
+      "titulo": "¿Quién se sale del patrón? · PIB vs. CO₂ por persona",
+      "datos": "co2",
+      "x": "pib_per_capita",
+      "y": "co2_t_por_persona",
+      "color": "pais",
+      "ancho": 6,
+      "ejes": { "x": "PIB por persona, $", "y": "t / persona" }
+    },
+    {
+      "tipo": "cajas",
+      "forma": "hoy",
+      "titulo": "¿Dónde cae hoy cada país dentro de su historia? · t por persona",
+      "datos": "co2",
+      "x": "pais",
+      "y": "co2_t_por_persona",
+      "ancho": 6,
+      "ejes": { "y": "t / persona" }
+    },
+    {
+      "tipo": "calor",
+      "forma": "filas",
+      "titulo": "¿Cuándo cambió cada uno? · t por persona, cada fila contra su mediana",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "pais",
+      "valor": "co2_t_por_persona",
+      "periodo": "year"
+    },
+    {
+      "tipo": "calor",
+      "forma": "tabla",
+      "titulo": "¿Cuánto exactamente? · promedio de t por persona por década",
+      "datos": "co2",
+      "x": "fecha",
+      "y": "pais",
+      "valor": "co2_t_por_persona",
+      "periodo": "decade"
+    }
+  ]
+}

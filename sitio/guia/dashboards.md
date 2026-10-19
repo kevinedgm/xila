@@ -42,13 +42,25 @@ con las mismas claves que `ChartConfig` (tipo, columnas, plugins) o un KPI con u
       "tipo": "kpi",
       "titulo": "Ventas del mes",
       "datos": "ventas",
-      "agg": "sum",
-      "columna": "monto"
+      "valor": { "columna": "monto", "agregado": "sum", "formato": "moneda" }
     },
-    { "tipo": "line", "titulo": "Por día", "datos": "ventas", "x": "fecha", "y": "monto" }
+    { "tipo": "linea", "titulo": "Por día", "datos": "ventas", "x": "fecha", "y": "monto" },
+    {
+      "tipo": "linea",
+      "forma": "ahora",
+      "titulo": "¿Dónde está hoy cada región?",
+      "datos": "ventas",
+      "x": "fecha",
+      "y": "monto",
+      "color": "region"
+    }
   ]
 }
 ```
+
+La clave `forma` convierte un panel clásico en una de las alternativas de "Qué es Xila hoy"
+(`ahora`, `protagonista`, `puntos`, `unidades`, `trayectorias`, `tendencia`, y las de los
+paneles `cajas` y `calor`) sin escribir código.
 
 Se valida en dos pasos al cargar: la forma del JSON (todos los errores con su ruta, como
 `paneles[2].y`) y después las columnas contra los CSV ya cargados, con sugerencia de nombre
