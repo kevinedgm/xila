@@ -34,10 +34,10 @@ test('el dashboard de muestra carga las once formas sin errores y responde al fi
     [11, 'tabla'],
   ] as const) {
     await paneles.nth(i).scrollIntoViewIfNeeded();
-    // El panel de tendencia lleva un ranking de cifras pequeñas en mono: en CI el hinting
-    // difiere del local y supera el 2 % de píxeles (ver matriz.spec.ts).
+    // Varios paneles llevan cifras pequeñas en mono (ranking de tendencia, notas por fila):
+    // en CI el hinting difiere del local y supera el 2 % de píxeles (ver matriz.spec.ts).
     await expect(paneles.nth(i)).toHaveScreenshot(`muestra-${nombre}.png`, {
-      maxDiffPixelRatio: nombre === 'tendencia' ? 0.05 : 0.02,
+      maxDiffPixelRatio: 0.05,
     });
   }
   // Filtrar a dos países recalcula todos los paneles sin romper ninguno.

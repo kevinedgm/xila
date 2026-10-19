@@ -19,7 +19,9 @@ test('la escala por fila y la tabla con tono se dibujan sobre el formato largo',
   await expect(page.locator('#propia')).toHaveScreenshot('matriz-propia.png', {
     maxDiffPixelRatio: 0.05,
   });
-  await expect(page.locator('#tabla')).toHaveScreenshot('matriz-tabla.png');
+  await expect(page.locator('#tabla')).toHaveScreenshot('matriz-tabla.png', {
+    maxDiffPixelRatio: 0.05,
+  });
 
   // El tooltip sigue leyendo la celda bajo el cursor en la tabla con rectángulos.
   const caja = await page.locator('#tabla').boundingBox();
