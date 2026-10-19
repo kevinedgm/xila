@@ -274,6 +274,18 @@ describe('formas de "Qué es Xila hoy" en el dashboard', () => {
     expect(calor.type === 'heatmap' && calor.heatmap?.values).toBe(true);
   });
 
+  it('calor con forma nudos pide nudos y camino al motor', () => {
+    const cfg = parseDashboard({
+      titulo: 'x',
+      datos,
+      paneles: [
+        { tipo: 'calor', datos: 'co2', x: 'fecha', y: 'pais', valor: 'co2', forma: 'nudos' },
+      ],
+    });
+    const calor = buildChart(cfg.paneles[0] as PanelChart, co2);
+    expect(calor.type === 'heatmap' && calor.heatmap).toEqual({ mark: 'knot', path: true });
+  });
+
   it('rechaza formas que no son del tipo y trayectorias sin tiempo', () => {
     let err: DashboardConfigError | undefined;
     try {

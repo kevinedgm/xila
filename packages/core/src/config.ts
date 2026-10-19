@@ -278,6 +278,21 @@ export interface HeatmapChartConfig extends BaseChartConfig {
     readonly values?: boolean;
     /** Hueco del color del fondo entre celdas, en píxeles. Con hueco se dibujan rectángulos. */
     readonly gap?: number;
+    /**
+     * `'cell'` (por defecto): rectángulo de color. `'knot'`: un nudo por celda, círculo del
+     * primer color del tema cuya área y opacidad crecen con el valor, sobre una tela de
+     * puntadas en cruz; el máximo lleva un anillo hilo y una celda vacía se marca con «–».
+     * Con nudos la barra de color se apaga por defecto (el tamaño ya dice la magnitud). Se
+     * dibuja como imagen con más de 2 000 celdas.
+     */
+    readonly mark?: 'cell' | 'knot';
+    /**
+     * Camino: al señalar una celda (cursor, toque o teclado), una puntada corrida une la
+     * etiqueta de su fila con la celda y la celda con la de su columna; ambas etiquetas se
+     * pintan de hilo y el resto de filas y columnas se atenúa. Sin cursor, el camino descansa
+     * en el máximo.
+     */
+    readonly path?: boolean;
   };
 }
 
@@ -427,6 +442,8 @@ export const DEFAULTS = {
     rowLabels: 'none',
     values: false,
     gap: 0,
+    mark: 'cell',
+    path: false,
   },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
   waffle: { unit: 'auto', columns: 'auto', gap: 2, labels: true },
@@ -506,6 +523,10 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
       // Por fila la pregunta es "¿hacia qué lado?": el mapa por defecto pasa a ser divergente.
       ...(config.type === 'heatmap' && config.heatmap?.scale === 'row'
         ? { colormap: 'cobalto-naranja' as const }
+        : undefined),
+      // Con nudos el tamaño ya dice la magnitud: la barra de color sobra salvo que se pida.
+      ...(config.type === 'heatmap' && config.heatmap?.mark === 'knot'
+        ? { legend: false }
         : undefined),
       ...(config.type === 'heatmap' ? config.heatmap : undefined),
     },

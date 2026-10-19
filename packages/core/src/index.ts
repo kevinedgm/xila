@@ -35,7 +35,7 @@ export type {
   StatusRow,
   StatusLayout,
 } from './status';
-export { colormap, stopsColormap, colormapCss, inkOn } from './colormap';
+export { colormap, stopsColormap, colormapCss, inkOn, contrastRatio, readableOn } from './colormap';
 export type { Colormap, ColormapName } from './colormap';
 export type { BoxStats } from './data/box';
 export { histogram, histogramTable, binCount } from './data/histogram';

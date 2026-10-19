@@ -5,13 +5,15 @@ import {
   drawAxes,
   textStyle,
   thinLabels,
+  TICK_GAP,
+  TICK_SIZE,
   type AxisTicks,
 } from './axes';
 import { formatNumber } from './format/number';
 import { resolveConfig, seriesColor, type ChartConfig, type ResolvedChartConfig } from './config';
 import { waffleLayout, type WaffleLayout } from './waffle';
-import { colormap, colormapCss, inkOn, type Colormap } from './colormap';
-import { rowPosition, rowStats, type RowStats } from './heatmap';
+import { colormap, colormapCss, inkOn, readableOn, stopsColormap, type Colormap } from './colormap';
+import { knotShape, peakCell, rowPosition, rowStats, type RowStats } from './heatmap';
 import { monoFont } from './theme';
 import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
@@ -491,6 +493,7 @@ export class Chart {
     if (this.destroyed || !this.lastHover) return;
     this.lastHover = null;
     this.renderer.clear('overlay');
+    this.drawRestingPath();
     this.events.emit('hover', null);
     this.plugins.onEvent('hover', null, this.context());
   }
@@ -501,11 +504,15 @@ export class Chart {
     const renderer = this.target;
     const { plotArea } = this.layout;
     renderer.clear('overlay');
-    if (hover.hits.length === 0) return;
+    if (hover.hits.length === 0) return this.drawRestingPath();
     const first = hover.hits[0] as Hit;
     if (config.type === 'heatmap') {
       const scales = this.scales;
       if (!scales || scales.x.kind !== 'band') return;
+      if (config.heatmap.path) {
+        this.drawHeatmapPath(first.x, Math.floor(scales.y.toValue(first.py)));
+        return;
+      }
       const h = Math.abs(scales.y.toPixel(1) - scales.y.toPixel(0));
       renderer.drawRect(
         'overlay',
@@ -711,7 +718,16 @@ export class Chart {
     renderer.clear('background');
     renderer.clear('data');
     renderer.clear('overlay');
-    drawAxes(renderer, theme, this.layout, axes.h, axes.v, axes.ha, axes.va);
+    drawAxes(
+      renderer,
+      theme,
+      this.layout,
+      axes.h,
+      axes.v,
+      axes.ha,
+      axes.va,
+      config.type === 'heatmap' && config.heatmap.mark === 'knot',
+    );
     this.plugins.beforeDraw(ctx);
     renderer.clip('data', plotArea.x - 1, plotArea.y - 1, plotArea.width + 2, plotArea.height + 2);
     this.drawSeries(scales, plotArea);
@@ -746,6 +762,7 @@ export class Chart {
                   ? gridHitTester(visible, scales, plotArea)
                   : sortedHitTester(visible, scales);
     if (this.lastHover && !this.exporting) this.drawHoverOverlay(this.lastHover);
+    else this.drawRestingPath();
     this.events.emit('draw', { first: !this.drawn });
     this.plugins.onEvent('draw', { first: !this.drawn }, this.context());
     this.drawn = true;
@@ -1022,7 +1039,17 @@ export class Chart {
     const x1 = scales.x.start(nx - 1) + scales.x.bandwidth;
     // Tabla con tono: rectángulos con hueco y cifra. Solo tiene sentido con pocas celdas.
     const asTable = (config.heatmap.gap > 0 || config.heatmap.values) && nx * ny <= 2000;
-    if (asTable) {
+    if (config.heatmap.mark === 'knot' && nx * ny <= 2000) {
+      // El área del nudo es proporcional al valor desde cero (como una burbuja); por fila o con
+      // negativos no hay un cero común y manda la posición en el mapa.
+      const fromZero = !byRow && lo >= 0 && hi > 0;
+      this.drawKnots(area, x0, (x1 - x0) / nx, nx, ny, (yi, xi) => {
+        if (!fromZero) return position(yi, xi);
+        const row = this.cells[yi * nx + xi] as number;
+        const v = row < 0 ? NaN : (s.value?.[row] as number);
+        return v / hi;
+      });
+    } else if (asTable) {
       const gap = config.heatmap.gap;
       const rowH = area.height / ny;
       const colW = (x1 - x0) / nx;
@@ -1081,6 +1108,217 @@ export class Chart {
     }
     if (config.heatmap.rowLabels !== 'none') this.drawRowNotes(area, ny);
     if (config.heatmap.legend) this.drawColorLegend(map, area);
+  }
+
+  /**
+   * `heatmap.mark: 'knot'`: la tela de puntadas en cruz en cada esquina de celda (fondo), un
+   * nudo por celda con dato, «–» en las vacías y un anillo hilo alrededor del máximo.
+   */
+  private drawKnots(
+    area: Rect,
+    x0: number,
+    colW: number,
+    nx: number,
+    ny: number,
+    size: (yi: number, xi: number) => number,
+  ): void {
+    const { config } = this;
+    const { theme } = config;
+    const renderer = this.target;
+    const rowH = area.height / ny;
+    const ink = seriesColor(config, 0);
+    const hilo = theme.palette[1] ?? ink;
+    const maxR = Math.max(1, Math.min(colW, rowH) / 2 - 1.5);
+    // Más marcada que la rejilla: es la tela, no una guía de lectura.
+    const stitch = { stroke: theme.axis, width: 1.1, opacity: 0.35 };
+    const arm = Math.min(2.5, maxR / 3);
+    for (let yi = 0; yi <= ny; yi++) {
+      const y = area.y + yi * rowH;
+      for (let xi = 0; xi <= nx; xi++) {
+        const x = x0 + xi * colW;
+        renderer.drawRule('background', x - arm, y - arm, x + arm, y + arm, stitch);
+        renderer.drawRule('background', x + arm, y - arm, x - arm, y + arm, stitch);
+      }
+    }
+    // Relleno ya mezclado con el fondo: un color opaco por nudo, sin depender de la opacidad
+    // del lienzo (así el SVG y el PNG salen iguales y el velo del camino no se suma).
+    const mix = stopsColormap([theme.background, ink]);
+    const cx = new Float64Array(1);
+    const cy = new Float64Array(1);
+    const inner: number[] = [];
+    const dash = {
+      font: `${Math.round(theme.fontSize * 1.3)}px ${theme.fontFamily}`,
+      fill: theme.axis,
+      align: 'center' as const,
+      baseline: 'middle' as const,
+    };
+    for (let yi = 0; yi < ny; yi++) {
+      const py = area.y + (ny - 1 - yi) * rowH + rowH / 2;
+      for (let xi = 0; xi < nx; xi++) {
+        const px = x0 + xi * colW + colW / 2;
+        const { radius, alpha } = knotShape(size(yi, xi), maxR);
+        if (radius !== radius) {
+          renderer.drawText('data', '–', px, py, dash);
+          continue;
+        }
+        const [r, g, b] = mix(alpha);
+        cx[0] = px;
+        cy[0] = py;
+        renderer.drawPointSeries(
+          'data',
+          cx,
+          cy,
+          0,
+          1,
+          { fill: `rgb(${r}, ${g}, ${b})`, radius, stroke: ink, strokeWidth: 1.3 },
+          { x: IDENTITY, y: IDENTITY },
+        );
+        // Anillo interior claro: la vuelta del hilo que hace que el círculo se lea como nudo.
+        if (radius > 7) inner.push(px, py, radius * 0.55);
+      }
+    }
+    if (inner.length > 0) {
+      const n = inner.length / 3;
+      const ix = new Float64Array(n);
+      const iy = new Float64Array(n);
+      const ir = new Float64Array(n);
+      for (let k = 0; k < n; k++) {
+        ix[k] = inner[k * 3] as number;
+        iy[k] = inner[k * 3 + 1] as number;
+        ir[k] = inner[k * 3 + 2] as number;
+      }
+      renderer.drawPointSeries(
+        'data',
+        ix,
+        iy,
+        0,
+        n,
+        { fill: 'transparent', radius: 0, stroke: theme.background, strokeWidth: 1, opacity: 0.45 },
+        { x: IDENTITY, y: IDENTITY },
+        ir,
+      );
+    }
+    const s = this.series[0];
+    const peak = s?.value ? peakCell(s.value, this.cells, nx, ny) : null;
+    if (peak) {
+      cx[0] = x0 + peak[0] * colW + colW / 2;
+      cy[0] = area.y + (ny - 1 - peak[1]) * rowH + rowH / 2;
+      renderer.drawPointSeries(
+        'data',
+        cx,
+        cy,
+        0,
+        1,
+        { fill: 'transparent', radius: maxR + 3, stroke: hilo, strokeWidth: 2.2 },
+        { x: IDENTITY, y: IDENTITY },
+      );
+    }
+  }
+
+  /**
+   * Camino de `heatmap.path` hasta la celda `(xi, yi)`, en la capa `overlay`: velo del color
+   * del fondo sobre todo lo que no es su fila ni su columna, puntada corrida hilo desde la
+   * etiqueta de la fila hasta la celda y de la celda a la etiqueta de la columna, y las dos
+   * etiquetas repintadas en hilo y negrita.
+   */
+  private drawHeatmapPath(xi: number, yi: number): void {
+    const { config } = this;
+    const { theme } = config;
+    const renderer = this.target;
+    const scales = this.scales;
+    if (!scales || scales.x.kind !== 'band') return;
+    const area = this.layout.plotArea;
+    const nx = this.categories().length;
+    const ny = this.categoriesY().length;
+    if (xi < 0 || xi >= nx || yi < 0 || yi >= ny) return;
+    const hilo = theme.palette[1] ?? theme.text;
+    const rowH = area.height / ny;
+    const left = scales.x.start(xi);
+    const colW = scales.x.bandwidth;
+    const top = area.y + (ny - 1 - yi) * rowH;
+    const right = area.x + area.width;
+    const bottom = area.y + area.height;
+    const veil = { fill: theme.background, opacity: 0.55 };
+    // Cuatro esquinas fuera de la cruz (fila + columna).
+    renderer.drawRect('overlay', area.x, area.y, left - area.x, top - area.y, veil);
+    renderer.drawRect('overlay', left + colW, area.y, right - left - colW, top - area.y, veil);
+    renderer.drawRect('overlay', area.x, top + rowH, left - area.x, bottom - top - rowH, veil);
+    renderer.drawRect(
+      'overlay',
+      left + colW,
+      top + rowH,
+      right - left - colW,
+      bottom - top - rowH,
+      veil,
+    );
+
+    // El hilo sale del borde de la celda (o del nudo), no la cruza.
+    const s = this.series[0];
+    const row = this.cells[yi * nx + xi] as number;
+    const v = row >= 0 ? (s?.value?.[row] as number) : NaN;
+    const knots = config.heatmap.mark === 'knot';
+    const maxR = Math.max(1, Math.min(colW, rowH) / 2 - 1.5);
+    const [lo, hi] = this.heatmapDomain();
+    const t =
+      config.heatmap.scale === 'row'
+        ? rowPosition(v, this.rows[yi] as RowStats)
+        : lo >= 0 && hi > 0
+          ? v / hi
+          : (v - lo) / (hi - lo);
+    const r = knots ? (v === v ? knotShape(t, maxR).radius : 9) : Math.min(colW, rowH) / 2;
+    const px = left + colW / 2;
+    const py = top + rowH / 2;
+    const thread = { stroke: hilo, width: 2, dash: [5, 4] };
+    const startX = area.x - 4;
+    const endY = bottom + 5;
+    renderer.drawRule('overlay', startX, py, px - r - 3, py, thread);
+    renderer.drawRule('overlay', px, py + r + 3, px, endY, thread);
+    const ends = { fill: hilo, radius: 2.5 };
+    renderer.drawPointSeries(
+      'overlay',
+      Float64Array.of(startX, px),
+      Float64Array.of(py, endY),
+      0,
+      2,
+      ends,
+      {
+        x: IDENTITY,
+        y: IDENTITY,
+      },
+    );
+
+    // Etiquetas: se tapa la original con el fondo y se escribe encima en hilo y negrita.
+    // Como texto el hilo no llega al AA sobre manta (3,9:1): se oscurece lo justo.
+    const bold = {
+      font: `600 ${theme.fontSize}px ${theme.fontFamily}`,
+      fill: readableOn(hilo, theme.background),
+    };
+    const yLabel = this.categoriesY()[yi] ?? '';
+    const xLabel = this.categories()[xi] ?? '';
+    const yx = area.x - TICK_SIZE - TICK_GAP;
+    const yw = renderer.measureText(yLabel, bold) + 4;
+    renderer.drawRect('overlay', yx - yw, py - theme.fontSize * 0.7, yw, theme.fontSize * 1.4, {
+      fill: theme.background,
+    });
+    renderer.drawText('overlay', yLabel, yx, py, { ...bold, align: 'right', baseline: 'middle' });
+    const xy = bottom + TICK_SIZE + TICK_GAP;
+    const xw = Math.max(colW, renderer.measureText(xLabel, bold) + 4);
+    renderer.drawRect('overlay', px - xw / 2, xy - 1, xw, theme.fontSize * 1.3, {
+      fill: theme.background,
+    });
+    renderer.drawText('overlay', xLabel, px, xy, { ...bold, align: 'center', baseline: 'top' });
+  }
+
+  /** Camino en reposo: sin cursor, `heatmap.path` señala el máximo. */
+  private drawRestingPath(): void {
+    const { config } = this;
+    if (config.type !== 'heatmap' || !config.heatmap.path) return;
+    const s = this.series[0];
+    const peak = s?.value
+      ? peakCell(s.value, this.cells, this.categories().length, this.categoriesY().length)
+      : null;
+    this.target.clear('overlay');
+    if (peak) this.drawHeatmapPath(peak[0], peak[1]);
   }
 
   /** Notas a la derecha de cada fila, en la capa de fondo (fuera del recorte de datos). */

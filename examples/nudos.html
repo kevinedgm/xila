@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Nudos con camino</title>
+    <style>
+      body {
+        font-family: 'Instrument Sans', system-ui, sans-serif;
+        margin: 24px;
+        color: #15171f;
+        background: #f6f1e8;
+        max-width: 760px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 24px 0 4px;
+      }
+      .sub {
+        color: #5b5f6e;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      #lectura {
+        font-size: 14px;
+        min-height: 20px;
+        margin: 0 0 4px;
+      }
+      #lectura b {
+        color: #b84509;
+      }
+      #lectura .cifra {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+      }
+      .chart {
+        height: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Nudos con camino</h1>
+      <p class="sub">
+        Pedidos por día y hora de una panadería (datos de ejemplo). Un nudo por celda: más grande y
+        más intenso = más pedidos; «–» = sin dato. Señala un nudo con el cursor, un toque o las
+        flechas: el hilo naranja te lleva a su día y a su hora.
+      </p>
+      <h2>Pedidos de una panadería</h2>
+      <p id="lectura" aria-live="polite"></p>
+      <div id="nudos" class="chart"></div>
+    </main>
+    <script type="module" src="/src/nudos.ts"></script>
+  </body>
+</html>

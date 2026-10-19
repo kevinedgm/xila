@@ -215,21 +215,22 @@ punto y un tallo muestra su sentido.
 
 ### 4.2 Tabla pregunta → forma clásica → alternativa (del README)
 
-| Pregunta                                        | Forma clásica | Alternativa en Xila                                                             |
-| ----------------------------------------------- | ------------- | ------------------------------------------------------------------------------- |
-| ¿Dónde está hoy y de dónde viene?               | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela               |
-| ¿Cómo va este frente a los demás?               | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris           |
-| ¿Cuánto más que el promedio o la meta?          | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)               |
-| ¿Qué parte del total es de cada uno?            | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N                 |
-| ¿Cómo se reparten los casos?                    | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas                |
-| ¿Por dónde ha pasado y hacia dónde va?          | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año           |
-| ¿Quién se sale del patrón?                      | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking             |
-| ¿Dónde han estado y dónde están ahora?          | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre           |
-| ¿Dónde se concentra cada grupo?                 | box plot      | **Franja de densidad** (`box.mark: 'density'`)                                  |
-| ¿Dónde cae hoy dentro de su historia?           | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)              |
-| ¿Cuándo cambió cada uno?                        | mapa de calor | **Cada fila contra sí misma** (`heatmap.scale: 'row'` + `rowLabels`)            |
-| ¿Cuánto exactamente, sin perder el patrón?      | mapa de calor | **Tabla con tono** (`heatmap.values` + `gap`): cifra en cada celda              |
-| ¿Está donde debería, y qué tan seguros estamos? | box plot      | **Ranura de estado** (`box.orientation: 'horizontal'` + `reference` + `status`) |
+| Pregunta                                           | Forma clásica | Alternativa en Xila                                                                            |
+| -------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
+| ¿Dónde está hoy y de dónde viene?                  | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela                              |
+| ¿Cómo va este frente a los demás?                  | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris                          |
+| ¿Cuánto más que el promedio o la meta?             | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)                              |
+| ¿Qué parte del total es de cada uno?               | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N                                |
+| ¿Cómo se reparten los casos?                       | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas                               |
+| ¿Por dónde ha pasado y hacia dónde va?             | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año                          |
+| ¿Quién se sale del patrón?                         | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking                            |
+| ¿Dónde han estado y dónde están ahora?             | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre                          |
+| ¿Dónde se concentra cada grupo?                    | box plot      | **Franja de densidad** (`box.mark: 'density'`)                                                 |
+| ¿Dónde cae hoy dentro de su historia?              | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)                             |
+| ¿Cuándo cambió cada uno?                           | mapa de calor | **Cada fila contra sí misma** (`heatmap.scale: 'row'` + `rowLabels`)                           |
+| ¿Cuánto exactamente, sin perder el patrón?         | mapa de calor | **Tabla con tono** (`heatmap.values` + `gap`): cifra en cada celda                             |
+| ¿Cuándo y dónde se concentra, y qué día y hora es? | mapa de calor | **Nudos con camino** (`heatmap.mark: 'knot'` + `path`): área = valor, hilo a su fila y columna |
+| ¿Está donde debería, y qué tan seguros estamos?    | box plot      | **Ranura de estado** (`box.orientation: 'horizontal'` + `reference` + `status`)                |
 
 Hay que distinguir dos mecanismos distintos detrás de la columna de la derecha:
 
@@ -396,6 +397,8 @@ Patrón en una matriz. Datos largos: `x` (columna de la celda) e `y` (fila) cate
 | `heatmap.domain`   | `[min, max]` \| `'auto'`                                                                    | `'auto'`    |
 | `heatmap.center`   | valor central para divergentes (correlaciones: `0`)                                         | `null`      |
 | `heatmap.legend`   | barra de color                                                                              | `true`      |
+| `heatmap.mark`     | `'cell'` rectángulo \| `'knot'` nudo (área y tono = valor; imagen con más de 2 000 celdas)  | `'cell'`    |
+| `heatmap.path`     | camino: puntada hilo de la celda señalada a su fila y columna; en reposo, el máximo         | `false`     |
 
 ```ts
 new Chart(el, {
@@ -603,6 +606,20 @@ heatmap: { values: true, gap: 2, legend: false } // cifra en cada celda; se igno
 
 Para resumir por década: `bucketTime(tabla, 'fecha', 'decade', 'decada')` y después `pivot`
 (`examples/src/matriz.ts`).
+
+#### `heatmap.mark: 'knot'` + `path` · Nudos con camino (opción de `heatmap`)
+
+"¿Cuándo se concentra, y qué día y hora es exactamente?" Cada celda es un nudo: su **área** es
+proporcional al valor desde cero (radio `√v/máx`) y su tono sube con él; las celdas vacías
+llevan «–» y el máximo un anillo hilo. Con `path`, al señalar un nudo (cursor, toque o flechas
+con `accessibilityPlugin`) una puntada corrida hilo lo une con su fila y su columna, cuyas
+etiquetas se pintan de hilo (oscurecido con `readableOn` hasta 4,5:1) mientras el resto se
+atenúa. Sin cursor, el camino descansa en el máximo. Con nudos la barra de color se apaga por
+defecto y el eje queda solo con etiquetas.
+
+```ts
+heatmap: { mark: 'knot', path: true } // día × hora: examples/nudos.html
+```
 
 #### `titlePlugin` · Título con el hallazgo (plugin, todos los tipos)
 

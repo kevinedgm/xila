@@ -166,3 +166,38 @@ export function inkOn(
   const l = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
   return l < 0.4 ? light : dark;
 }
+
+function luminance(rgb: readonly [number, number, number]): number {
+  const lin = (c: number): number => {
+    const u = c / 255;
+    return u <= 0.03928 ? u / 12.92 : ((u + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+}
+
+/** Contraste WCAG entre dos colores hexadecimales (1 a 21). */
+export function contrastRatio(a: string, b: string): number {
+  const la = luminance(hexToRgb(a));
+  const lb = luminance(hexToRgb(b));
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+/**
+ * El mismo color, oscurecido (sobre fondo claro) o aclarado (sobre oscuro) en pasos del 4 %
+ * hasta llegar al contraste `min` con el fondo: 4,5 es el AA para texto normal. El hilo
+ * #d14e0a sobre manta da 3,9:1; como texto pasa a #b84509.
+ */
+export function readableOn(color: string, background: string, min = 4.5): string {
+  if (!color.startsWith('#') || !background.startsWith('#')) return color;
+  const target = luminance(hexToRgb(background)) > 0.18 ? [0, 0, 0] : [255, 255, 255];
+  const rgb = hexToRgb(color);
+  const hex = (c: readonly number[]): string =>
+    '#' + c.map((v) => clamp255(v).toString(16).padStart(2, '0')).join('');
+  for (let k = 0; k <= 25; k++) {
+    const f = k * 0.04;
+    const mixed = rgb.map((v, i) => v + ((target[i] as number) - v) * f);
+    const out = hex(mixed);
+    if (contrastRatio(out, background) >= min) return out;
+  }
+  return hex(target);
+}

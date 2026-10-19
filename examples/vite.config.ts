@@ -19,6 +19,7 @@ export default defineConfig({
         reparto: resolve(import.meta.dirname, 'reparto.html'),
         matriz: resolve(import.meta.dirname, 'matriz.html'),
         ranura: resolve(import.meta.dirname, 'ranura.html'),
+        nudos: resolve(import.meta.dirname, 'nudos.html'),
       },
     },
   },

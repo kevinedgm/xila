@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { rowPosition, rowStats } from './heatmap';
+import { knotShape, KNOT_MIN_RADIUS, peakCell, rowPosition, rowStats } from './heatmap';
 import { colormap, inkOn } from './colormap';
 
 describe('rowStats', () => {
@@ -43,5 +43,28 @@ describe('cobalto-naranja e inkOn', () => {
   it('inkOn elige blanco sobre oscuro y el texto del tema sobre claro', () => {
     expect(inkOn([16, 42, 110], '#15181d')).toBe('#ffffff');
     expect(inkOn([238, 242, 251], '#15181d')).toBe('#15181d');
+  });
+});
+
+describe('knotShape', () => {
+  it('hace el área proporcional a la posición: un cuarto del valor, la mitad del radio', () => {
+    expect(knotShape(1, 16).radius).toBe(16);
+    expect(knotShape(0.25, 16).radius).toBe(8);
+  });
+
+  it('deja un radio mínimo visible y la opacidad entre 0,1 y 1', () => {
+    expect(knotShape(0, 16)).toEqual({ radius: KNOT_MIN_RADIUS, alpha: 0.1 });
+    expect(knotShape(1, 16).alpha).toBe(1);
+    expect(knotShape(2, 16).radius).toBe(16);
+    expect(knotShape(NaN, 16).radius).toBeNaN();
+  });
+});
+
+describe('peakCell', () => {
+  it('encuentra la celda del máximo y prefiere la de más arriba en un empate', () => {
+    // Rejilla 2 × 2: fila 0 (abajo) = [9, 1], fila 1 (arriba) = [vacía, 9].
+    const values = Float64Array.from([9, 1, 9]);
+    expect(peakCell(values, Int32Array.from([0, 1, -1, 2]), 2, 2)).toEqual([1, 1]);
+    expect(peakCell(values, Int32Array.from([-1, -1]), 2, 1)).toBeNull();
   });
 });

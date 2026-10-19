@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { colormap, colormapCss, stopsColormap } from './colormap';
+import { colormap, colormapCss, contrastRatio, readableOn, stopsColormap } from './colormap';
 
 /** Referencias de matplotlib (`cm.viridis(0)`, etc.), en 0–255. */
 const REF = {
@@ -60,5 +60,16 @@ describe('colormap', () => {
     expect(map(0.5)).toEqual([128, 128, 128]);
     expect(colormapCss(map, 0)).toBe('rgb(0, 0, 0)');
     expect(() => stopsColormap(['#000'])).toThrow(RangeError);
+  });
+});
+
+describe('readableOn', () => {
+  it('oscurece el hilo sobre manta hasta el AA de texto y deja igual lo que ya pasa', () => {
+    expect(contrastRatio('#d14e0a', '#f6f1e8')).toBeLessThan(4.5);
+    const hilo = readableOn('#d14e0a', '#f6f1e8');
+    expect(contrastRatio(hilo, '#f6f1e8')).toBeGreaterThanOrEqual(4.5);
+    expect(readableOn('#15171f', '#f6f1e8')).toBe('#15171f');
+    // Sobre fondo oscuro aclara.
+    expect(contrastRatio(readableOn('#1f4bd8', '#15171f'), '#15171f')).toBeGreaterThanOrEqual(4.5);
   });
 });

@@ -116,6 +116,8 @@ export function drawAxes(
   yTicks: AxisTicks,
   xAxis: ResolvedAxisConfig,
   yAxis: ResolvedAxisConfig,
+  /** Solo etiquetas: sin rejilla, línea de eje ni marcas (los nudos dibujan su propia tela). */
+  bare = false,
 ): void {
   const area: Rect = layout.plotArea;
   const bottom = area.y + area.height;
@@ -124,18 +126,18 @@ export function drawAxes(
   const axisLine = { stroke: theme.axis, width: 1 };
   const label = textStyle(theme);
 
-  if (yAxis.grid) {
+  if (yAxis.grid && !bare) {
     for (const py of yTicks.positions) renderer.drawRule('background', area.x, py, right, py, grid);
   }
-  if (xAxis.grid) {
+  if (xAxis.grid && !bare) {
     for (const px of xTicks.positions)
       renderer.drawRule('background', px, area.y, px, bottom, grid);
   }
 
   if (yAxis.show) {
-    renderer.drawRule('background', area.x, area.y, area.x, bottom, axisLine);
+    if (!bare) renderer.drawRule('background', area.x, area.y, area.x, bottom, axisLine);
     yTicks.positions.forEach((py, i) => {
-      renderer.drawRule('background', area.x - TICK_SIZE, py, area.x, py, axisLine);
+      if (!bare) renderer.drawRule('background', area.x - TICK_SIZE, py, area.x, py, axisLine);
       renderer.drawText('background', yTicks.labels[i] ?? '', area.x - TICK_SIZE - TICK_GAP, py, {
         ...label,
         align: 'right',
@@ -159,9 +161,9 @@ export function drawAxes(
   }
 
   if (xAxis.show) {
-    renderer.drawRule('background', area.x, bottom, right, bottom, axisLine);
+    if (!bare) renderer.drawRule('background', area.x, bottom, right, bottom, axisLine);
     xTicks.positions.forEach((px, i) => {
-      renderer.drawRule('background', px, bottom, px, bottom + TICK_SIZE, axisLine);
+      if (!bare) renderer.drawRule('background', px, bottom, px, bottom + TICK_SIZE, axisLine);
       renderer.drawText('background', xTicks.labels[i] ?? '', px, bottom + TICK_SIZE + TICK_GAP, {
         ...label,
         align: 'center',

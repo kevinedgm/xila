@@ -315,7 +315,9 @@ function buildHeatmap(panel: PanelCalor, data: DataTable): ChartConfig {
       ? { scale: 'row' as const, rowLabels: 'max' as const }
       : panel.forma === 'tabla'
         ? { values: true, gap: 2, legend: false }
-        : {};
+        : panel.forma === 'nudos'
+          ? { mark: 'knot' as const, path: true }
+          : {};
   return {
     type: 'heatmap',
     data: new DataTable({

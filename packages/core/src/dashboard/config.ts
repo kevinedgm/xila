@@ -70,7 +70,7 @@ export type FormaLinea = 'ahora' | 'protagonista';
 export type FormaBarras = 'puntos' | 'unidades';
 export type FormaDispersion = 'trayectorias' | 'tendencia';
 export type FormaCajas = 'puntos' | 'franja' | 'hoy';
-export type FormaCalor = 'filas' | 'tabla';
+export type FormaCalor = 'filas' | 'tabla' | 'nudos';
 
 export interface PanelGrafico extends PanelBase {
   readonly tipo: 'linea' | 'barras' | 'dispersion';
@@ -109,7 +109,8 @@ export interface PanelCajas extends PanelBase {
 
 /**
  * Matriz: una celda por `x` × `y` con `valor` agregado. `x` puede ser de tiempo si se da
- * `periodo`. `forma`: `filas` (cada fila contra su mediana) o `tabla` (cifra en cada celda).
+ * `periodo`. `forma`: `filas` (cada fila contra su mediana), `tabla` (cifra en cada celda) o
+ * `nudos` (un nudo por celda, área = valor, con camino a su fila y columna).
  */
 export interface PanelCalor extends PanelBase {
   readonly tipo: 'calor';
@@ -167,7 +168,7 @@ const FORMAS: Record<string, readonly string[]> = {
   barras: ['puntos', 'unidades'],
   dispersion: ['trayectorias', 'tendencia'],
   cajas: ['puntos', 'franja', 'hoy'],
-  calor: ['filas', 'tabla'],
+  calor: ['filas', 'tabla', 'nudos'],
 };
 
 /** Revisa la forma del JSON y devuelve la configuración tipada; lanza con todos los errores. */

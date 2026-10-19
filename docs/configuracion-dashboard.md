@@ -122,7 +122,7 @@ Una celda por `x` × `y` con `valor` agregado (promedio por defecto).
 | `valor`    | columna numérica                                                       |
 | `agregado` | cómo combinar las filas de cada celda (defecto `mean`)                 |
 | `periodo`  | `year` `decade` …: redondea `x` y la vuelve etiqueta (`1950`, `1950s`) |
-| `forma`    | `filas` (cada fila contra su mediana) `tabla` (cifra en cada celda)    |
+| `forma`    | `filas` (contra su mediana) `tabla` (cifra en cada celda) `nudos`      |
 
 ### `forma`: las alternativas de "Qué es Xila hoy"
 
@@ -142,6 +142,7 @@ pregunta y trae sus propias etiquetas y controles (el dashboard solo añade el t
 | `cajas`      | `hoy`          | ¿Dónde cae hoy dentro de su historia?      |                                                           |
 | `calor`      | `filas`        | ¿Cuándo cambió cada uno?                   |                                                           |
 | `calor`      | `tabla`        | ¿Cuánto exactamente, sin perder el patrón? |                                                           |
+| `calor`      | `nudos`        | ¿Cuándo se concentra, y en qué celda?      |                                                           |
 
 `examples/public/co2/muestra.json` es un dashboard de muestra con las once formas sobre el CSV
 de CO₂ (`/dashboard.html?config=co2/muestra.json`).
