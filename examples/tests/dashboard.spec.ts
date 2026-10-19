@@ -23,8 +23,9 @@ test('elegir una región cambia el KPI y todos los gráficos a la vez', async ({
   const antes = await kpi.textContent();
   await page.locator('[data-filter="1"] select').selectOption('Sur');
   await expect(kpi).not.toHaveText(antes ?? '');
-  // La leyenda de la línea solo muestra la región elegida y las barras por región, una barra.
-  await expect(page.locator('[data-panel="4"] .xila-legend-item')).toHaveText(['Sur']);
+  // Con una sola región la línea queda sin leyenda (el título la nombra) y las barras por
+  // región son una barra.
+  await expect(page.locator('[data-panel="4"] .xila-legend-item')).toHaveCount(0);
   await expect(page.locator('[data-panel="6"]')).toHaveScreenshot('dashboard-barras-sur.png');
 });
 

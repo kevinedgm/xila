@@ -7,6 +7,9 @@ corren en orden de registro. Todos los de esta lista viven en `xilaplot`.
 Cada gráfico necesita **sus propias instancias**: un plugin guarda estado y nodos del DOM, así
 que compartir `tooltipPlugin()` entre dos gráficos deja al primero sin tooltip. Lo práctico es
 una función `const plugins = () => [tooltipPlugin(), legendPlugin()]` y llamarla por gráfico.
+`chart.update({ plugins: [...] })` sustituye la lista completa: desinstala los anteriores (sus
+nodos del DOM desaparecen) e instala los nuevos. Es la forma de cambiar las opciones de un
+plugin, por ejemplo la referencia de `referencePlugin`.
 
 ```ts
 import { Chart, tooltipPlugin, legendPlugin, zoomPanPlugin, annotationsPlugin } from 'xilaplot';
@@ -211,6 +214,30 @@ Mecanismo: los colores se fijan en `beforeUpdate` con `stroke` en cada serie (la
 conserva el de su posición en la paleta; el resto toma `theme.muted`), así tooltip, leyenda y
 exportación los ven iguales. La protagonista se vuelve a trazar en `afterDraw` para quedar encima
 del gris. Cambiar de protagonista llama a `update({})`.
+
+## `referencePlugin(opciones)`
+
+"Puntos con referencia", la forma A elegida en la ronda r01 de _Más allá de la barra_: una línea
+punteada en el promedio, la mediana o una meta, y sobre cada marca su diferencia contra ella.
+Con `bar.mark: 'dot'` añade un tallo de la referencia al punto, así el sentido y el tamaño de la
+diferencia se leen de un vistazo. Responde "¿cuánto más o menos que…?" sin que el lector reste.
+
+```ts
+{ type: 'bar', bar: { mark: 'dot' }, plugins: [tooltipPlugin(), referencePlugin({ value: 'mean' })] }
+```
+
+| Opción   | Por defecto                        | Qué hace                                             |
+| -------- | ---------------------------------- | ---------------------------------------------------- |
+| `value`  | obligatorio                        | Número, `'mean'` o `'median'` de las series visibles |
+| `label`  | `promedio 6,0` / `mediana` / cifra | Texto junto a la línea, fijo o función del valor     |
+| `deltas` | `true`                             | Escribir la diferencia sobre cada marca              |
+| `stems`  | `true`                             | Tallos de la referencia al punto (solo con `'dot'`)  |
+| `format` | formato del eje Y                  | Texto de la referencia y de las diferencias          |
+
+Mecanismo: `referenceValue(spec, ys)` calcula la referencia con los valores finitos de las series
+visibles; `afterDraw` traza la regla punteada en `scales.y.toPixel(ref)`, escribe la etiqueta
+alineada a la derecha y, por cada marca, la diferencia con signo encima si es positiva o debajo
+si es negativa. Cambiar la referencia es pasar otro `referencePlugin` en `update({ plugins })`.
 
 ## `annotationsPlugin(anotaciones)`
 

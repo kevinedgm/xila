@@ -61,6 +61,7 @@ export type {
   BarChartConfig,
   ScatterChartConfig,
   DotsChartConfig,
+  WaffleChartConfig,
   DotsSeriesSpec,
   ResolvedChartConfig,
   ScaleConfig,
@@ -125,6 +126,10 @@ export { titlePlugin } from './plugins/title';
 export { focusPlugin } from './plugins/focus';
 export type { FocusOptions } from './plugins/focus';
 export { nowPlugin } from './plugins/now';
+export { referencePlugin, referenceValue } from './plugins/reference';
+export type { ReferenceOptions } from './plugins/reference';
+export { waffleLayout, autoUnit } from './waffle';
+export type { WaffleLayout, WaffleCell } from './waffle';
 export type { NowOptions } from './plugins/now';
 export type { TitleOptions } from './plugins/title';
 export type { EndLabelsOptions } from './plugins/end-labels';

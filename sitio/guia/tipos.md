@@ -38,6 +38,13 @@ fondo entre barras vecinas y entre segmentos apilados, 2 px). Una barra por cate
 con `pivot(tabla, { index, columns, values, agg })`. Un histograma es `histogramTable(valores)`
 más un gráfico `bar` con `padding: 0, radius: 0, gap: 1` (barras pegadas, sin redondeo).
 
+`bar.mark: 'dot'` cambia cada barra por un punto en el valor (anillo del color del fondo, radio
+entre 4 y 7 px según la banda). Es la forma "puntos con referencia": la barra solo servía para
+llegar al valor, y el punto deja el área libre para una línea de comparación. Con
+`referencePlugin({ value: 'mean' | 'median' | número })` se dibuja esa línea, un tallo de cada
+punto hasta ella y la diferencia encima; la distancia es la respuesta a "¿cuánto más que el
+promedio?". `bar.orientation: 'horizontal'` sigue pendiente: hoy la categoría va siempre en X.
+
 ## Box plot
 
 Recibe el formato largo directo: `x` es la columna del grupo y `y` la del valor. Por grupo
@@ -67,6 +74,17 @@ El eje Y en cubetas cuenta casos y es lineal en píxeles: el radio (`dots.radius
 defecto) baja hasta que la cubeta más alta cabe en el área. Con `selectionPlugin` arrastrar
 cuenta el rango y `summaryPlugin` lo resume en un panel al lado (cifra, porcentaje, rango,
 mediana, forma); en cubetas la selección salta a los bordes.
+
+## Unidades del total
+
+`type: 'waffle'` reparte un total en cuadros iguales: `x` es la categoría y `y` el valor; cada
+categoría recibe `round(valor / unidad)` cuadros (al menos uno si el valor es positivo) y los
+cuadros van juntos, fila por fila, de izquierda a derecha y de arriba abajo. El lector cuenta
+en vez de comparar alturas, y la parte de cada categoría se lee como fracción del total.
+`waffle.unit` fija cuánto vale un cuadro (`'auto'` elige un paso redondo que da entre 100 y 250
+cuadros); `waffle.columns` fija las columnas (`'auto'` las calcula para llenar el área sin
+salirse); `waffle.gap` es el hueco entre cuadros (2 px) y `waffle.labels: false` quita la línea
+de leyenda con nombre y porcentaje. No hay ejes; el tooltip da categoría y valor.
 
 ## Escalas y ejes
 

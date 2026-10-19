@@ -1,8 +1,43 @@
 # Xila
 
-Librería de gráficos en TypeScript para dashboards y datos científicos, con identidad inspirada en los textiles de Oaxaca.
+Librería de gráficos en TypeScript para dashboards y datos científicos: lee tablas columnares
+(CSV exportado desde pandas), dibuja en Canvas 2D (WebGL para dispersiones masivas) y se
+extiende con plugins. Es la base de un kit de dashboards estáticos para clientes y, sobre todo,
+un lugar donde proponer formas de representar datos que salen de la línea y la barra clásicas.
 
 > **Estado:** experimental (0.x). La API puede cambiar entre versiones. Paquetes en npm: `xilaplot` (núcleo) y `xilaplot-vue` (Vue 3). Documentación: <https://kevinedgm.github.io/xila/>.
+
+## Qué es Xila hoy
+
+**Parte de la pregunta del lector, no del tipo de gráfico.** Cada forma responde una tarea de
+lectura concreta: ver la tendencia, comparar magnitudes, contar casos, encontrar la relación,
+localizar el patrón en una matriz. Las formas clásicas están (`line`, `bar`, `scatter`, `box`,
+`heatmap`) y junto a ellas las alternativas que nacieron de preguntar "¿qué quiere ver quien
+mira esto?":
+
+| Pregunta                               | Forma clásica | Alternativa en Xila                                                   |
+| -------------------------------------- | ------------- | --------------------------------------------------------------------- |
+| ¿Dónde está hoy y de dónde viene?      | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela     |
+| ¿Cómo va este frente a los demás?      | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris |
+| ¿Cuánto más que el promedio o la meta? | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)     |
+| ¿Qué parte del total es de cada uno?   | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N       |
+| ¿Cómo se reparten los casos?           | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas      |
+
+**Anatomía editorial.** Grid solo horizontal, líneas de 2 px con nombre y último valor al final
+en vez de leyenda, barras con el extremo redondeado y un hueco del color del fondo entre
+vecinas, puntos con anillo de superficie, y un título que dice el hallazgo (`titlePlugin`).
+Nada de sombras, degradados ni cajas: el dato manda.
+
+**Paleta Cobalto.** Un azul cobalto como tono principal y una paleta categórica de siete colores
+validada para daltonismo; el heatmap usa el mismo tono de casi blanco a marino (`cobalto`).
+Los tokens viven en el tema y se cambian en una sola configuración.
+
+**Interacción incluida.** Tooltip, leyenda, zoom y pan, selección que cuenta, panel de resumen,
+anotaciones, sincronización entre gráficos y accesibilidad por teclado vienen como plugins; un
+plugin propio son unas funciones de ciclo de vida (`docs/plugins.md`).
+
+**Rápida con muchos datos.** Columnas tipadas, decimación min/max para líneas y WebGL para un
+millón de puntos; los números están en [`docs/benchmarks.md`](docs/benchmarks.md).
 
 ## Estructura
 
@@ -95,6 +130,14 @@ cada punto de su posición anterior a la nueva durante `dots.transition` ms (600
 pone al lado la cifra, el porcentaje, el rango, la mediana y los botones de forma. Ejemplo:
 `examples/unidades.html`.
 
+## Unidades del total
+
+`type: 'waffle'` reparte un total en cuadros iguales: `x` es la categoría y `y` el valor; cada
+categoría recibe `round(valor / unidad)` cuadros y van juntos, fila por fila. `waffle.unit`
+(`'auto'`: paso redondo que da entre 100 y 250 cuadros), `waffle.columns`, `waffle.gap` y
+`waffle.labels`. Con `type: 'bar'` y `bar: { mark: 'dot' }` cada barra se vuelve un punto en el
+valor, listo para `referencePlugin`. Ejemplo: `examples/comparar.html`.
+
 ## Box plot
 
 `type: 'box'` recibe datos en formato largo (una fila por medición): `x` es la columna
@@ -117,7 +160,7 @@ dibuja la barra de color. `colormap()` está exportada para usar los mismos colo
 
 ## Plugins
 
-Título con hallazgo, tooltip, leyenda, etiquetas al final de las líneas, "ahora con estela" y "protagonista y contexto" (`nowPlugin`, `focusPlugin`), zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
+Título con hallazgo, tooltip, leyenda, etiquetas al final de las líneas, "ahora con estela" y "protagonista y contexto" (`nowPlugin`, `focusPlugin`), línea de referencia con diferencias (`referencePlugin`), zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
 [`docs/plugins.md`](docs/plugins.md).
 
 ## Dashboards para clientes

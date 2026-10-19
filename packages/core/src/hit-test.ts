@@ -315,3 +315,44 @@ export function pixelHitTester(
     },
   };
 }
+
+/**
+ * Unidades del total: el cuadro bajo el cursor (o el más cercano por su centro). El acierto
+ * lleva la categoría en `index` y `x`, y en `y` el valor de esa categoría.
+ */
+export function waffleHitTester(
+  series: ResolvedSeries,
+  layout: {
+    readonly cells: readonly { x: number; y: number; size: number; category: number }[];
+  },
+): HitTester {
+  const hitOf = (k: number, d: number): Hit | null => {
+    const cell = layout.cells[k];
+    if (!cell) return null;
+    const value = series.y[cell.category] as number;
+    return {
+      seriesIndex: 0,
+      seriesId: series.id,
+      index: k,
+      x: cell.category,
+      y: value === value ? value : NaN,
+      px: cell.x + cell.size / 2,
+      py: cell.y + cell.size / 2,
+      distance: d,
+    };
+  };
+  const nearest = (px: number, py: number, maxDistance: number): Hit | null => {
+    let best = -1;
+    let bestD = Infinity;
+    layout.cells.forEach((c, k) => {
+      const inside = px >= c.x && px <= c.x + c.size && py >= c.y && py <= c.y + c.size;
+      const d = inside ? 0 : Math.hypot(px - (c.x + c.size / 2), py - (c.y + c.size / 2));
+      if (d < bestD) {
+        bestD = d;
+        best = k;
+      }
+    });
+    return best >= 0 && bestD <= maxDistance ? hitOf(best, bestD) : null;
+  };
+  return { nearest, nearestX: () => [] };
+}

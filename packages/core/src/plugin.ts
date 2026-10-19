@@ -105,8 +105,11 @@ export type PluginHook = (typeof PLUGIN_HOOK_ORDER)[number];
 /** Ejecuta los hooks de una lista de plugins en orden de registro. */
 export class PluginRegistry {
   private readonly plugins: ChartPlugin[] = [];
+  /** La lista con la que se construyó, para saber si `update({ plugins })` trae otra. */
+  readonly source: readonly ChartPlugin[] | undefined;
 
   constructor(plugins: readonly ChartPlugin[] = []) {
+    this.source = plugins;
     for (const p of plugins) this.add(p);
   }
 

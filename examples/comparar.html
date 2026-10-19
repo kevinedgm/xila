@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Más allá de la barra</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #15181d;
+        max-width: 1100px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 32px 0 2px;
+      }
+      .sub {
+        color: #5b6470;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      .chart {
+        height: 360px;
+      }
+      .ctrl {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 13px;
+        color: #5b6470;
+        margin-top: 8px;
+      }
+      .ctrl button {
+        font:
+          500 13px Inter,
+          system-ui,
+          sans-serif;
+        padding: 4px 10px;
+        border: 1px solid #e8ebef;
+        border-radius: 6px;
+        background: #fff;
+        color: #15181d;
+        cursor: pointer;
+      }
+      .ctrl button[aria-pressed='true'] {
+        background: #15181d;
+        color: #fff;
+        border-color: #15181d;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Más allá de la barra</h1>
+    <p class="sub">
+      Emisiones de CO₂ de siete países en 2024 (Our World in Data). Las dos formas elegidas en la
+      ronda r01 de barras.
+    </p>
+
+    <h2>A · Puntos con referencia</h2>
+    <p class="sub">
+      Un punto por país donde terminaría la barra y una línea de referencia; la distancia es la
+      respuesta.
+    </p>
+    <div id="puntos" class="chart"></div>
+    <div class="ctrl" role="group" aria-label="Referencia">
+      <span>Referencia:</span>
+      <button type="button" data-ref="mean" aria-pressed="true">Promedio</button>
+      <button type="button" data-ref="median" aria-pressed="false">Mediana</button>
+      <button type="button" data-ref="2" aria-pressed="false">Meta 2 t</button>
+    </div>
+
+    <h2>D · Unidades del total</h2>
+    <p class="sub">
+      Cada cuadro vale lo mismo; los cuadros de un país van juntos y el lector cuenta su parte del
+      total.
+    </p>
+    <div id="total" class="chart"></div>
+
+    <script type="module" src="/src/comparar.ts"></script>
+  </body>
+</html>

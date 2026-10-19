@@ -5,7 +5,7 @@ import type { ColormapName } from './colormap';
 import type { BinRule } from './data/histogram';
 import { resolveTheme, type Theme, type ThemeName } from './theme';
 
-export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap' | 'dots';
+export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap' | 'dots' | 'waffle';
 
 export interface ScaleConfig {
   /** `band` solo tiene sentido para barras; `time` requiere una columna de tiempo. */
@@ -74,6 +74,29 @@ export interface BarChartConfig extends BaseChartConfig {
     readonly radius?: number;
     /** Hueco en píxeles del color del fondo entre barras vecinas y entre segmentos apilados (2). */
     readonly gap?: number;
+    /**
+     * Marca de cada valor: `'bar'` (defecto) o `'dot'`, un punto donde terminaría la barra, sin
+     * relleno. Con `referencePlugin` el punto se compara contra una línea de referencia.
+     */
+    readonly mark?: 'bar' | 'dot';
+  };
+}
+
+/**
+ * Unidades del total: cada categoría de `x` ocupa tantos cuadros como `y / unit`, en una
+ * cuadrícula continua, así el lector cuenta la parte de cada una en vez de estimar áreas.
+ */
+export interface WaffleChartConfig extends BaseChartConfig {
+  readonly type: 'waffle';
+  readonly waffle?: {
+    /** Valor de cada cuadro; `'auto'` elige un paso redondo que dé entre 100 y 250 cuadros. */
+    readonly unit?: number | 'auto';
+    /** Columnas de la cuadrícula; `'auto'` las ajusta al ancho y alto disponibles. */
+    readonly columns?: number | 'auto';
+    /** Hueco entre cuadros en píxeles (2). */
+    readonly gap?: number;
+    /** Nombre y porcentaje de cada categoría bajo la cuadrícula (`true`). */
+    readonly labels?: boolean;
   };
 }
 
@@ -156,7 +179,8 @@ export type ChartConfig =
   | ScatterChartConfig
   | BoxChartConfig
   | HeatmapChartConfig
-  | DotsChartConfig;
+  | DotsChartConfig
+  | WaffleChartConfig;
 
 /** Lo mismo, con todos los valores por defecto aplicados. Es lo que usa el núcleo. */
 export interface ResolvedChartConfig {
@@ -174,6 +198,7 @@ export interface ResolvedChartConfig {
   readonly box: Required<NonNullable<BoxChartConfig['box']>>;
   readonly heatmap: Required<NonNullable<HeatmapChartConfig['heatmap']>>;
   readonly dots: Required<NonNullable<DotsChartConfig['dots']>>;
+  readonly waffle: Required<NonNullable<WaffleChartConfig['waffle']>>;
 }
 
 export interface ResolvedAxisConfig {
@@ -186,11 +211,12 @@ export interface ResolvedAxisConfig {
 export const DEFAULTS = {
   padding: { top: 8, right: 8, bottom: 8, left: 8 } satisfies Padding,
   line: { width: 2, area: false, step: false },
-  bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2 },
+  bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2, mark: 'bar' },
   scatter: { radius: 3, ring: 1.5 },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
   heatmap: { colormap: 'cobalto', domain: 'auto', center: null, legend: true },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
+  waffle: { unit: 'auto', columns: 'auto', gap: 2, labels: true },
 } as const;
 
 /** Color de la serie `index`: el `stroke` que declara o, si no, el de su posición en la paleta. */
@@ -223,7 +249,10 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
   // Sin `scales.x.type`, el tipo sale de los datos: barras → banda; columna `time` → tiempo.
   const firstX = series[0]?.x ?? '';
   const defaultX =
-    config.type === 'bar' || config.type === 'box' || config.type === 'heatmap'
+    config.type === 'bar' ||
+    config.type === 'box' ||
+    config.type === 'heatmap' ||
+    config.type === 'waffle'
       ? 'band'
       : config.data.column(firstX).kind === 'time'
         ? 'time'
@@ -236,7 +265,11 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
       x: resolveScale(config.scales?.x, defaultX),
       y: resolveScale(config.scales?.y, 'linear'),
     },
-    axes: { x: resolveAxis(config.axes?.x, false), y: resolveAxis(config.axes?.y, true) },
+    // La cuadrícula de unidades no tiene ejes: las categorías se nombran bajo los cuadros.
+    axes: {
+      x: resolveAxis(config.axes?.x, false, config.type !== 'waffle'),
+      y: resolveAxis(config.axes?.y, true, config.type !== 'waffle'),
+    },
     plugins: config.plugins ?? [],
     theme: resolveTheme(config.theme),
     padding: { ...DEFAULTS.padding, ...config.padding },
@@ -246,6 +279,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     box: { ...DEFAULTS.box, ...(config.type === 'box' ? config.box : undefined) },
     heatmap: { ...DEFAULTS.heatmap, ...(config.type === 'heatmap' ? config.heatmap : undefined) },
     dots: { ...DEFAULTS.dots, ...(config.type === 'dots' ? config.dots : undefined) },
+    waffle: { ...DEFAULTS.waffle, ...(config.type === 'waffle' ? config.waffle : undefined) },
   };
 }
 
@@ -264,10 +298,10 @@ function resolveScale(
  * Por defecto solo el eje Y lleva grid: líneas horizontales finas para leer valores; las
  * verticales se quitan porque el eje X se lee por sus ticks (anatomía editorial).
  */
-function resolveAxis(axis: AxisConfig | undefined, grid: boolean): ResolvedAxisConfig {
+function resolveAxis(axis: AxisConfig | undefined, grid: boolean, show = true): ResolvedAxisConfig {
   return {
     title: axis?.title ?? '',
-    show: axis?.show ?? true,
+    show: axis?.show ?? show,
     grid: axis?.grid ?? grid,
     format: axis?.format,
   };

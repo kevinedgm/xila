@@ -9,15 +9,17 @@ import {
 } from './axes';
 import { formatNumber } from './format/number';
 import { resolveConfig, seriesColor, type ChartConfig, type ResolvedChartConfig } from './config';
+import { waffleLayout, type WaffleLayout } from './waffle';
 import { colormap, type Colormap } from './colormap';
 import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
-import { resolveSeries, type ResolvedSeries } from './data/series';
+import { resolveSeries, type ResolvedSeries, type SeriesSpec } from './data/series';
 import { Emitter, type HoverPayload } from './events';
 import {
   bandHitTester,
+  waffleHitTester,
   gridHitTester,
   heatmapHitTester,
   sortedHitTester,
@@ -62,7 +64,7 @@ export class Chart {
   private raw: ChartConfig;
   private config: ResolvedChartConfig;
   private series: ResolvedSeries[] = [];
-  private readonly plugins: PluginRegistry;
+  private plugins: PluginRegistry;
   private readonly container: HTMLElement;
   private readonly observer: ResizeObserver | null;
   private readonly visibility: IntersectionObserver | null;
@@ -85,6 +87,7 @@ export class Chart {
   /** Gráfico de unidades: posiciones objetivo del último layout y las que se muestran. */
   private dots: DotsLayout | null = null;
   private dotsShown: { x: Float64Array; y: Float64Array; mode: string } | null = null;
+  private waffle: WaffleLayout | null = null;
   private dotsAnim: { fromX: Float64Array; fromY: Float64Array; start: number } | null = null;
   /** Rango seleccionado en X (plugin de selección); los datos fuera se atenúan. */
   private selection: Domain | null = null;
@@ -153,6 +156,13 @@ export class Chart {
     this.assertAlive();
     const next = { ...this.raw, ...patch } as ChartConfig;
     this.raw = next;
+    // Una lista de plugins nueva sustituye a la anterior: se desinstalan los viejos (quitan sus
+    // elementos del DOM) y se instalan los nuevos antes de resolver la configuración.
+    if (patch.plugins !== undefined && patch.plugins !== this.plugins.source) {
+      this.plugins.uninstall(this.context());
+      this.plugins = new PluginRegistry(patch.plugins);
+      this.plugins.install(this.context());
+    }
     this.config = resolveConfig(this.plugins.beforeUpdate(next, this.context()));
     this.dirty.data = true;
     this.dirty.layout = true;
@@ -382,7 +392,8 @@ export class Chart {
     const hits =
       this.config.type === 'scatter' ||
       this.config.type === 'heatmap' ||
-      this.config.type === 'dots'
+      this.config.type === 'dots' ||
+      this.config.type === 'waffle'
         ? nearest
           ? [nearest]
           : []
@@ -426,6 +437,16 @@ export class Chart {
         h,
         { fill: 'transparent', stroke: config.theme.text, strokeWidth: 2 },
       );
+      return;
+    }
+    if (config.type === 'waffle') {
+      const cell = this.waffle?.cells[first.index];
+      if (cell)
+        renderer.drawRect('overlay', cell.x, cell.y, cell.size, cell.size, {
+          fill: 'transparent',
+          stroke: config.theme.text,
+          strokeWidth: 2,
+        });
       return;
     }
     if (config.type !== 'scatter' && config.type !== 'dots') {
@@ -556,17 +577,19 @@ export class Chart {
             this.categoriesY().length,
             scales,
           )
-        : scales.x.kind === 'band'
-          ? bandHitTester(
-              config.type === 'box' ? this.boxSeries() : visible,
-              scales,
-              config.type === 'bar' && config.bar.mode === 'stacked',
-            )
-          : config.type === 'dots' && firstVisible && this.dotsShown
-            ? pixelHitTester(firstVisible, 0, this.dotsShown.x, this.dotsShown.y, plotArea)
-            : config.type === 'scatter'
-              ? gridHitTester(visible, scales, plotArea)
-              : sortedHitTester(visible, scales);
+        : config.type === 'waffle' && firstVisible && this.waffle
+          ? waffleHitTester(firstVisible, this.waffle)
+          : scales.x.kind === 'band'
+            ? bandHitTester(
+                config.type === 'box' ? this.boxSeries() : visible,
+                scales,
+                config.type === 'bar' && config.bar.mode === 'stacked',
+              )
+            : config.type === 'dots' && firstVisible && this.dotsShown
+              ? pixelHitTester(firstVisible, 0, this.dotsShown.x, this.dotsShown.y, plotArea)
+              : config.type === 'scatter'
+                ? gridHitTester(visible, scales, plotArea)
+                : sortedHitTester(visible, scales);
     if (this.lastHover) this.drawHoverOverlay(this.lastHover);
     this.events.emit('draw', { first: !this.drawn });
     this.plugins.onEvent('draw', { first: !this.drawn }, this.context());
@@ -858,6 +881,10 @@ export class Chart {
       this.drawDots(scales);
       return;
     }
+    if (config.type === 'waffle') {
+      this.drawWaffle(area);
+      return;
+    }
     if (scales.x.kind === 'band') {
       if (config.type === 'box') this.drawBoxes(scales.x, { x: IDENTITY, y: yMap }, renderer);
       else this.drawBars(scales.x, { x: IDENTITY, y: yMap }, renderer);
@@ -1074,6 +1101,82 @@ export class Chart {
     );
   }
 
+  /**
+   * Unidades del total: la primera serie visible da un valor por categoría; cada categoría ocupa
+   * `valor / unit` cuadros en una cuadrícula continua. Debajo, nombre y porcentaje de cada una.
+   */
+  private drawWaffle(area: Rect): void {
+    const { config, renderer } = this;
+    const { theme } = config;
+    const first = this.visibleSeries()[0];
+    this.waffle = null;
+    if (!first) return;
+    const categories = this.categories();
+    // `x` son los códigos de categoría: el valor de cada categoría va por su código, no por fila.
+    const values = new Array<number>(categories.length).fill(0);
+    for (let i = 0; i < first.series.length; i++) {
+      const c = first.series.x[i] as number;
+      const v = first.series.y[i] as number;
+      if (c >= 0 && c < values.length && v === v) values[c] = (values[c] as number) + v;
+    }
+    const line = theme.fontSize * 1.5;
+    const labelRows = config.waffle.labels ? 2 : 0;
+    const grid: Rect = {
+      x: area.x,
+      y: area.y,
+      width: area.width,
+      height: Math.max(1, area.height - labelRows * line - (labelRows ? 6 : 0)),
+    };
+    const layout = waffleLayout(values, grid, config.waffle);
+    this.waffle = layout;
+    for (const cell of layout.cells) {
+      renderer.drawRect('data', cell.x, cell.y, cell.size, cell.size, {
+        fill: seriesColor({ series: this.waffleSpecs(categories), theme }, cell.category),
+      });
+    }
+    if (!config.waffle.labels) return;
+    const total = values.reduce((s, v) => s + (v > 0 ? v : 0), 0);
+    const style = { font: `${theme.fontSize}px ${theme.fontFamily}`, fill: theme.text };
+    let lx = area.x;
+    let ly = area.y + layout.rows * layout.size + 6 + line / 2;
+    const bottom = area.y + area.height;
+    categories.forEach((name, i) => {
+      if (!((values[i] as number) > 0)) return;
+      const text = `${name} ${Math.round(((values[i] as number) / total) * 100)} %`;
+      const w = renderer.measureText(text, style) + 16;
+      if (lx + w > area.x + area.width && lx > area.x) {
+        lx = area.x;
+        ly += line;
+      }
+      if (ly + line / 2 > bottom + 1) return;
+      renderer.drawRect('data', lx, ly - 5, 10, 10, {
+        fill: seriesColor({ series: this.waffleSpecs(categories), theme }, i),
+      });
+      renderer.drawText('data', text, lx + 14, ly, { ...style, baseline: 'middle' });
+      lx += w + 14;
+    });
+    const unitText = `Cada cuadro = ${formatNumber(layout.unit)}`;
+    const unitStyle = {
+      font: `${Math.round(theme.fontSize * 0.92)}px ${theme.fontFamily}`,
+      fill: theme.axis,
+    };
+    const unitWidth = renderer.measureText(unitText, unitStyle);
+    const uy = lx + unitWidth + 8 <= area.x + area.width ? ly : ly + line;
+    if (uy + line / 2 <= bottom + 1) {
+      renderer.drawText('data', unitText, area.x + area.width, uy, {
+        ...unitStyle,
+        align: 'right',
+        baseline: 'middle',
+      });
+    }
+  }
+
+  /** Una "serie" por categoría, solo para que `seriesColor` reparta la paleta por categoría. */
+  private waffleSpecs(categories: readonly string[]): readonly SeriesSpec[] {
+    const spec = this.config.series[0];
+    return categories.map((c) => ({ id: c, name: c, x: spec?.x ?? '', y: spec?.y ?? '' }));
+  }
+
   private drawBoxes(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
     const { background } = config.theme;
@@ -1158,9 +1261,39 @@ export class Chart {
     });
   }
 
+  /** `bar.mark: 'dot'`: un punto donde terminaría cada barra, con anillo del fondo. */
+  private drawDotMarks(x: BandScale, transform: Transform, renderer: Renderer): void {
+    const { config } = this;
+    const visible = this.visibleSeries();
+    const slot = x.bandwidth / Math.max(1, visible.length);
+    const radius = Math.max(4, Math.min(7, slot * 0.3));
+    visible.forEach(({ series: s, index: colorIndex }, si) => {
+      const count = Math.min(s.length, x.count);
+      const px = new Float64Array(count);
+      for (let i = 0; i < count; i++) px[i] = x.start(i) + slot * (si + 0.5);
+      renderer.drawPointSeries(
+        'data',
+        px,
+        s.y,
+        0,
+        count,
+        {
+          fill: seriesColor(config, colorIndex),
+          radius,
+          stroke: config.theme.background,
+          strokeWidth: 2,
+        },
+        { x: IDENTITY, y: transform.y },
+      );
+    });
+  }
+
   private drawBars(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
-
+    if (config.bar.mark === 'dot') {
+      this.drawDotMarks(x, transform, renderer);
+      return;
+    }
     const visible = this.visibleSeries();
     const stacked = config.bar.mode === 'stacked';
     const slot = stacked ? x.bandwidth : x.bandwidth / Math.max(1, visible.length);

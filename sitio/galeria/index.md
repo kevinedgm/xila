@@ -5,6 +5,8 @@ import ahora from './ejemplos/ahora';
 import protagonista from './ejemplos/protagonista';
 import barras from './ejemplos/barras';
 import apiladas from './ejemplos/apiladas';
+import puntos from './ejemplos/puntos';
+import total from './ejemplos/total';
 import dispersion from './ejemplos/dispersion';
 import log from './ejemplos/log';
 import histograma from './ejemplos/histograma';
@@ -65,6 +67,25 @@ protagonista.
 <Demo :cargar="apiladas" />
 
 <<< @/galeria/ejemplos/apiladas.ts
+
+## Puntos con referencia
+
+Donde terminaría cada barra hay un punto, y una línea punteada marca el promedio. La distancia
+del punto a la línea es la respuesta a "¿cuánto más que el resto?"; el tallo y la cifra la
+hacen legible de un vistazo.
+
+<Demo :cargar="puntos" :alto="420" />
+
+<<< @/galeria/ejemplos/puntos.ts
+
+## Unidades del total
+
+Cada cuadro vale lo mismo y los cuadros de un país van juntos: el lector cuenta su parte del
+total en vez de comparar alturas. Pasar el ratón sobre un cuadro dice a quién pertenece.
+
+<Demo :cargar="total" :alto="360" />
+
+<<< @/galeria/ejemplos/total.ts
 
 ## Dispersión con zoom en dos ejes
 

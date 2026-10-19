@@ -14,6 +14,7 @@ export default defineConfig({
         calor: resolve(import.meta.dirname, 'calor.html'),
         unidades: resolve(import.meta.dirname, 'unidades.html'),
         ahora: resolve(import.meta.dirname, 'ahora.html'),
+        comparar: resolve(import.meta.dirname, 'comparar.html'),
       },
     },
   },
