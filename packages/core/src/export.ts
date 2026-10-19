@@ -1,5 +1,6 @@
 import type { Chart } from './chart';
 import { tableToCsv } from './data/csv-write';
+import { seriesColor } from './config';
 
 export interface PngOptions {
   /** Densidad de píxeles; 2 da una imagen nítida en diapositivas. */
@@ -49,7 +50,7 @@ export async function chartToPng(chart: Chart, options: PngOptions = {}): Promis
     let x = 12;
     items.forEach((spec) => {
       const i = config.series.indexOf(spec);
-      ctx.fillStyle = theme.palette[i % theme.palette.length] ?? '#000';
+      ctx.fillStyle = seriesColor(config, i);
       ctx.fillRect(x, y + line / 2 - 5, 10, 10);
       ctx.fillStyle = theme.text;
       const label = spec.name ?? spec.id;

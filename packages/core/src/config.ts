@@ -193,6 +193,15 @@ export const DEFAULTS = {
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
 } as const;
 
+/** Color de la serie `index`: el `stroke` que declara o, si no, el de su posición en la paleta. */
+export function seriesColor(
+  config: { readonly series: readonly SeriesSpec[]; readonly theme: Theme },
+  index: number,
+): string {
+  const { palette } = config.theme;
+  return config.series[index]?.stroke ?? palette[index % palette.length] ?? '#000';
+}
+
 export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
   if (config.series.length === 0) {
     throw new RangeError('La configuración necesita al menos una serie');

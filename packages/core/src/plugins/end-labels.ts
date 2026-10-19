@@ -1,5 +1,6 @@
 import type { ChartPlugin, PluginContext } from '../plugin';
 import { formatNumber } from '../format/number';
+import { seriesColor } from '../config';
 
 export interface EndLabelsOptions {
   /** Escribir el nombre de la serie (`true`). */
@@ -21,6 +22,27 @@ export interface EndLabelsOptions {
  * Si dos etiquetas chocan se separan en vertical, de arriba abajo, sin salirse del área.
  * Reserva a la derecha el ancho de la etiqueta más larga. Solo para escalas X continuas.
  */
+/**
+ * Separa posiciones verticales ya ordenadas para que ninguna quede a menos de `gap` de la
+ * anterior: empuja hacia abajo y, si la última se sale de `bottom`, las sube en cadena.
+ */
+export function spreadLabels(
+  sorted: readonly number[],
+  gap: number,
+  top: number,
+  bottom: number,
+): number[] {
+  const ys = sorted.map((y) => Math.max(top, y));
+  for (let i = 1; i < ys.length; i++) {
+    if ((ys[i] as number) - (ys[i - 1] as number) < gap) ys[i] = (ys[i - 1] as number) + gap;
+  }
+  for (let i = ys.length - 1; i >= 0; i--) {
+    const max = i === ys.length - 1 ? bottom : (ys[i + 1] as number) - gap;
+    if ((ys[i] as number) > max) ys[i] = max;
+  }
+  return ys;
+}
+
 export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
   const withName = options.name ?? true;
   const withValue = options.value ?? true;
@@ -40,7 +62,6 @@ export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
     const scales = c.getScales();
     if (!scales || scales.x.kind === 'band') return [];
     const sx = scales.x;
-    const { theme } = c.config;
     const out: { text: string; x: number; y: number; color: string }[] = [];
     c.getSeries().forEach((s, i) => {
       if (c.hiddenSeries.has(s.id)) return;
@@ -55,7 +76,7 @@ export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
         text: parts.join('  '),
         x: sx.toPixel(s.x[last] as number),
         y: scales.y.toPixel(s.y[last] as number),
-        color: theme.palette[i % theme.palette.length] ?? theme.text,
+        color: seriesColor(c.config, i),
       });
     });
     return out;
@@ -82,19 +103,14 @@ export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
       const { theme } = c.config;
       const area = c.layout.plotArea;
       const items = labels(c).sort((a, b) => a.y - b.y);
-      const gap = options.minGap ?? theme.fontSize * 1.1;
-      // Separar colisiones: de arriba abajo, y si el último se sale, empujar hacia arriba.
-      const ys = items.map((it) => it.y);
-      for (let i = 1; i < ys.length; i++) {
-        if ((ys[i] as number) - (ys[i - 1] as number) < gap) ys[i] = (ys[i - 1] as number) + gap;
-      }
-      const bottom = area.y + area.height;
-      for (let i = ys.length - 1; i >= 0; i--) {
-        const max = i === ys.length - 1 ? bottom : (ys[i + 1] as number) - gap;
-        if ((ys[i] as number) > max) ys[i] = max;
-      }
+      const ys = spreadLabels(
+        items.map((it) => it.y),
+        options.minGap ?? theme.fontSize * 1.1,
+        area.y,
+        area.y + area.height,
+      );
       items.forEach((it, i) => {
-        const ly = Math.max(area.y, ys[i] as number);
+        const ly = ys[i] as number;
         c.renderer.drawPointSeries(
           'overlay',
           Float64Array.of(it.x),

@@ -1,6 +1,8 @@
 <script setup>
 import linea from './ejemplos/linea';
 import multi from './ejemplos/multi';
+import ahora from './ejemplos/ahora';
+import protagonista from './ejemplos/protagonista';
 import barras from './ejemplos/barras';
 import apiladas from './ejemplos/apiladas';
 import dispersion from './ejemplos/dispersion';
@@ -33,6 +35,24 @@ código completo que lo produce; todos empiezan por cargar la tabla una sola vez
 <Demo :cargar="multi" />
 
 <<< @/galeria/ejemplos/multi.ts
+
+## Ahora con estela
+
+Cifra actual por país, cambio en diez años y la historia como estela. Reproducir mueve el instante
+y el gráfico atenúa lo posterior.
+
+<Demo :cargar="ahora" :alto="520" />
+
+<<< @/galeria/ejemplos/ahora.ts
+
+## Protagonista y contexto
+
+Una serie en color y con valor; las demás en gris con solo su nombre. Los botones cambian la
+protagonista.
+
+<Demo :cargar="protagonista" :alto="420" />
+
+<<< @/galeria/ejemplos/protagonista.ts
 
 ## Barras
 

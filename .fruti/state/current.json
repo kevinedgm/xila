@@ -23,10 +23,7 @@
       "packages/core/src/chart.ts (drawDots, dotsScale, selection)",
       "packages/core/src/plugins/summary.ts (panel A)"
     ],
-    "tests": [
-      "packages/core/src/dots.test.ts",
-      "examples/tests/unidades.spec.ts"
-    ],
+    "tests": ["packages/core/src/dots.test.ts", "examples/tests/unidades.spec.ts"],
     "example": "examples/unidades.html"
   },
   "mora": {
@@ -37,12 +34,7 @@
       "sitio/galeria/index.md#casos-como-unidades",
       "docs/plugins.md#summaryplugin"
     ],
-    "review_required": [
-      "texto por defecto de la lectura"
-    ],
-    "missing_evidence": [
-      "tokens aprobados",
-      "prueba con usuarios externos (E7.09)"
-    ]
+    "review_required": ["texto por defecto de la lectura"],
+    "missing_evidence": ["tokens aprobados", "prueba con usuarios externos (E7.09)"]
   }
 }

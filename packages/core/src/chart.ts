@@ -8,7 +8,7 @@ import {
   type AxisTicks,
 } from './axes';
 import { formatNumber } from './format/number';
-import { resolveConfig, type ChartConfig, type ResolvedChartConfig } from './config';
+import { resolveConfig, seriesColor, type ChartConfig, type ResolvedChartConfig } from './config';
 import { colormap, type Colormap } from './colormap';
 import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
@@ -192,6 +192,7 @@ export class Chart {
     if (hidden) this.hidden.add(seriesId);
     else this.hidden.delete(seriesId);
     this.events.emit('visibility', { seriesId, hidden });
+    this.plugins.onEvent('visibility', { seriesId, hidden }, this.context());
     this.requestDraw();
   }
 
@@ -437,7 +438,7 @@ export class Chart {
     }
     if (config.type === 'bar' || config.type === 'box') return;
     for (const h of hover.hits) {
-      const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';
+      const color = seriesColor(config, h.seriesIndex);
       renderer.drawPointSeries(
         'overlay',
         Float64Array.of(h.px),
@@ -846,7 +847,7 @@ export class Chart {
 
   private drawSeries(scales: ChartScales, area: Rect): void {
     const { config, renderer } = this;
-    const { palette } = config.theme;
+
     const yMap = scales.y.map();
 
     if (config.type === 'heatmap') {
@@ -870,7 +871,7 @@ export class Chart {
     const ty = scales.y.transform;
 
     for (const { series: s, index: i } of this.visibleSeries()) {
-      const color = palette[i % palette.length] ?? '#000';
+      const color = seriesColor(config, i);
       const from = Math.max(0, lowerBound(s.x, x0) - 1);
       const to = Math.min(s.length, lowerBound(s.x, x1) + 1);
       const sx = tx ? mapValues(s.x, from, to, tx) : s.x;
@@ -1018,7 +1019,7 @@ export class Chart {
     }
     this.dotsShown = { x, y, mode: layout.mode };
 
-    const color = config.theme.palette[first.index % config.theme.palette.length] ?? '#000';
+    const color = seriesColor(config, first.index);
     const identity: Transform = { x: IDENTITY, y: IDENTITY };
     const sel = this.selection;
     if (!sel) {
@@ -1075,7 +1076,7 @@ export class Chart {
 
   private drawBoxes(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
-    const { palette, background } = config.theme;
+    const { background } = config.theme;
     const visible = this.visibleSeries();
     const slot = x.bandwidth / Math.max(1, visible.length);
     const boxWidth = slot * 0.8;
@@ -1083,7 +1084,7 @@ export class Chart {
     visible.forEach(({ index: colorIndex }, si) => {
       const stats = this.boxes[colorIndex] ?? [];
       const n = Math.min(stats.length, x.count);
-      const color = palette[colorIndex % palette.length] ?? '#000';
+      const color = seriesColor(config, colorIndex);
       const cx = new Float64Array(n);
       const px0 = new Float64Array(n);
       const px1 = new Float64Array(n);
@@ -1159,7 +1160,7 @@ export class Chart {
 
   private drawBars(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
-    const { palette } = config.theme;
+
     const visible = this.visibleSeries();
     const stacked = config.bar.mode === 'stacked';
     const slot = stacked ? x.bandwidth : x.bandwidth / Math.max(1, visible.length);
@@ -1207,7 +1208,7 @@ export class Chart {
           y1[i] = v;
         }
       }
-      const color = palette[colorIndex % palette.length] ?? '#000';
+      const color = seriesColor(config, colorIndex);
       // Hueco del color del fondo entre barras vecinas o, apiladas, entre segmentos.
       const style = {
         fill: color,

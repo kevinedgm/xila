@@ -159,6 +159,59 @@ chocan y, si la última se sale del área, las sube en cadena. Solo actúa con u
 (líneas, dispersión); con barras no dibuja nada. Las series ocultas desde la leyenda no se
 etiquetan.
 
+## `nowPlugin(opciones)`
+
+"Ahora con estela", la forma A elegida en la ronda r01 de _Más allá de la línea_: un panel con la
+cifra actual de cada serie, su cambio contra `lookback` puntos atrás y la historia como una estela
+que se desvanece hacia atrás. Un deslizador y un botón mueven el instante; el gráfico atenúa lo
+posterior y marca el instante con una regla. La cifra responde "¿dónde está hoy?"; la trayectoria
+acompaña.
+
+```ts
+plugins: [
+  tooltipPlugin(),
+  nowPlugin({ position: 'top', lookback: 10, labels: { ago: 'en {n} años' } }),
+];
+```
+
+| Opción     | Por defecto       | Qué hace                                           |
+| ---------- | ----------------- | -------------------------------------------------- |
+| `position` | `'bottom'`        | `'top'` pone el panel arriba                       |
+| `lookback` | `10`              | Puntos atrás con los que se compara la cifra       |
+| `format`   | formato del eje Y | Texto de la cifra y del cambio                     |
+| `formatX`  | formato del eje X | Texto del instante (fechas con el calendario)      |
+| `controls` | `true`            | Botón Reproducir y deslizador                      |
+| `interval` | `120`             | Milisegundos entre pasos al reproducir             |
+| `dim`      | `true`            | Atenuar en el gráfico lo posterior al instante     |
+| `labels`   | español           | `play`, `pause`, `ago` (`'en {n} puntos'`), `time` |
+
+Mecanismo: la línea de tiempo es la unión de las X finitas de las series visibles; en cada
+instante se toma el último punto de cada serie con `x ≤ instante`. El panel es un `div`
+`.xila-now` (`role="region"`, `aria-live="polite"`) con una ficha `.xila-now-tile` por serie;
+`reserveSpace` descuenta su alto. Con `prefers-reduced-motion`, Reproducir salta al final.
+
+## `focusPlugin(opciones)`
+
+"Protagonista y contexto", la forma C: una serie en su color, con nombre y valor al final; las
+demás en el color apagado del tema, sin leyenda y solo con su nombre. Escala a veinte series sin
+espagueti porque el contraste de saturación ordena la lectura.
+
+```ts
+plugins: [tooltipPlugin(), focusPlugin({ series: 'México', format: (v) => v.toFixed(1) })];
+```
+
+| Opción     | Por defecto       | Qué hace                                               |
+| ---------- | ----------------- | ------------------------------------------------------ |
+| `series`   | la primera        | `id` de la protagonista inicial                        |
+| `selector` | `true`            | Botones `.xila-focus-item[data-series]` para cambiarla |
+| `labels`   | `true`            | Etiquetas al final de las líneas                       |
+| `format`   | formato del eje Y | Texto del valor de la protagonista                     |
+
+Mecanismo: los colores se fijan en `beforeUpdate` con `stroke` en cada serie (la protagonista
+conserva el de su posición en la paleta; el resto toma `theme.muted`), así tooltip, leyenda y
+exportación los ven iguales. La protagonista se vuelve a trazar en `afterDraw` para quedar encima
+del gris. Cambiar de protagonista llama a `update({})`.
+
 ## `annotationsPlugin(anotaciones)`
 
 Marca eventos sobre el gráfico. Las anotaciones guardan su posición en **valores de datos**

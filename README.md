@@ -117,7 +117,7 @@ dibuja la barra de color. `colormap()` está exportada para usar los mismos colo
 
 ## Plugins
 
-Título con hallazgo, tooltip, leyenda, etiquetas al final de las líneas, zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
+Título con hallazgo, tooltip, leyenda, etiquetas al final de las líneas, "ahora con estela" y "protagonista y contexto" (`nowPlugin`, `focusPlugin`), zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
 [`docs/plugins.md`](docs/plugins.md).
 
 ## Dashboards para clientes

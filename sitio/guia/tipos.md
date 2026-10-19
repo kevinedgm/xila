@@ -17,7 +17,8 @@ cada serie y qué escala X va por defecto.
 `line.width` (2 px por defecto), `line.area` (relleno hasta cero) y `line.step` (escalones). Con más puntos que
 píxeles la serie se **decima por mín y máx**: por cada columna de píxeles se dibujan el mínimo y
 el máximo, así los picos no desaparecen y un millón de puntos se traza en unos milisegundos.
-Requiere X ordenada; `isSorted` lo comprueba.
+Requiere X ordenada; `isSorted` lo comprueba. Para salir de la línea clásica: `nowPlugin`
+(cifra actual con estela y reproducción) y `focusPlugin` (una protagonista, el resto en gris).
 
 Incertidumbre: `yError` (simétrico) o `yLow` y `yHigh` se dibujan como banda bajo la línea y
 entran en el dominio Y.

@@ -1,6 +1,7 @@
 import type { Hit } from '../hit-test';
 import type { ChartPlugin, PluginContext } from '../plugin';
 import { formatNumber } from '../format/number';
+import { seriesColor } from '../config';
 
 export interface TooltipOptions {
   /** `nearest`: un dato. `x`: todas las series en la misma x (líneas y barras). */
@@ -117,7 +118,7 @@ function defaultFormat(
     }
     const rows = hits
       .map((h) => {
-        const color = config.theme.palette[h.seriesIndex % config.theme.palette.length] ?? '#000';
+        const color = seriesColor(config, h.seriesIndex);
         const name = config.series[h.seriesIndex]?.name ?? h.seriesId;
         const box =
           config.type === 'box' ? ctx.getBoxStats?.()[h.seriesIndex]?.[h.index] : undefined;

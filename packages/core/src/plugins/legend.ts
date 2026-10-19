@@ -1,4 +1,5 @@
 import type { ChartPlugin, PluginContext } from '../plugin';
+import { seriesColor } from '../config';
 
 export interface LegendOptions {
   readonly position?: 'top' | 'bottom';
@@ -43,7 +44,7 @@ export function legendPlugin(options: LegendOptions = {}): ChartPlugin {
         textDecoration: hidden ? 'line-through' : 'none',
       });
       const swatch = document.createElement('span');
-      const color = theme.palette[i % theme.palette.length] ?? '#000';
+      const color = seriesColor(ctx.config, i);
       Object.assign(swatch.style, {
         display: 'inline-block',
         width: '12px',

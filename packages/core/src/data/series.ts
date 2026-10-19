@@ -9,6 +9,8 @@ export interface SeriesSpec {
   readonly y: string;
   /** Columna categórica que separa la serie en una por categoría (Etapa 4). */
   readonly color?: string;
+  /** Color fijo de la serie (CSS). Por defecto, el de su posición en la paleta del tema. */
+  readonly stroke?: string;
   /** Columna numérica que controla el tamaño de los puntos (solo scatter). */
   readonly size?: string;
   /** Incertidumbre simétrica: la columna con el error (`y ± error`). */
