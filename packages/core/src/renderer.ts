@@ -56,6 +56,11 @@ export interface BarStyle extends RectStyle {
   readonly gap?: number;
   /** Píxeles que se quitan del lado `y0` (la base): hueco entre segmentos apilados. */
   readonly gapStart?: number;
+  /**
+   * Barras horizontales: `x0`/`x1` (con `t.x`) dan la posición vertical de la banda e `y0`/`y1`
+   * (con `t.y`) la extensión horizontal del valor. Los nombres siguen siendo los lógicos.
+   */
+  readonly horizontal?: boolean;
 }
 
 export interface TextStyle {

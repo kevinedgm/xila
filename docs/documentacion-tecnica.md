@@ -287,12 +287,14 @@ compilan contra la API de `main`.
 Tendencias en el tiempo o en una variable continua. Serie: `x`, `y`; opcional `yError` o
 `yLow` + `yHigh` (banda de incertidumbre).
 
-| Opción          | Valores                             | Defecto                                                 |
-| --------------- | ----------------------------------- | ------------------------------------------------------- |
-| `line.width`    | píxeles                             | `2`                                                     |
-| `line.area`     | relleno hasta cero                  | `false`                                                 |
-| `line.step`     | escalones                           | `false`                                                 |
-| `line.decimate` | `'auto'` \| `'scan'` \| `'pyramid'` | `'auto'` (pirámide desde 100 000 puntos con X ordenada) |
+| Opción          | Valores                                    | Defecto                                                 |
+| --------------- | ------------------------------------------ | ------------------------------------------------------- |
+| `line.width`    | píxeles                                    | `2`                                                     |
+| `line.area`     | relleno hasta cero                         | `false`                                                 |
+| `line.step`     | escalones (atajo de `curve: 'step'`)       | `false`                                                 |
+| `line.curve`    | `'linear'` \| `'monotone'` \| `'step'`     | `'linear'`                                              |
+| `line.spanGaps` | `false` \| `true` \| distancia máxima en X | `false` (un `NaN` corta la línea)                       |
+| `line.decimate` | `'auto'` \| `'scan'` \| `'pyramid'`        | `'auto'` (pirámide desde 100 000 puntos con X ordenada) |
 
 ```ts
 new Chart(el, {
@@ -310,13 +312,14 @@ new Chart(el, {
 
 Comparar magnitudes entre categorías. Escala X de bandas por defecto; `x` categórica.
 
-| Opción        | Valores                    | Defecto     |
-| ------------- | -------------------------- | ----------- |
-| `bar.mode`    | `'grouped'` \| `'stacked'` | `'grouped'` |
-| `bar.padding` | fracción de la banda, 0–1  | `0.2`       |
-| `bar.radius`  | píxeles                    | `4`         |
-| `bar.gap`     | píxeles                    | `2`         |
-| `bar.mark`    | `'bar'` \| `'dot'`         | `'bar'`     |
+| Opción            | Valores                        | Defecto      |
+| ----------------- | ------------------------------ | ------------ |
+| `bar.mode`        | `'grouped'` \| `'stacked'`     | `'grouped'`  |
+| `bar.orientation` | `'vertical'` \| `'horizontal'` | `'vertical'` |
+| `bar.padding`     | fracción de la banda, 0–1      | `0.2`        |
+| `bar.radius`      | píxeles                        | `4`          |
+| `bar.gap`         | píxeles                        | `2`          |
+| `bar.mark`        | `'bar'` \| `'dot'`             | `'bar'`      |
 
 ```ts
 new Chart(el, {
@@ -331,8 +334,13 @@ Histograma: `histogramTable(valores, { bins: 'fd' })` devuelve una `DataTable` l
 `bar` con `bar: { padding: 0, radius: 0, gap: 1 }`. Reglas de `bins`: entero, `'fd'`
 (defecto), `'sturges'`, `'sqrt'`.
 
-> Las barras son siempre verticales: `bar.orientation: 'horizontal'` existe en los tipos
-> pero todavía no tiene efecto.
+Con `bar: { orientation: 'horizontal' }` las categorías van en el eje vertical y el valor en
+el horizontal. Las opciones siguen siendo lógicas: `x` es la categoría y `scales.y` / `axes.y`
+configuran el eje del valor aunque se dibuje abajo.
+
+`line.curve: 'monotone'` suaviza sin inventar picos (cada tramo queda entre sus dos valores) y
+solo se aplica con menos de un punto cada 3 px; con más, el trazo vuelve a rectas. `line.area`
+rellena hasta el cero e incluye el cero en el eje.
 
 #### `scatter`
 
@@ -1209,7 +1217,8 @@ cambiar la configuración, `destroy` al desmontar).
 Encontradas al escribir esta guía y **corregidas en el mismo commit** que la añadió:
 
 1. **`bar.orientation: 'horizontal'`** estaba en `BarChartConfig` sin que el núcleo la leyera;
-   ahora su comentario dice que no tiene efecto todavía (la opción se conserva).
+   ya funciona (barras horizontales, también apiladas y con `mark: 'dot'`). Lo mismo pasaba con
+   `line.area` y `line.step`, que ahora también se dibujan.
 2. **`SeriesSpec.color`** se describía como "columna que separa la serie" sin que `Chart` la
    usara; ahora su comentario dice que está reservada y qué usar en su lugar.
 3. **`packages/core/README.md`** graficaba `ventas.csv` sin agrupar (línea en zigzag); ahora

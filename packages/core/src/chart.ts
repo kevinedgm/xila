@@ -25,6 +25,7 @@ import {
   smooth3,
 } from './distribution';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
+import { monotoneCurve, spanGaps, stepCurve, type Polyline } from './data/curve';
 import { buildPyramid, pyramidDecimate, type MinMaxPyramid } from './data/pyramid';
 import { lowerBound } from './data/search';
 import { isSorted, resolveSeries, type ResolvedSeries, type SeriesSpec } from './data/series';
@@ -457,7 +458,7 @@ export class Chart {
         ? nearest
           ? [nearest]
           : []
-        : this.hitTester.nearestX(px, HOVER_DISTANCE);
+        : this.hitTester.nearestX(this.horizontalBars() ? py : px, HOVER_DISTANCE);
     const payload: HoverPayload = { px, py, nearest, hits };
     this.lastHover = payload;
     this.drawHoverOverlay(payload);
@@ -510,7 +511,14 @@ export class Chart {
         });
       return;
     }
-    if (config.type !== 'scatter' && config.type !== 'dots') {
+    if (this.horizontalBars()) {
+      renderer.drawRule('overlay', plotArea.x, first.py, plotArea.x + plotArea.width, first.py, {
+        stroke: config.theme.axis,
+        width: 1,
+        dash: [4, 3],
+        opacity: 0.6,
+      });
+    } else if (config.type !== 'scatter' && config.type !== 'dots') {
       renderer.drawRule('overlay', first.px, plotArea.y, first.px, plotArea.y + plotArea.height, {
         stroke: config.theme.axis,
         width: 1,
@@ -618,7 +626,15 @@ export class Chart {
     let ticks = this.buildTicks(scales);
 
     // 2. Medir etiquetas, fijar el área de dibujo y recalcular con el rango definitivo.
-    const margins = axisMargins(renderer, theme, ticks.x, ticks.y, config.axes.x, config.axes.y);
+    // Barras horizontales: las escalas siguen siendo lógicas (x = categoría, y = valor), pero
+    // las categorías se rotulan en el eje vertical y los valores en el horizontal.
+    const flip = this.horizontalBars();
+    const physical = (t: { x: AxisTicks; y: AxisTicks }) =>
+      flip
+        ? { h: t.y, v: t.x, ha: config.axes.y, va: config.axes.x }
+        : { h: t.x, v: t.y, ha: config.axes.x, va: config.axes.y };
+    let axes = physical(ticks);
+    const margins = axisMargins(renderer, theme, axes.h, axes.v, axes.ha, axes.va);
     // Heatmap con barra de color a la derecha: su ancho más la etiqueta más ancha.
     const legendWidth =
       config.type === 'heatmap' && config.heatmap.legend
@@ -645,7 +661,10 @@ export class Chart {
     };
     scales = this.buildScales(plotArea, scales);
     ticks = this.buildTicks(scales);
-    ticks = { x: thinLabels(renderer, theme, ticks.x), y: ticks.y };
+    ticks = flip
+      ? { x: ticks.x, y: thinLabels(renderer, theme, ticks.y) }
+      : { x: thinLabels(renderer, theme, ticks.x), y: ticks.y };
+    axes = physical(ticks);
     this.scales = scales;
     this.layout = { width, height, plotArea };
     const ctx = this.context();
@@ -655,7 +674,7 @@ export class Chart {
     renderer.clear('background');
     renderer.clear('data');
     renderer.clear('overlay');
-    drawAxes(renderer, theme, this.layout, ticks.x, ticks.y, config.axes.x, config.axes.y);
+    drawAxes(renderer, theme, this.layout, axes.h, axes.v, axes.ha, axes.va);
     this.plugins.beforeDraw(ctx);
     renderer.clip('data', plotArea.x - 1, plotArea.y - 1, plotArea.width + 2, plotArea.height + 2);
     this.drawSeries(scales, plotArea);
@@ -680,6 +699,7 @@ export class Chart {
                 config.type === 'box' ? this.boxSeries() : visible,
                 scales,
                 config.type === 'bar' && config.bar.mode === 'stacked',
+                flip,
               )
             : config.type === 'dots' && firstVisible && this.dotsShown
               ? pixelHitTester(firstVisible, 0, this.dotsShown.x, this.dotsShown.y, plotArea)
@@ -704,8 +724,13 @@ export class Chart {
 
   private buildScales(area: Rect, previous?: ChartScales): ChartScales {
     const { config } = this;
-    const xRange = [area.x, area.x + area.width] as const;
-    const yRange = [area.y + area.height, area.y] as const;
+    let xRange: readonly [number, number] = [area.x, area.x + area.width];
+    let yRange: readonly [number, number] = [area.y + area.height, area.y];
+    if (this.horizontalBars()) {
+      // Categorías de arriba abajo en el orden de los datos; el valor crece hacia la derecha.
+      xRange = [area.y, area.y + area.height];
+      yRange = [area.x, area.x + area.width];
+    }
     if (previous) {
       const x = previous.x.withRange(xRange);
       if (config.type === 'dots' && x.kind !== 'band') {
@@ -820,6 +845,11 @@ export class Chart {
       );
     }
     if (!Number.isFinite(min)) return log ? [1, 10] : [0, 1];
+    // Un área codifica cantidad por su alto, como una barra: su eje incluye el cero.
+    if (axis === 'y' && !log && this.config.type === 'line' && this.config.line.area) {
+      min = Math.min(min, 0);
+      max = Math.max(max, 0);
+    }
     // Una barra codifica cantidad por su longitud: su eje siempre incluye el cero.
     if (axis === 'y' && this.config.type === 'bar') {
       min = Math.min(min, 0);
@@ -1161,16 +1191,68 @@ export class Chart {
         ? pyramidDecimate(s.x, s.y, pyramid, from, to, x0, pxPerUnit, this.decimation[i])
         : minMaxDecimate(s.x, s.y, from, to, x0, pxPerUnit, this.decimation[i]);
       this.decimation[i] = buffer;
+      const line = this.shapeLine(buffer, area.width, tx, ty);
+      if (config.line.area) {
+        // Relleno hasta el cero; en escala log, donde el cero no existe, hasta el borde inferior.
+        const base = ty ? ty(scales.y.domain[0]) : 0;
+        renderer.drawBand(
+          'data',
+          line.x,
+          new Float64Array(line.length).fill(base),
+          line.y,
+          0,
+          line.length,
+          { fill: color, opacity: 0.16 },
+          transform,
+        );
+      }
       renderer.drawLineSeries(
         'data',
-        tx ? mapValues(buffer.x, 0, buffer.length, tx) : buffer.x,
-        ty ? mapValues(buffer.y, 0, buffer.length, ty) : buffer.y,
+        line.x,
+        line.y,
         0,
-        buffer.length,
+        line.length,
         { stroke: color, width: config.line.width },
         transform,
       );
     }
+  }
+
+  /**
+   * Del buffer decimado al trazo: une huecos (`spanGaps`, en unidades crudas de X), aplica la
+   * transformación de escala (log) y después la forma (`curve`), para que la curva sea monótona
+   * en pantalla. La curva suave solo se aplica con menos de un punto cada 3 px: más densa ya no
+   * se distingue de las rectas y suavizar el resultado de la decimación inventaría formas.
+   */
+  private shapeLine(
+    buffer: DecimatedSeries,
+    width: number,
+    tx: ((v: number) => number) | undefined,
+    ty: ((v: number) => number) | undefined,
+  ): Polyline {
+    const { line } = this.config;
+    let out: Polyline = buffer;
+    if (line.spanGaps !== false) {
+      out = spanGaps(out.x, out.y, out.length, line.spanGaps === true ? Infinity : line.spanGaps);
+    }
+    if (tx || ty) {
+      out = {
+        x: tx ? mapValues(out.x, 0, out.length, tx) : out.x,
+        y: ty ? mapValues(out.y, 0, out.length, ty) : out.y,
+        length: out.length,
+      };
+    }
+    const curve = line.curve === 'linear' && line.step ? 'step' : line.curve;
+    if (curve === 'step') return stepCurve(out.x, out.y, out.length);
+    if (curve === 'monotone' && out.length > 2 && out.length * 3 <= width) {
+      return monotoneCurve(
+        out.x,
+        out.y,
+        out.length,
+        Math.min(16, Math.ceil(width / out.length / 3)),
+      );
+    }
+    return out;
   }
 
   /** Estadísticos del box plot por serie visible y categoría (vacío si no es un box plot). */
@@ -1693,6 +1775,11 @@ export class Chart {
     });
   }
 
+  /** `bar.orientation: 'horizontal'`: categorías en el eje vertical y valores en el horizontal. */
+  horizontalBars(): boolean {
+    return this.config.type === 'bar' && this.config.bar.orientation === 'horizontal';
+  }
+
   /** `bar.mark: 'dot'`: un punto donde terminaría cada barra, con anillo del fondo. */
   private drawDotMarks(x: BandScale, transform: Transform, renderer: Renderer): void {
     const { config } = this;
@@ -1703,20 +1790,17 @@ export class Chart {
       const count = Math.min(s.length, x.count);
       const px = new Float64Array(count);
       for (let i = 0; i < count; i++) px[i] = x.start(i) + slot * (si + 0.5);
-      renderer.drawPointSeries(
-        'data',
-        px,
-        s.y,
-        0,
-        count,
-        {
-          fill: seriesColor(config, colorIndex),
-          radius,
-          stroke: config.theme.background,
-          strokeWidth: 2,
-        },
-        { x: IDENTITY, y: transform.y },
-      );
+      const style = {
+        fill: seriesColor(config, colorIndex),
+        radius,
+        stroke: config.theme.background,
+        strokeWidth: 2,
+      };
+      if (this.horizontalBars()) {
+        renderer.drawPointSeries('data', s.y, px, 0, count, style, { x: transform.y, y: IDENTITY });
+      } else {
+        renderer.drawPointSeries('data', px, s.y, 0, count, style, { x: IDENTITY, y: transform.y });
+      }
     });
   }
 
@@ -1779,6 +1863,7 @@ export class Chart {
         fill: color,
         gap: stacked ? 0 : config.bar.gap,
         gapStart: stacked && si > 0 ? config.bar.gap : 0,
+        horizontal: this.horizontalBars(),
       };
       renderer.drawBars(
         'data',

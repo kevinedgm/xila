@@ -197,14 +197,17 @@ export function bandHitTester(
   series: readonly ResolvedSeries[],
   scales: ChartScales,
   stacked: boolean,
+  horizontal = false,
 ): HitTester {
   if (scales.x.kind !== 'band') throw new TypeError('bandHitTester requiere una escala de banda');
+  // Horizontal: la banda va en vertical y el valor en horizontal. Se trabaja en (u, v), u a lo
+  // largo de la banda, y los aciertos se devuelven en píxeles físicos.
   const band = scales.x;
   const { y: yScale } = scales;
   const slot = stacked ? band.bandwidth : band.bandwidth / Math.max(1, series.length);
 
-  const hitsAt = (px: number): Hit[] => {
-    const i = band.indexAt(px);
+  const hitsAt = (pu: number): Hit[] => {
+    const i = band.indexAt(pu);
     if (i < 0) return [];
     const positive = { acc: 0 };
     const negative = { acc: 0 };
@@ -218,6 +221,8 @@ export function bandHitTester(
         acc.acc += y;
         top = acc.acc;
       }
+      const u = start + slot / 2;
+      const v = yScale.toPixel(top);
       return [
         {
           seriesIndex: si,
@@ -225,31 +230,35 @@ export function bandHitTester(
           index: i,
           x: i,
           y,
-          px: start + slot / 2,
-          py: yScale.toPixel(top),
-          distance: Math.abs(start + slot / 2 - px),
+          px: horizontal ? v : u,
+          py: horizontal ? u : v,
+          distance: Math.abs(u - pu),
         },
       ];
     });
   };
 
   return {
-    nearestX: (px) => hitsAt(px),
+    nearestX: (pu) => hitsAt(pu),
     nearest(px, py) {
-      const hits = hitsAt(px);
+      const pu = horizontal ? py : px;
+      const pv = horizontal ? px : py;
+      const hits = hitsAt(pu);
+      const hv = (h: Hit) => (horizontal ? h.px : h.py);
+      const hu = (h: Hit) => (horizontal ? h.py : h.px);
       if (stacked) {
         // En apiladas, la barra bajo el cursor es la cuyo tramo vertical contiene `py`.
         let prevPos = yScale.toPixel(0);
         let prevNeg = prevPos;
         for (const h of hits) {
           const base = h.y >= 0 ? prevPos : prevNeg;
-          if (py >= Math.min(base, h.py) && py <= Math.max(base, h.py)) return h;
-          if (h.y >= 0) prevPos = h.py;
-          else prevNeg = h.py;
+          if (pv >= Math.min(base, hv(h)) && pv <= Math.max(base, hv(h))) return h;
+          if (h.y >= 0) prevPos = hv(h);
+          else prevNeg = hv(h);
         }
         return null;
       }
-      return hits.find((h) => Math.abs(h.px - px) <= slot / 2) ?? null;
+      return hits.find((h) => Math.abs(hu(h) - pu) <= slot / 2) ?? null;
     },
   };
 }

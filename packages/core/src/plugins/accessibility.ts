@@ -152,11 +152,15 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     index = Math.max(0, Math.min(s.length - 1, index));
     const xv = s.x[index] as number;
     const yv = s.y[index] as number;
-    const px = scales.x.kind === 'band' ? scales.x.center(xv) : scales.x.toPixel(xv);
-    const py = Number.isFinite(yv) ? scales.y.toPixel(yv) : ctx.layout.plotArea.y;
+    const pu = scales.x.kind === 'band' ? scales.x.center(xv) : scales.x.toPixel(xv);
+    const pv = Number.isFinite(yv) ? scales.y.toPixel(yv) : ctx.layout.plotArea.y;
+    // Barras horizontales: la categoría va en vertical y el valor en horizontal.
+    const { config } = ctx;
+    const flip = config.type === 'bar' && config.bar.orientation === 'horizontal';
     applying = true;
     try {
-      ctx.hoverAt(px, py);
+      if (flip) ctx.hoverAt(Number.isFinite(yv) ? pv : ctx.layout.plotArea.x, pu);
+      else ctx.hoverAt(pu, pv);
     } finally {
       applying = false;
     }

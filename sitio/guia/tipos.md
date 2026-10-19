@@ -15,7 +15,7 @@ cada serie y qué escala X va por defecto.
 
 ## Línea
 
-`line.width` (2 px por defecto), `line.area` (relleno hasta cero) y `line.step` (escalones). Con más puntos que
+`line.width` (2 px por defecto), `line.area` (relleno hasta cero), `line.curve` (`'linear'`, `'monotone'` o `'step'`) y `line.spanGaps` (unir huecos; un número une solo los más cortos que esa distancia en X). Con más puntos que
 píxeles la serie se **decima por mín y máx**: por cada columna de píxeles se dibujan el mínimo y
 el máximo, así los picos no desaparecen y un millón de puntos se traza en unos milisegundos.
 Requiere X ordenada; `isSorted` lo comprueba. Para salir de la línea clásica: `nowPlugin`
@@ -51,7 +51,7 @@ entre 4 y 7 px según la banda). Es la forma "puntos con referencia": la barra s
 llegar al valor, y el punto deja el área libre para una línea de comparación. Con
 `referencePlugin({ value: 'mean' | 'median' | número })` se dibuja esa línea, un tallo de cada
 punto hasta ella y la diferencia encima; la distancia es la respuesta a "¿cuánto más que el
-promedio?". `bar.orientation: 'horizontal'` sigue pendiente: hoy la categoría va siempre en X.
+promedio?". `bar.orientation: 'horizontal'` pone las categorías en el eje vertical: la forma de un ranking con nombres largos.
 
 ## Box plot
 

@@ -231,44 +231,52 @@ export class CanvasRenderer implements Renderer {
     const half = (style.gap ?? 0) / 2;
     const gapStart = style.gapStart ?? 0;
     const radius = style.radius ?? 0;
+    // Se trabaja en coordenadas (u, v): u a lo largo de la banda, v a lo largo del valor. En
+    // barras horizontales solo cambia cómo se vuelven píxeles (x, y); la geometría es la misma.
+    const swap = style.horizontal === true;
+    const move = (u: number, v: number) => (swap ? ctx.moveTo(v, u) : ctx.moveTo(u, v));
+    const line = (u: number, v: number) => (swap ? ctx.lineTo(v, u) : ctx.lineTo(u, v));
+    const arc = (u1: number, v1: number, u2: number, v2: number, r: number) =>
+      swap ? ctx.arcTo(v1, u1, v2, u2, r) : ctx.arcTo(u1, v1, u2, v2, r);
     ctx.beginPath();
     for (let i = from; i < to; i++) {
       const b = y1[i] as number;
       if (b !== b) continue;
-      const px0 = applyMap(t.x, x0[i] as number) + half;
-      const px1 = applyMap(t.x, x1[i] as number) - half;
-      const py0 = applyMap(t.y, y0[i] as number);
-      const py1 = applyMap(t.y, b);
+      const pu0 = applyMap(t.x, x0[i] as number) + half;
+      const pu1 = applyMap(t.x, x1[i] as number) - half;
+      const pv0 = applyMap(t.y, y0[i] as number);
+      const pv1 = applyMap(t.y, b);
       // El hueco de la base se quita del lado `y0`, hacia el extremo de datos.
-      const base = py1 < py0 ? py0 - gapStart : py0 + gapStart;
-      const w = Math.abs(px1 - px0);
-      const h = Math.abs(py1 - base);
+      const base = pv1 < pv0 ? pv0 - gapStart : pv0 + gapStart;
+      const w = Math.abs(pu1 - pu0);
+      const h = Math.abs(pv1 - base);
       if (w <= 0 || h <= 0) continue;
-      const left = Math.min(px0, px1);
-      const top = Math.min(py1, base);
+      const left = Math.min(pu0, pu1);
+      const top = Math.min(pv1, base);
       const r = Math.min(radius, w / 2, h);
       if (r <= 0) {
-        ctx.rect(left, top, w, h);
+        if (swap) ctx.rect(top, left, h, w);
+        else ctx.rect(left, top, w, h);
         continue;
       }
       const right = left + w;
       const bottom = top + h;
-      if (py1 < base) {
-        // Barra hacia arriba: esquinas redondeadas en el borde superior.
-        ctx.moveTo(left, bottom);
-        ctx.lineTo(left, top + r);
-        ctx.arcTo(left, top, left + r, top, r);
-        ctx.lineTo(right - r, top);
-        ctx.arcTo(right, top, right, top + r, r);
-        ctx.lineTo(right, bottom);
+      if (pv1 < base) {
+        // Extremo de datos hacia v menor (arriba, o a la izquierda en horizontal): redondeado.
+        move(left, bottom);
+        line(left, top + r);
+        arc(left, top, left + r, top, r);
+        line(right - r, top);
+        arc(right, top, right, top + r, r);
+        line(right, bottom);
       } else {
-        // Barra hacia abajo (valores negativos): redondeo en el borde inferior.
-        ctx.moveTo(left, top);
-        ctx.lineTo(right, top);
-        ctx.lineTo(right, bottom - r);
-        ctx.arcTo(right, bottom, right - r, bottom, r);
-        ctx.lineTo(left + r, bottom);
-        ctx.arcTo(left, bottom, left, bottom - r, r);
+        // Extremo de datos hacia v mayor (abajo, o a la derecha en horizontal).
+        move(left, top);
+        line(right, top);
+        line(right, bottom - r);
+        arc(right, bottom, right - r, bottom, r);
+        line(left + r, bottom);
+        arc(left, bottom, left, bottom - r, r);
       }
       ctx.closePath();
     }

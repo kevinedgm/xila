@@ -18,6 +18,10 @@ const GRAFICOS = [
   'multi',
   'barras',
   'apiladas',
+  'horizontal',
+  'horizontal-apiladas',
+  'curva',
+  'escalones',
   'dispersion',
   'banda',
   'errores',
@@ -27,7 +31,7 @@ const GRAFICOS = [
 
 async function listo(page: import('@playwright/test').Page): Promise<void> {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(async () => {
     for (let y = 0; y < document.body.scrollHeight; y += 400) {
       window.scrollTo(0, y);

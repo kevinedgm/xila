@@ -74,6 +74,33 @@ mount('multi', {
   axes: { x: { title: 'Muestra' }, y: { title: 'Valor' } },
 });
 
+// 2b. Pocos puntos: la curva monotone los une sin pasar por encima del máximo de junio.
+const mensual = new DataTable({
+  mes: numberColumn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+  lluvia: numberColumn([8, 6, 12, 25, 70, 182, 185, 160, 140, 55, 14, 7]),
+});
+mount('curva', {
+  type: 'line',
+  plugins: plugins(),
+  data: mensual,
+  series: [{ id: 'lluvia', name: 'Lluvia', x: 'mes', y: 'lluvia' }],
+  line: { curve: 'monotone', area: true },
+  axes: { x: { title: 'Mes' }, y: { title: 'mm' } },
+});
+
+// 2c. Escalones con huecos: `spanGaps: 2` une el hueco de un mes y corta el de cuatro.
+mount('escalones', {
+  type: 'line',
+  plugins: plugins(),
+  data: new DataTable({
+    mes: numberColumn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    tasa: numberColumn([11, 11, NaN, 10.5, 10.5, NaN, NaN, NaN, NaN, 9.5, 9.5, 9.25]),
+  }),
+  series: [{ id: 'tasa', name: 'Tasa objetivo', x: 'mes', y: 'tasa' }],
+  line: { curve: 'step', spanGaps: 2 },
+  axes: { x: { title: 'Mes' }, y: { title: '%' } },
+});
+
 // 3. Barras agrupadas y apiladas: ventas por mes y región (CSV en formato largo ya pivotado).
 const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
 const ventas = new DataTable({
@@ -96,6 +123,31 @@ const barras: ChartConfig = {
 mount('barras', barras);
 // Cada gráfico necesita sus propias instancias de plugins: guardan estado y nodos del DOM.
 mount('apiladas', { ...barras, plugins: plugins(), bar: { mode: 'stacked' } });
+
+// 3c. Barras horizontales: un ranking con nombres que no cabrían bajo barras verticales.
+mount('horizontal', {
+  type: 'bar',
+  plugins: plugins(),
+  data: new DataTable({
+    estado: categoryColumn([
+      'Ciudad de México',
+      'Estado de México',
+      'Jalisco',
+      'Nuevo León',
+      'Oaxaca',
+      'Baja California Sur',
+    ]),
+    ventas: numberColumn([412, 365, 248, 231, 97, 54]),
+  }),
+  series: [{ id: 'ventas', name: 'Ventas', x: 'estado', y: 'ventas' }],
+  bar: { orientation: 'horizontal' },
+  axes: { y: { title: 'Ventas (miles MXN)' } },
+});
+mount('horizontal-apiladas', {
+  ...barras,
+  plugins: plugins(),
+  bar: { mode: 'stacked', orientation: 'horizontal' },
+});
 
 // 4. Dispersión: 20 000 puntos con dos nubes.
 const m = 20_000;

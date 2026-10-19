@@ -224,32 +224,37 @@ export class SvgRenderer implements Renderer {
     const half = (style.gap ?? 0) / 2;
     const gapStart = style.gapStart ?? 0;
     const radius = style.radius ?? 0;
+    // Coordenadas (u, v) como en Canvas. Al trasponer, el giro de los arcos se invierte.
+    const swap = style.horizontal === true;
+    const P = (u: number, v: number) => (swap ? `${n(v)} ${n(u)}` : `${n(u)} ${n(v)}`);
+    const A = (r: number, u: number, v: number) =>
+      `A${n(r)} ${n(r)} 0 0 ${swap ? 0 : 1} ${P(u, v)}`;
     const d: string[] = [];
     for (let i = from; i < to; i++) {
       const b = y1[i] as number;
       if (b !== b) continue;
-      const px0 = applyMap(t.x, x0[i] as number) + half;
-      const px1 = applyMap(t.x, x1[i] as number) - half;
-      const py0 = applyMap(t.y, y0[i] as number);
-      const py1 = applyMap(t.y, b);
-      const base = py1 < py0 ? py0 - gapStart : py0 + gapStart;
-      const w = Math.abs(px1 - px0);
-      const h = Math.abs(py1 - base);
+      const pu0 = applyMap(t.x, x0[i] as number) + half;
+      const pu1 = applyMap(t.x, x1[i] as number) - half;
+      const pv0 = applyMap(t.y, y0[i] as number);
+      const pv1 = applyMap(t.y, b);
+      const base = pv1 < pv0 ? pv0 - gapStart : pv0 + gapStart;
+      const w = Math.abs(pu1 - pu0);
+      const h = Math.abs(pv1 - base);
       if (w <= 0 || h <= 0) continue;
-      const left = Math.min(px0, px1);
-      const top = Math.min(py1, base);
+      const left = Math.min(pu0, pu1);
+      const top = Math.min(pv1, base);
       const r = Math.min(radius, w / 2, h);
       const right = left + w;
       const bottom = top + h;
       if (r <= 0) {
-        d.push(`M${n(left)} ${n(top)}H${n(right)}V${n(bottom)}H${n(left)}Z`);
-      } else if (py1 < base) {
+        d.push(`M${P(left, top)}L${P(right, top)}L${P(right, bottom)}L${P(left, bottom)}Z`);
+      } else if (pv1 < base) {
         d.push(
-          `M${n(left)} ${n(bottom)}V${n(top + r)}A${n(r)} ${n(r)} 0 0 1 ${n(left + r)} ${n(top)}H${n(right - r)}A${n(r)} ${n(r)} 0 0 1 ${n(right)} ${n(top + r)}V${n(bottom)}Z`,
+          `M${P(left, bottom)}L${P(left, top + r)}${A(r, left + r, top)}L${P(right - r, top)}${A(r, right, top + r)}L${P(right, bottom)}Z`,
         );
       } else {
         d.push(
-          `M${n(left)} ${n(top)}H${n(right)}V${n(bottom - r)}A${n(r)} ${n(r)} 0 0 1 ${n(right - r)} ${n(bottom)}H${n(left + r)}A${n(r)} ${n(r)} 0 0 1 ${n(left)} ${n(bottom - r)}Z`,
+          `M${P(left, top)}L${P(right, top)}L${P(right, bottom - r)}${A(r, right - r, bottom)}L${P(left + r, bottom)}${A(r, left, bottom - r)}Z`,
         );
       }
     }

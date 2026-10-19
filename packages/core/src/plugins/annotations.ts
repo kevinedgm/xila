@@ -101,7 +101,11 @@ export function annotationBoxes(
   scales: ChartScales,
   area: Rect,
   categories: readonly string[],
+  flip = false,
 ): AnnotationBox[] {
+  // `axis` es lógico (x = categoría o variable independiente). Con barras horizontales el eje
+  // lógico x se dibuja en vertical y el y en horizontal: la geometría usa el eje físico.
+  const physical = (axis: 'x' | 'y'): 'x' | 'y' => (flip ? (axis === 'x' ? 'y' : 'x') : axis);
   const out: AnnotationBox[] = [];
   const px = (v: AnnotationValue, axis: 'x' | 'y'): number | null =>
     annotationPixel(v, axis, scales, categories);
@@ -110,12 +114,12 @@ export function annotationBoxes(
       const p = px(a.value, a.axis);
       if (p === null) continue;
       out.push(
-        a.axis === 'x'
+        physical(a.axis) === 'x'
           ? { annotation: a, x0: p, x1: p, y0: area.y, y1: area.y + area.height }
           : { annotation: a, x0: area.x, x1: area.x + area.width, y0: p, y1: p },
       );
     } else if (a.type === 'band') {
-      const horizontal = a.axis === 'x';
+      const horizontal = physical(a.axis) === 'x';
       // Borde que corresponde al valor más bajo y al más alto: en Y el eje crece hacia arriba.
       const lo = horizontal ? area.x : area.y + area.height;
       const hi = horizontal ? area.x + area.width : area.y;
@@ -130,9 +134,10 @@ export function annotationBoxes(
           : { annotation: a, x0: area.x, x1: area.x + area.width, y0: start, y1: end },
       );
     } else {
-      const x = px(a.x, 'x');
-      const y = px(a.y, 'y');
-      if (x === null || y === null) continue;
+      const u = px(a.x, 'x');
+      const v = px(a.y, 'y');
+      if (u === null || v === null) continue;
+      const [x, y] = flip ? [v, u] : [u, v];
       out.push({ annotation: a, x0: x, x1: x, y0: y, y1: y });
     }
   }
@@ -230,7 +235,13 @@ export function annotationsPlugin(
     const { renderer, layout, config } = c;
     const area = layout.plotArea;
     const font = `${config.theme.fontSize}px ${config.theme.fontFamily}`;
-    boxes = annotationBoxes(items, scales, area, categoriesOf(c));
+    boxes = annotationBoxes(
+      items,
+      scales,
+      area,
+      categoriesOf(c),
+      c.config.type === 'bar' && c.config.bar.orientation === 'horizontal',
+    );
 
     for (const b of boxes) {
       const a = b.annotation;

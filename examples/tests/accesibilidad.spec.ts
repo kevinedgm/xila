@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('el gráfico tiene resumen, responde a las flechas y expone una tabla', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   const img = page.locator('#multi [role="figure"]');
   await expect(img).toHaveAttribute('tabindex', '0');
@@ -35,7 +35,7 @@ test('el gráfico tiene resumen, responde a las flechas y expone una tabla', asy
 
 test('en barras el resumen habla de categorías', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   // Está bajo el pliegue: con render diferido se dibuja (y describe) al entrar en pantalla.
   const img = page.locator('#barras [role="figure"]');
@@ -50,7 +50,7 @@ test('los canvas quedan fuera del árbol de accesibilidad y axe-core no encuentr
   page,
 }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   await expect(page.locator('#multi canvas').first()).toHaveAttribute('aria-hidden', 'true');
   // Toda la galería: leyenda, tooltip, tabla oculta y región viva de cada gráfico.
@@ -63,7 +63,7 @@ test('los canvas quedan fuera del árbol de accesibilidad y axe-core no encuentr
 
 test('la tabla se regenera cuando cambian los valores sin cambiar el tamaño', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   const antes = await page.locator('#linea table.xila-a11y-table tbody tr').first().innerText();
   await page.evaluate(() => {
@@ -92,7 +92,7 @@ test('la tabla se regenera cuando cambian los valores sin cambiar el tamaño', a
 
 test('Enter fija el tooltip, el anillo de foco se dibuja y Escape lo suelta', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   const img = page.locator('#multi [role="figure"]');
   const tooltip = page.locator('#multi .xila-tooltip');
@@ -148,7 +148,7 @@ test('Enter fija el tooltip, el anillo de foco se dibuja y Escape lo suelta', as
 
 test('con keyboard:false no hay tabindex, y el zoom responde a + - 0', async ({ page }) => {
   await page.goto('/index.html');
-  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 39);
+  await page.waitForFunction(() => document.querySelectorAll('canvas').length === 51);
   await page.evaluate(() => new Promise(requestAnimationFrame));
   // El gráfico de dispersión lleva zoomPanPlugin sin accessibilityPlugin: el zoom lo hace
   // enfocable por sí mismo.

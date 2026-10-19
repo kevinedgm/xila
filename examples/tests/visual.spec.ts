@@ -7,8 +7,12 @@ import { expect, test, type Page } from '@playwright/test';
 const CASOS = [
   'linea',
   'multi',
+  'curva',
+  'escalones',
   'barras',
   'apiladas',
+  'horizontal',
+  'horizontal-apiladas',
   'dispersion',
   'fechas',
   'log',
@@ -74,6 +78,8 @@ test('la leyenda oculta una serie y el eje Y se reescala', async ({ page }) => {
 test('redimensionar el contenedor redibuja con el nuevo tamaño', async ({ page }) => {
   await abrir(page);
   const chart = page.locator('#barras');
+  // Render diferido: un gráfico bajo el pliegue no dibuja (ni redimensiona) hasta verse.
+  await chart.scrollIntoViewIfNeeded();
   await chart.evaluate((el) => {
     el.style.width = '500px';
     el.style.height = '220px';

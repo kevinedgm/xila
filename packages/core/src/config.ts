@@ -58,8 +58,23 @@ export interface LineChartConfig extends BaseChartConfig {
   readonly type: 'line';
   readonly line?: {
     readonly width?: number;
+    /** Rellena debajo de la línea hasta el cero, con el color de la serie translúcido. */
     readonly area?: boolean;
+    /** Atajo de `curve: 'step'` (se conserva por compatibilidad). */
     readonly step?: boolean;
+    /**
+     * Forma del trazo entre datos. `'linear'` (defecto): rectas. `'monotone'`: curva suave que
+     * nunca sale del rango de sus dos puntos vecinos (no inventa picos); se aplica mientras haya
+     * pocos puntos a la vista y, con decimación, el trazo vuelve a rectas porque a esa densidad
+     * no se distinguen. `'step'`: escalones, el valor se mantiene hasta el siguiente X.
+     */
+    readonly curve?: 'linear' | 'monotone' | 'step';
+    /**
+     * Huecos (`NaN`, celdas vacías del CSV). `false` (defecto): la línea se corta, para que se
+     * vea que falta el dato. `true`: une los puntos vecinos. Un número: une solo huecos de hasta
+     * esa distancia en X (milisegundos en un eje de tiempo); los más largos siguen cortando.
+     */
+    readonly spanGaps?: boolean | number;
     /**
      * Cómo se reduce la serie a 4 puntos por columna de píxel. `'scan'` recorre el rango
      * visible en cada fotograma; `'pyramid'` construye una vez una pirámide de mínimos y
@@ -74,7 +89,12 @@ export interface BarChartConfig extends BaseChartConfig {
   readonly type: 'bar';
   readonly bar?: {
     readonly mode?: 'grouped' | 'stacked';
-    /** Declarada pero sin efecto todavía: el núcleo dibuja siempre barras verticales. */
+    /**
+     * `'horizontal'`: categorías en el eje vertical (de arriba abajo, en el orden de los datos)
+     * y valores en el horizontal; la forma de un ranking con nombres largos. Las opciones
+     * siguen siendo lógicas: `x` es la categoría y `scales.y`/`axes.y` configuran el eje del
+     * valor aunque se dibuje abajo.
+     */
     readonly orientation?: 'vertical' | 'horizontal';
     /** Fracción de la banda que queda vacía entre barras, de 0 a 1. */
     readonly padding?: number;
@@ -265,7 +285,14 @@ export interface ResolvedAxisConfig {
 
 export const DEFAULTS = {
   padding: { top: 8, right: 8, bottom: 8, left: 8 } satisfies Padding,
-  line: { width: 2, area: false, step: false, decimate: 'auto' },
+  line: {
+    width: 2,
+    area: false,
+    step: false,
+    curve: 'linear',
+    spanGaps: false,
+    decimate: 'auto',
+  },
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2, mark: 'bar' },
   scatter: { radius: 3, ring: 1.5, path: false },
   box: {

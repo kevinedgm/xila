@@ -1,6 +1,7 @@
 import { seriesColor } from '../config';
 import { monoFont } from '../theme';
 import type { ChartPlugin, PluginContext } from '../plugin';
+import type { LineStyle } from '../renderer';
 import { formatNumber } from '../format/number';
 
 export interface ReferenceOptions {
@@ -74,6 +75,12 @@ export function referencePlugin(options: ReferenceOptions): ChartPlugin {
       const area = c.layout.plotArea;
       const ry = scales.y.toPixel(ref);
       const dots = c.config.type === 'bar' && bar.mark === 'dot';
+      // Barras horizontales: u (banda) va en vertical y el valor en horizontal.
+      const flip = c.config.type === 'bar' && bar.orientation === 'horizontal';
+      const rule = (u1: number, v1: number, u2: number, v2: number, style: LineStyle) =>
+        flip
+          ? c.renderer.drawRule('data', v1, u1, v2, u2, style)
+          : c.renderer.drawRule('data', u1, v1, u2, v2, style);
       const slot = band.bandwidth / Math.max(1, visible.length);
 
       if (dots && options.stems !== false) {
@@ -84,7 +91,7 @@ export function referencePlugin(options: ReferenceOptions): ChartPlugin {
             const v = s.y[i] as number;
             if (v !== v) continue;
             const x = band.start(i) + slot * (visible.indexOf(s) + 0.5);
-            c.renderer.drawRule('data', x, ry, x, scales.y.toPixel(v), {
+            rule(x, ry, x, scales.y.toPixel(v), {
               stroke: seriesColor(c.config, si),
               width: 3,
               opacity: 0.55,
@@ -92,17 +99,25 @@ export function referencePlugin(options: ReferenceOptions): ChartPlugin {
           }
         });
       }
-      c.renderer.drawRule('data', area.x, ry, area.x + area.width, ry, {
-        stroke: theme.text,
-        width: 1,
-        dash: [4, 3],
-      });
-      c.renderer.drawText('overlay', label(ref, c), area.x + area.width - 4, ry - 5, {
-        font: `500 ${theme.fontSize}px ${monoFont(theme)}`,
-        fill: theme.text,
-        align: 'right',
-        baseline: 'bottom',
-      });
+      const [u0, u1] = flip ? [area.y, area.y + area.height] : [area.x, area.x + area.width];
+      rule(u0, ry, u1, ry, { stroke: theme.text, width: 1, dash: [4, 3] });
+      const font = `500 ${theme.fontSize}px ${monoFont(theme)}`;
+      if (flip) {
+        // Arriba de la línea vertical, a su derecha.
+        c.renderer.drawText('overlay', label(ref, c), ry + 5, area.y, {
+          font,
+          fill: theme.text,
+          align: 'left',
+          baseline: 'top',
+        });
+      } else {
+        c.renderer.drawText('overlay', label(ref, c), area.x + area.width - 4, ry - 5, {
+          font,
+          fill: theme.text,
+          align: 'right',
+          baseline: 'bottom',
+        });
+      }
       if (options.deltas === false) return;
       visible.forEach((s, vi) => {
         const n = Math.min(s.length, band.count);
@@ -114,8 +129,18 @@ export function referencePlugin(options: ReferenceOptions): ChartPlugin {
           const d = v - ref;
           const text = `${d >= 0 ? '+' : '−'}${formatY(Math.abs(d), c)}`;
           const above = v >= ref;
+          const small = `500 ${Math.round(theme.fontSize * 0.92)}px ${monoFont(theme)}`;
+          if (flip) {
+            c.renderer.drawText('overlay', text, above ? py + 9 : py - 9, x, {
+              font: small,
+              fill: theme.text,
+              align: above ? 'left' : 'right',
+              baseline: 'middle',
+            });
+            continue;
+          }
           c.renderer.drawText('overlay', text, x, above ? py - 9 : py + 9, {
-            font: `500 ${Math.round(theme.fontSize * 0.92)}px ${monoFont(theme)}`,
+            font: small,
             fill: theme.text,
             align: 'center',
             baseline: above ? 'bottom' : 'top',
