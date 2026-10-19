@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Tres hilos de vapor sobre una taza: el nombre del café, dibujado. -->
+  <path d="M17 6c-2.5 3 2.5 5 0 8" stroke="#d9a15b" stroke-width="2.2"/>
+  <path d="M24 4c-2.5 3.5 2.5 6 0 10" stroke="#d9a15b" stroke-width="2.2"/>
+  <path d="M31 6c-2.5 3 2.5 5 0 8" stroke="#d9a15b" stroke-width="2.2"/>
+  <path d="M9 19h30v9a12 12 0 0 1-12 12h-6A12 12 0 0 1 9 28z" stroke="#fbf7f1" stroke-width="2.4"/>
+  <path d="M39 22h2.5a4.5 4.5 0 0 1 0 9H38" stroke="#fbf7f1" stroke-width="2.4"/>
+  <path d="M7 44h34" stroke="#fbf7f1" stroke-width="2.4"/>
+</svg>

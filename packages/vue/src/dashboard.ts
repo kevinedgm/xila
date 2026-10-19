@@ -16,6 +16,7 @@ import {
   type DashboardConfig,
   type DataTable,
   type FiltroConfig,
+  type MarcaConfig,
   type PanelChart,
   type PanelKpi,
   type ValidationError,
@@ -39,6 +40,10 @@ const STYLE_ID = 'xila-dashboard-style';
 const CSS = `
 .xila-dashboard{font-family:"Instrument Sans",system-ui,sans-serif;color:var(--xila-text,#15171f);background:var(--xila-bg,#f6f1e8);min-height:100vh;padding:16px 24px;box-sizing:border-box;--xila-panel:#fffdf9;--xila-border:#e3ddd1;--xila-muted:#5b5f6e}
 .xila-dashboard[data-theme=dark]{--xila-text:#f6f1e8;--xila-bg:#15171f;--xila-panel:#1e2130;--xila-border:#2b2f3d;--xila-muted:#a9adbd}
+.xila-brand{display:flex;align-items:center;gap:14px;margin:-16px -24px 20px;padding:18px 24px;background:var(--xila-head,transparent);color:var(--xila-head-text,var(--xila-text,#15171f))}
+.xila-brand-logo{height:44px;width:auto}
+.xila-brand-name{font:600 22px/1.1 Fraunces,Georgia,serif;letter-spacing:.01em}
+.xila-brand-tagline{font-size:13px;opacity:.8;margin-top:2px}
 .xila-dashboard h1{font:600 24px/1.2 Fraunces,Georgia,serif;margin:0 0 12px}
 .xila-filters{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:16px}
 .xila-filter{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--xila-muted,#52606d)}
@@ -54,8 +59,8 @@ const CSS = `
 .xila-panel-chart{height:320px}
 .xila-kpi-value{font:600 28px/1.2 "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .xila-kpi-change{font-size:13px;margin-top:4px}
-.xila-kpi-change[data-sign=up]{color:#12957a}
-.xila-kpi-change[data-sign=down]{color:#d14e0a}
+.xila-kpi-change[data-sign=up]{color:var(--xila-up,#12957a)}
+.xila-kpi-change[data-sign=down]{color:var(--xila-down,#d14e0a)}
 .xila-errors{background:#fde8e8;color:#8a1c1c;border:1px solid #f5b5b5;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px}
 .xila-errors code{font-family:ui-monospace,monospace}
 @media (max-width:720px){.xila-grid{grid-template-columns:1fr}.xila-panel{grid-column:span 1}.xila-dashboard{padding:12px}}
@@ -134,6 +139,7 @@ export const XilaPanelChart = defineComponent({
     table: { type: Object as PropType<DataTable>, required: true },
     conditions: { type: Array as PropType<readonly Condition[]>, default: () => [] },
     theme: { type: String as PropType<'light' | 'dark'>, default: 'light' },
+    marca: { type: Object as PropType<MarcaConfig | undefined>, default: undefined },
   },
   setup(props) {
     const config = computed<ChartConfig>(() => {
@@ -155,7 +161,25 @@ export const XilaPanelChart = defineComponent({
             ];
       // El gráfico se pinta sobre la tarjeta del panel, no sobre la manta de la página: velos,
       // fondos de etiquetas y anillos interiores deben ser del color de la tarjeta.
-      const theme = { ...themes[props.theme], background: PANEL_BG[props.theme] };
+      const m = props.marca;
+      const base0 = themes[props.theme];
+      const theme = {
+        ...base0,
+        background: m?.tarjeta ?? PANEL_BG[props.theme],
+        palette: m?.colores ?? base0.palette,
+        text: m?.texto ?? base0.text,
+        axis: m?.secundario ?? base0.axis,
+        grid: m?.borde ?? base0.grid,
+      };
+      // Los mapas `filas` usan las tres paradas divergentes de la marca en vez de cobalto-naranja.
+      if (base.type === 'heatmap' && base.heatmap?.scale === 'row' && m?.divergente) {
+        return markRaw({
+          ...base,
+          plugins,
+          theme,
+          heatmap: { ...base.heatmap, colormap: m.divergente },
+        });
+      }
       return markRaw({ ...base, plugins, theme });
     });
     let chart: Chart | null = null;
@@ -302,9 +326,42 @@ export const XilaDashboard = defineComponent({
     const state = shallowRef<FilterState>({});
     const conditions = computed(() => toConditions(props.config.filtros ?? [], state.value));
     const theme = computed(() => props.config.tema ?? 'light');
+    // La marca entra como variables CSS sobre el contenedor: el CSS base no cambia.
+    const brandStyle = computed(() => {
+      const m = props.config.marca;
+      if (!m) return undefined;
+      const vars: Record<string, string> = {};
+      const set = (name: string, v: string | undefined): void => {
+        if (v) vars[name] = v;
+      };
+      set('--xila-bg', m.fondo);
+      set('--xila-panel', m.tarjeta);
+      set('--xila-text', m.texto);
+      set('--xila-muted', m.secundario);
+      set('--xila-border', m.borde);
+      set('--xila-head', m.encabezado);
+      if (m.encabezado) set('--xila-head-text', m.tarjeta ?? '#fffdf9');
+      set('--xila-up', m.cambio?.[0]);
+      set('--xila-down', m.cambio?.[1]);
+      set('--xila-accent', m.colores?.[1]);
+      return vars;
+    });
+
+    const header = (): VNode | null => {
+      const m = props.config.marca;
+      if (!m || (!m.nombre && !m.logo)) return null;
+      return h('header', { class: 'xila-brand' }, [
+        m.logo ? h('img', { class: 'xila-brand-logo', src: m.logo, alt: '' }) : null,
+        h('div', [
+          m.nombre ? h('div', { class: 'xila-brand-name' }, m.nombre) : null,
+          m.lema ? h('div', { class: 'xila-brand-tagline' }, m.lema) : null,
+        ]),
+      ]);
+    };
 
     return () =>
-      h('div', { class: 'xila-dashboard', 'data-theme': theme.value }, [
+      h('div', { class: 'xila-dashboard', 'data-theme': theme.value, style: brandStyle.value }, [
+        header(),
         h('h1', props.config.titulo),
         props.errors.length > 0
           ? h('div', { class: 'xila-errors', role: 'alert' }, [
@@ -344,7 +401,13 @@ export const XilaDashboard = defineComponent({
                     )
                   : panel.tipo === 'kpi'
                     ? h(XilaKpi, { panel, table, conditions: conds })
-                    : h(XilaPanelChart, { panel, table, conditions: conds, theme: theme.value }),
+                    : h(XilaPanelChart, {
+                        panel,
+                        table,
+                        conditions: conds,
+                        theme: theme.value,
+                        marca: props.config.marca,
+                      }),
               ],
             );
           }),

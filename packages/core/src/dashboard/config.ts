@@ -134,6 +134,32 @@ export interface DashboardConfig {
   readonly filtros?: readonly FiltroConfig[];
   readonly paneles: readonly PanelConfig[];
   readonly tema?: 'light' | 'dark';
+  /** Identidad del cliente: colores, logo y encabezado. Sin `marca`, el tema de Xila. */
+  readonly marca?: MarcaConfig;
+}
+
+/**
+ * Identidad visual del cliente. Todos los colores son hexadecimales (`#rrggbb`); los que falten
+ * se toman del tema. `colores` reemplaza la paleta de las series (el primero pinta los nudos,
+ * el segundo marca el máximo y el camino), `divergente` son las tres paradas
+ * (bajo, centro, alto) de los mapas de calor `filas`.
+ */
+export interface MarcaConfig {
+  readonly nombre?: string;
+  readonly lema?: string;
+  /** Ruta de una imagen relativa al dashboard (`logo.svg`). */
+  readonly logo?: string;
+  readonly colores?: readonly string[];
+  readonly fondo?: string;
+  readonly tarjeta?: string;
+  readonly texto?: string;
+  readonly secundario?: string;
+  readonly borde?: string;
+  /** Fondo de la banda del encabezado; el texto va del color de `tarjeta`. */
+  readonly encabezado?: string;
+  readonly divergente?: readonly [string, string, string];
+  /** Colores del cambio de los KPI: [sube, baja]. */
+  readonly cambio?: readonly [string, string];
 }
 
 export interface ValidationError {
@@ -214,6 +240,38 @@ export function parseDashboard(raw: unknown): DashboardConfig {
   };
 
   if (obj['tema'] !== undefined) checkEnum('tema', obj['tema'], ['light', 'dark'], 'el tema');
+
+  const marca = obj['marca'];
+  if (marca !== undefined) {
+    if (!isRecord(marca)) fail('marca', 'debe ser un objeto');
+    else {
+      const hex = (path: string, v: unknown): void => {
+        if (typeof v !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(v))
+          fail(path, 'debe ser un color hexadecimal como "#5b3a29"');
+      };
+      for (const k of ['fondo', 'tarjeta', 'texto', 'secundario', 'borde', 'encabezado']) {
+        if (marca[k] !== undefined) hex(`marca.${k}`, marca[k]);
+      }
+      for (const [k, n] of [
+        ['colores', 0],
+        ['divergente', 3],
+        ['cambio', 2],
+      ] as const) {
+        const v = marca[k];
+        if (v === undefined) continue;
+        if (!Array.isArray(v) || v.length === 0 || (n > 0 && v.length !== n))
+          fail(
+            `marca.${k}`,
+            n > 0 ? `debe ser una lista de ${n} colores` : 'debe ser una lista de colores',
+          );
+        else v.forEach((c: unknown, i) => hex(`marca.${k}[${i}]`, c));
+      }
+      for (const k of ['nombre', 'lema', 'logo']) {
+        if (marca[k] !== undefined && typeof marca[k] !== 'string')
+          fail(`marca.${k}`, 'debe ser texto');
+      }
+    }
+  }
 
   const filtros = obj['filtros'];
   if (filtros !== undefined) {

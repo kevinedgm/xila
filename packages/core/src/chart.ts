@@ -61,6 +61,29 @@ import { statusGroups, statusLayout, type StatusLayout, type StatusRow } from '.
 import { parseIsoDate } from './data/csv';
 
 const IDENTITY = { offset: 0, scale: 1, base: 0 } as const;
+
+/**
+ * Rampa de tono de las cajas (franja, puntos con sombra): la `cobalto` con la paleta de Xila; con
+ * otra paleta, del fondo al primer color y de ahí hacia el color del texto, con el mismo reparto
+ * de paradas, para que un tema de marca no deje cajas azules.
+ */
+function inkRamp(theme: ResolvedChartConfig['theme']): Colormap {
+  const ink = theme.palette[0];
+  if (!ink || ink.toLowerCase() === '#1f4bd8' || !ink.startsWith('#')) return colormap('cobalto');
+  const toward = stopsColormap([ink, theme.text]);
+  const fromBg = stopsColormap([theme.background, ink]);
+  const css = (rgb: readonly number[]): string =>
+    '#' + rgb.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
+  return stopsColormap([
+    theme.background,
+    css(fromBg(0.25)),
+    css(fromBg(0.5)),
+    css(fromBg(0.8)),
+    ink,
+    css(toward(0.35)),
+    css(toward(0.6)),
+  ]);
+}
 const FALLBACK_WIDTH = 600;
 const FALLBACK_HEIGHT = 400;
 /** Distancia máxima, en píxeles, para que el cursor "toque" un dato. */
@@ -1860,7 +1883,7 @@ export class Chart {
     const { theme, box } = config;
     const visible = this.visibleSeries();
     const slot = x.bandwidth / Math.max(1, visible.length);
-    const cobalto = colormap('cobalto');
+    const cobalto = inkRamp(theme);
     const py = (v: number): number => applyMap(transform.y, v);
     visible.forEach(({ index: si }, vi) => {
       const groups = this.groups[si] ?? [];

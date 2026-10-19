@@ -147,6 +147,30 @@ pregunta y trae sus propias etiquetas y controles (el dashboard solo añade el t
 `examples/public/co2/muestra.json` es un dashboard de muestra con las once formas sobre el CSV
 de CO₂ (`/dashboard.html?config=co2/muestra.json`).
 
+## `marca`: la identidad del cliente
+
+Opcional. Sin `marca`, el dashboard usa el tema de Xila. Con ella, el mismo kit se viste con los
+colores del negocio: los colores van a la página (variables CSS) y a los gráficos (tema), así una
+cafetería no termina con cajas azul cobalto.
+
+| Clave        | Qué cambia                                                                  |
+| ------------ | --------------------------------------------------------------------------- |
+| `nombre`     | nombre en el encabezado                                                     |
+| `lema`       | línea bajo el nombre                                                        |
+| `logo`       | imagen del encabezado, relativa al JSON (`logo.svg`)                        |
+| `encabezado` | fondo de la banda del encabezado; su texto va del color de `tarjeta`        |
+| `colores`    | paleta de las series; el 1.º pinta nudos y cajas, el 2.º el máximo y camino |
+| `fondo`      | fondo de la página                                                          |
+| `tarjeta`    | fondo de cada panel y de sus gráficos                                       |
+| `texto`      | texto y etiquetas                                                           |
+| `secundario` | títulos de panel, ejes                                                      |
+| `borde`      | bordes y rejilla                                                            |
+| `divergente` | tres paradas (bajo, centro, alto) de los mapas `filas`                      |
+| `cambio`     | colores del cambio de los KPI: `[sube, baja]`                               |
+
+Todos los colores son `#rrggbb`. Ejemplo completo: `examples/public/cafeteria/dashboard.json`
+(cafetería simulada, `python/ejemplo_cafeteria.py`).
+
 ## Mecanismo de los filtros
 
 Los filtros viven en un estado compartido como lista de condiciones (`Condition` de

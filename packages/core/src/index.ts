@@ -60,6 +60,7 @@ export {
 } from './dashboard/config';
 export type {
   DashboardConfig,
+  MarcaConfig,
   PanelConfig,
   PanelKpi,
   PanelGrafico,

@@ -274,6 +274,32 @@ describe('formas de "Qué es Xila hoy" en el dashboard', () => {
     expect(calor.type === 'heatmap' && calor.heatmap?.values).toBe(true);
   });
 
+  it('acepta una marca con colores hex y rechaza colores mal escritos', () => {
+    const ok = parseDashboard({
+      titulo: 'x',
+      datos,
+      paneles: [{ tipo: 'kpi', datos: 'co2', valor: { columna: 'co2', agregado: 'sum' } }],
+      marca: {
+        nombre: 'Café',
+        colores: ['#6b3f2a'],
+        divergente: ['#000000', '#ffffff', '#c8802e'],
+      },
+    });
+    expect(ok.marca?.nombre).toBe('Café');
+    let err: DashboardConfigError | undefined;
+    try {
+      parseDashboard({
+        titulo: 'x',
+        datos,
+        paneles: [{ tipo: 'kpi', datos: 'co2', valor: { columna: 'co2', agregado: 'sum' } }],
+        marca: { fondo: 'cafe', divergente: ['#000000'] },
+      });
+    } catch (e) {
+      err = e as DashboardConfigError;
+    }
+    expect(err?.errors.map((e) => e.path)).toEqual(['marca.fondo', 'marca.divergente']);
+  });
+
   it('calor con forma nudos pide nudos y camino al motor', () => {
     const cfg = parseDashboard({
       titulo: 'x',

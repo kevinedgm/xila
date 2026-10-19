@@ -22,8 +22,13 @@ export interface LoadedDashboard {
 export async function loadDashboard(url: string): Promise<LoadedDashboard> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No se pudo leer ${url}: HTTP ${res.status}`);
-  const config = parseDashboard(await res.json());
+  const parsed = parseDashboard(await res.json());
   const base = new URL(url, globalThis.location?.href ?? 'http://localhost/');
+  // El logo, como los CSV, es relativo al JSON (no a la página que lo muestra).
+  const logo = parsed.marca?.logo;
+  const config = logo
+    ? { ...parsed, marca: { ...parsed.marca, logo: new URL(logo, base).href } }
+    : parsed;
   const entries = await Promise.all(
     Object.entries(config.datos).map(async ([name, path]) => {
       const { table } = await fetchCsv(new URL(path, base).href);

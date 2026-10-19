@@ -1,5 +1,5 @@
 {
-  "titulo": "Cafetería Tres Hilos · Ventas y operación 2024–2025 (datos simulados)",
+  "titulo": "Ventas y operación · ene 2024 – ago 2025 (datos simulados)",
   "tema": "light",
   "datos": {
     "ventas": "data/ventas.csv",
@@ -35,59 +35,91 @@
       "tipo": "kpi",
       "titulo": "Ventas del último mes",
       "datos": "ventas",
-      "valor": { "columna": "ventas_mxn", "agregado": "sum", "formato": "moneda" },
-      "comparar": { "columna": "fecha", "periodo": "month" }
+      "valor": {
+        "columna": "ventas_mxn",
+        "agregado": "sum",
+        "formato": "moneda"
+      },
+      "comparar": {
+        "columna": "fecha",
+        "periodo": "month"
+      }
     },
     {
       "tipo": "kpi",
-      "titulo": "Tickets del último mes",
+      "titulo": "Tazas servidas en el último mes",
       "datos": "diario",
-      "valor": { "columna": "tickets", "agregado": "sum", "formato": "entero" },
-      "comparar": { "columna": "fecha", "periodo": "month" }
+      "valor": {
+        "columna": "tickets",
+        "agregado": "sum",
+        "formato": "entero"
+      },
+      "comparar": {
+        "columna": "fecha",
+        "periodo": "month"
+      }
     },
     {
       "tipo": "kpi",
       "titulo": "Ticket promedio del último mes",
       "datos": "diario",
-      "valor": { "columna": "ticket_promedio", "agregado": "mean", "formato": "moneda" },
-      "comparar": { "columna": "fecha", "periodo": "month" }
+      "valor": {
+        "columna": "ticket_promedio",
+        "agregado": "mean",
+        "formato": "moneda"
+      },
+      "comparar": {
+        "columna": "fecha",
+        "periodo": "month"
+      }
     },
     {
       "tipo": "kpi",
-      "titulo": "Calificación promedio (1–5)",
+      "titulo": "Calificación de los clientes (1–5)",
       "datos": "diario",
-      "valor": { "columna": "calificacion", "agregado": "mean", "formato": "numero" },
-      "comparar": { "columna": "fecha", "periodo": "month" }
+      "valor": {
+        "columna": "calificacion",
+        "agregado": "mean",
+        "formato": "numero"
+      },
+      "comparar": {
+        "columna": "fecha",
+        "periodo": "month"
+      }
     },
     {
       "tipo": "linea",
       "forma": "ahora",
-      "titulo": "¿Cuánto vende hoy cada sucursal y de dónde viene? · ventas por semana",
+      "titulo": "¿Qué barra va mejor esta semana y de dónde viene? · ventas por semana",
       "datos": "diario",
       "x": "fecha",
       "y": "ventas_mxn",
       "color": "sucursal",
       "agregado": "sum",
       "periodo": "week",
-      "ejes": { "y": "MXN" }
+      "ejes": {
+        "y": "MXN"
+      }
     },
     {
       "tipo": "linea",
       "forma": "protagonista",
       "protagonista": "App de entrega",
-      "titulo": "¿Cuánto pesa ya la app de entrega? · ventas por mes y canal",
+      "titulo": "¿Cuánto café ya sale por la app de entrega? · ventas por mes y canal",
       "datos": "ventas",
       "x": "fecha",
       "y": "ventas_mxn",
       "color": "canal",
       "agregado": "sum",
       "periodo": "month",
-      "ejes": { "y": "MXN" }
+      "ejes": {
+        "y": "MXN"
+      }
     },
     {
       "tipo": "calor",
       "forma": "nudos",
-      "titulo": "¿A qué hora y qué día se llena? · pedidos por día y hora",
+      "titulo": "¿A qué hora se llena la barra? · pedidos por día y hora",
       "datos": "pedidos_hora",
       "x": "hora",
       "y": "dia",
@@ -97,18 +129,20 @@
     {
       "tipo": "barras",
       "forma": "puntos",
-      "titulo": "¿Qué categoría vende por encima del promedio?",
+      "titulo": "¿Qué se vende por encima del promedio? · ventas por categoría",
       "datos": "ventas",
       "x": "categoria",
       "y": "ventas_mxn",
       "agregado": "sum",
       "ancho": 6,
-      "ejes": { "y": "MXN" }
+      "ejes": {
+        "y": "MXN"
+      }
     },
     {
       "tipo": "barras",
       "forma": "unidades",
-      "titulo": "¿Qué parte de los tickets llega por cada canal?",
+      "titulo": "¿Por dónde llegan los pedidos? · tickets por canal",
       "datos": "ventas",
       "x": "canal",
       "y": "tickets",
@@ -118,28 +152,33 @@
     {
       "tipo": "dispersion",
       "forma": "tendencia",
-      "titulo": "¿Qué días la espera tumbó la calificación? · un punto por sucursal y día",
+      "titulo": "¿Cuándo la fila le costó estrellas? · espera contra calificación, por barra y día",
       "datos": "diario",
       "x": "espera_min",
       "y": "calificacion",
       "color": "sucursal",
       "ancho": 6,
-      "ejes": { "x": "espera promedio, min", "y": "calificación (1–5)" }
+      "ejes": {
+        "x": "espera promedio, min",
+        "y": "calificación (1–5)"
+      }
     },
     {
       "tipo": "cajas",
       "forma": "hoy",
-      "titulo": "¿Dónde cae el ticket de hoy dentro de su historia?",
+      "titulo": "¿Cómo va el ticket de hoy contra su historia? · por barra",
       "datos": "diario",
       "x": "sucursal",
       "y": "ticket_promedio",
       "ancho": 6,
-      "ejes": { "y": "MXN por ticket" }
+      "ejes": {
+        "y": "MXN por ticket"
+      }
     },
     {
       "tipo": "calor",
       "forma": "filas",
-      "titulo": "¿Cuándo vendió cada categoría más de lo normal? · ventas por mes, cada fila contra su mediana",
+      "titulo": "¿En qué temporada sube cada categoría? · ventas por mes, cada fila contra su mediana",
       "datos": "ventas",
       "x": "fecha",
       "y": "categoria",
@@ -147,5 +186,19 @@
       "agregado": "sum",
       "periodo": "month"
     }
-  ]
+  ],
+  "marca": {
+    "nombre": "Tres Hilos Café",
+    "lema": "Café de especialidad · tres barras en Oaxaca",
+    "logo": "logo.svg",
+    "colores": ["#6b3f2a", "#c8802e", "#3f7a5c", "#b4413a", "#8f7b62"],
+    "fondo": "#f1e8dc",
+    "tarjeta": "#fbf7f1",
+    "texto": "#2b1e17",
+    "secundario": "#6f5f53",
+    "borde": "#e4d8c8",
+    "encabezado": "#2b1e17",
+    "divergente": ["#3f7a5c", "#f4ede3", "#b4602a"],
+    "cambio": ["#3f7a5c", "#b4413a"]
+  }
 }
