@@ -32,10 +32,10 @@ describe('rowStats', () => {
 });
 
 describe('cobalto-naranja e inkOn', () => {
-  it('el centro del divergente es casi blanco y los extremos azul y naranja', () => {
+  it('el centro del divergente es casi manta y los extremos azul y naranja', () => {
     const map = colormap('cobalto-naranja');
     const [r, g, b] = map(0.5);
-    expect(Math.min(r, g, b)).toBeGreaterThan(240);
+    expect(Math.min(r, g, b)).toBeGreaterThan(225);
     expect(map(0)[2]).toBeGreaterThan(map(0)[0]);
     expect(map(1)[0]).toBeGreaterThan(map(1)[2]);
   });

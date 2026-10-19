@@ -1,3 +1,4 @@
+import 'xilaplot/fuentes/xila.css';
 import { Chart, DataTable, syncPlugin, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 import { generateSeries } from './bench/synthetic';
 

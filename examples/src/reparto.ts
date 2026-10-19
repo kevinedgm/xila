@@ -1,3 +1,4 @@
+import 'xilaplot/fuentes/xila.css';
 import { Chart, fetchCsv, titlePlugin, tooltipPlugin, type BoxChartConfig } from 'xilaplot';
 
 /**

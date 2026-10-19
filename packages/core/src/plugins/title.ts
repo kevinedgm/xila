@@ -1,4 +1,5 @@
 import type { ChartPlugin, PluginContext } from '../plugin';
+import { displayFont } from '../theme';
 
 export interface TitleOptions {
   /** Título: en la anatomía editorial es el hallazgo, una frase, no el nombre de la variable. */
@@ -12,7 +13,7 @@ export interface TitleOptions {
 /**
  * Título y subtítulo en HTML sobre el gráfico. Reserva arriba su propio alto, como la leyenda;
  * si también hay `legendPlugin` arriba, la leyenda se coloca debajo del título.
- * El título va en tinta y peso 600 a 1,25 veces el tamaño base; el subtítulo en el color de
+ * El título va en tinta, en la fuente de título del tema, peso 600 a 1,4 veces el tamaño base; el subtítulo en el color de
  * los ejes, para que la jerarquía se lea sin tamaños extremos.
  */
 export function titlePlugin(options: TitleOptions): ChartPlugin {
@@ -27,7 +28,8 @@ export function titlePlugin(options: TitleOptions): ChartPlugin {
     h.className = 'xila-title-text';
     h.textContent = options.title;
     Object.assign(h.style, {
-      font: `600 ${Math.round(theme.fontSize * 1.25)}px/1.3 ${theme.fontFamily}`,
+      // El hallazgo va en la fuente de título de la marca (Fraunces), un poco más grande.
+      font: `600 ${Math.round(theme.fontSize * 1.4)}px/1.25 ${displayFont(theme)}`,
       color: theme.text,
     });
     el.appendChild(h);

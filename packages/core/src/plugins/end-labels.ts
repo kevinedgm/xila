@@ -1,3 +1,4 @@
+import { monoFont } from '../theme';
 import type { ChartPlugin, PluginContext } from '../plugin';
 import { formatNumber } from '../format/number';
 import { seriesColor } from '../config';
@@ -58,22 +59,22 @@ export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
     return formatNumber(v, step !== undefined ? { step } : {});
   };
 
-  const labels = (c: PluginContext): { text: string; x: number; y: number; color: string }[] => {
+  const labels = (
+    c: PluginContext,
+  ): { text: string; value: string; x: number; y: number; color: string }[] => {
     const scales = c.getScales();
     if (!scales || scales.x.kind === 'band') return [];
     const sx = scales.x;
-    const out: { text: string; x: number; y: number; color: string }[] = [];
+    const out: { text: string; value: string; x: number; y: number; color: string }[] = [];
     c.getSeries().forEach((s, i) => {
       if (c.hiddenSeries.has(s.id)) return;
       let last = s.length - 1;
       while (last >= 0 && (s.y[last] as number) !== (s.y[last] as number)) last--;
       if (last < 0) return;
       const spec = c.config.series[i];
-      const parts: string[] = [];
-      if (withName) parts.push(spec?.name ?? s.id);
-      if (withValue) parts.push(formatY(s.y[last] as number, c));
       out.push({
-        text: parts.join('  '),
+        text: withName ? (spec?.name ?? s.id) : '',
+        value: withValue ? formatY(s.y[last] as number, c) : '',
         x: sx.toPixel(s.x[last] as number),
         y: scales.y.toPixel(s.y[last] as number),
         color: seriesColor(c.config, i),
@@ -87,15 +88,17 @@ export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
     reserveSpace(c) {
       const { theme } = c.config;
       const font = { font: `500 ${theme.fontSize}px ${theme.fontFamily}`, fill: theme.text };
+      const mono = { font: `500 ${theme.fontSize}px ${monoFont(theme)}`, fill: theme.text };
       // Antes del primer layout no hay escalas: se mide con el último valor de cada serie.
       widest = 0;
       c.getSeries().forEach((s, i) => {
         if (c.hiddenSeries.has(s.id) || s.length === 0) return;
         const spec = c.config.series[i];
-        const parts: string[] = [];
-        if (withName) parts.push(spec?.name ?? s.id);
-        if (withValue) parts.push(formatY(s.y[s.length - 1] as number, c));
-        widest = Math.max(widest, c.renderer.measureText(parts.join('  '), font));
+        const name = withName ? c.renderer.measureText(spec?.name ?? s.id, font) : 0;
+        const value = withValue
+          ? c.renderer.measureText(formatY(s.y[s.length - 1] as number, c), mono)
+          : 0;
+        widest = Math.max(widest, name + value + (name && value ? theme.fontSize * 0.6 : 0));
       });
       return widest > 0 ? { right: Math.ceil(widest) + marker + 10 } : undefined;
     },
@@ -120,11 +123,23 @@ export function endLabelsPlugin(options: EndLabelsOptions = {}): ChartPlugin {
           { fill: it.color, radius: marker, stroke: theme.background, strokeWidth: 2 },
           { x: { base: 0, offset: 0, scale: 1 }, y: { base: 0, offset: 0, scale: 1 } },
         );
-        c.renderer.drawText('overlay', it.text, it.x + marker + 6, ly, {
-          font: `500 ${theme.fontSize}px ${theme.fontFamily}`,
-          fill: theme.text,
-          baseline: 'middle',
-        });
+        // Nombre en la fuente de interfaz y cifra en la de cifras, como pide la anatomía.
+        const font = `500 ${theme.fontSize}px ${theme.fontFamily}`;
+        let x = it.x + marker + 6;
+        if (it.text) {
+          c.renderer.drawText('overlay', it.text, x, ly, {
+            font,
+            fill: theme.text,
+            baseline: 'middle',
+          });
+          x += c.renderer.measureText(it.text, { font, fill: theme.text }) + theme.fontSize * 0.6;
+        }
+        if (it.value)
+          c.renderer.drawText('overlay', it.value, x, ly, {
+            font: `500 ${theme.fontSize}px ${monoFont(theme)}`,
+            fill: theme.text,
+            baseline: 'middle',
+          });
       });
     },
   };

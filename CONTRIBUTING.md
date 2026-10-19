@@ -38,7 +38,8 @@ pnpm test         # Vitest
 pnpm --filter examples build && pnpm --filter examples test:visual   # capturas (ver README)
 ```
 
-Las pruebas visuales comparan capturas generadas con la fuente Inter 4.0 en Ubuntu; en otra
+Las pruebas visuales comparan capturas generadas con las fuentes de la marca (instaladas desde
+`packages/core/fuentes/ttf`) en Ubuntu; en otra
 máquina pueden fallar por diferencias de texto sin que el cambio sea incorrecto. Si CI falla
 solo por eso, dilo en el PR.
 

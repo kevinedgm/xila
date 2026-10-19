@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
 import Demo from './Demo.vue';
+import 'xilaplot/fuentes/xila.css';
 import './estilos.css';
 
 // `<Demo>` queda disponible en cualquier página Markdown: dibuja un gráfico en vivo.

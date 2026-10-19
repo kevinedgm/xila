@@ -35,8 +35,10 @@ en vez de leyenda, barras con el extremo redondeado y un hueco del color del fon
 vecinas, puntos con anillo de superficie, y un título que dice el hallazgo (`titlePlugin`).
 Nada de sombras, degradados ni cajas: el dato manda.
 
-**Paleta Cobalto.** Un azul cobalto como tono principal y una paleta categórica de siete colores
-validada para daltonismo; el heatmap usa el mismo tono de casi blanco a marino (`cobalto`).
+**Marca Xila.** Superficie «manta» (#f6f1e8) y tinta, cobalto #1f4bd8 como color de marca, «hilo»
+naranja de acento y una categórica de siete validada para daltonismo; Instrument Sans para la
+interfaz, JetBrains Mono para las cifras y Fraunces para el título del hallazgo (importa
+`xilaplot/fuentes/xila.css` una vez por página); el heatmap va de la manta al marino pasando por el cobalto (`cobalto`).
 Los tokens viven en el tema y se cambian en una sola configuración.
 
 **Interacción incluida.** Tooltip, leyenda, zoom y pan, selección que cuenta, panel de resumen,
@@ -71,8 +73,8 @@ pnpm typecheck  # TypeScript estricto en todos los paquetes
 ### Tests visuales
 
 Comparan capturas de cada ejemplo contra las referencias en `examples/tests/__capturas__`
-(generadas en Ubuntu 24.04 con la fuente Inter 4.0, paquete `fonts-inter`; CI la instala). Con
-otra fuente el texto mide distinto y las capturas no coinciden. Si un cambio de dibujo es
+(generadas en Ubuntu 24.04 con las fuentes de la marca, que viven en `packages/core/fuentes/ttf`;
+CI las instala en el sistema). Con otra fuente el texto mide distinto y las capturas no coinciden. Si un cambio de dibujo es
 intencional, se regeneran con `--update-snapshots` y se revisan en el diff del commit.
 
 ```bash
@@ -162,7 +164,7 @@ fila de cada grupo con su valor y en qué parte del reparto cae. Ejemplo: `examp
 `type: 'heatmap'` toma datos en formato largo: `x` e `y` son las columnas categóricas (columna y
 fila de la celda) y `value` la numérica. Se dibuja como una imagen de un píxel por celda
 escalada sin suavizado, así 500 × 500 celdas cuestan milisegundos. `heatmap.colormap` acepta
-`cobalto` (por defecto: un solo tono de la paleta, de casi blanco a marino), `viridis`, `magma`,
+`cobalto` (por defecto: un solo tono, de la manta al marino), `viridis`, `magma`,
 `inferno`, `plasma` (perceptuales: la luminosidad crece de forma uniforme, legibles con
 daltonismo y en blanco y negro), `rdbu` y `cobalto-naranja` (divergentes) o paradas
 hexadecimales propias. `center: 0` hace el dominio simétrico para correlaciones; `legend`

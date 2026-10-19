@@ -12,6 +12,7 @@ import { resolveConfig, seriesColor, type ChartConfig, type ResolvedChartConfig 
 import { waffleLayout, type WaffleLayout } from './waffle';
 import { colormap, colormapCss, inkOn, type Colormap } from './colormap';
 import { rowPosition, rowStats, type RowStats } from './heatmap';
+import { monoFont } from './theme';
 import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
 import {
@@ -889,7 +890,7 @@ export class Chart {
       const gap = config.heatmap.gap;
       const rowH = area.height / ny;
       const colW = (x1 - x0) / nx;
-      const font = `500 ${config.theme.fontSize}px ${config.theme.fontFamily}`;
+      const font = `500 ${config.theme.fontSize}px ${monoFont(config.theme)}`;
       const [lo2, hi2] = this.heatmapDomain();
       const step = (hi2 - lo2) / 100;
       for (let yi = 0; yi < ny; yi++) {
@@ -1593,7 +1594,7 @@ export class Chart {
                 : (L.above ?? '').replace('{p}', String(pct));
         const above = cy - 34 >= area.y;
         const lh = theme.fontSize * 1.15;
-        const fontValue = `600 ${theme.fontSize}px ${theme.fontFamily}`;
+        const fontValue = `600 ${theme.fontSize}px ${monoFont(theme)}`;
         const fontContext = `${Math.round(theme.fontSize * 0.85)}px ${theme.fontFamily}`;
         const top = above ? cy - 10 - 2 * lh : cy + 10;
         chip(

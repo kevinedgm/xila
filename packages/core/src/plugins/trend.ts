@@ -1,5 +1,6 @@
 import { seriesColor } from '../config';
 import { formatNumber } from '../format/number';
+import { monoFont } from '../theme';
 import type { ChartPlugin, PluginContext } from '../plugin';
 
 export interface TrendOptions {
@@ -233,7 +234,7 @@ export function trendPlugin(options: TrendOptions = {}): ChartPlugin {
           baseline: 'top',
         });
         c.renderer.drawText('overlay', signed(delta, c), rx + widest + 4, y, {
-          font: `600 ${theme.fontSize}px ${theme.fontFamily}`,
+          font: `600 ${theme.fontSize}px ${monoFont(theme)}`,
           fill: delta >= 0 ? above : below,
           align: 'right',
           baseline: 'top',

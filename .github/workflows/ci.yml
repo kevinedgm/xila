@@ -23,9 +23,9 @@ jobs:
       - run: pnpm --filter examples build
 
       # Tests visuales: comparan capturas de los ejemplos contra tests/__capturas__. Las
-      # referencias se generaron con Inter 4.0 (paquete fonts-inter de Ubuntu 24.04); con otra
-      # fuente el texto cambia de ancho y las capturas no coinciden.
-      - run: sudo apt-get install -y fonts-inter
+      # referencias se generaron con las fuentes de la marca (packages/core/fuentes/ttf); se
+      # instalan en el sistema porque con otra fuente el texto cambia de ancho.
+      - run: mkdir -p ~/.fonts && cp packages/core/fuentes/ttf/*.ttf ~/.fonts/ && fc-cache -f
       - run: pnpm --filter examples exec playwright install --with-deps chromium
       - run: pnpm --filter examples test:visual
       - uses: actions/upload-artifact@v4

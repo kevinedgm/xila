@@ -14,8 +14,8 @@
  * `cobalto-naranja` es el divergente de la paleta: del azul de la serie 1 a un gris casi
  * blanco en el centro y de ahí al naranja de acento. Es el que usa `heatmap.scale: 'row'`.
  *
- * `cobalto` es el secuencial de un solo tono de la paleta (de casi blanco al azul de la serie
- * 1 y de ahí a marino): la magnitud se lee como claro → oscuro y el mapa no compite con la
+ * `cobalto` es el secuencial de un solo tono de la paleta (de la manta al cobalto de la marca
+ * y de ahí a marino): la magnitud se lee como claro → oscuro y el mapa no compite con la
  * paleta categórica del resto del tablero. Es el valor por defecto.
  */
 
@@ -65,17 +65,18 @@ const PLASMA: Poly = [
 ];
 
 const RDBU = ['#b2182b', '#ef8a62', '#fddbc7', '#f7f7f7', '#d1e5f0', '#67a9cf', '#2166ac'];
-const COBALTO = ['#eef2fb', '#c3d0f3', '#8fa8e8', '#5a7ede', '#2456d6', '#1a3f9e', '#102a6e'];
+// De manta a marino pasando por el cobalto de la marca.
+const COBALTO = ['#f6f1e8', '#cfd6ee', '#9fb3e8', '#5f80e0', '#1f4bd8', '#15338f', '#0b1f5c'];
 const COBALTO_NARANJA = [
-  '#2456d6',
-  '#5a7ede',
-  '#8fa8e8',
-  '#c3d0f3',
-  '#f5f6f8',
-  '#f6d9c4',
-  '#eeb08a',
-  '#e0702a',
-  '#a84d14',
+  '#1f4bd8',
+  '#5f80e0',
+  '#9fb3e8',
+  '#cfd6ee',
+  '#f3efe6',
+  '#f4d4bd',
+  '#eba87a',
+  '#d14e0a',
+  '#8f3507',
 ];
 
 function polynomial(p: Poly): Colormap {

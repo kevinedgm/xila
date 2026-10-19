@@ -1,4 +1,5 @@
 import { seriesColor } from '../config';
+import { monoFont } from '../theme';
 import type { ChartPlugin, PluginContext } from '../plugin';
 import { formatNumber } from '../format/number';
 import { timeTickFormatter, timeTicks } from '../scales/time';
@@ -258,7 +259,7 @@ export function nowPlugin(options: NowOptions = {}): ChartPlugin {
       const value = document.createElement('div');
       value.className = 'xila-now-value';
       Object.assign(value.style, {
-        font: `600 ${Math.round(theme.fontSize * 2)}px/1.15 ${theme.fontFamily}`,
+        font: `600 ${Math.round(theme.fontSize * 2)}px/1.15 ${monoFont(theme)}`,
         color: theme.text,
         fontVariantNumeric: 'tabular-nums',
         margin: '2px 0',

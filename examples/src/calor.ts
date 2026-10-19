@@ -1,3 +1,4 @@
+import 'xilaplot/fuentes/xila.css';
 import { Chart, DataTable, categoryColumn, numberColumn, tooltipPlugin } from 'xilaplot';
 import type { ColormapName } from 'xilaplot';
 

@@ -44,8 +44,8 @@ describe('colormap', () => {
       expect(lum).toBeLessThan(prev);
       prev = lum;
     }
-    expect(map(0)).toEqual([238, 242, 251]);
-    expect(map(1)).toEqual([16, 42, 110]);
+    expect(map(0)).toEqual([246, 241, 232]);
+    expect(map(1)).toEqual([11, 31, 92]);
   });
 
   it('rdbu es divergente con gris neutro en el centro y recorta fuera de [0, 1]', () => {

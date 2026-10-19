@@ -69,20 +69,29 @@ describe('endLabelsPlugin', () => {
       serie('México', [0, 100], [1, 3]),
     ]);
     const space = endLabelsPlugin().reserveSpace?.(ctx);
-    // "Alemania  8" = 11 caracteres × 6 px + marcador 4 + 10
-    expect(space).toEqual({ right: 11 * 6 + 4 + 10 });
+    // "Alemania" (8 × 6 px) + hueco 0,6 em + "8" (6 px) + marcador 4 + 10, redondeado arriba.
+    const fontSize = ctx.config.theme.fontSize;
+    expect(space).toEqual({ right: Math.ceil(8 * 6 + fontSize * 0.6 + 6) + 4 + 10 });
   });
 
   it('escribe nombre y último valor junto al último punto, en color de texto', () => {
     const { ctx, renderer } = context([serie('a', [0, 100], [1, 5])]);
     endLabelsPlugin().afterDraw?.(ctx);
     expect(renderer.drawPointSeries).toHaveBeenCalledTimes(1);
-    const [, text, px, py, style] = (renderer.drawText as ReturnType<typeof vi.fn>).mock
-      .calls[0] as [string, string, number, number, { fill: string }];
-    expect(text).toBe('a  5');
-    expect(px).toBe(110 + 4 + 6);
-    expect(py).toBe(y.toPixel(5));
-    expect(style.fill).toBe(ctx.config.theme.text);
+    // Nombre y cifra son dos textos: el nombre en la fuente de interfaz y la cifra en la de cifras.
+    const calls = (renderer.drawText as ReturnType<typeof vi.fn>).mock.calls as [
+      string,
+      string,
+      number,
+      number,
+      { fill: string; font: string },
+    ][];
+    expect(calls.map((c) => c[1])).toEqual(['a', '5']);
+    expect(calls[0]?.[2]).toBe(110 + 4 + 6);
+    expect(calls[1]?.[2]).toBe(110 + 4 + 6 + 6 + ctx.config.theme.fontSize * 0.6);
+    expect(calls[0]?.[3]).toBe(y.toPixel(5));
+    expect(calls[0]?.[4].fill).toBe(ctx.config.theme.text);
+    expect(calls[1]?.[4].font).not.toBe(calls[0]?.[4].font);
   });
 
   it('ignora los NaN finales y las series ocultas', () => {
@@ -108,9 +117,11 @@ describe('endLabelsPlugin', () => {
       serie('b', [0, 100], [1, 10]),
     ]);
     endLabelsPlugin({ minGap: 14 }).afterDraw?.(ctx);
-    const ys = (renderer.drawText as ReturnType<typeof vi.fn>).mock.calls
-      .map((c) => c[3] as number)
-      .sort((p, q) => p - q);
+    const ys = [
+      ...new Set(
+        (renderer.drawText as ReturnType<typeof vi.fn>).mock.calls.map((c) => c[3] as number),
+      ),
+    ].sort((p, q) => p - q);
     expect(ys[0]).toBe(10);
     expect(ys[1]).toBe(24);
   });

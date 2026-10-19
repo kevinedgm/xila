@@ -104,7 +104,7 @@ export {
 } from './format/number';
 export type { NumberFormatter, NumberFormatOptions } from './format/number';
 
-export { themes, resolveTheme } from './theme';
+export { themes, resolveTheme, monoFont, displayFont } from './theme';
 export type { Theme, ThemeName } from './theme';
 
 export { applyMap } from './renderer';

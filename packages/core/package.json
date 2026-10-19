@@ -11,10 +11,15 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./fuentes/xila.css": "./fuentes/xila.css",
+    "./fuentes/*": "./fuentes/*"
   },
   "files": [
     "dist",
+    "fuentes/*.css",
+    "fuentes/*.woff2",
+    "fuentes/*.txt",
     "README.md"
   ],
   "scripts": {

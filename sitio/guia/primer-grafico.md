@@ -44,7 +44,11 @@ También se construye en memoria con `new DataTable({ x: numberColumn([...]), ..
 
 ## 3. Crear el gráfico
 
+Importa una vez por página las fuentes de la marca (`xilaplot/fuentes/xila.css`): el tema las
+declara y el canvas solo las usa si la página las ha cargado.
+
 ```ts
+import 'xilaplot/fuentes/xila.css';
 import { Chart, fetchCsv, splitBy, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 
 const { table } = await fetchCsv('/data/co2.csv');

@@ -1,4 +1,5 @@
 import { seriesColor } from '../config';
+import { monoFont } from '../theme';
 import type { ChartPlugin, PluginContext } from '../plugin';
 import { formatNumber } from '../format/number';
 
@@ -97,7 +98,7 @@ export function referencePlugin(options: ReferenceOptions): ChartPlugin {
         dash: [4, 3],
       });
       c.renderer.drawText('overlay', label(ref, c), area.x + area.width - 4, ry - 5, {
-        font: `500 ${theme.fontSize}px ${theme.fontFamily}`,
+        font: `500 ${theme.fontSize}px ${monoFont(theme)}`,
         fill: theme.text,
         align: 'right',
         baseline: 'bottom',
@@ -114,7 +115,7 @@ export function referencePlugin(options: ReferenceOptions): ChartPlugin {
           const text = `${d >= 0 ? '+' : '−'}${formatY(Math.abs(d), c)}`;
           const above = v >= ref;
           c.renderer.drawText('overlay', text, x, above ? py - 9 : py + 9, {
-            font: `500 ${Math.round(theme.fontSize * 0.92)}px ${theme.fontFamily}`,
+            font: `500 ${Math.round(theme.fontSize * 0.92)}px ${monoFont(theme)}`,
             fill: theme.text,
             align: 'center',
             baseline: above ? 'bottom' : 'top',

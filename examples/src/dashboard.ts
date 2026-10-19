@@ -1,3 +1,4 @@
+import 'xilaplot/fuentes/xila.css';
 import { DashboardConfigError, loadDashboard } from 'xilaplot';
 import { XilaDashboard } from 'xilaplot-vue';
 import { createApp, h } from 'vue';

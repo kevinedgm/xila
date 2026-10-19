@@ -1,3 +1,4 @@
+import 'xilaplot/fuentes/xila.css';
 import { Chart, DataTable, numberColumn, tooltipPlugin, zoomPanPlugin } from 'xilaplot';
 import { mulberry32 } from './bench/synthetic';
 

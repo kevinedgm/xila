@@ -32,14 +32,14 @@ import { XilaChart } from './chart';
 
 const STYLE_ID = 'xila-dashboard-style';
 const CSS = `
-.xila-dashboard{font-family:Inter,system-ui,sans-serif;color:var(--xila-text,#1f2933);background:var(--xila-bg,#f5f7fa);min-height:100vh;padding:16px 24px;box-sizing:border-box}
-.xila-dashboard[data-theme=dark]{--xila-text:#e6e8eb;--xila-bg:#15191e;--xila-panel:#1f252c;--xila-border:#2c343d;--xila-muted:#9aa5b1}
-.xila-dashboard h1{font-size:22px;margin:0 0 12px}
+.xila-dashboard{font-family:"Instrument Sans",system-ui,sans-serif;color:var(--xila-text,#15171f);background:var(--xila-bg,#f6f1e8);min-height:100vh;padding:16px 24px;box-sizing:border-box;--xila-panel:#fffdf9;--xila-border:#e3ddd1;--xila-muted:#5b5f6e}
+.xila-dashboard[data-theme=dark]{--xila-text:#f6f1e8;--xila-bg:#15171f;--xila-panel:#1e2130;--xila-border:#2b2f3d;--xila-muted:#a9adbd}
+.xila-dashboard h1{font:600 24px/1.2 Fraunces,Georgia,serif;margin:0 0 12px}
 .xila-filters{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:16px}
 .xila-filter{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--xila-muted,#52606d)}
 .xila-filter input,.xila-filter select{font:inherit;padding:4px 6px;border:1px solid var(--xila-border,#cbd2d9);border-radius:4px;background:var(--xila-panel,#fff);color:inherit}
 .xila-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-.xila-panel{grid-column:span var(--span,12);background:var(--xila-panel,#fff);border:1px solid var(--xila-border,#e4e7eb);border-radius:8px;padding:12px 16px;box-sizing:border-box;min-width:0}
+.xila-panel{grid-column:span var(--span,12);background:var(--xila-panel,#fffdf9);border:1px solid var(--xila-border,#e3ddd1);border-radius:8px;padding:12px 16px;box-sizing:border-box;min-width:0}
 .xila-panel h2{font-size:14px;font-weight:600;margin:0 0 8px;color:var(--xila-muted,#52606d)}
 .xila-panel-body{position:relative}
 .xila-panel-tools{position:absolute;top:-30px;right:0;display:flex;gap:4px;opacity:0;transition:opacity .15s}
@@ -47,10 +47,10 @@ const CSS = `
 .xila-panel-tools button{font:11px system-ui,sans-serif;padding:2px 6px;border:1px solid var(--xila-border,#cbd2d9);border-radius:4px;background:var(--xila-panel,#fff);color:var(--xila-muted,#52606d);cursor:pointer}
 .xila-panel-tools button:hover{color:var(--xila-text,#1f2933)}
 .xila-panel-chart{height:320px}
-.xila-kpi-value{font-size:28px;font-weight:700;line-height:1.2}
+.xila-kpi-value{font:600 28px/1.2 "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .xila-kpi-change{font-size:13px;margin-top:4px}
-.xila-kpi-change[data-sign=up]{color:#0b8043}
-.xila-kpi-change[data-sign=down]{color:#c5221f}
+.xila-kpi-change[data-sign=up]{color:#12957a}
+.xila-kpi-change[data-sign=down]{color:#d14e0a}
 .xila-errors{background:#fde8e8;color:#8a1c1c;border:1px solid #f5b5b5;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px}
 .xila-errors code{font-family:ui-monospace,monospace}
 @media (max-width:720px){.xila-grid{grid-template-columns:1fr}.xila-panel{grid-column:span 1}.xila-dashboard{padding:12px}}
