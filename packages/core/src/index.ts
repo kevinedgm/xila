@@ -14,6 +14,8 @@ export { resolveSeries, isSorted } from './data/series';
 export type { SeriesSpec, ResolvedSeries } from './data/series';
 export { minMaxDecimate } from './data/decimate';
 export type { DecimatedSeries } from './data/decimate';
+export { buildPyramid, pyramidDecimate } from './data/pyramid';
+export type { MinMaxPyramid } from './data/pyramid';
 export { lttb } from './data/lttb';
 export { boxStats, boxGroups } from './data/box';
 export { colormap, stopsColormap, colormapCss, inkOn } from './colormap';

@@ -89,7 +89,7 @@ Lectura honesta:
    solo cuesta 3.9 ms; los 13 ms restantes eran tres recorridos completos de los datos por
    fotograma para calcular el dominio (dos al emitir `zoom`, uno al construir el eje Y). Desde
    el 2026-10-19 el dominio se guarda hasta que cambian los datos o las series visibles y el
-   pan baja a 9.0 ms (ver la sección siguiente).
+   pan baja a 9.0 ms (ver la sección siguiente); con la pirámide de ADR 0006 baja a 2.9 ms.
 2. **Chart.js y ECharts aguantan 1M puntos** si se configuran como su documentación indica
    (decimación o muestreo explícitos, sin animación, sin `parsing`). Con la configuración por
    defecto no (Chart.js sin `decimation` dibuja todos los puntos, como `naive`). Chart.js además
@@ -120,12 +120,12 @@ fotogramas medidos.
 Mismo contenedor y protocolo, pan sobre la vista completa, 2 repeticiones, mediana en ms por
 fotograma. `BENCH_SIZES=1000000,2000000,5000000,10000000 BENCH_RENDERERS=decimated,xila`.
 
-|     Puntos | decimated | xila antes | xila con dominio en caché |
-| ---------: | --------: | ---------: | ------------------------: |
-|  1 000 000 |       5.3 |       17.4 |                       9.7 |
-|  2 000 000 |       9.7 |       37.4 |                      17.0 |
-|  5 000 000 |      17.5 |       97.1 |                      43.1 |
-| 10 000 000 |      33.8 |      202.5 |                      77.0 |
+|     Puntos | decimated | xila antes | xila con dominio en caché | xila con pirámide (ADR 0006) |
+| ---------: | --------: | ---------: | ------------------------: | ---------------------------: |
+|  1 000 000 |       5.3 |       17.4 |                       9.7 |                          3.0 |
+|  2 000 000 |       9.7 |       37.4 |                      17.0 |                          3.4 |
+|  5 000 000 |      17.5 |       97.1 |                      43.1 |                          3.8 |
+| 10 000 000 |      33.8 |      202.5 |                      77.0 |                          4.5 |
 
 Lectura:
 
@@ -135,8 +135,12 @@ Lectura:
 2. **Antes, `Chart` sumaba otros tres recorridos O(n)** por fotograma (el dominio de X y de Y).
    Con el dominio en caché queda un solo recorrido y Xila vuelve a quedar por debajo de uPlot
    a 1M (9.0 contra 10.6 ms en la corrida de 3 repeticiones de `bench:check`).
-3. **Por encima de ~3M puntos en vista** el recorrido ya no cabe en 16 ms. Ahí el siguiente
-   paso no es otro decimador sino no recorrer: una pirámide de min/max precalculada, o mover
-   el recorrido a un Worker para no bloquear la interacción.
+3. **Por encima de ~3M puntos en vista** el recorrido ya no cabía en 16 ms. La pirámide de
+   mínimos y máximos (ADR 0006, `line.decimate: 'auto'` desde 100 000 puntos) resuelve cada
+   columna de píxel con O(log n) bloques en vez de recorrer: el pan queda plano de 1M a 10M
+   (3.0 → 4.5 ms) y Xila baja por debajo del propio `decimated`, que sigue recorriendo. Se paga
+   una vez al cargar: 22 ms a 1M y 137 ms a 10M, con ~1 byte por punto de memoria. La salida es
+   idéntica a la del recorrido (prueba elemento a elemento en `pyramid.test.ts`), así que
+   `bench:visual` no cambia.
 
 CI mide ahora también la gráfica completa (`xila`) y falla si el pan a 1M pasa de 40 ms.

@@ -25,6 +25,7 @@ import {
   smooth3,
 } from './distribution';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
+import { buildPyramid, pyramidDecimate, type MinMaxPyramid } from './data/pyramid';
 import { lowerBound } from './data/search';
 import { isSorted, resolveSeries, type ResolvedSeries, type SeriesSpec } from './data/series';
 import { Emitter, type HoverPayload } from './events';
@@ -101,6 +102,8 @@ export class Chart {
   private dataDomains: { x?: Domain; y?: Domain } = {};
   /** Por serie, si su X no decrece: solo entonces vale recortar por búsqueda binaria. */
   private sortedX: boolean[] = [];
+  /** Líneas grandes: pirámide de min/max por serie, o `null` si se recorre cada fotograma. */
+  private pyramids: (MinMaxPyramid | null)[] = [];
   /** Box plot: estadísticos por serie y por categoría, calculados al resolver los datos. */
   private boxes: BoxStats[][] = [];
   /** Box plot: valores de cada grupo por serie, en el orden de las filas (para `box.mark`). */
@@ -539,6 +542,12 @@ export class Chart {
     this.dataDomains = {};
     this.decimation = [];
     this.sortedX = this.series.map((s) => isSorted(s.x));
+    this.pyramids = this.series.map((s, i) =>
+      this.config.type === 'line' &&
+      usePyramid(this.config.line.decimate, s.length, this.sortedX[i])
+        ? buildPyramid(s.y)
+        : null,
+    );
     this.boxes =
       this.config.type === 'box'
         ? this.series.map((s) =>
@@ -1147,7 +1156,10 @@ export class Chart {
         );
       }
       const pxPerUnit = (area.width / (x1 - x0)) * dpr;
-      const buffer = minMaxDecimate(s.x, s.y, from, to, x0, pxPerUnit, this.decimation[i]);
+      const pyramid = this.pyramids[i];
+      const buffer = pyramid
+        ? pyramidDecimate(s.x, s.y, pyramid, from, to, x0, pxPerUnit, this.decimation[i])
+        : minMaxDecimate(s.x, s.y, from, to, x0, pxPerUnit, this.decimation[i]);
       this.decimation[i] = buffer;
       renderer.drawLineSeries(
         'data',
@@ -1827,4 +1839,12 @@ function useWebGL(config: ChartConfig): boolean {
   if (mode === 'auto')
     return config.type === 'scatter' && config.data.length >= WEBGL_AUTO_THRESHOLD;
   return false;
+}
+
+/** Umbral de `line.decimate: 'auto'`: por debajo, recorrer cuesta menos que construir. */
+const PYRAMID_MIN_POINTS = 100_000;
+
+function usePyramid(mode: 'auto' | 'scan' | 'pyramid', length: number, sorted = true): boolean {
+  if (mode === 'scan' || !sorted) return false;
+  return mode === 'pyramid' || length >= PYRAMID_MIN_POINTS;
 }

@@ -53,8 +53,9 @@ Los tokens viven en el tema y se cambian en una sola configuración.
 anotaciones, sincronización entre gráficos y accesibilidad por teclado vienen como plugins; un
 plugin propio son unas funciones de ciclo de vida (`docs/plugins.md`).
 
-**Rápida con muchos datos.** Columnas tipadas, decimación min/max para líneas y WebGL para un
-millón de puntos; los números están en [`docs/benchmarks.md`](docs/benchmarks.md).
+**Rápida con muchos datos.** Columnas tipadas, decimación min/max para líneas (con una pirámide
+de mínimos y máximos a partir de 100 000 puntos: el pan de 10M cuesta lo mismo que el de 1M) y
+WebGL para un millón de puntos de dispersión; los números están en [`docs/benchmarks.md`](docs/benchmarks.md).
 
 ## Estructura
 

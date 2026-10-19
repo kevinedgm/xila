@@ -60,6 +60,13 @@ export interface LineChartConfig extends BaseChartConfig {
     readonly width?: number;
     readonly area?: boolean;
     readonly step?: boolean;
+    /**
+     * Cómo se reduce la serie a 4 puntos por columna de píxel. `'scan'` recorre el rango
+     * visible en cada fotograma; `'pyramid'` construye una vez una pirámide de mínimos y
+     * máximos (O(n), ~1 byte por punto) y después cada fotograma cuesta O(px · log n).
+     * `'auto'` (por defecto) usa la pirámide a partir de 100 000 puntos con X ordenada.
+     */
+    readonly decimate?: 'auto' | 'scan' | 'pyramid';
   };
 }
 
@@ -257,7 +264,7 @@ export interface ResolvedAxisConfig {
 
 export const DEFAULTS = {
   padding: { top: 8, right: 8, bottom: 8, left: 8 } satisfies Padding,
-  line: { width: 2, area: false, step: false },
+  line: { width: 2, area: false, step: false, decimate: 'auto' },
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2, mark: 'bar' },
   scatter: { radius: 3, ring: 1.5, path: false },
   box: {

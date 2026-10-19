@@ -69,7 +69,7 @@ export function minMaxDecimate(
   return result;
 }
 
-function estimateCapacity(
+export function estimateCapacity(
   xs: Float64Array,
   from: number,
   to: number,
@@ -82,13 +82,16 @@ function estimateCapacity(
   return (Math.abs(c1 - c0) + 1) * 4;
 }
 
-function ensureCapacity(out: DecimatedSeries | undefined, capacity: number): DecimatedSeries {
+export function ensureCapacity(
+  out: DecimatedSeries | undefined,
+  capacity: number,
+): DecimatedSeries {
   if (out && out.x.length >= capacity) return out;
   return { x: new Float64Array(capacity), y: new Float64Array(capacity), length: 0 };
 }
 
 // Emite los índices distintos de la columna en orden ascendente (a lo sumo 4).
-function emitColumn(
+export function emitColumn(
   xs: Float64Array,
   ys: Float64Array,
   out: DecimatedSeries,
@@ -105,7 +108,7 @@ function emitColumn(
   if (last !== hi && last !== lo && last !== first) push(xs, ys, out, last);
 }
 
-function push(xs: Float64Array, ys: Float64Array, out: DecimatedSeries, i: number): void {
+export function push(xs: Float64Array, ys: Float64Array, out: DecimatedSeries, i: number): void {
   if (out.length >= out.x.length) grow(out);
   out.x[out.length] = xs[i] as number;
   out.y[out.length] = ys[i] as number;
