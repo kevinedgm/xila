@@ -6,6 +6,7 @@ import {
   chartToSvg,
   downloadFile,
   slugify,
+  themes,
   type Chart,
   legendPlugin,
   tooltipPlugin,
@@ -30,6 +31,9 @@ import { XilaChart } from './chart';
  * Sin SFC ni CSS aparte: los componentes son funciones de render y el estilo mínimo se
  * inyecta una vez, para que el paquete sea un solo archivo JS.
  */
+
+/** Fondo de la tarjeta de cada panel (`--xila-panel` en el CSS de abajo), por tema. */
+const PANEL_BG = { light: '#fffdf9', dark: '#1e2130' } as const;
 
 const STYLE_ID = 'xila-dashboard-style';
 const CSS = `
@@ -149,7 +153,10 @@ export const XilaPanelChart = defineComponent({
                 ? [zoomPanPlugin({ axis: base.type === 'scatter' ? 'xy' : 'x' })]
                 : []),
             ];
-      return markRaw({ ...base, plugins, theme: props.theme });
+      // El gráfico se pinta sobre la tarjeta del panel, no sobre la manta de la página: velos,
+      // fondos de etiquetas y anillos interiores deben ser del color de la tarjeta.
+      const theme = { ...themes[props.theme], background: PANEL_BG[props.theme] };
+      return markRaw({ ...base, plugins, theme });
     });
     let chart: Chart | null = null;
     const name = () =>

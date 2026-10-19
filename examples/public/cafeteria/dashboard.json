@@ -1,0 +1,151 @@
+{
+  "titulo": "Cafetería Tres Hilos · Ventas y operación 2024–2025 (datos simulados)",
+  "tema": "light",
+  "datos": {
+    "ventas": "data/ventas.csv",
+    "diario": "data/diario.csv",
+    "pedidos_hora": "data/pedidos_hora.csv"
+  },
+  "filtros": [
+    {
+      "tipo": "fechas",
+      "datos": "ventas",
+      "columna": "fecha",
+      "etiqueta": "Periodo",
+      "tambien": ["diario"]
+    },
+    {
+      "tipo": "categoria",
+      "datos": "ventas",
+      "columna": "sucursal",
+      "etiqueta": "Sucursal",
+      "multiple": true,
+      "tambien": ["diario", "pedidos_hora"]
+    },
+    {
+      "tipo": "categoria",
+      "datos": "ventas",
+      "columna": "canal",
+      "etiqueta": "Canal",
+      "multiple": true
+    }
+  ],
+  "paneles": [
+    {
+      "tipo": "kpi",
+      "titulo": "Ventas del último mes",
+      "datos": "ventas",
+      "valor": { "columna": "ventas_mxn", "agregado": "sum", "formato": "moneda" },
+      "comparar": { "columna": "fecha", "periodo": "month" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Tickets del último mes",
+      "datos": "diario",
+      "valor": { "columna": "tickets", "agregado": "sum", "formato": "entero" },
+      "comparar": { "columna": "fecha", "periodo": "month" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Ticket promedio del último mes",
+      "datos": "diario",
+      "valor": { "columna": "ticket_promedio", "agregado": "mean", "formato": "moneda" },
+      "comparar": { "columna": "fecha", "periodo": "month" }
+    },
+    {
+      "tipo": "kpi",
+      "titulo": "Calificación promedio (1–5)",
+      "datos": "diario",
+      "valor": { "columna": "calificacion", "agregado": "mean", "formato": "numero" },
+      "comparar": { "columna": "fecha", "periodo": "month" }
+    },
+    {
+      "tipo": "linea",
+      "forma": "ahora",
+      "titulo": "¿Cuánto vende hoy cada sucursal y de dónde viene? · ventas por semana",
+      "datos": "diario",
+      "x": "fecha",
+      "y": "ventas_mxn",
+      "color": "sucursal",
+      "agregado": "sum",
+      "periodo": "week",
+      "ejes": { "y": "MXN" }
+    },
+    {
+      "tipo": "linea",
+      "forma": "protagonista",
+      "protagonista": "App de entrega",
+      "titulo": "¿Cuánto pesa ya la app de entrega? · ventas por mes y canal",
+      "datos": "ventas",
+      "x": "fecha",
+      "y": "ventas_mxn",
+      "color": "canal",
+      "agregado": "sum",
+      "periodo": "month",
+      "ejes": { "y": "MXN" }
+    },
+    {
+      "tipo": "calor",
+      "forma": "nudos",
+      "titulo": "¿A qué hora y qué día se llena? · pedidos por día y hora",
+      "datos": "pedidos_hora",
+      "x": "hora",
+      "y": "dia",
+      "valor": "pedidos",
+      "agregado": "sum"
+    },
+    {
+      "tipo": "barras",
+      "forma": "puntos",
+      "titulo": "¿Qué categoría vende por encima del promedio?",
+      "datos": "ventas",
+      "x": "categoria",
+      "y": "ventas_mxn",
+      "agregado": "sum",
+      "ancho": 6,
+      "ejes": { "y": "MXN" }
+    },
+    {
+      "tipo": "barras",
+      "forma": "unidades",
+      "titulo": "¿Qué parte de los tickets llega por cada canal?",
+      "datos": "ventas",
+      "x": "canal",
+      "y": "tickets",
+      "agregado": "sum",
+      "ancho": 6
+    },
+    {
+      "tipo": "dispersion",
+      "forma": "tendencia",
+      "titulo": "¿Qué días la espera tumbó la calificación? · un punto por sucursal y día",
+      "datos": "diario",
+      "x": "espera_min",
+      "y": "calificacion",
+      "color": "sucursal",
+      "ancho": 6,
+      "ejes": { "x": "espera promedio, min", "y": "calificación (1–5)" }
+    },
+    {
+      "tipo": "cajas",
+      "forma": "hoy",
+      "titulo": "¿Dónde cae el ticket de hoy dentro de su historia?",
+      "datos": "diario",
+      "x": "sucursal",
+      "y": "ticket_promedio",
+      "ancho": 6,
+      "ejes": { "y": "MXN por ticket" }
+    },
+    {
+      "tipo": "calor",
+      "forma": "filas",
+      "titulo": "¿Cuándo vendió cada categoría más de lo normal? · ventas por mes, cada fila contra su mediana",
+      "datos": "ventas",
+      "x": "fecha",
+      "y": "categoria",
+      "valor": "ventas_mxn",
+      "agregado": "sum",
+      "periodo": "month"
+    }
+  ]
+}

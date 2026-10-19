@@ -1,12 +1,14 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * Dashboards de ejemplo con datos públicos (`public/clima`, `public/pinguinos`): cargan sin
+ * Dashboards de ejemplo con datos públicos (`public/clima`, `public/pinguinos`) y el demo simulado
+ * `public/cafeteria`: cargan sin
  * errores y sus filtros recalculan los paneles.
  */
 for (const { config, paneles, filtro, valores } of [
   { config: 'clima/dashboard.json', paneles: 12, filtro: 1, valores: ['Seattle'] },
   { config: 'pinguinos/dashboard.json', paneles: 11, filtro: 0, valores: ['Barbijo'] },
+  { config: 'cafeteria/dashboard.json', paneles: 12, filtro: 1, valores: ['Jalatlaco'] },
 ]) {
   test(`${config} carga todos sus paneles y responde al filtro`, async ({ page }) => {
     const errores: string[] = [];
