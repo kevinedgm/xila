@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Ranura de estado</title>
+    <style>
+      body {
+        font-family: 'Instrument Sans', system-ui, sans-serif;
+        margin: 24px;
+        color: #15171f;
+        background: #f6f1e8;
+        max-width: 1100px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 32px 0 2px;
+      }
+      .sub,
+      .como {
+        color: #5b5f6e;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      .como {
+        margin-top: 6px;
+      }
+      .chart {
+        height: 360px;
+      }
+      .tira {
+        height: 200px;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Ranura de estado</h1>
+    <p class="sub">
+      "¿Dónde está hoy cada grupo respecto a su referencia, y qué tan seguros estamos?" Cuatro
+      conjuntos de datos, una sola forma (<code>type: 'box'</code> con
+      <code>box.orientation: 'horizontal'</code>); cambian solo la referencia, el estado y el
+      margen.
+    </p>
+
+    <h2>A · Duración de canciones por género, 2018–2026</h2>
+    <p class="sub">
+      Referencia: el rango típico propio (percentiles 12,5 y 87,5 de nueve años). Estado por
+      evidencia, con el intervalo del 95 % de cada género. 2026 llega hasta junio: fila parcial.
+      Datos sintéticos.
+    </p>
+    <div id="canciones" class="chart"></div>
+    <p class="como">
+      Cómo leerla: la banda gris es el rango típico del género; el punto es 2026 y la raya su
+      margen. Lleno: sale con claridad. Con punto interior: el margen toca la banda, posible. Hueco:
+      dentro de su rango.
+    </p>
+
+    <h2>B · CO₂ total por país, 1950–2024</h2>
+    <p class="sub">
+      Referencia: el pico propio como 100 %. Estado de dirección: subiendo, estable o bajando contra
+      cinco años atrás, umbral ±5 %. La cifra absoluta va en la fila (Our World in Data).
+    </p>
+    <div id="total" class="chart"></div>
+    <p class="como">
+      Cómo leerla: la línea punteada es el pico de cada país (100 %); la flecha va de 2019 a 2024.
+      Lleno: cambió más del 5 %. Hueco: estable.
+    </p>
+
+    <h2>C · CO₂ por persona, 1950–2024</h2>
+    <p class="sub">
+      Referencia: otra serie, China, como línea común en escala absoluta. Estado de lado: arriba o
+      abajo de China, con el año desde el que está de ese lado. México es el protagonista.
+    </p>
+    <div id="persona" class="chart"></div>
+    <p class="como">
+      Cómo leerla: cada punto es 2024; la línea punteada es China hoy; los puntos tenues son los
+      años anteriores. Lleno: arriba o abajo de China. Un solo color para el protagonista.
+    </p>
+
+    <h2>D · Ganancia de panadería, 2024 frente a 2023</h2>
+    <p class="sub">
+      Referencia: el periodo anterior como 0 %. Estado por evidencia con bootstrap de los pedidos de
+      2024; "no concluyente" cuando el margen cruza el 0. El total va primero y en color. Datos
+      sintéticos.
+    </p>
+    <div id="panaderia" class="chart"></div>
+    <p class="como" id="causa">
+      Cómo leerla: la línea punteada es 2023 (0 %); el punto es el cambio de 2024 y la raya su
+      margen. Lleno: la ganancia cambió con claridad. Con punto interior: no concluyente.
+    </p>
+    <div id="ventaja" class="tira"></div>
+
+    <script type="module" src="/src/ranura.ts"></script>
+  </body>
+</html>

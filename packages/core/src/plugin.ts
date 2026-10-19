@@ -5,6 +5,7 @@ import type { ChartScales } from './chart';
 import type { BoxStats } from './data/box';
 import type { ResolvedSeries } from './data/series';
 import type { Domain } from './scales/linear';
+import type { StatusLayout } from './status';
 
 export interface Rect {
   readonly x: number;
@@ -37,6 +38,8 @@ export interface PluginContext {
   readonly getSeries: () => readonly ResolvedSeries[];
   /** Box plot: estadísticos por serie y categoría; vacío en otros tipos de gráfico. */
   readonly getBoxStats?: () => readonly (readonly BoxStats[])[];
+  /** Ranura de estado (`box.orientation: 'horizontal'`): filas, textos y posiciones; `null` en el resto. */
+  readonly getStatus?: () => StatusInfo | null;
   /** Simula el cursor en un píxel: marca el dato más cercano y publica `hover`. */
   readonly hoverAt: (px: number, py: number) => void;
   readonly clearHover: () => void;
@@ -58,6 +61,16 @@ export interface PluginContext {
   readonly countSelection: (range: Domain | null) => { count: number; total: number };
   /** Gráfico de unidades en modo cubetas: bordes de las cubetas; `null` en otros casos. */
   readonly getBinEdges: () => Float64Array | null;
+}
+
+/** Lo que la ranura de estado expone a tooltip y accesibilidad. */
+export interface StatusInfo {
+  readonly layout: StatusLayout;
+  /** Columna derecha de cada fila: valor y contexto, y la palabra del estado. */
+  readonly texts: readonly { readonly value: string; readonly status: string }[];
+  /** Punto de hoy de cada fila en píxeles CSS, tras el último dibujo. */
+  readonly px: Float64Array;
+  readonly py: Float64Array;
 }
 
 /** Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. */

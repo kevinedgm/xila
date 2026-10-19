@@ -18,6 +18,7 @@ export default defineConfig({
         relacion: resolve(import.meta.dirname, 'relacion.html'),
         reparto: resolve(import.meta.dirname, 'reparto.html'),
         matriz: resolve(import.meta.dirname, 'matriz.html'),
+        ranura: resolve(import.meta.dirname, 'ranura.html'),
       },
     },
   },

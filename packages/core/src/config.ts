@@ -4,6 +4,7 @@ import type { ChartPlugin } from './plugin';
 import type { ColormapName } from './colormap';
 import type { BinRule } from './data/histogram';
 import { resolveTheme, type Theme, type ThemeName } from './theme';
+import type { StatusLevel, StatusMode, StatusReference } from './status';
 
 export type ChartType = 'line' | 'bar' | 'scatter' | 'box' | 'heatmap' | 'dots' | 'waffle';
 
@@ -165,10 +166,83 @@ export interface BoxChartConfig extends BaseChartConfig {
      * reparto cae ("el 1 % más bajo", "máximo"). `'none'` por defecto.
      */
     readonly now?: 'last' | 'none';
-    /** Textos del marcador; `{p}` es el porcentaje. */
-    readonly labels?: Partial<Record<'lowest' | 'highest' | 'max' | 'above', string>>;
+    /**
+     * Textos del marcador de `now` (`{p}` es el porcentaje) y de la columna derecha de la ranura
+     * (`{d}` la diferencia, `{ref}` el nombre de la referencia, `{n}` el tamaño de muestra,
+     * `{p}` el periodo o el porcentaje).
+     */
+    readonly labels?: Partial<Record<BoxLabelKey, string>>;
+    /**
+     * `'horizontal'`: la ranura de estado. Cada grupo es una fila de arriba abajo, la banda o la
+     * línea es su referencia y el relleno del punto de hoy dice el estado; a la derecha, el valor
+     * y el estado en palabras. Responde "¿dónde está hoy cada grupo respecto a su referencia, y
+     * qué tan seguros estamos?" para 1 a ~12 grupos. Las demás opciones de la ranura solo
+     * actúan en horizontal; `mark` se ignora. `'vertical'` por defecto.
+     */
+    readonly orientation?: 'vertical' | 'horizontal';
+    /**
+     * Ranura: qué es el "100 %". `'history'` (defecto): el rango típico propio, una banda de
+     * percentiles `range`, cada fila con su propia escala. `'peak'`: el máximo propio, las filas
+     * comparten un eje en %. `'previous'`: el periodo anterior como 0 %, eje en % de cambio.
+     * `{ group: 'China' }`: otro grupo de la columna `x`, como línea común (ese grupo no es una
+     * fila). `{ value: 0 }`: una cifra fija, como una meta.
+     */
+    readonly reference?: StatusReference;
+    /**
+     * Ranura: qué se lee en 5 segundos. `'evidence'`: claro / posible / dentro, con el margen de
+     * `yLow`/`yHigh` (sin margen avisa una vez y nunca dice "posible"). `'direction'`: subiendo /
+     * estable / bajando frente a `statusWindow` periodos atrás. `'side'`: arriba / abajo /
+     * dentro. `'auto'` (defecto): evidencia si hay margen, dirección con `'peak'`, lado en los
+     * demás casos.
+     */
+    readonly status?: StatusMode;
+    /** `'direction'`: cambio relativo por debajo del cual el grupo está estable (0.05 = ±5 %). */
+    readonly statusThreshold?: number;
+    /** `'direction'`: cuántos periodos atrás se compara (5). */
+    readonly statusWindow?: number;
+    /** Ranura: palabra de cada estado en la columna derecha y en el lector de pantalla. */
+    readonly statusLabels?: Partial<Record<StatusLevel, string>>;
+    /**
+     * Ranura: historial tenue detrás de la banda, un punto por valor. `'auto'` (defecto) lo
+     * muestra con 5 periodos o más; `'dots'` siempre; `'none'` nunca.
+     */
+    readonly history?: 'auto' | 'dots' | 'none';
+    /** Ranura: orden de las filas, por estado (defecto), por distancia a la referencia o el de los datos. */
+    readonly sort?: 'status' | 'distance' | 'input';
+    /** Ranura: con más grupos se muestran los 8 más lejos de su referencia y "y N más" (12). */
+    readonly maxRows?: number;
+    /** Ranura: grupo protagonista, en el color de la serie; el resto en el gris de los ejes. */
+    readonly highlight?: string | null;
+    /**
+     * Ranura: columna del periodo de cada fila (fecha o número). Da el año de cruce con
+     * `{ group }`, la fecha de la fila parcial y el periodo del texto.
+     */
+    readonly period?: string | null;
+    /** Ranura: columna con el tamaño de muestra de cada fila ("n = 120" en la columna derecha). */
+    readonly count?: string | null;
+    /**
+     * Ranura: fecha de corte (ISO o ms, o número si `period` es numérico). Un grupo cuyo último
+     * periodo es igual o posterior se marca como parcial: punto atenuado y la palabra "parcial".
+     */
+    readonly partial?: string | number | null;
   };
 }
+
+export type BoxLabelKey =
+  | 'lowest'
+  | 'highest'
+  | 'max'
+  | 'above'
+  | 'aboveRange'
+  | 'belowRange'
+  | 'aboveRef'
+  | 'belowRef'
+  | 'ofPeak'
+  | 'vsPrevious'
+  | 'since'
+  | 'count'
+  | 'partial'
+  | 'more';
 
 export interface HeatmapChartConfig extends BaseChartConfig {
   readonly type: 'heatmap';
@@ -309,7 +383,40 @@ export const DEFAULTS = {
       highest: 'el {p} % más alto',
       max: 'en su máximo',
       above: 'sobre el {p} %',
+      aboveRange: '{d} sobre su rango',
+      belowRange: '{d} bajo su rango',
+      aboveRef: '{d} sobre {ref}',
+      belowRef: '{d} bajo {ref}',
+      ofPeak: '{p} % de su pico',
+      vsPrevious: '{p} % frente al anterior',
+      since: 'desde {p}',
+      count: 'n = {n}',
+      partial: 'parcial',
+      more: 'y {n} más',
     },
+    orientation: 'vertical',
+    reference: 'history',
+    status: 'auto',
+    statusThreshold: 0.05,
+    statusWindow: 5,
+    statusLabels: {
+      clear: 'claro',
+      possible: 'posible',
+      inside: 'dentro',
+      up: 'subiendo',
+      stable: 'estable',
+      down: 'bajando',
+      above: 'arriba',
+      below: 'abajo',
+      none: '',
+    },
+    history: 'auto',
+    sort: 'status',
+    maxRows: 12,
+    highlight: null,
+    period: null,
+    count: null,
+    partial: null,
   },
   heatmap: {
     colormap: 'cobalto',
@@ -388,6 +495,10 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
       labels: {
         ...DEFAULTS.box.labels,
         ...(config.type === 'box' ? config.box?.labels : undefined),
+      },
+      statusLabels: {
+        ...DEFAULTS.box.statusLabels,
+        ...(config.type === 'box' ? config.box?.statusLabels : undefined),
       },
     },
     heatmap: {

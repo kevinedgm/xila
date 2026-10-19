@@ -24,7 +24,9 @@ new Chart(el, {
 
 ## `tooltipPlugin(opciones)`
 
-Tooltip HTML sobre el canvas. Lee los aciertos que publica el evento `hover`.
+Tooltip HTML sobre el canvas. Lee los aciertos que publica el evento `hover`. En un box plot
+muestra mediana, cuartiles y n; en la ranura de estado, el valor de hoy con su estado y, debajo,
+la referencia, el margen y n de la fila.
 
 | Opción            | Valores                 | Por defecto                  |
 | ----------------- | ----------------------- | ---------------------------- |
@@ -362,7 +364,10 @@ gráfico:
    perder el foco y a que el ratón salga) y Escape lo suelta y quita el cursor. Mueve el mismo
    cursor que el ratón, así que el tooltip aparece, un anillo marca el dato activo (capa
    `overlay`, contorno en el color del texto) y una región `aria-live` lee "Serie, x: y". Con
-   `keyboard: false` no hay `tabindex`: el gráfico no es una parada de Tab.
+   `keyboard: false` no hay `tabindex`: el gráfico no es una parada de Tab. En la ranura de
+   estado (`box.orientation: 'horizontal'`) ↑ ↓ recorren las filas en su orden visual y la
+   región lee "grupo, valor, estado" ("R&B, 201 s · 13 s bajo su rango · n = 36, claro"); el
+   resumen y la tabla dicen lo mismo, una fila por grupo.
 3. Una `<table>` oculta visualmente (hermana del gráfico) con una fila por dato, muestreada a
    `tableRows` (200) filas como máximo, y una columna por serie. Se regenera cuando cambian los
    datos, también si el tamaño es el mismo (una huella de los valores lo detecta).

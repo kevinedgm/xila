@@ -18,6 +18,23 @@ export { buildPyramid, pyramidDecimate } from './data/pyramid';
 export type { MinMaxPyramid } from './data/pyramid';
 export { lttb } from './data/lttb';
 export { boxStats, boxGroups } from './data/box';
+export {
+  statusLayout,
+  statusGroups,
+  sortStatusRows,
+  evidenceStatus,
+  directionStatus,
+  sideStatus,
+} from './status';
+export type {
+  StatusReference,
+  StatusMode,
+  StatusLevel,
+  StatusGroup,
+  StatusOptions,
+  StatusRow,
+  StatusLayout,
+} from './status';
 export { colormap, stopsColormap, colormapCss, inkOn } from './colormap';
 export type { Colormap, ColormapName } from './colormap';
 export type { BoxStats } from './data/box';
@@ -75,6 +92,7 @@ export type {
   DotsChartConfig,
   WaffleChartConfig,
   BoxChartConfig,
+  BoxLabelKey,
   DotsSeriesSpec,
   ResolvedChartConfig,
   ScaleConfig,

@@ -69,6 +69,14 @@ export function chartSummary(ctx: PluginContext, locale = 'es-MX', timeZone = 'U
   const { config } = ctx;
   const series = ctx.getSeries();
   const names = config.series.map((s) => s.name ?? s.id);
+  const status = ctx.getStatus?.();
+  if (status) {
+    // Ranura: una frase por fila, "grupo, valor, estado", que es lo que el lector ve.
+    const rows = status.layout.rows.map(
+      (r, i) => `${r.name}, ${status.texts[i]?.value ?? ''}, ${status.texts[i]?.status ?? ''}`,
+    );
+    return `Ranura de estado con ${rows.length} filas. ${rows.join('. ')}.`;
+  }
   const type = TYPE_NAMES[config.type] ?? 'Gráfico';
   const count = series.reduce((m, s) => Math.max(m, s.length), 0);
   const fx = xFormatter(ctx, locale, timeZone);
@@ -96,6 +104,13 @@ function fingerprint(s: ResolvedSeries): string {
   let acc = `${n}:${s.x[0]}:${s.y[0]}:${s.x[n - 1]}:${s.y[n - 1]}`;
   for (let i = step; i < n - 1; i += step) acc += `|${s.y[i]}`;
   return acc;
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(
+    /[&<>"]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c,
+  );
 }
 
 const HIDDEN_STYLE = {
@@ -143,8 +158,29 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
       .filter(({ s }) => !ctx?.hiddenSeries.has(s.id));
   };
 
+  /** Ranura de estado: el teclado recorre filas, en su orden visual, y anuncia "grupo, valor, estado". */
+  const focusStatusRow = (): boolean => {
+    const status = ctx?.getStatus?.();
+    if (!ctx || !status || status.layout.rows.length === 0) return false;
+    const rows = status.layout.rows;
+    index = Math.max(0, Math.min(rows.length - 1, index));
+    applying = true;
+    try {
+      ctx.hoverAt(status.px[index] as number, status.py[index] as number);
+    } finally {
+      applying = false;
+    }
+    const r = rows[index];
+    const t = status.texts[index];
+    if (live && r) {
+      live.textContent = `${r.name}, ${t?.value ?? ''}, ${t?.status ?? ''}${pinned ? ' (fijado)' : ''}`;
+    }
+    return true;
+  };
+
   /** Mueve el cursor al dato `index` de la serie activa, con la escala actual. */
   const focusPoint = (): void => {
+    if (focusStatusRow()) return;
     const scales = ctx?.getScales();
     const current = visibleSeries()[seriesIndex];
     if (!ctx || !scales || !current) return;
@@ -197,19 +233,24 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     const series = visibleSeries();
     const current = series[seriesIndex];
     if (!current) return;
-    const step = e.shiftKey ? Math.max(1, Math.round(current.s.length / 20)) : 1;
+    // En la ranura las filas van de arriba abajo: las flechas verticales las recorren.
+    const statusRows = ctx.getStatus?.()?.layout.rows.length ?? 0;
+    const length = statusRows > 0 ? statusRows : current.s.length;
+    const step = e.shiftKey ? Math.max(1, Math.round(length / 20)) : 1;
+    const next = statusRows > 0 ? 'ArrowDown' : 'ArrowRight';
+    const prev = statusRows > 0 ? 'ArrowUp' : 'ArrowLeft';
     switch (e.key) {
-      case 'ArrowRight':
+      case next:
         index = index < 0 ? 0 : index + step;
         break;
-      case 'ArrowLeft':
-        index = index < 0 ? current.s.length - 1 : index - step;
+      case prev:
+        index = index < 0 ? length - 1 : index - step;
         break;
       case 'Home':
         index = 0;
         break;
       case 'End':
-        index = current.s.length - 1;
+        index = length - 1;
         break;
       case 'ArrowUp':
       case 'ArrowDown': {
@@ -247,6 +288,19 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
   /** Tabla oculta: una fila por dato (muestreada si hay más de `tableRows`), una columna por serie. */
   const renderTable = (): void => {
     if (!ctx || !table) return;
+    const status = ctx.getStatus?.();
+    if (status) {
+      // Ranura: una fila por grupo con lo que dice la columna derecha.
+      const key = status.layout.rows.map((r, i) => `${r.name}=${status.texts[i]?.value}`).join('|');
+      if (key === tableKey) return;
+      tableKey = key;
+      const rows = status.layout.rows.map(
+        (r, i) =>
+          `<tr><th scope="row">${escapeHtml(r.name)}</th><td>${escapeHtml(status.texts[i]?.value ?? '')}</td><td>${escapeHtml(status.texts[i]?.status ?? '')}</td></tr>`,
+      );
+      table.innerHTML = `<caption>Filas de la ranura</caption><thead><tr><th scope="col">${escapeHtml(ctx.config.axes.x.title || 'Grupo')}</th><th scope="col">Valor</th><th scope="col">Estado</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+      return;
+    }
     const series = ctx.getSeries();
     const n = series.reduce((m, s) => Math.max(m, s.length), 0);
     const key = `${ctx.config.data.length}:${series.map((s) => `${s.id}=${fingerprint(s)}`).join(',')}`;

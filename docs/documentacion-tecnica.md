@@ -215,28 +215,30 @@ punto y un tallo muestra su sentido.
 
 ### 4.2 Tabla pregunta → forma clásica → alternativa (del README)
 
-| Pregunta                                   | Forma clásica | Alternativa en Xila                                                   |
-| ------------------------------------------ | ------------- | --------------------------------------------------------------------- |
-| ¿Dónde está hoy y de dónde viene?          | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela     |
-| ¿Cómo va este frente a los demás?          | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris |
-| ¿Cuánto más que el promedio o la meta?     | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)     |
-| ¿Qué parte del total es de cada uno?       | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N       |
-| ¿Cómo se reparten los casos?               | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas      |
-| ¿Por dónde ha pasado y hacia dónde va?     | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año |
-| ¿Quién se sale del patrón?                 | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking   |
-| ¿Dónde han estado y dónde están ahora?     | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre |
-| ¿Dónde se concentra cada grupo?            | box plot      | **Franja de densidad** (`box.mark: 'density'`)                        |
-| ¿Dónde cae hoy dentro de su historia?      | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)    |
-| ¿Cuándo cambió cada uno?                   | mapa de calor | **Cada fila contra sí misma** (`heatmap.scale: 'row'` + `rowLabels`)  |
-| ¿Cuánto exactamente, sin perder el patrón? | mapa de calor | **Tabla con tono** (`heatmap.values` + `gap`): cifra en cada celda    |
+| Pregunta                                        | Forma clásica | Alternativa en Xila                                                             |
+| ----------------------------------------------- | ------------- | ------------------------------------------------------------------------------- |
+| ¿Dónde está hoy y de dónde viene?               | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela               |
+| ¿Cómo va este frente a los demás?               | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris           |
+| ¿Cuánto más que el promedio o la meta?          | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)               |
+| ¿Qué parte del total es de cada uno?            | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N                 |
+| ¿Cómo se reparten los casos?                    | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas                |
+| ¿Por dónde ha pasado y hacia dónde va?          | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año           |
+| ¿Quién se sale del patrón?                      | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking             |
+| ¿Dónde han estado y dónde están ahora?          | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre           |
+| ¿Dónde se concentra cada grupo?                 | box plot      | **Franja de densidad** (`box.mark: 'density'`)                                  |
+| ¿Dónde cae hoy dentro de su historia?           | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)              |
+| ¿Cuándo cambió cada uno?                        | mapa de calor | **Cada fila contra sí misma** (`heatmap.scale: 'row'` + `rowLabels`)            |
+| ¿Cuánto exactamente, sin perder el patrón?      | mapa de calor | **Tabla con tono** (`heatmap.values` + `gap`): cifra en cada celda              |
+| ¿Está donde debería, y qué tan seguros estamos? | box plot      | **Ranura de estado** (`box.orientation: 'horizontal'` + `reference` + `status`) |
 
 Hay que distinguir dos mecanismos distintos detrás de la columna de la derecha:
 
 - **Plugins** (`nowPlugin`, `focusPlugin`, `referencePlugin`, `trajectoryPlugin`,
   `trendPlugin`, `titlePlugin`): se añaden en `plugins: [...]`.
 - **Opciones del tipo** (`type: 'waffle'`, `type: 'dots'`, `bar.mark`, `scatter.path`,
-  `box.mark: 'density' | 'range' | 'dots'`, `heatmap.scale`, `heatmap.values`): se escriben en
-  la clave del tipo. `density` y `range` **no** son plugins.
+  `box.mark: 'density' | 'range' | 'dots'`, `box.orientation: 'horizontal'`, `heatmap.scale`,
+  `heatmap.values`): se escriben en la clave del tipo. `density`, `range` y la ranura **no** son
+  plugins.
 
 ### 4.3 Anatomía editorial
 
@@ -368,11 +370,12 @@ new Chart(el, {
 Reparto de un valor por grupo. Datos largos: `x` es el grupo, `y` el valor; el gráfico calcula
 Q1, mediana, Q3 (interpolación de `df.describe()`), bigotes a `1.5·IQR` y atípicos.
 
-| Opción         | Valores                                         | Defecto |
-| -------------- | ----------------------------------------------- | ------- |
-| `box.whisker`  | factor sobre el IQR                             | `1.5`   |
-| `box.outliers` | dibujar atípicos                                | `true`  |
-| `box.mark`     | `'box'` \| `'dots'` \| `'density'` \| `'range'` | `'box'` |
+| Opción            | Valores                                                    | Defecto      |
+| ----------------- | ---------------------------------------------------------- | ------------ |
+| `box.whisker`     | factor sobre el IQR                                        | `1.5`        |
+| `box.outliers`    | dibujar atípicos                                           | `true`       |
+| `box.mark`        | `'box'` \| `'dots'` \| `'density'` \| `'range'`            | `'box'`      |
+| `box.orientation` | `'vertical'` \| `'horizontal'` (ranura de estado, ver 5.2) | `'vertical'` |
 
 ```ts
 new Chart(el, {
@@ -526,8 +529,60 @@ box: { mark: 'range', now: 'last' }                // bandas p10–p90 y p25–p
 ```
 
 `box.range` fija los percentiles de la banda exterior (`[0.1, 0.9]`). `box.now: 'last'` marca
-la última fila de cada grupo y escribe dónde cae ("el 1 % más bajo", "en su máximo").
-Limitación del repositorio: solo en vertical.
+la última fila de cada grupo y escribe dónde cae ("el 1 % más bajo", "en su máximo"). Estas
+tres marcas se dibujan en vertical; la versión horizontal es la ranura de estado.
+
+#### `box.orientation: 'horizontal'` · Ranura de estado (opciones de `box`)
+
+"¿Está donde debería, y qué tan seguros estamos?" Cada grupo es una fila; la banda o la línea
+punteada es su referencia; el punto es hoy (la última fila del grupo) y su relleno dice el
+estado: lleno, salió con claridad; con punto interior, posible; hueco, en su sitio. A la
+derecha, el valor con su contexto y el estado en palabras; el `accessibilityPlugin` lee lo mismo
+por fila ("R&B, 201 s · 13 s bajo su rango · n = 36, claro") y ↑ ↓ recorren las filas. Los
+mismos datos largos que `box`; `yLow`/`yHigh` en la serie son el margen de evidencia, calculado
+fuera (pandas: σ y n, bootstrap). Ejemplo con los cuatro casos: `examples/ranura.html`.
+
+```ts
+new Chart(el, {
+  type: 'box',
+  data: largo, // genero, anio, segundos, low, high, n
+  series: [{ id: 'g', x: 'genero', y: 'segundos', yLow: 'low', yHigh: 'high' }],
+  box: {
+    orientation: 'horizontal',
+    reference: 'history', // 'peak' | 'previous' | { group: 'China' } | { value: 0 }
+    status: 'auto', // 'evidence' | 'direction' | 'side' | 'none'
+    range: [0.125, 0.875],
+    period: 'anio',
+    count: 'n',
+    partial: 2026,
+  },
+  plugins: [titlePlugin({ title: 'R&B y Pop se acortaron con claridad en 2026' }), tooltipPlugin()],
+});
+```
+
+| Opción                | Valores                                                                                                                                                                                                                     | Defecto     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `box.reference`       | `'history'` (banda de percentiles `range`, escala propia por fila) \| `'peak'` (máximo propio = 100 %, eje común en %) \| `'previous'` (periodo anterior = 0 %) \| `{ group }` (otro grupo como línea común) \| `{ value }` | `'history'` |
+| `box.status`          | `'auto'` \| `'evidence'` (claro / posible / dentro, con el margen) \| `'direction'` (subiendo / estable / bajando) \| `'side'` (arriba / abajo / dentro) \| `'none'`                                                        | `'auto'`    |
+| `box.statusThreshold` | cambio relativo que cuenta como estable en `'direction'`                                                                                                                                                                    | `0.05`      |
+| `box.statusWindow`    | periodos atrás con los que compara `'direction'`                                                                                                                                                                            | `5`         |
+| `box.statusLabels`    | palabra de cada estado (`possible: 'no concluyente'`)                                                                                                                                                                       | en español  |
+| `box.history`         | `'auto'` (puntos tenues con 5 periodos o más) \| `'dots'` \| `'none'`                                                                                                                                                       | `'auto'`    |
+| `box.sort`            | `'status'` \| `'distance'` \| `'input'`                                                                                                                                                                                     | `'status'`  |
+| `box.maxRows`         | con más grupos quedan los 8 más lejos de su referencia y "y N más"                                                                                                                                                          | `12`        |
+| `box.highlight`       | grupo protagonista en color; el resto en el gris de los ejes                                                                                                                                                                | `null`      |
+| `box.period`          | columna del periodo (año de cruce, fila parcial)                                                                                                                                                                            | `null`      |
+| `box.count`           | columna con el tamaño de muestra ("n = 120")                                                                                                                                                                                | `null`      |
+| `box.partial`         | fecha o número de corte: el grupo cuyo último periodo lo alcanza es parcial                                                                                                                                                 | `null`      |
+| `box.labels`          | textos de la columna derecha (`aboveRange`, `ofPeak`, `since`, `partial`, `more`…)                                                                                                                                          | en español  |
+
+Reglas: `'auto'` elige evidencia si hay `yLow`/`yHigh`, dirección con `'peak'` y lado en el
+resto; `status: 'evidence'` sin margen avisa una vez en consola y nunca dice "posible". Con
+`{ group }` ese grupo no es una fila: es la línea, y cada fila dice desde qué periodo está de su
+lado. El eje de valores solo se rotula cuando es común (`'peak'`, `'previous'`, `{ group }`,
+`{ value }`); con `'history'` cada fila tiene su escala y las cifras van en la columna derecha.
+`statusLayout` y `statusGroups` están exportadas para calcular las filas fuera del gráfico (por
+ejemplo, para redactar el título con el hallazgo).
 
 #### `heatmap.scale: 'row'` · Cada fila contra sí misma (opción de `heatmap`)
 

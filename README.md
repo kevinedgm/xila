@@ -22,20 +22,21 @@ localizar el patrón en una matriz. Las formas clásicas están (`line`, `bar`, 
 `heatmap`) y junto a ellas las alternativas que nacieron de preguntar "¿qué quiere ver quien
 mira esto?":
 
-| Pregunta                                   | Forma clásica | Alternativa en Xila                                                   |
-| ------------------------------------------ | ------------- | --------------------------------------------------------------------- |
-| ¿Dónde está hoy y de dónde viene?          | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela     |
-| ¿Cómo va este frente a los demás?          | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris |
-| ¿Cuánto más que el promedio o la meta?     | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)     |
-| ¿Qué parte del total es de cada uno?       | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N       |
-| ¿Cómo se reparten los casos?               | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas      |
-| ¿Por dónde ha pasado y hacia dónde va?     | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año |
-| ¿Quién se sale del patrón?                 | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking   |
-| ¿Dónde han estado y dónde están ahora?     | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre |
-| ¿Dónde se concentra cada grupo?            | box plot      | **Franja de densidad** (`box.mark: 'density'`)                        |
-| ¿Dónde cae hoy dentro de su historia?      | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)    |
-| ¿Cuándo cambió cada uno?                   | mapa de calor | **Cada fila contra sí misma** (`heatmap.scale: 'row'` + `rowLabels`)  |
-| ¿Cuánto exactamente, sin perder el patrón? | mapa de calor | **Tabla con tono** (`heatmap.values` + `gap`): cifra en cada celda    |
+| Pregunta                                        | Forma clásica | Alternativa en Xila                                                             |
+| ----------------------------------------------- | ------------- | ------------------------------------------------------------------------------- |
+| ¿Dónde está hoy y de dónde viene?               | línea         | **Ahora con estela** (`nowPlugin`): cifra actual, cambio y estela               |
+| ¿Cómo va este frente a los demás?               | líneas        | **Protagonista y contexto** (`focusPlugin`): una en color, resto gris           |
+| ¿Cuánto más que el promedio o la meta?          | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)               |
+| ¿Qué parte del total es de cada uno?            | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N                 |
+| ¿Cómo se reparten los casos?                    | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas                |
+| ¿Por dónde ha pasado y hacia dónde va?          | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año           |
+| ¿Quién se sale del patrón?                      | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking             |
+| ¿Dónde han estado y dónde están ahora?          | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre           |
+| ¿Dónde se concentra cada grupo?                 | box plot      | **Franja de densidad** (`box.mark: 'density'`)                                  |
+| ¿Dónde cae hoy dentro de su historia?           | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)              |
+| ¿Cuándo cambió cada uno?                        | mapa de calor | **Cada fila contra sí misma** (`heatmap.scale: 'row'` + `rowLabels`)            |
+| ¿Cuánto exactamente, sin perder el patrón?      | mapa de calor | **Tabla con tono** (`heatmap.values` + `gap`): cifra en cada celda              |
+| ¿Está donde debería, y qué tan seguros estamos? | box plot      | **Ranura de estado** (`box.orientation: 'horizontal'` + `reference` + `status`) |
 
 **Anatomía editorial.** Grid solo horizontal, líneas de 2 px con nombre y último valor al final
 en vez de leyenda, barras con el extremo redondeado y un hueco del color del fondo entre
@@ -167,6 +168,14 @@ series se colocan lado a lado; el tooltip muestra mediana, cuartiles y `n`. `box
 `'dots'` (enjambre, un punto por valor; `shade` da el tono por otra columna), `'density'`
 (franja de intensidad) o `'range'` (bandas de percentiles); `box.now: 'last'` marca la última
 fila de cada grupo con su valor y en qué parte del reparto cae. Ejemplo: `examples/reparto.html`.
+
+`box.orientation: 'horizontal'` es la **ranura de estado**: una fila por grupo, su referencia
+como banda (rango típico propio) o línea punteada (pico propio, periodo anterior, otro grupo o
+una meta, con `box.reference`) y el punto de hoy con el estado en el relleno y en palabras
+(`box.status`: claro / posible / dentro con el margen `yLow`/`yHigh`, subiendo / estable /
+bajando, o arriba / abajo). Responde "¿está donde debería, y qué tan seguros estamos?" para 1 a
+~12 grupos; el margen se calcula fuera, en pandas. Ejemplo con cuatro casos:
+`examples/ranura.html`; detalle en `docs/documentacion-tecnica.md`.
 
 ## Heatmap
 

@@ -40,7 +40,13 @@ import {
   type HitTester,
   pixelHitTester,
 } from './hit-test';
-import { PluginRegistry, type Layout, type PluginContext, type Rect } from './plugin';
+import {
+  PluginRegistry,
+  type Layout,
+  type PluginContext,
+  type Rect,
+  type StatusInfo,
+} from './plugin';
 import { applyMap, type Renderer, type Transform } from './renderer';
 import { CanvasRenderer } from './renderer-canvas';
 import { SvgRenderer, type SvgRendererOptions } from './renderer-svg';
@@ -49,6 +55,8 @@ import { bandScale, type BandScale } from './scales/band';
 import { linearScale, type ContinuousScale, type Domain } from './scales/linear';
 import { logScale } from './scales/log';
 import { timeScale } from './scales/time';
+import { statusGroups, statusLayout, type StatusLayout, type StatusRow } from './status';
+import { parseIsoDate } from './data/csv';
 
 const IDENTITY = { offset: 0, scale: 1, base: 0 } as const;
 const FALLBACK_WIDTH = 600;
@@ -111,6 +119,13 @@ export class Chart {
   private groups: Float64Array[][] = [];
   /** Box plot con `box.shade`: el valor de la columna de tono por grupo, alineado con `groups`. */
   private shades: Float64Array[][] = [];
+  /** Ranura de estado (`box.orientation: 'horizontal'`): filas con su estado; `null` en el resto. */
+  private status: StatusLayout | null = null;
+  /** Ranura: punto de hoy de cada fila en píxeles y textos de la columna derecha del último dibujo. */
+  private statusPx = new Float64Array(0);
+  private statusPy = new Float64Array(0);
+  private statusTextCache: { value: string; status: string }[] = [];
+  private warnedStatus = false;
   /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
   private cells: Int32Array = new Int32Array(0);
   /** Estadísticas por fila del heatmap (mediana, extremos, columna del máximo). */
@@ -347,6 +362,7 @@ export class Chart {
       getScales: () => this.scales,
       getSeries: () => this.getSeries(),
       getBoxStats: () => this.boxes,
+      getStatus: () => this.statusInfo(),
       hoverAt: (px, py) => this.hoverAt(px, py),
       clearHover: () => this.clearHover(),
       getDataDomain: (axis) => this.domain(axis),
@@ -580,6 +596,7 @@ export class Chart {
             return groupValues(s.x, picked, this.categories().length).map((g) => g);
           })
         : [];
+    this.status = this.isStatusStrip() ? this.buildStatus() : null;
     if (this.config.type === 'heatmap') {
       const nx = this.categories().length;
       const ny = this.categoriesY().length;
@@ -650,12 +667,32 @@ export class Chart {
         ? LEGEND_GAP +
           Math.max(0, ...this.rowNotes().map((n) => renderer.measureText(n, textStyle(theme))))
         : 0;
+    // Ranura: la columna derecha (valor y estado en palabras) se mide con los textos reales.
+    this.statusTextCache = this.statusTexts();
+    const statusWidth =
+      this.status && this.statusTextCache.length > 0
+        ? LEGEND_GAP +
+          Math.max(
+            0,
+            ...this.statusTextCache.map(
+              (t) =>
+                renderer.measureText(t.value, { font: statusValueFont(theme), fill: theme.text }) +
+                (t.status
+                  ? 8 +
+                    renderer.measureText(t.status, {
+                      font: statusWordFont(theme),
+                      fill: theme.text,
+                    })
+                  : 0),
+            ),
+          )
+        : 0;
     const plotArea: Rect = {
       x: provisional.x + margins.left,
       y: provisional.y + theme.fontSize / 2,
       width: Math.max(
         1,
-        provisional.width - margins.left - theme.fontSize - legendWidth - notesWidth,
+        provisional.width - margins.left - theme.fontSize - legendWidth - notesWidth - statusWidth,
       ),
       height: Math.max(1, provisional.height - margins.bottom - theme.fontSize / 2),
     };
@@ -694,18 +731,20 @@ export class Chart {
           )
         : config.type === 'waffle' && firstVisible && this.waffle
           ? waffleHitTester(firstVisible, this.waffle)
-          : scales.x.kind === 'band'
-            ? bandHitTester(
-                config.type === 'box' ? this.boxSeries() : visible,
-                scales,
-                config.type === 'bar' && config.bar.mode === 'stacked',
-                flip,
-              )
-            : config.type === 'dots' && firstVisible && this.dotsShown
-              ? pixelHitTester(firstVisible, 0, this.dotsShown.x, this.dotsShown.y, plotArea)
-              : config.type === 'scatter'
-                ? gridHitTester(visible, scales, plotArea)
-                : sortedHitTester(visible, scales);
+          : this.status && scales.x.kind === 'band'
+            ? this.statusHitTester(scales.x)
+            : scales.x.kind === 'band'
+              ? bandHitTester(
+                  config.type === 'box' ? this.boxSeries() : visible,
+                  scales,
+                  config.type === 'bar' && config.bar.mode === 'stacked',
+                  flip,
+                )
+              : config.type === 'dots' && firstVisible && this.dotsShown
+                ? pixelHitTester(firstVisible, 0, this.dotsShown.x, this.dotsShown.y, plotArea)
+                : config.type === 'scatter'
+                  ? gridHitTester(visible, scales, plotArea)
+                  : sortedHitTester(visible, scales);
     if (this.lastHover && !this.exporting) this.drawHoverOverlay(this.lastHover);
     this.events.emit('draw', { first: !this.drawn });
     this.plugins.onEvent('draw', { first: !this.drawn }, this.context());
@@ -745,7 +784,7 @@ export class Chart {
     if (!this.view.y && config.scales.y.nice && config.scales.y.domain === 'auto') y = y.nice(5);
 
     if (config.scales.x.type === 'band') {
-      const count = this.categories().length;
+      const count = this.status ? this.statusRowCount() : this.categories().length;
       if (config.type === 'heatmap') {
         // Filas como unidades enteras: la fila `i` ocupa `[i, i + 1)`; su centro es `i + 0.5`.
         return {
@@ -793,8 +832,19 @@ export class Chart {
     const { config } = this;
     const x =
       scales.x.kind === 'band'
-        ? bandTicks(scales.x, this.categories())
+        ? bandTicks(scales.x, this.status ? this.statusRowLabels() : this.categories())
         : continuousTicks(scales.x, 6, config.axes.x);
+    if (this.status) {
+      // Escala propia por fila: no hay eje común que rotular; la columna derecha da las cifras.
+      if (this.status.ownScale) return { x, y: { values: [], labels: [], positions: [] } };
+      // En % del pico o frente al anterior, el eje habla en %; `axes.y.format` es para los
+      // valores crudos de la columna derecha.
+      const axis =
+        this.status.unit === 'percent'
+          ? { ...config.axes.y, format: (v: number) => `${formatNumber(v)} %` }
+          : config.axes.y;
+      return { x, y: continuousTicks(scales.y, 5, axis) };
+    }
     if (config.type === 'heatmap') {
       const rows = this.categoriesY();
       const values = rows.map((_, i) => i + 0.5);
@@ -817,6 +867,7 @@ export class Chart {
   }
 
   private scanDomain(axis: 'x' | 'y'): Domain {
+    if (axis === 'y' && this.status) return this.statusDomain();
     let min = Infinity;
     let max = -Infinity;
     const log = this.config.scales[axis].type === 'log';
@@ -1092,6 +1143,10 @@ export class Chart {
 
     if (config.type === 'heatmap') {
       this.drawHeatmap(scales, area);
+      return;
+    }
+    if (this.status && scales.x.kind === 'band') {
+      this.drawStatusStrip(scales.x, scales.y, area, renderer);
       return;
     }
     if (config.type === 'dots') {
@@ -1777,9 +1832,423 @@ export class Chart {
     });
   }
 
-  /** `bar.orientation: 'horizontal'`: categorías en el eje vertical y valores en el horizontal. */
+  /**
+   * `bar.orientation` o `box.orientation` horizontal: categorías en el eje vertical y valores en
+   * el horizontal (las escalas siguen siendo lógicas: x = categoría, y = valor).
+   */
   horizontalBars(): boolean {
-    return this.config.type === 'bar' && this.config.bar.orientation === 'horizontal';
+    const { config } = this;
+    return (
+      (config.type === 'bar' && config.bar.orientation === 'horizontal') || this.isStatusStrip()
+    );
+  }
+
+  /** `type: 'box'` con `box.orientation: 'horizontal'`: la ranura de estado. */
+  isStatusStrip(): boolean {
+    return this.config.type === 'box' && this.config.box.orientation === 'horizontal';
+  }
+
+  // ---- Ranura de estado -------------------------------------------------------------------
+
+  /** Filas de la ranura a partir de la primera serie visible; avisa una vez lo que el cálculo note. */
+  private buildStatus(): StatusLayout | null {
+    const { config } = this;
+    if (config.type !== 'box') return null;
+    const s = this.visibleSeries()[0]?.series ?? this.series[0];
+    if (!s) return null;
+    const { box, data } = config;
+    const periodColumn = box.period !== null ? data.column(box.period) : null;
+    const periods = periodColumn
+      ? periodColumn.kind === 'category'
+        ? Float64Array.from(periodColumn.codes)
+        : periodColumn.values
+      : undefined;
+    const counts = box.count !== null ? data.numeric(box.count) : undefined;
+    const groups = statusGroups(s.x, s.y, this.categories(), {
+      low: s.yLow,
+      high: s.yHigh,
+      periods,
+      counts,
+    });
+    const layout = statusLayout(groups, {
+      reference: box.reference,
+      status: box.status,
+      threshold: box.statusThreshold,
+      window: box.statusWindow,
+      range: box.range,
+      sort: box.sort,
+      maxRows: box.maxRows,
+    });
+    if (!this.warnedStatus && layout.warnings.length > 0) {
+      this.warnedStatus = true;
+      for (const w of layout.warnings) console.warn(`Xila: ${w}.`);
+    }
+    return layout;
+  }
+
+  /** Lo que ven tooltip y accesibilidad: filas, textos y posición del punto de hoy. */
+  private statusInfo(): StatusInfo | null {
+    if (!this.status) return null;
+    return {
+      layout: this.status,
+      texts: this.statusTextCache,
+      px: this.statusPx,
+      py: this.statusPy,
+    };
+  }
+
+  /** Filas de la banda: las mostradas más una para "y N más". */
+  private statusRowCount(): number {
+    const s = this.status;
+    return s ? s.rows.length + (s.remaining > 0 ? 1 : 0) : 0;
+  }
+
+  private statusRowLabels(): string[] {
+    const s = this.status;
+    if (!s || this.config.type !== 'box') return [];
+    const labels = s.rows.map((r) => r.name);
+    if (s.remaining > 0) {
+      labels.push((this.config.box.labels.more ?? '').replace('{n}', String(s.remaining)));
+    }
+    return labels;
+  }
+
+  /** Rango del eje de valores de la ranura: valores, márgenes, bandas, historial y referencia. */
+  private statusDomain(): Domain {
+    const s = this.status;
+    if (!s) return [0, 1];
+    let min = Infinity;
+    let max = -Infinity;
+    const push = (v: number): void => {
+      if (v !== v) return;
+      if (v < min) min = v;
+      if (v > max) max = v;
+    };
+    const history = this.statusHistoryShown();
+    for (const r of s.rows) {
+      push(r.value);
+      push(r.low);
+      push(r.high);
+      if (r.band) {
+        push(r.band.lo);
+        push(r.band.hi);
+      }
+      if (history) for (let i = 0; i < r.history.length; i++) push(r.history[i] as number);
+      if (s.mode === 'direction') push(r.previous);
+    }
+    push(s.reference);
+    if (!Number.isFinite(min)) return [0, 1];
+    if (!(max > min)) return [min - 1, max + 1];
+    return [min, max];
+  }
+
+  /** `box.history`: `'auto'` muestra el historial tenue cuando algún grupo tiene 5 periodos o más. */
+  private statusHistoryShown(): boolean {
+    const { config } = this;
+    const s = this.status;
+    if (!s || config.type !== 'box') return false;
+    const h = config.box.history;
+    return h === 'dots' || (h === 'auto' && s.rows.some((r) => r.history.length >= 4));
+  }
+
+  /** Fecha o número de corte de `box.partial`, en las unidades de la columna `period`; `NaN` si no hay. */
+  private partialCutoff(): number {
+    const { config } = this;
+    if (config.type !== 'box') return NaN;
+    const { box, data } = config;
+    if (box.partial === null || box.period === null) return NaN;
+    if (typeof box.partial === 'number') return box.partial;
+    return data.column(box.period).kind === 'time'
+      ? parseIsoDate(box.partial)
+      : Number(box.partial);
+  }
+
+  private statusIsPartial(r: StatusRow, cutoff: number): boolean {
+    return cutoff === cutoff && r.period === r.period && r.period >= cutoff;
+  }
+
+  /** Textos de la columna derecha: valor (o diferencia) y contexto, y la palabra del estado. */
+  private statusTexts(): { value: string; status: string }[] {
+    const { config } = this;
+    const s = this.status;
+    if (!s || config.type !== 'box') return [];
+    const { box } = config;
+    const L = box.labels;
+    const S = box.statusLabels;
+    const custom = config.axes.y.format;
+    // Decimales según el rango de los valores crudos: la cifra es un dato, no una marca de eje.
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const r of s.rows) {
+      if (r.raw < lo) lo = r.raw;
+      if (r.raw > hi) hi = r.raw;
+    }
+    const step = hi > lo ? (hi - lo) / 100 : Math.abs(lo) / 100 || 1;
+    const fmt = (v: number): string => (custom ? custom(v) : formatNumber(v, { step }));
+    const pct = (v: number): string => formatNumber(v, { decimals: Math.abs(v) < 10 ? 1 : 0 });
+    const signed = (v: number): string => (v > 0 ? `+${pct(v)}` : pct(v));
+    const periodColumn = box.period !== null ? config.data.column(box.period) : null;
+    const period = (v: number): string =>
+      periodColumn?.kind === 'time'
+        ? String(new Date(v).getUTCFullYear())
+        : periodColumn?.kind === 'category'
+          ? (periodColumn.categories[v] ?? '')
+          : formatNumber(v);
+    const cutoff = this.partialCutoff();
+    const ref = box.reference;
+    const refName = s.referenceName ?? (s.reference === s.reference ? fmt(s.reference) : '');
+    const fill = (text: string | undefined, values: Record<string, string>): string =>
+      (text ?? '').replace(/\{(\w+)\}/g, (_, k: string) => values[k] ?? '');
+    return s.rows.map((r) => {
+      const parts: string[] = [];
+      const d = fmt(Math.abs(r.distance));
+      if (ref === 'history') {
+        parts.push(fmt(r.raw));
+        if (r.distance > 0) parts.push(fill(L.aboveRange, { d }));
+        else if (r.distance < 0) parts.push(fill(L.belowRange, { d }));
+      } else if (ref === 'peak') {
+        parts.push(fill(L.ofPeak, { p: pct(r.value) }), fmt(r.raw));
+      } else if (ref === 'previous') {
+        parts.push(fill(L.vsPrevious, { p: signed(r.value) }), fmt(r.raw));
+      } else {
+        parts.push(fmt(r.raw));
+        if (r.distance > 0) parts.push(fill(L.aboveRef, { d, ref: refName }));
+        else if (r.distance < 0) parts.push(fill(L.belowRef, { d, ref: refName }));
+        if (r.crossing === r.crossing && r.distance !== 0) {
+          parts.push(fill(L.since, { p: period(r.crossing) }));
+        }
+      }
+      if (box.count !== null && r.count === r.count) {
+        parts.push(fill(L.count, { n: formatNumber(r.count) }));
+      }
+      if (this.statusIsPartial(r, cutoff)) parts.push(L.partial ?? '');
+      return { value: parts.filter(Boolean).join(' · '), status: S[r.status] ?? '' };
+    });
+  }
+
+  /** Hover de la ranura: la fila bajo el cursor, con el punto de hoy como acierto. */
+  private statusHitTester(band: BandScale): HitTester {
+    const s = this.status;
+    const first = this.visibleSeries()[0];
+    const rows = s?.rows ?? [];
+    const px = this.statusPx;
+    const py = this.statusPy;
+    const hitAt = (i: number, distance: number): Hit | null => {
+      const r = rows[i];
+      if (!r || !first) return null;
+      return {
+        seriesIndex: first.index,
+        seriesId: first.series.id,
+        index: i,
+        x: r.code,
+        y: r.raw,
+        px: px[i] as number,
+        py: py[i] as number,
+        distance,
+      };
+    };
+    return {
+      nearest(x, y) {
+        const i = band.indexAt(y);
+        return i < 0 ? null : hitAt(i, Math.abs(y - (py[i] as number)));
+      },
+      nearestX(pu) {
+        const i = band.indexAt(pu);
+        const h = i < 0 ? null : hitAt(i, 0);
+        return h ? [h] : [];
+      },
+    };
+  }
+
+  /**
+   * Dibuja la ranura: por fila, el historial tenue, la banda de rango típico, la flecha de
+   * dirección, el margen de evidencia y el punto de hoy, cuyo relleno es el estado (lleno =
+   * fuera con claridad, punto interior = posible, hueco = dentro); la referencia común es una
+   * línea punteada que cruza todas las filas, y a la derecha va el valor con el estado en
+   * palabras. La cantidad va en posición; el estado, en relleno y texto, nunca solo en color.
+   */
+  private drawStatusStrip(
+    band: BandScale,
+    value: ContinuousScale,
+    area: Rect,
+    renderer: Renderer,
+  ): void {
+    const { config } = this;
+    const s = this.status;
+    if (!s || config.type !== 'box') return;
+    const { theme, box } = config;
+    const rows = s.rows;
+    const first = this.visibleSeries()[0];
+    const accent = seriesColor(config, first?.index ?? 0);
+    const gray = theme.axis;
+    const n = rows.length;
+    const px = new Float64Array(n);
+    const py = new Float64Array(n);
+    const cutoff = this.partialCutoff();
+    const history = this.statusHistoryShown();
+    const pixels = { x: IDENTITY, y: IDENTITY };
+    const pad = 14;
+    // Escala de cada fila: la común, o la propia (toda su extensión en el ancho) con `'history'`.
+    const scaleFor = (r: StatusRow): ((v: number) => number) => {
+      if (!s.ownScale) return (v) => value.toPixel(v);
+      let lo = Infinity;
+      let hi = -Infinity;
+      const push = (v: number): void => {
+        if (v !== v) return;
+        if (v < lo) lo = v;
+        if (v > hi) hi = v;
+      };
+      push(r.value);
+      push(r.low);
+      push(r.high);
+      if (r.band) {
+        push(r.band.lo);
+        push(r.band.hi);
+      }
+      if (history) for (let i = 0; i < r.history.length; i++) push(r.history[i] as number);
+      if (!(hi > lo)) {
+        lo -= 1;
+        hi += 1;
+      }
+      const x0 = area.x + pad;
+      const x1 = area.x + area.width - pad;
+      return (v) => x0 + ((v - lo) / (hi - lo)) * (x1 - x0);
+    };
+    const small = `${Math.round(theme.fontSize * 0.85)}px ${theme.fontFamily}`;
+    if (!s.ownScale && s.reference === s.reference) {
+      const rx = value.toPixel(s.reference);
+      renderer.drawRule('data', rx, area.y, rx, area.y + area.height, {
+        stroke: theme.axis,
+        width: 1,
+        dash: [4, 3],
+      });
+      if (s.referenceName) {
+        renderer.drawText('data', s.referenceName, rx + 5, area.y + 1, {
+          font: small,
+          fill: theme.axis,
+          align: 'left',
+          baseline: 'top',
+        });
+      }
+    }
+    const bandH = Math.max(6, Math.min(16, band.bandwidth * 0.45));
+    const radius = Math.max(5, Math.min(7, band.bandwidth * 0.25));
+    const muted = theme.muted ?? theme.grid;
+    rows.forEach((r, i) => {
+      const cy = band.start(i) + band.bandwidth / 2;
+      const sx = scaleFor(r);
+      const color = box.highlight === null || box.highlight === r.name ? accent : gray;
+      const opacity = this.statusIsPartial(r, cutoff) ? 0.55 : 1;
+      if (history && r.history.length > 0) {
+        const hx = Float64Array.from(r.history, sx);
+        const hy = new Float64Array(hx.length).fill(cy);
+        renderer.drawPointSeries(
+          'data',
+          hx,
+          hy,
+          0,
+          hx.length,
+          { fill: theme.axis, radius: 2.5, opacity: 0.3 },
+          pixels,
+        );
+      }
+      if (r.band) {
+        const b = r.band;
+        const rect = (lo: number, hi: number, alpha: number): void => {
+          const a = sx(lo);
+          const z = sx(hi);
+          renderer.drawRect('data', Math.min(a, z), cy - bandH / 2, Math.abs(z - a), bandH, {
+            fill: muted,
+            opacity: alpha,
+          });
+        };
+        rect(b.lo, b.hi, 0.5);
+        rect(b.q1, b.q3, 0.9);
+      }
+      const vx = sx(r.value);
+      px[i] = vx;
+      py[i] = cy;
+      if (s.mode === 'direction' && r.previous === r.previous) {
+        const fx = sx(r.previous);
+        renderer.drawRule('data', fx, cy, vx, cy, { stroke: color, width: 1.5, opacity });
+        // Punta: dos trazos cortos hacia atrás desde el punto de hoy.
+        const dir = vx >= fx ? -1 : 1;
+        const tip = vx + dir * (radius + 1);
+        for (const dy of [-4, 4]) {
+          renderer.drawRule('data', tip, cy, tip + dir * 5, cy + dy, {
+            stroke: color,
+            width: 1.5,
+            opacity,
+          });
+        }
+      }
+      if (r.low === r.low && r.high === r.high) {
+        const a = sx(r.low);
+        const z = sx(r.high);
+        renderer.drawRule('data', a, cy, z, cy, { stroke: color, width: 1.5, opacity });
+        for (const e of [a, z]) {
+          renderer.drawRule('data', e, cy - 4, e, cy + 4, { stroke: color, width: 1.5, opacity });
+        }
+      }
+      const kind = statusFill(r.status);
+      const one = Float64Array.of(vx);
+      const oneY = Float64Array.of(cy);
+      if (kind === 'full') {
+        renderer.drawPointSeries(
+          'data',
+          one,
+          oneY,
+          0,
+          1,
+          { fill: color, radius, stroke: theme.background, strokeWidth: 2, opacity },
+          pixels,
+        );
+      } else {
+        renderer.drawPointSeries(
+          'data',
+          one,
+          oneY,
+          0,
+          1,
+          { fill: theme.background, radius, stroke: color, strokeWidth: 2, opacity },
+          pixels,
+        );
+        if (kind === 'half') {
+          renderer.drawPointSeries(
+            'data',
+            one,
+            oneY,
+            0,
+            1,
+            { fill: color, radius: Math.max(2, radius * 0.45), opacity },
+            pixels,
+          );
+        }
+      }
+    });
+    // Columna derecha: valor en la fuente de cifras, estado en palabras con peso.
+    const tx = area.x + area.width + LEGEND_GAP;
+    this.statusTextCache.forEach((t, i) => {
+      const r = rows[i] as StatusRow;
+      const cy = py[i] as number;
+      const w = renderer.measureText(t.value, { font: statusValueFont(theme), fill: theme.text });
+      renderer.drawText('overlay', t.value, tx, cy, {
+        font: statusValueFont(theme),
+        fill: theme.text,
+        align: 'left',
+        baseline: 'middle',
+      });
+      if (t.status) {
+        renderer.drawText('overlay', t.status, tx + w + 8, cy, {
+          font: statusWordFont(theme),
+          fill: statusFill(r.status) === 'hollow' ? theme.axis : theme.text,
+          align: 'left',
+          baseline: 'middle',
+        });
+      }
+    });
+    this.statusPx = px;
+    this.statusPy = py;
   }
 
   /** `bar.mark: 'dot'`: un punto donde terminaría cada barra, con anillo del fondo. */
@@ -1881,6 +2350,30 @@ export class Chart {
       if (inner) renderer.drawBars('data', px0, px1, y0, inner, 0, count, style, transform);
     });
   }
+}
+
+/** Relleno del punto de hoy según el estado: fuera con claridad = lleno, posible = punto interior, en su sitio = hueco. */
+function statusFill(status: StatusRow['status']): 'full' | 'half' | 'hollow' {
+  switch (status) {
+    case 'clear':
+    case 'up':
+    case 'down':
+    case 'above':
+    case 'below':
+      return 'full';
+    case 'possible':
+      return 'half';
+    default:
+      return 'hollow';
+  }
+}
+
+function statusValueFont(theme: ResolvedChartConfig['theme']): string {
+  return `${theme.fontSize}px ${monoFont(theme)}`;
+}
+
+function statusWordFont(theme: ResolvedChartConfig['theme']): string {
+  return `600 ${theme.fontSize}px ${theme.fontFamily}`;
 }
 
 function emptyLayout(): Layout {

@@ -120,6 +120,25 @@ function defaultFormat(
       .map((h) => {
         const color = seriesColor(config, h.seriesIndex);
         const name = config.series[h.seriesIndex]?.name ?? h.seriesId;
+        const status = config.type === 'box' ? ctx.getStatus?.() : null;
+        const row = status?.layout.rows[h.index];
+        if (status && row) {
+          // Ranura: valor de hoy, referencia, margen y n de la fila, y el estado en palabras.
+          const pct = status.layout.unit === 'percent';
+          const fr = (v: number): string => (pct ? `${formatNumber(v, { decimals: 1 })} %` : fy(v));
+          const reference = row.band
+            ? `rango ${escape(fr(row.band.lo))} – ${escape(fr(row.band.hi))}`
+            : row.reference === row.reference
+              ? `referencia ${escape(fr(row.reference))}`
+              : '';
+          const margin =
+            row.low === row.low && row.high === row.high
+              ? `margen ${escape(fr(row.low))} – ${escape(fr(row.high))}`
+              : '';
+          const detail = [reference, margin, `n = ${row.count}`].filter(Boolean).join(' · ');
+          const text = status.texts[h.index];
+          return `<div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px"></span>${escape(name)}: <b>${escape(fy(row.raw))}</b>${text?.status ? ` · ${escape(text.status)}` : ''}</div><div style="opacity:.7">${detail}</div>`;
+        }
         const box =
           config.type === 'box' ? ctx.getBoxStats?.()[h.seriesIndex]?.[h.index] : undefined;
         if (box) {
