@@ -166,6 +166,11 @@ export interface ScatterChartConfig extends BaseChartConfig {
     readonly radius?: number;
     /** Anillo del color del fondo alrededor de cada punto, en píxeles (1.5); 0 lo quita. */
     readonly ring?: number;
+    /**
+     * Unir los puntos de cada serie en el orden de las filas (dispersión conectada: cada serie
+     * es un camino en el plano). El trazo usa `line.width`. `false` por defecto.
+     */
+    readonly path?: boolean;
   };
 }
 
@@ -212,7 +217,7 @@ export const DEFAULTS = {
   padding: { top: 8, right: 8, bottom: 8, left: 8 } satisfies Padding,
   line: { width: 2, area: false, step: false },
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2, mark: 'bar' },
-  scatter: { radius: 3, ring: 1.5 },
+  scatter: { radius: 3, ring: 1.5, path: false },
   box: { whisker: 1.5, padding: 0.3, outliers: true },
   heatmap: { colormap: 'cobalto', domain: 'auto', center: null, legend: true },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },

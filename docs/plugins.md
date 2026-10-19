@@ -239,6 +239,69 @@ visibles; `afterDraw` traza la regla punteada en `scales.y.toPixel(ref)`, escrib
 alineada a la derecha y, por cada marca, la diferencia con signo encima si es positiva o debajo
 si es negativa. Cambiar la referencia es pasar otro `referencePlugin` en `update({ plugins })`.
 
+## `trajectoryPlugin(opciones)`
+
+"Trayectorias", la forma A elegida en la ronda r01 de _Más allá de la dispersión_: cada serie
+es un camino en el plano (los puntos se unen en el orden de las filas) con una cabeza en su
+último punto. La protagonista va en su color con nombre, instante y valores; las demás en el
+color apagado del tema, con solo su nombre. Un deslizador y un botón mueven el instante.
+
+```ts
+{
+  type: 'scatter',
+  series: paises.map((p) => ({ id: p, x: `pib ${p}`, y: `co2 ${p}` })),
+  plugins: [tooltipPlugin(), trajectoryPlugin({ time: 'fecha', series: 'China' })],
+}
+```
+
+| Opción       | Por defecto        | Qué hace                                                       |
+| ------------ | ------------------ | -------------------------------------------------------------- |
+| `time`       | orden de las filas | Columna con el instante de cada fila (línea de tiempo)         |
+| `series`     | la primera         | `id` de la protagonista inicial; `null` muestra todas en color |
+| `selector`   | `true`             | Botones `.xila-trajectory-item[data-series]` más "Todas"       |
+| `controls`   | `true`             | Botón Reproducir y deslizador `.xila-trajectory-range`         |
+| `interval`   | `120`              | Milisegundos entre pasos al reproducir                         |
+| `format`     | formato del eje Y  | Texto del valor Y de la cabeza                                 |
+| `formatX`    | formato del eje X  | Texto del valor X de la cabeza                                 |
+| `formatTime` | eje de tiempo      | Texto del instante                                             |
+| `labels`     | español            | `play`, `pause`, `time`, `group`, `all`                        |
+
+Mecanismo: en `beforeUpdate` el plugin activa `scatter.path`, apaga los puntos (`radius: 0`),
+fija `stroke` por serie (protagonista en su color de paleta, resto `theme.muted`), filtra con
+`filterRows` las filas con instante ≤ el elegido y fija los dominios de ambos ejes con todos los
+datos (décadas enteras en log, 5 % de margen en lineal), así el plano no salta al mover el
+tiempo. En `afterDraw` vuelve a trazar la protagonista por segmentos cada vez más opacos (la
+estela) y dibuja las cabezas y los nombres. Cada paso del deslizador llama a `update({})`.
+Cada serie necesita su par de columnas x/y: del formato largo se llega con dos `pivot` (uno por
+variable) juntos en una `DataTable`.
+
+## `trendPlugin(opciones)`
+
+"Contra lo esperado", la forma C: una línea de tendencia dice cuánto "debería" valer y para cada
+x; de cada punto sale un tallo hasta la línea, con el color de "por encima" o "por debajo", y la
+lista de la derecha ordena las series por esa diferencia. Responde "¿quién se sale del patrón?"
+sin que el lector trace la línea a ojo. Solo para dispersiones con eje X continuo.
+
+```ts
+{ type: 'scatter', plugins: [tooltipPlugin(), trendPlugin({ label: 'tendencia de estos siete' })] }
+```
+
+| Opción         | Por defecto           | Qué hace                                               |
+| -------------- | --------------------- | ------------------------------------------------------ |
+| `fit`          | según la escala X     | `'linear'` (y = a + b·x) o `'log'` (y = a + b·log₁₀ x) |
+| `stems`        | `true`                | Tallos de cada punto a la línea                        |
+| `ranking`      | `true`                | Lista a la derecha ordenada por diferencia             |
+| `label`        | `'tendencia'`         | Texto junto a la línea                                 |
+| `rankingTitle` | `'Sobre lo esperado'` | Título de la lista                                     |
+| `format`       | formato del eje Y     | Texto de las diferencias                               |
+| `colors`       | paleta 2 y 1          | `above` y `below`: color de tallos y cifras            |
+
+Mecanismo: `trendFit(xs, ys, log)` hace mínimos cuadrados con los pares finitos de las series
+visibles (exportada para usarla fuera). La línea se muestrea en píxeles, así en escala log es la
+curva correcta, y se recorta al dominio Y. La diferencia de una serie es la media de sus puntos
+(una serie suele ser un punto). `reserveSpace` descuenta a la derecha el ancho de la lista.
+Con pocos puntos el ajuste es ilustrativo: conviene decirlo en `label`.
+
 ## `annotationsPlugin(anotaciones)`
 
 Marca eventos sobre el gráfico. Las anotaciones guardan su posición en **valores de datos**

@@ -22,6 +22,8 @@ mira esto?":
 | ¿Cuánto más que el promedio o la meta? | barras        | **Puntos con referencia** (`bar.mark: 'dot'` + `referencePlugin`)     |
 | ¿Qué parte del total es de cada uno?   | barras        | **Unidades del total** (`type: 'waffle'`): un cuadro por cada N       |
 | ¿Cómo se reparten los casos?           | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas      |
+| ¿Por dónde ha pasado y hacia dónde va? | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año |
+| ¿Quién se sale del patrón?             | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking   |
 
 **Anatomía editorial.** Grid solo horizontal, líneas de 2 px con nombre y último valor al final
 en vez de leyenda, barras con el extremo redondeado y un hueco del color del fondo entre
@@ -160,7 +162,7 @@ dibuja la barra de color. `colormap()` está exportada para usar los mismos colo
 
 ## Plugins
 
-Título con hallazgo, tooltip, leyenda, etiquetas al final de las líneas, "ahora con estela" y "protagonista y contexto" (`nowPlugin`, `focusPlugin`), línea de referencia con diferencias (`referencePlugin`), zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
+Título con hallazgo, tooltip, leyenda, etiquetas al final de las líneas, "ahora con estela" y "protagonista y contexto" (`nowPlugin`, `focusPlugin`), línea de referencia con diferencias (`referencePlugin`), trayectorias en el plano (`trajectoryPlugin`), tendencia con tallos (`trendPlugin`), zoom/pan, selección que cuenta, panel de resumen y anotaciones vienen en `xilaplot`; opciones y mecanismo en
 [`docs/plugins.md`](docs/plugins.md).
 
 ## Dashboards para clientes

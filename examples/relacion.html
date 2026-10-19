@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Más allá de la dispersión</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #15181d;
+        max-width: 1100px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 32px 0 2px;
+      }
+      .sub {
+        color: #5b6470;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      .chart {
+        height: 460px;
+      }
+      #tendencia {
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Más allá de la dispersión</h1>
+    <p class="sub">
+      PIB por persona (dólares de 2011, escala logarítmica) y CO₂ por persona, siete países, 1970 a
+      2022 (Our World in Data). Las dos formas elegidas en la ronda r01 de dispersión.
+    </p>
+
+    <h2>A · Trayectorias</h2>
+    <p class="sub">
+      Cada país es un camino en el plano riqueza–emisiones; la protagonista en color, el resto en
+      gris. Reproducir mueve el año.
+    </p>
+    <div id="trayectorias" class="chart"></div>
+
+    <h2>C · Contra lo esperado</h2>
+    <p class="sub">
+      Una línea de tendencia dice cuánto "debería" emitir un país con esa riqueza; el tallo es la
+      diferencia y la lista la ordena.
+    </p>
+    <div id="tendencia" class="chart"></div>
+
+    <script type="module" src="/src/relacion.ts"></script>
+  </body>
+</html>

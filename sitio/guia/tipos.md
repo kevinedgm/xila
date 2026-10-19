@@ -30,6 +30,13 @@ puntos encimados (1,5 px; se omite a partir de 5 000 puntos). A partir de 50 000
 `'auto'`, que lo decide por el tamaño): los puntos suben una vez a la GPU y el pan solo cambia
 dos uniforms. En dispersión las barras de error se dibujan con remates.
 
+`scatter.path: true` une los puntos de cada serie en el orden de las filas (dispersión
+conectada): la serie deja de ser una nube y pasa a ser un camino en el plano, útil cuando cada
+fila es un instante. El trazo usa `line.width`. Con X sin ordenar el núcleo dibuja todos los
+puntos en vez de recortar por rango. `trajectoryPlugin` lo activa solo y añade protagonista,
+cabezas con nombre y valor, y un deslizador de tiempo; `trendPlugin` dibuja la tendencia y los
+tallos de cada punto a ella.
+
 ## Barras
 
 `bar.mode: 'grouped' | 'stacked'`, `bar.orientation`, `bar.padding` (fracción vacía de la

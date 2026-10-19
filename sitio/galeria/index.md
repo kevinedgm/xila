@@ -7,6 +7,8 @@ import barras from './ejemplos/barras';
 import apiladas from './ejemplos/apiladas';
 import puntos from './ejemplos/puntos';
 import total from './ejemplos/total';
+import trayectorias from './ejemplos/trayectorias';
+import tendencia from './ejemplos/tendencia';
 import dispersion from './ejemplos/dispersion';
 import log from './ejemplos/log';
 import histograma from './ejemplos/histograma';
@@ -92,6 +94,24 @@ total en vez de comparar alturas. Pasar el ratón sobre un cuadro dice a quién 
 <Demo :cargar="dispersion" :alto="380" />
 
 <<< @/galeria/ejemplos/dispersion.ts
+
+## Trayectorias
+
+Cada país es un camino en el plano riqueza–emisiones, con una cabeza en su último punto. La
+protagonista va en color; las demás en gris. Reproducir mueve el año y el camino se dibuja detrás.
+
+<Demo :cargar="trayectorias" :alto="520" />
+
+<<< @/galeria/ejemplos/trayectorias.ts
+
+## Contra lo esperado
+
+Una línea de tendencia dice cuánto "debería" valer y para cada x; el tallo de cada punto es su
+diferencia y la lista de la derecha la ordena. Con siete puntos el ajuste es ilustrativo.
+
+<Demo :cargar="tendencia" :alto="440" />
+
+<<< @/galeria/ejemplos/tendencia.ts
 
 ## Escala logarítmica
 

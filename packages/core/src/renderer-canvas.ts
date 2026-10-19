@@ -95,11 +95,12 @@ export class CanvasRenderer implements Renderer {
     let pen = false;
     for (let i = from; i < to; i++) {
       const v = y[i] as number;
-      if (v !== v) {
+      const u = x[i] as number;
+      if (v !== v || u !== u) {
         pen = false; // NaN corta la línea
         continue;
       }
-      const px = applyMap(t.x, x[i] as number);
+      const px = applyMap(t.x, u);
       const py = applyMap(t.y, v);
       if (pen) ctx.lineTo(px, py);
       else ctx.moveTo(px, py);

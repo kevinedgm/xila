@@ -15,7 +15,7 @@ import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots'
 import { boxGroups, type BoxStats } from './data/box';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
-import { resolveSeries, type ResolvedSeries, type SeriesSpec } from './data/series';
+import { isSorted, resolveSeries, type ResolvedSeries, type SeriesSpec } from './data/series';
 import { Emitter, type HoverPayload } from './events';
 import {
   bandHitTester,
@@ -79,6 +79,8 @@ export class Chart {
   private dirty = { data: true, layout: true };
   private destroyed = false;
   private decimation: DecimatedSeries[] = [];
+  /** Por serie, si su X no decrece: solo entonces vale recortar por búsqueda binaria. */
+  private sortedX: boolean[] = [];
   /** Box plot: estadísticos por serie y por categoría, calculados al resolver los datos. */
   private boxes: BoxStats[][] = [];
   /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
@@ -479,6 +481,7 @@ export class Chart {
   private resolveData(): void {
     this.series = this.config.series.map((spec) => resolveSeries(this.config.data, spec));
     this.decimation = [];
+    this.sortedX = this.series.map((s) => isSorted(s.x));
     this.boxes =
       this.config.type === 'box'
         ? this.series.map((s) =>
@@ -899,8 +902,10 @@ export class Chart {
 
     for (const { series: s, index: i } of this.visibleSeries()) {
       const color = seriesColor(config, i);
-      const from = Math.max(0, lowerBound(s.x, x0) - 1);
-      const to = Math.min(s.length, lowerBound(s.x, x1) + 1);
+      // Con X sin ordenar (una dispersión que es un camino) no se puede recortar por rango.
+      const sorted = this.sortedX[i] ?? true;
+      const from = sorted ? Math.max(0, lowerBound(s.x, x0) - 1) : 0;
+      const to = sorted ? Math.min(s.length, lowerBound(s.x, x1) + 1) : s.length;
       const sx = tx ? mapValues(s.x, from, to, tx) : s.x;
       const low = s.yLow && ty ? mapValues(s.yLow, from, to, ty) : s.yLow;
       const high = s.yHigh && ty ? mapValues(s.yHigh, from, to, ty) : s.yHigh;
@@ -921,10 +926,24 @@ export class Chart {
         // Anillo del color del fondo para distinguir puntos que se encima; se omite en nubes
         // grandes, donde el trazo por punto cuesta y la densidad es lo que se lee.
         const ring = to - from <= RING_MAX_POINTS ? config.scatter.ring : 0;
+        const sy = ty ? mapValues(s.y, from, to, ty) : s.y;
+        // Dispersión conectada: el camino va debajo de los puntos, en el orden de las filas.
+        if (config.scatter.path) {
+          renderer.drawLineSeries(
+            'data',
+            sx,
+            sy,
+            from,
+            to,
+            { stroke: color, width: config.line.width },
+            transform,
+          );
+        }
+        if (config.scatter.radius <= 0) continue;
         renderer.drawPointSeries(
           'data',
           sx,
-          ty ? mapValues(s.y, from, to, ty) : s.y,
+          sy,
           from,
           to,
           {
