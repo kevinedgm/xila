@@ -1,4 +1,9 @@
-# Xila
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="marca/wordmark-oscuro.svg" />
+    <img src="marca/wordmark-claro.svg" alt="Xila" width="240" />
+  </picture>
+</h1>
 
 Librería de gráficos en TypeScript para dashboards y datos científicos: lee tablas columnares
 (CSV exportado desde pandas), dibuja en Canvas 2D (WebGL para dispersiones masivas) y se

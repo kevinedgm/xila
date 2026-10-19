@@ -1,15 +1,21 @@
 import { defineConfig } from 'vitepress';
 
 // El sitio se publica en GitHub Pages bajo /xila/ (workflow .github/workflows/docs.yml).
+const base = process.env['DOCS_BASE'] ?? '/xila/';
+
 export default defineConfig({
   lang: 'es-MX',
   title: 'Xila',
   description:
     'Librería de gráficos en TypeScript para dashboards y datos científicos: Canvas por capas, WebGL para millones de puntos y plugins.',
-  base: process.env['DOCS_BASE'] ?? '/xila/',
+  base,
+  // Favicon de 9 puntadas (marca/favicon.svg): cambia solo con el tema del sistema.
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }]],
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
+    // La greca bordada de la marca; la última puntada (cobalto) es el dato.
+    logo: { light: '/simbolo-claro.svg', dark: '/simbolo-oscuro.svg', alt: 'Xila' },
     nav: [
       { text: 'Guía', link: '/guia/primer-grafico' },
       { text: 'Galería', link: '/galeria/' },
