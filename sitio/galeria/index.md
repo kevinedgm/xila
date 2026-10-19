@@ -18,6 +18,8 @@ import repartoPuntos from './ejemplos/reparto-puntos';
 import repartoFranja from './ejemplos/reparto-franja';
 import repartoHoy from './ejemplos/reparto-hoy';
 import calor from './ejemplos/calor';
+import propia from './ejemplos/propia';
+import tabla from './ejemplos/tabla';
 import anotaciones from './ejemplos/anotaciones';
 import plugin from './ejemplos/plugin';
 import accesible from './ejemplos/accesible';
@@ -25,7 +27,7 @@ import accesible from './ejemplos/accesible';
 
 # Galería
 
-Trece gráficos con un mismo CSV real: emisiones de CO₂ de siete países entre 1950 y 2024
+Veinticuatro gráficos con un mismo CSV real: emisiones de CO₂ de siete países entre 1950 y 2024
 (Our World in Data, limpiado con pandas por `python/ejemplo_co2.py`). Cada ejemplo muestra el
 código completo que lo produce; todos empiezan por cargar la tabla una sola vez:
 
@@ -175,6 +177,25 @@ en qué parte de su historia cae.
 <Demo :cargar="calor" />
 
 <<< @/galeria/ejemplos/calor.ts
+
+## Cada fila contra sí misma
+
+Una celda por país y año; cada fila se colorea contra su propia mediana (azul por debajo,
+naranja por encima), así India cuenta su subida tan claro como Alemania su bajada. A la derecha,
+el año del máximo y la mediana.
+
+<Demo :cargar="propia" :alto="400" />
+
+<<< @/galeria/ejemplos/propia.ts
+
+## Tabla con tono
+
+El heatmap por década con la cifra en cada celda y un hueco entre ellas: la tabla manda y el
+color solo guía el ojo. Es la forma que sobrevive a la impresión y al informe del cliente.
+
+<Demo :cargar="tabla" :alto="400" />
+
+<<< @/galeria/ejemplos/tabla.ts
 
 ## Anotaciones
 

@@ -102,6 +102,7 @@ const PERIODOS: readonly TimeUnit[] = [
   'month',
   'quarter',
   'year',
+  'decade',
 ];
 const FORMATOS: readonly FormatoValor[] = ['numero', 'entero', 'moneda', 'porcentaje'];
 const TIPOS_PANEL = ['kpi', 'linea', 'barras', 'dispersion'] as const;

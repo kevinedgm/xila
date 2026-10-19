@@ -203,7 +203,8 @@ export function timeScale(domain: Domain, range: Range): ContinuousScale {
   return scale;
 }
 
-export type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+export type TimeUnit =
+  'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year' | 'decade';
 
 /** Inicio de la unidad de calendario (UTC) que contiene `ms`; la semana empieza en lunes. */
 export function floorTime(ms: number, unit: TimeUnit): number {
@@ -220,6 +221,10 @@ export function floorTime(ms: number, unit: TimeUnit): number {
     case 'week': {
       // La época (jueves) está 3 días después del lunes anterior.
       return Math.floor((ms + 3 * DAY) / (7 * DAY)) * 7 * DAY - 3 * DAY;
+    }
+    case 'decade': {
+      const d = new Date(ms);
+      return Date.UTC(Math.floor(d.getUTCFullYear() / 10) * 10, 0, 1);
     }
     case 'month':
     case 'quarter':

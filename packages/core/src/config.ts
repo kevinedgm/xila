@@ -160,6 +160,22 @@ export interface HeatmapChartConfig extends BaseChartConfig {
     readonly center?: number | null;
     /** Barra de color a la derecha. */
     readonly legend?: boolean;
+    /**
+     * `'shared'`: una escala para toda la matriz (magnitud). `'row'`: cada fila se colorea
+     * contra su propia mediana, con el colormap divergente `cobalto-naranja` salvo que se
+     * indique otro: azul por debajo de su mediana, naranja por encima. Responde "¿cuándo
+     * cambió cada uno?" y evita que una fila grande deje en blanco a las pequeñas.
+     */
+    readonly scale?: 'shared' | 'row';
+    /**
+     * Nota a la derecha de cada fila: `'max'` escribe la columna del máximo y la mediana de la
+     * fila ("máx 1973 · mediana 18,6"). `'none'` por defecto.
+     */
+    readonly rowLabels?: 'none' | 'max';
+    /** Cifra en cada celda (tabla con tono). Se ignora con más de 2 000 celdas. */
+    readonly values?: boolean;
+    /** Hueco del color del fondo entre celdas, en píxeles. Con hueco se dibujan rectángulos. */
+    readonly gap?: number;
   };
 }
 
@@ -260,7 +276,16 @@ export const DEFAULTS = {
       above: 'sobre el {p} %',
     },
   },
-  heatmap: { colormap: 'cobalto', domain: 'auto', center: null, legend: true },
+  heatmap: {
+    colormap: 'cobalto',
+    domain: 'auto',
+    center: null,
+    legend: true,
+    scale: 'shared',
+    rowLabels: 'none',
+    values: false,
+    gap: 0,
+  },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
   waffle: { unit: 'auto', columns: 'auto', gap: 2, labels: true },
 } as const;
@@ -330,7 +355,14 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
         ...(config.type === 'box' ? config.box?.labels : undefined),
       },
     },
-    heatmap: { ...DEFAULTS.heatmap, ...(config.type === 'heatmap' ? config.heatmap : undefined) },
+    heatmap: {
+      ...DEFAULTS.heatmap,
+      // Por fila la pregunta es "¿hacia qué lado?": el mapa por defecto pasa a ser divergente.
+      ...(config.type === 'heatmap' && config.heatmap?.scale === 'row'
+        ? { colormap: 'cobalto-naranja' as const }
+        : undefined),
+      ...(config.type === 'heatmap' ? config.heatmap : undefined),
+    },
     dots: { ...DEFAULTS.dots, ...(config.type === 'dots' ? config.dots : undefined) },
     waffle: { ...DEFAULTS.waffle, ...(config.type === 'waffle' ? config.waffle : undefined) },
   };

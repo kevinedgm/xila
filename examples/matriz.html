@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Más allá del mapa de calor</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #15181d;
+        max-width: 1100px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 32px 0 2px;
+      }
+      .sub {
+        color: #5b6470;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      .chart {
+        height: 380px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Más allá del mapa de calor</h1>
+    <p class="sub">
+      CO₂ por persona, siete países, una celda por país y año de 1950 a 2024 (Our World in Data).
+      Las dos formas elegidas en la ronda r01 de mapa de calor.
+    </p>
+
+    <h2>A · Cada fila contra sí misma</h2>
+    <p class="sub">
+      Cada celda se colorea por su diferencia con la mediana de su propio país: azul por debajo,
+      naranja por encima. A la derecha, el año del máximo y la mediana.
+    </p>
+    <div id="propia" class="chart"></div>
+
+    <h2>D · Tabla con tono</h2>
+    <p class="sub">
+      Los 75 años resumidos en ocho décadas (promedio) y la cifra en cada celda; el color solo guía
+      el ojo.
+    </p>
+    <div id="tabla" class="chart"></div>
+
+    <script type="module" src="/src/matriz.ts"></script>
+  </body>
+</html>

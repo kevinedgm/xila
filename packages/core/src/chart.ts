@@ -10,7 +10,8 @@ import {
 import { formatNumber } from './format/number';
 import { resolveConfig, seriesColor, type ChartConfig, type ResolvedChartConfig } from './config';
 import { waffleLayout, type WaffleLayout } from './waffle';
-import { colormap, colormapCss, type Colormap } from './colormap';
+import { colormap, colormapCss, inkOn, type Colormap } from './colormap';
+import { rowPosition, rowStats, type RowStats } from './heatmap';
 import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
 import {
@@ -98,6 +99,8 @@ export class Chart {
   private shades: Float64Array[][] = [];
   /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
   private cells: Int32Array = new Int32Array(0);
+  /** Estadísticas por fila del heatmap (mediana, extremos, columna del máximo). */
+  private rows: RowStats[] = [];
   private readonly hidden = new Set<string>();
   /** Gráfico de unidades: posiciones objetivo del último layout y las que se muestran. */
   private dots: DotsLayout | null = null;
@@ -532,6 +535,7 @@ export class Chart {
         }
       }
       this.cells = cells;
+      this.rows = s?.value ? rowStats(s.value, cells, nx, ny) : [];
     }
     this.dirty.data = false;
   }
@@ -570,15 +574,22 @@ export class Chart {
         ? LEGEND_BAR +
           LEGEND_GAP * 2 +
           Math.max(
-            ...legendLabels(this.heatmapDomain(), config.heatmap.center).map((l) =>
-              renderer.measureText(l, textStyle(theme)),
-            ),
+            ...this.heatmapLegendLabels().map((l) => renderer.measureText(l, textStyle(theme))),
           )
+        : 0;
+    // Notas por fila ("máx 1973 · mediana 18,6"): su ancho máximo más un hueco.
+    const notesWidth =
+      config.type === 'heatmap' && config.heatmap.rowLabels !== 'none'
+        ? LEGEND_GAP +
+          Math.max(0, ...this.rowNotes().map((n) => renderer.measureText(n, textStyle(theme))))
         : 0;
     const plotArea: Rect = {
       x: provisional.x + margins.left,
       y: provisional.y + theme.fontSize / 2,
-      width: Math.max(1, provisional.width - margins.left - theme.fontSize - legendWidth),
+      width: Math.max(
+        1,
+        provisional.width - margins.left - theme.fontSize - legendWidth - notesWidth,
+      ),
       height: Math.max(1, provisional.height - margins.bottom - theme.fontSize / 2),
     };
     scales = this.buildScales(plotArea, scales);
@@ -797,6 +808,27 @@ export class Chart {
     return column.kind === 'category' ? column.categories : [];
   }
 
+  /** Textos de la barra de color: [mínimo, máximo, centro?]. Por fila hablan de la fila. */
+  private heatmapLegendLabels(): string[] {
+    const { heatmap } = this.config;
+    if (heatmap.scale === 'row') return ['mínimo de su fila', 'máximo de su fila', 'mediana'];
+    return legendLabels(this.heatmapDomain(), heatmap.center);
+  }
+
+  /** Nota de cada fila (índice = fila del eje Y); cadena vacía si no hay notas. */
+  private rowNotes(): string[] {
+    const { heatmap } = this.config;
+    if (heatmap.rowLabels === 'none') return [];
+    const cols = this.categories();
+    const [lo, hi] = this.heatmapDomain();
+    const step = (hi - lo) / 100;
+    return this.rows.map((r) =>
+      r.argmax < 0
+        ? ''
+        : `máx ${cols[r.argmax] ?? ''} · mediana ${formatNumber(r.median, { step })}`,
+    );
+  }
+
   /** Rango de valores que cubre el mapa de color del heatmap. */
   private heatmapDomain(): [number, number] {
     const { heatmap } = this.config;
@@ -839,42 +871,102 @@ export class Chart {
     const map = colormap(config.heatmap.colormap);
     const [lo, hi] = this.heatmapDomain();
     const span = hi - lo;
-    const pixels = new Uint8ClampedArray(nx * ny * 4);
-    // Caché de 256 niveles: evaluar el polinomio por celda sería la parte cara.
-    const lut = new Uint8ClampedArray(256 * 3);
-    for (let k = 0; k < 256; k++) {
-      const [r, g, b] = map(k / 255);
-      lut[k * 3] = r;
-      lut[k * 3 + 1] = g;
-      lut[k * 3 + 2] = b;
-    }
-    for (let yi = 0; yi < ny; yi++) {
-      // La fila 0 va abajo (el eje Y crece hacia arriba); la imagen se llena de arriba a abajo.
-      const imageRow = ny - 1 - yi;
-      for (let xi = 0; xi < nx; xi++) {
-        const row = this.cells[yi * nx + xi] as number;
-        if (row < 0) continue;
-        const v = s.value[row] as number;
-        if (v !== v) continue;
-        let t = (v - lo) / span;
-        t = t < 0 ? 0 : t > 1 ? 1 : t;
-        const k = Math.round(t * 255) * 3;
-        const o = (imageRow * nx + xi) * 4;
-        pixels[o] = lut[k] as number;
-        pixels[o + 1] = lut[k + 1] as number;
-        pixels[o + 2] = lut[k + 2] as number;
-        pixels[o + 3] = 255;
-      }
-    }
+    const byRow = config.heatmap.scale === 'row';
+    // Posición en el mapa de la celda (yi, xi), o NaN si está vacía.
+    const position = (yi: number, xi: number): number => {
+      const row = this.cells[yi * nx + xi] as number;
+      if (row < 0) return NaN;
+      const v = s.value?.[row] as number;
+      if (v !== v) return NaN;
+      const t = byRow ? rowPosition(v, this.rows[yi] as RowStats) : (v - lo) / span;
+      return t < 0 ? 0 : t > 1 ? 1 : t;
+    };
     const x0 = scales.x.start(0);
     const x1 = scales.x.start(nx - 1) + scales.x.bandwidth;
-    renderer.drawImage('data', pixels, nx, ny, x0, area.y, x1 - x0, area.height);
-    if (config.heatmap.legend) this.drawColorLegend(map, lo, hi, area);
+    // Tabla con tono: rectángulos con hueco y cifra. Solo tiene sentido con pocas celdas.
+    const asTable = (config.heatmap.gap > 0 || config.heatmap.values) && nx * ny <= 2000;
+    if (asTable) {
+      const gap = config.heatmap.gap;
+      const rowH = area.height / ny;
+      const colW = (x1 - x0) / nx;
+      const font = `500 ${config.theme.fontSize}px ${config.theme.fontFamily}`;
+      const [lo2, hi2] = this.heatmapDomain();
+      const step = (hi2 - lo2) / 100;
+      for (let yi = 0; yi < ny; yi++) {
+        // La fila 0 va abajo (el eje Y crece hacia arriba).
+        const top = area.y + (ny - 1 - yi) * rowH;
+        for (let xi = 0; xi < nx; xi++) {
+          const t = position(yi, xi);
+          if (t !== t) continue;
+          const rgb = map(t);
+          const cx = x0 + xi * colW;
+          renderer.drawRect('data', cx + gap / 2, top + gap / 2, colW - gap, rowH - gap, {
+            fill: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`,
+          });
+          if (config.heatmap.values) {
+            const v = s.value[this.cells[yi * nx + xi] as number] as number;
+            renderer.drawText('data', formatNumber(v, { step }), cx + colW / 2, top + rowH / 2, {
+              font,
+              fill: inkOn(rgb, config.theme.text),
+              align: 'center',
+              baseline: 'middle',
+            });
+          }
+        }
+      }
+    } else {
+      const pixels = new Uint8ClampedArray(nx * ny * 4);
+      // Caché de 256 niveles: evaluar el polinomio por celda sería la parte cara.
+      const lut = new Uint8ClampedArray(256 * 3);
+      for (let k = 0; k < 256; k++) {
+        const [r, g, b] = map(k / 255);
+        lut[k * 3] = r;
+        lut[k * 3 + 1] = g;
+        lut[k * 3 + 2] = b;
+      }
+      for (let yi = 0; yi < ny; yi++) {
+        // La fila 0 va abajo (el eje Y crece hacia arriba); la imagen se llena de arriba a abajo.
+        const imageRow = ny - 1 - yi;
+        for (let xi = 0; xi < nx; xi++) {
+          const t = position(yi, xi);
+          if (t !== t) continue;
+          const k = Math.round(t * 255) * 3;
+          const o = (imageRow * nx + xi) * 4;
+          pixels[o] = lut[k] as number;
+          pixels[o + 1] = lut[k + 1] as number;
+          pixels[o + 2] = lut[k + 2] as number;
+          pixels[o + 3] = 255;
+        }
+      }
+      renderer.drawImage('data', pixels, nx, ny, x0, area.y, x1 - x0, area.height);
+    }
+    if (config.heatmap.rowLabels !== 'none') this.drawRowNotes(area, ny);
+    if (config.heatmap.legend) this.drawColorLegend(map, area);
+  }
+
+  /** Notas a la derecha de cada fila, en la capa de fondo (fuera del recorte de datos). */
+  private drawRowNotes(area: Rect, ny: number): void {
+    const { renderer, config } = this;
+    const notes = this.rowNotes();
+    const rowH = area.height / ny;
+    const style = { ...textStyle(config.theme, config.theme.axis), baseline: 'middle' as const };
+    for (let yi = 0; yi < ny; yi++) {
+      const text = notes[yi];
+      if (!text) continue;
+      const cy = area.y + (ny - 1 - yi) * rowH + rowH / 2;
+      renderer.drawText('background', text, area.x + area.width + LEGEND_GAP, cy, style);
+    }
   }
 
   /** Barra de color vertical a la derecha del área, con el máximo arriba y el mínimo abajo. */
-  private drawColorLegend(map: Colormap, lo: number, hi: number, area: Rect): void {
+  private drawColorLegend(map: Colormap, area: Rect): void {
     const { renderer, config } = this;
+    const notes = config.heatmap.rowLabels !== 'none' ? this.rowNotes() : [];
+    const notesWidth =
+      notes.length > 0
+        ? LEGEND_GAP +
+          Math.max(0, ...notes.map((n) => renderer.measureText(n, textStyle(config.theme))))
+        : 0;
     const steps = 128;
     const pixels = new Uint8ClampedArray(steps * 4);
     for (let i = 0; i < steps; i++) {
@@ -884,11 +976,11 @@ export class Chart {
       pixels[i * 4 + 2] = b;
       pixels[i * 4 + 3] = 255;
     }
-    const x = area.x + area.width + LEGEND_GAP;
+    const x = area.x + area.width + notesWidth + LEGEND_GAP;
     renderer.drawImage('background', pixels, 1, steps, x, area.y, LEGEND_BAR, area.height);
     const label = { ...textStyle(config.theme), align: 'left' as const };
     const tx = x + LEGEND_BAR + LEGEND_GAP / 2;
-    const [loLabel, hiLabel, centerLabel] = legendLabels([lo, hi], config.heatmap.center);
+    const [loLabel, hiLabel, centerLabel] = this.heatmapLegendLabels();
     renderer.drawText('background', hiLabel ?? '', tx, area.y, { ...label, baseline: 'top' });
     renderer.drawText('background', loLabel ?? '', tx, area.y + area.height, {
       ...label,

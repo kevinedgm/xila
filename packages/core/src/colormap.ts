@@ -11,12 +11,16 @@
  * `rdbu` es divergente (ColorBrewer RdBu): para correlaciones y cualquier variable con un centro
  * significativo (0), donde el color debe decir "cuánto y hacia qué lado".
  *
+ * `cobalto-naranja` es el divergente de la paleta: del azul de la serie 1 a un gris casi
+ * blanco en el centro y de ahí al naranja de acento. Es el que usa `heatmap.scale: 'row'`.
+ *
  * `cobalto` es el secuencial de un solo tono de la paleta (de casi blanco al azul de la serie
  * 1 y de ahí a marino): la magnitud se lee como claro → oscuro y el mapa no compite con la
  * paleta categórica del resto del tablero. Es el valor por defecto.
  */
 
-export type ColormapName = 'cobalto' | 'viridis' | 'magma' | 'inferno' | 'plasma' | 'rdbu';
+export type ColormapName =
+  'cobalto' | 'cobalto-naranja' | 'viridis' | 'magma' | 'inferno' | 'plasma' | 'rdbu';
 
 /** `t` en [0, 1] → `[r, g, b]` en [0, 255]. */
 export type Colormap = (t: number) => readonly [number, number, number];
@@ -62,6 +66,17 @@ const PLASMA: Poly = [
 
 const RDBU = ['#b2182b', '#ef8a62', '#fddbc7', '#f7f7f7', '#d1e5f0', '#67a9cf', '#2166ac'];
 const COBALTO = ['#eef2fb', '#c3d0f3', '#8fa8e8', '#5a7ede', '#2456d6', '#1a3f9e', '#102a6e'];
+const COBALTO_NARANJA = [
+  '#2456d6',
+  '#5a7ede',
+  '#8fa8e8',
+  '#c3d0f3',
+  '#f5f6f8',
+  '#f6d9c4',
+  '#eeb08a',
+  '#e0702a',
+  '#a84d14',
+];
 
 function polynomial(p: Poly): Colormap {
   return (t) => {
@@ -115,6 +130,7 @@ export function stopsColormap(stops: readonly string[]): Colormap {
 
 const NAMED: Record<ColormapName, Colormap> = {
   cobalto: stopsColormap(COBALTO),
+  'cobalto-naranja': stopsColormap(COBALTO_NARANJA),
   viridis: polynomial(VIRIDIS),
   magma: polynomial(MAGMA),
   inferno: polynomial(INFERNO),
@@ -131,4 +147,21 @@ export function colormap(spec: ColormapName | readonly string[]): Colormap {
 export function colormapCss(map: Colormap, t: number): string {
   const [r, g, b] = map(t);
   return `rgb(${r}, ${g}, ${b})`;
+}
+
+/**
+ * Color de texto legible sobre un color de celda: blanco sobre fondos oscuros, el color de
+ * texto del tema sobre claros. Umbral en la luminancia relativa (WCAG), no en la suma de canales.
+ */
+export function inkOn(
+  rgb: readonly [number, number, number],
+  dark: string,
+  light = '#ffffff',
+): string {
+  const lin = (c: number): number => {
+    const u = c / 255;
+    return u <= 0.03928 ? u / 12.92 : ((u + 0.055) / 1.055) ** 2.4;
+  };
+  const l = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+  return l < 0.4 ? light : dark;
 }

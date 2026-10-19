@@ -75,9 +75,18 @@ a ser el contexto de una cifra. Ejemplo: `examples/reparto.html`.
 `x` e `y` categóricas más `value` numérica. Se dibuja como una imagen de un píxel por celda
 escalada sin suavizado, por eso 500 × 500 celdas cuestan lo mismo que 10 × 10.
 `heatmap.colormap`: `cobalto` (por defecto, un solo tono claro → oscuro), `viridis`, `magma`,
-`inferno`, `plasma` (perceptuales), `rdbu`
-(divergente) o una lista de hexadecimales. `center: 0` hace el dominio simétrico, útil para
+`inferno`, `plasma` (perceptuales), `rdbu` y `cobalto-naranja`
+(divergentes) o una lista de hexadecimales. `center: 0` hace el dominio simétrico, útil para
 correlaciones. `legend: false` quita la barra de color.
+
+Más allá del mapa de calor (ronda r01): `heatmap.scale: 'row'` colorea cada fila contra su
+propia mediana con `cobalto-naranja` (azul por debajo, naranja por encima), para que una fila
+grande no deje en blanco a las pequeñas y se vea cuándo cambió cada una; `rowLabels: 'max'`
+escribe a la derecha el año del máximo y la mediana. `values: true` pone la cifra en cada celda
+(blanca sobre tonos oscuros) y `gap` deja un hueco entre celdas: una tabla con tono, que se
+dibuja con rectángulos en vez de imagen (hasta 2 000 celdas). Para resumir por década,
+`bucketTime(tabla, 'fecha', 'decade')` y luego `pivot` con `agg: 'mean'`. Ejemplo:
+`examples/matriz.html`.
 
 ## Unidades
 
