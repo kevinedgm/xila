@@ -331,7 +331,8 @@ Histograma: `histogramTable(valores, { bins: 'fd' })` devuelve una `DataTable` l
 `bar` con `bar: { padding: 0, radius: 0, gap: 1 }`. Reglas de `bins`: entero, `'fd'`
 (defecto), `'sturges'`, `'sqrt'`.
 
-> Las barras son siempre verticales: `bar.orientation` solo acepta `'vertical'` por ahora.
+> Las barras son siempre verticales: `bar.orientation: 'horizontal'` existe en los tipos
+> pero todavía no tiene efecto.
 
 #### `scatter`
 
@@ -1208,7 +1209,7 @@ cambiar la configuración, `destroy` al desmontar).
 Encontradas al escribir esta guía y **corregidas en el mismo commit** que la añadió:
 
 1. **`bar.orientation: 'horizontal'`** estaba en `BarChartConfig` sin que el núcleo la leyera;
-   ahora el tipo solo admite `'vertical'` y lo dice.
+   ahora su comentario dice que no tiene efecto todavía (la opción se conserva).
 2. **`SeriesSpec.color`** se describía como "columna que separa la serie" sin que `Chart` la
    usara; ahora su comentario dice que está reservada y qué usar en su lugar.
 3. **`packages/core/README.md`** graficaba `ventas.csv` sin agrupar (línea en zigzag); ahora
