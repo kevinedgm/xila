@@ -10,9 +10,18 @@ import {
 import { formatNumber } from './format/number';
 import { resolveConfig, seriesColor, type ChartConfig, type ResolvedChartConfig } from './config';
 import { waffleLayout, type WaffleLayout } from './waffle';
-import { colormap, type Colormap } from './colormap';
+import { colormap, colormapCss, type Colormap } from './colormap';
 import { countInRange, dotsLayout, easeOutCubic, type DotsLayout } from './dots';
 import { boxGroups, type BoxStats } from './data/box';
+import {
+  beeswarm,
+  binCounts,
+  groupValues,
+  percentileOf,
+  rangeBands,
+  sharedEdges,
+  smooth3,
+} from './distribution';
 import { minMaxDecimate, type DecimatedSeries } from './data/decimate';
 import { lowerBound } from './data/search';
 import { isSorted, resolveSeries, type ResolvedSeries, type SeriesSpec } from './data/series';
@@ -83,6 +92,10 @@ export class Chart {
   private sortedX: boolean[] = [];
   /** Box plot: estadísticos por serie y por categoría, calculados al resolver los datos. */
   private boxes: BoxStats[][] = [];
+  /** Box plot: valores de cada grupo por serie, en el orden de las filas (para `box.mark`). */
+  private groups: Float64Array[][] = [];
+  /** Box plot con `box.shade`: el valor de la columna de tono por grupo, alineado con `groups`. */
+  private shades: Float64Array[][] = [];
   /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
   private cells: Int32Array = new Int32Array(0);
   private readonly hidden = new Set<string>();
@@ -487,6 +500,24 @@ export class Chart {
         ? this.series.map((s) =>
             boxGroups(s.x, s.y, this.categories().length, this.config.box.whisker),
           )
+        : [];
+    this.groups =
+      this.config.type === 'box'
+        ? this.series.map((s) => groupValues(s.x, s.y, this.categories().length))
+        : [];
+    const shade = this.config.type === 'box' ? this.config.box.shade : null;
+    this.shades =
+      shade !== null && this.config.type === 'box'
+        ? this.series.map((s) => {
+            const col = this.config.data.numeric(shade);
+            // Mismo recorrido que groupValues, pero con la columna de tono: se descartan las
+            // filas cuyo valor Y no es finito, igual que allí.
+            const y = s.y;
+            const picked = Float64Array.from(col, (v, i) =>
+              (y[i] as number) === (y[i] as number) ? v : NaN,
+            );
+            return groupValues(s.x, picked, this.categories().length).map((g) => g);
+          })
         : [];
     if (this.config.type === 'heatmap') {
       const nx = this.categories().length;
@@ -1202,6 +1233,12 @@ export class Chart {
     const visible = this.visibleSeries();
     const slot = x.bandwidth / Math.max(1, visible.length);
     const boxWidth = slot * 0.8;
+    if (config.box.mark !== 'box') {
+      this.drawDistribution(x, transform, renderer);
+      if (config.box.now !== 'none') this.drawNowMarks(x, transform, renderer);
+      return;
+    }
+    if (config.box.now !== 'none') this.drawNowMarks(x, transform, renderer);
 
     visible.forEach(({ index: colorIndex }, si) => {
       const stats = this.boxes[colorIndex] ?? [];
@@ -1276,6 +1313,226 @@ export class Chart {
             transform,
           );
         }
+      }
+    });
+  }
+
+  /**
+   * `box.mark` distinto de `'box'`: el reparto de cada grupo como puntos apilados en cubetas
+   * (`'dots'`), franja de densidad (`'density'`) o bandas de percentiles (`'range'`). Las
+   * cubetas son las mismas para todos los grupos de una serie, así las filas se alinean.
+   */
+  private drawDistribution(x: BandScale, transform: Transform, renderer: Renderer): void {
+    const { config } = this;
+    const { theme, box } = config;
+    const visible = this.visibleSeries();
+    const slot = x.bandwidth / Math.max(1, visible.length);
+    const cobalto = colormap('cobalto');
+    const py = (v: number): number => applyMap(transform.y, v);
+    visible.forEach(({ index: si }, vi) => {
+      const groups = this.groups[si] ?? [];
+      const n = Math.min(groups.length, x.count);
+      const color = seriesColor(config, si);
+      const medianRule = (i: number, values: Float64Array, width: number): void => {
+        if (values.length === 0) return;
+        const m = rangeBands(values, box.range).median;
+        const cx = x.start(i) + vi * slot + slot / 2;
+        renderer.drawRule('data', cx - width / 2, py(m), cx + width / 2, py(m), {
+          stroke: box.mark === 'range' ? theme.background : theme.text,
+          width: 2,
+        });
+      };
+      if (box.mark === 'range') {
+        const w = slot * 0.5;
+        for (let i = 0; i < n; i++) {
+          const values = groups[i] as Float64Array;
+          if (values.length === 0) continue;
+          const b = rangeBands(values, box.range);
+          const x0 = x.start(i) + vi * slot + (slot - w) / 2;
+          renderer.drawRect('data', x0, py(b.hi), w, py(b.lo) - py(b.hi), {
+            fill: colormapCss(cobalto, 0.2),
+          });
+          renderer.drawRect('data', x0, py(b.q3), w, py(b.q1) - py(b.q3), {
+            fill: colormapCss(cobalto, 0.55),
+          });
+          medianRule(i, values, w);
+        }
+        return;
+      }
+      if (box.mark === 'density') {
+        const bins0 =
+          box.bins === 'auto'
+            ? Math.max(10, Math.floor(this.layout.plotArea.height / 6))
+            : box.bins;
+        const edges = sharedEdges(groups.slice(0, n), bins0);
+        const bins = edges.length - 1;
+        const binPx = Math.abs(py(edges[1] as number) - py(edges[0] as number));
+        const w = slot * 0.7;
+        for (let i = 0; i < n; i++) {
+          const c = smooth3(binCounts(groups[i] as Float64Array, edges));
+          let top = 0;
+          for (let k = 0; k < bins; k++) top = Math.max(top, c[k] as number);
+          if (top === 0) continue;
+          const x0 = x.start(i) + vi * slot + (slot - w) / 2;
+          for (let k = 0; k < bins; k++) {
+            const v = c[k] as number;
+            if (v === 0) continue;
+            const y1 = py(edges[k + 1] as number);
+            renderer.drawRect('data', x0, y1, w, binPx + 0.5, {
+              fill: colormapCss(cobalto, 0.1 + 0.9 * (v / top)),
+            });
+          }
+          medianRule(i, groups[i] as Float64Array, w + 8);
+        }
+        return;
+      }
+      // 'dots': un enjambre por grupo, cada punto en su altura exacta y desplazado a los lados
+      // lo justo para no encimarse; el radio baja hasta que el enjambre cabe en la banda.
+      const half = slot * 0.45;
+      let sLo = Infinity;
+      let sHi = -Infinity;
+      const shades = this.shades[si];
+      if (shades) {
+        for (const g of shades)
+          for (let k = 0; k < g.length; k++) {
+            const v = g[k] as number;
+            if (v === v) {
+              if (v < sLo) sLo = v;
+              if (v > sHi) sHi = v;
+            }
+          }
+      }
+      const pys = groups.slice(0, n).map((g) => Float64Array.from(g, (v) => py(v)));
+      let r = 3;
+      let offsets: (Float64Array | null)[] = [];
+      for (; r >= 2; r -= 0.5) {
+        offsets = pys.map((ys) => beeswarm(ys, r, half));
+        if (offsets.every((o) => o !== null)) break;
+      }
+      if (r < 2) r = 2;
+      for (let i = 0; i < n; i++) {
+        const values = groups[i] as Float64Array;
+        const tone = shades?.[i];
+        const ys = pys[i] as Float64Array;
+        const off = offsets[i] ?? beeswarm(ys, r, Infinity) ?? new Float64Array(ys.length);
+        const cx0 = x.start(i) + vi * slot + slot / 2;
+        for (let k = 0; k < values.length; k++) {
+          let fill = color;
+          if (tone && sHi > sLo) {
+            const t = ((tone[k] as number) - sLo) / (sHi - sLo);
+            fill = colormapCss(cobalto, t === t ? 0.25 + 0.75 * t : 0.5);
+          }
+          renderer.drawPointSeries(
+            'data',
+            Float64Array.of(cx0 + (off[k] as number)),
+            Float64Array.of(ys[k] as number),
+            0,
+            1,
+            { fill, radius: r },
+            { x: IDENTITY, y: IDENTITY },
+          );
+        }
+        medianRule(i, values, slot * 0.9);
+      }
+    });
+  }
+
+  /**
+   * `box.now: 'last'`: la última fila de cada grupo como punto del color de la serie, con su
+   * valor y en qué parte del reparto cae. El texto va encima del punto, o debajo si no cabe.
+   */
+  private drawNowMarks(x: BandScale, transform: Transform, renderer: Renderer): void {
+    const { config } = this;
+    const { theme, box } = config;
+    const visible = this.visibleSeries();
+    const slot = x.bandwidth / Math.max(1, visible.length);
+    const area = this.layout.plotArea;
+    const format = (v: number): string => {
+      const f = config.axes.y.format;
+      if (f) return f(v);
+      const s = this.scales?.y;
+      const step = s ? s.tickStep(6) : undefined;
+      // Un decimal más que los ticks: la cifra del marcador es un dato, no una marca de eje.
+      return formatNumber(v, step !== undefined && step > 0 ? { step: step / 10 } : {});
+    };
+    const chip = (
+      lines: readonly { text: string; font: string }[],
+      cx: number,
+      top: number,
+    ): void => {
+      let w = 0;
+      for (const l of lines)
+        w = Math.max(w, renderer.measureText(l.text, { font: l.font, fill: theme.text }));
+      const h = lines.length * theme.fontSize * 1.15 + 4;
+      renderer.drawRect('overlay', cx - w / 2 - 4, top - 2, w + 8, h, {
+        fill: theme.background,
+        opacity: 0.85,
+      });
+    };
+    visible.forEach(({ index: si }, vi) => {
+      const groups = this.groups[si] ?? [];
+      const n = Math.min(groups.length, x.count);
+      const color = seriesColor(config, si);
+      for (let i = 0; i < n; i++) {
+        const values = groups[i] as Float64Array;
+        if (values.length === 0) continue;
+        const v = values[values.length - 1] as number;
+        const cx = x.start(i) + vi * slot + slot / 2;
+        const cy = applyMap(transform.y, v);
+        renderer.drawPointSeries(
+          'overlay',
+          Float64Array.of(cx),
+          Float64Array.of(cy),
+          0,
+          1,
+          { fill: color, radius: 6, stroke: theme.background, strokeWidth: 2 },
+          { x: IDENTITY, y: IDENTITY },
+        );
+        const p = percentileOf(values, v);
+        const pct = Math.round(p * 100);
+        const L = box.labels;
+        const context =
+          p >= 1
+            ? (L.max ?? '')
+            : p <= 0.05
+              ? (L.lowest ?? '').replace('{p}', String(Math.max(1, pct)))
+              : p >= 0.95
+                ? (L.highest ?? '').replace('{p}', String(Math.max(1, 100 - pct)))
+                : (L.above ?? '').replace('{p}', String(pct));
+        const above = cy - 34 >= area.y;
+        const lh = theme.fontSize * 1.15;
+        const fontValue = `600 ${theme.fontSize}px ${theme.fontFamily}`;
+        const fontContext = `${Math.round(theme.fontSize * 0.85)}px ${theme.fontFamily}`;
+        const top = above ? cy - 10 - 2 * lh : cy + 10;
+        chip(
+          [
+            { text: context, font: fontContext },
+            { text: format(v), font: fontValue },
+          ],
+          cx,
+          top,
+        );
+        const [first, second] = above
+          ? [
+              { text: context, font: fontContext, fill: theme.axis },
+              { text: format(v), font: fontValue, fill: theme.text },
+            ]
+          : [
+              { text: format(v), font: fontValue, fill: theme.text },
+              { text: context, font: fontContext, fill: theme.axis },
+            ];
+        renderer.drawText('overlay', first.text, cx, top, {
+          font: first.font,
+          fill: first.fill,
+          align: 'center',
+          baseline: 'top',
+        });
+        renderer.drawText('overlay', second.text, cx, top + lh, {
+          font: second.font,
+          fill: second.fill,
+          align: 'center',
+          baseline: 'top',
+        });
       }
     });
   }

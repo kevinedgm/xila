@@ -59,6 +59,17 @@ calcula Q1, mediana y Q3 con la interpolación de `df.describe()`, bigotes hasta
 dentro de `box.whisker · IQR` (1.5 por defecto) y atípicos como puntos. `boxStats(valores)`
 devuelve los mismos números para usarlos fuera.
 
+`box.mark` cambia lo que se dibuja por grupo con los mismos datos: `'dots'` es un enjambre con
+un punto por valor a su altura exacta (el radio baja hasta que el grupo más apretado cabe en
+su banda), con `box.shade` como columna numérica que da el tono de cada punto del claro al
+oscuro (por ejemplo la fecha, para leer el tiempo dentro del reparto); `'density'` es una
+franja cuya intensidad es cuántos valores caen en cada tramo (`box.bins`, suavizado con la
+media de tres cubetas); `'range'` son dos bandas de percentiles (`box.range`, `[0.1, 0.9]` por
+defecto, y Q1–Q3) con un hueco en la mediana. En los tres hay una raya en la mediana.
+`box.now: 'last'` marca la última fila de cada grupo con un punto, su valor y en qué parte del
+reparto cae ("el 1 % más bajo", "en su máximo", textos en `box.labels`): la distribución pasa
+a ser el contexto de una cifra. Ejemplo: `examples/reparto.html`.
+
 ## Heatmap
 
 `x` e `y` categóricas más `value` numérica. Se dibuja como una imagen de un píxel por celda

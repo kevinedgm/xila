@@ -113,6 +113,32 @@ export interface BoxChartConfig extends BaseChartConfig {
     readonly padding?: number;
     /** Dibujar los valores fuera de los bigotes como puntos. */
     readonly outliers?: boolean;
+    /**
+     * Qué se dibuja por grupo: la caja de Tukey (`'box'`), un punto por valor apilado en
+     * cubetas (`'dots'`), una franja cuya intensidad es la cantidad de valores por tramo
+     * (`'density'`) o bandas de percentiles con la mediana (`'range'`).
+     */
+    readonly mark?: 'box' | 'dots' | 'density' | 'range';
+    /**
+     * Cubetas de `'dots'` y `'density'`: un número, una regla de `histogram` o `'auto'`
+     * (por defecto: tantas como quepan a 7 px por cubeta en puntos y 8 px en la franja).
+     */
+    readonly bins?: number | BinRule | 'auto';
+    /**
+     * `'dots'`: columna numérica que da el tono de cada punto, del claro (valor bajo) al oscuro
+     * (alto) con el colormap `cobalto`; por ejemplo la fecha, para leer el tiempo dentro del
+     * reparto. `null` usa el color de la serie.
+     */
+    readonly shade?: string | null;
+    /** Percentiles de la banda exterior de `'range'` (`[0.1, 0.9]`); la interior es Q1–Q3. */
+    readonly range?: readonly [number, number];
+    /**
+     * Marcar la última fila de cada grupo (`'last'`) con un punto, su valor y en qué parte del
+     * reparto cae ("el 1 % más bajo", "máximo"). `'none'` por defecto.
+     */
+    readonly now?: 'last' | 'none';
+    /** Textos del marcador; `{p}` es el porcentaje. */
+    readonly labels?: Partial<Record<'lowest' | 'highest' | 'max' | 'above', string>>;
   };
 }
 
@@ -218,7 +244,22 @@ export const DEFAULTS = {
   line: { width: 2, area: false, step: false },
   bar: { mode: 'grouped', orientation: 'vertical', padding: 0.2, radius: 4, gap: 2, mark: 'bar' },
   scatter: { radius: 3, ring: 1.5, path: false },
-  box: { whisker: 1.5, padding: 0.3, outliers: true },
+  box: {
+    whisker: 1.5,
+    padding: 0.3,
+    outliers: true,
+    mark: 'box',
+    bins: 'auto',
+    shade: null,
+    range: [0.1, 0.9],
+    now: 'none',
+    labels: {
+      lowest: 'el {p} % más bajo',
+      highest: 'el {p} % más alto',
+      max: 'en su máximo',
+      above: 'sobre el {p} %',
+    },
+  },
   heatmap: { colormap: 'cobalto', domain: 'auto', center: null, legend: true },
   dots: { mode: 'strip', bins: 'fd', radius: 'auto', transition: 600 },
   waffle: { unit: 'auto', columns: 'auto', gap: 2, labels: true },
@@ -281,7 +322,14 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     line: { ...DEFAULTS.line, ...(config.type === 'line' ? config.line : undefined) },
     bar: { ...DEFAULTS.bar, ...(config.type === 'bar' ? config.bar : undefined) },
     scatter: { ...DEFAULTS.scatter, ...(config.type === 'scatter' ? config.scatter : undefined) },
-    box: { ...DEFAULTS.box, ...(config.type === 'box' ? config.box : undefined) },
+    box: {
+      ...DEFAULTS.box,
+      ...(config.type === 'box' ? config.box : undefined),
+      labels: {
+        ...DEFAULTS.box.labels,
+        ...(config.type === 'box' ? config.box?.labels : undefined),
+      },
+    },
     heatmap: { ...DEFAULTS.heatmap, ...(config.type === 'heatmap' ? config.heatmap : undefined) },
     dots: { ...DEFAULTS.dots, ...(config.type === 'dots' ? config.dots : undefined) },
     waffle: { ...DEFAULTS.waffle, ...(config.type === 'waffle' ? config.waffle : undefined) },

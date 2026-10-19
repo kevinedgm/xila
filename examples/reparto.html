@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Más allá del box plot</title>
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        margin: 24px;
+        color: #15181d;
+        max-width: 1100px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 32px 0 2px;
+      }
+      .sub {
+        color: #5b6470;
+        font-size: 13px;
+        margin: 4px 0 12px;
+      }
+      .chart {
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Más allá del box plot</h1>
+    <p class="sub">
+      CO₂ por persona de cada año entre 1950 y 2024, siete países, 75 valores por país (Our World in
+      Data). Las tres formas elegidas en la ronda r01 de box plot.
+    </p>
+
+    <h2>A · Un punto por año</h2>
+    <p class="sub">
+      Cada valor es un punto apilado en su cubeta, del claro (1950) al oscuro (2024); raya en la
+      mediana y el valor de hoy marcado.
+    </p>
+    <div id="puntos" class="chart"></div>
+
+    <h2>B · Franja de densidad</h2>
+    <p class="sub">Una franja por país cuya intensidad es cuántos años caen en cada tramo.</p>
+    <div id="franja" class="chart"></div>
+
+    <h2>C · Hoy frente a su historia</h2>
+    <p class="sub">
+      Bandas del percentil 10 al 90 y del 25 al 75 con la mediana; el punto es 2024 y el texto dice
+      en qué parte de su historia cae.
+    </p>
+    <div id="hoy" class="chart"></div>
+
+    <script type="module" src="/src/reparto.ts"></script>
+  </body>
+</html>

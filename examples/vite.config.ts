@@ -16,6 +16,7 @@ export default defineConfig({
         ahora: resolve(import.meta.dirname, 'ahora.html'),
         comparar: resolve(import.meta.dirname, 'comparar.html'),
         relacion: resolve(import.meta.dirname, 'relacion.html'),
+        reparto: resolve(import.meta.dirname, 'reparto.html'),
       },
     },
   },

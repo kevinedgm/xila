@@ -62,6 +62,7 @@ export type {
   ScatterChartConfig,
   DotsChartConfig,
   WaffleChartConfig,
+  BoxChartConfig,
   DotsSeriesSpec,
   ResolvedChartConfig,
   ScaleConfig,

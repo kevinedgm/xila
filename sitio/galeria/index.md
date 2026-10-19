@@ -14,6 +14,9 @@ import log from './ejemplos/log';
 import histograma from './ejemplos/histograma';
 import unidades from './ejemplos/unidades';
 import cajas from './ejemplos/cajas';
+import repartoPuntos from './ejemplos/reparto-puntos';
+import repartoFranja from './ejemplos/reparto-franja';
+import repartoHoy from './ejemplos/reparto-hoy';
 import calor from './ejemplos/calor';
 import anotaciones from './ejemplos/anotaciones';
 import plugin from './ejemplos/plugin';
@@ -139,6 +142,33 @@ rango (o usa ← → con el gráfico enfocado); el panel de al lado resume el ra
 <Demo :cargar="cajas" />
 
 <<< @/galeria/ejemplos/cajas.ts
+
+## Un punto por año
+
+Los mismos datos del box plot, pero cada valor es un punto a su altura exacta, en un enjambre
+por país; el tono va de 1950 (claro) a 2024 (oscuro) y el punto grande es el valor de hoy con
+su lugar en el reparto.
+
+<Demo :cargar="repartoPuntos" :alto="420" />
+
+<<< @/galeria/ejemplos/reparto-puntos.ts
+
+## Franja de densidad
+
+Una franja por país cuya intensidad es cuántos años caen en cada tramo; raya en la mediana.
+
+<Demo :cargar="repartoFranja" :alto="400" />
+
+<<< @/galeria/ejemplos/reparto-franja.ts
+
+## Hoy frente a su historia
+
+Bandas del percentil 10 al 90 y del 25 al 75 con la mediana; el punto es 2024 y el texto dice
+en qué parte de su historia cae.
+
+<Demo :cargar="repartoHoy" :alto="420" />
+
+<<< @/galeria/ejemplos/reparto-hoy.ts
 
 ## Heatmap
 

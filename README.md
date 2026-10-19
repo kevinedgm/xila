@@ -24,6 +24,9 @@ mira esto?":
 | ¿Cómo se reparten los casos?           | histograma    | **Unidades** (`type: 'dots'`): un punto por caso, tira o cubetas      |
 | ¿Por dónde ha pasado y hacia dónde va? | dispersión    | **Trayectorias** (`scatter.path` + `trajectoryPlugin`): caminos y año |
 | ¿Quién se sale del patrón?             | dispersión    | **Contra lo esperado** (`trendPlugin`): tendencia, tallos y ranking   |
+| ¿Dónde han estado y dónde están ahora? | box plot      | **Un punto por año** (`box.mark: 'dots'` + `shade` + `now`): enjambre |
+| ¿Dónde se concentra cada grupo?        | box plot      | **Franja de densidad** (`box.mark: 'density'`)                        |
+| ¿Dónde cae hoy dentro de su historia?  | box plot      | **Hoy frente a su historia** (`box.mark: 'range'` + `now: 'last'`)    |
 
 **Anatomía editorial.** Grid solo horizontal, líneas de 2 px con nombre y último valor al final
 en vez de leyenda, barras con el extremo redondeado y un hueco del color del fondo entre
@@ -147,7 +150,10 @@ categórica del grupo y `y` la del valor. Por grupo calcula Q1, mediana y Q3 con
 interpolación que `df.describe()`, bigotes hasta el último dato dentro de `1.5·IQR` (ajustable
 con `box.whisker`) y dibuja los atípicos como puntos (`box.outliers: false` los quita). Varias
 series se colocan lado a lado; el tooltip muestra mediana, cuartiles y `n`. `boxStats` y
-`boxGroups` están disponibles por separado.
+`boxGroups` están disponibles por separado. `box.mark` cambia la marca con los mismos datos:
+`'dots'` (enjambre, un punto por valor; `shade` da el tono por otra columna), `'density'`
+(franja de intensidad) o `'range'` (bandas de percentiles); `box.now: 'last'` marca la última
+fila de cada grupo con su valor y en qué parte del reparto cae. Ejemplo: `examples/reparto.html`.
 
 ## Heatmap
 
