@@ -35,7 +35,7 @@
   <body>
     <h1>Más allá de la línea</h1>
     <p class="sub">
-      Toneladas de CO₂ por persona y año, siete países, 1970–2024 (Our World in Data). Las dos
+      Toneladas de CO₂ por persona y año, siete países, 1970–2024 (Our World in Data). Las cuatro
       formas elegidas en la ronda r01.
     </p>
 
@@ -52,6 +52,21 @@
       abajo.
     </p>
     <div id="protagonista" class="chart"></div>
+
+    <h2>B · Tira de ritmo</h2>
+    <p class="sub">
+      Una fila por país y una celda por año; el color es qué tan rápido sube o baja (promedio de
+      tres años), no el nivel. Las crisis aparecen como columnas del mismo color.
+    </p>
+    <div id="ritmo"></div>
+
+    <h2>D · Línea narrada</h2>
+    <p class="sub">
+      La gráfica encuentra sola su máximo, su mínimo y sus caídas más fuertes, y los escribe junto
+      al dato.
+    </p>
+    <div id="narrada" class="chart"></div>
+    <ul class="sub" id="narrada-momentos"></ul>
 
     <script type="module" src="/src/ahora.ts"></script>
   </body>

@@ -131,6 +131,16 @@ export { trajectoryPlugin, trajectoryTimeline, trajectoryHead } from './plugins/
 export type { TrajectoryOptions } from './plugins/trajectory';
 export { trendPlugin, trendFit } from './plugins/trend';
 export type { TrendOptions, TrendFit } from './plugins/trend';
+export { narratePlugin, findMoments } from './plugins/narrate';
+export type {
+  NarrateOptions,
+  NarratePlugin,
+  Moment,
+  MomentKind,
+  MomentOptions,
+} from './plugins/narrate';
+export { RhythmStrip, rhythm } from './rhythm-strip';
+export type { RhythmStripOptions, RhythmStripSeries } from './rhythm-strip';
 export type { ReferenceOptions } from './plugins/reference';
 export { waffleLayout, autoUnit } from './waffle';
 export type { WaffleLayout, WaffleCell } from './waffle';
