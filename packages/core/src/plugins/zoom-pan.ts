@@ -19,6 +19,12 @@ export interface ZoomPanOptions {
   readonly select?: boolean;
   /** Sensibilidad de la rueda: factor por cada 100 px de desplazamiento. */
   readonly wheelFactor?: number;
+  /**
+   * Teclado, con el gráfico enfocado: `+` acerca, `-` aleja (×2 alrededor del centro de lo
+   * visible), `0` vuelve al rango automático. Si el elemento no es enfocable, se le pone
+   * `tabindex="0"`: un gráfico con zoom es interactivo y debe alcanzarse con Tab.
+   */
+  readonly keyboard?: boolean;
 }
 
 /**
@@ -291,6 +297,26 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
     ctx?.setViewDomain('y', null);
   };
 
+  /** Zoom ×k alrededor del centro de lo visible, en los ejes configurados. */
+  const zoomCenter = (k: number): void => {
+    for (const which of axesFor(false)) {
+      const s = continuous(which);
+      if (!s) continue;
+      const d = domainToSpace(s, current(which, s));
+      apply(which, domainFromSpace(s, zoomDomain(d, (d[0] + d[1]) / 2, k)));
+    }
+  };
+
+  const onKeyDown = (e: KeyboardEvent): void => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === '+' || e.key === '=') zoomCenter(2);
+    else if (e.key === '-' || e.key === '_') zoomCenter(0.5);
+    else if (e.key === '0') onDoubleClick();
+    else return;
+    e.preventDefault();
+  };
+  let addedTabindex = false;
+
   return {
     id: 'zoomPan',
     install(context) {
@@ -305,6 +331,13 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
       el.addEventListener('pointercancel', onPointerUp);
       el.addEventListener('click', onClickCapture, true);
       if (options.doubleClickReset !== false) el.addEventListener('dblclick', onDoubleClick);
+      if (options.keyboard !== false) {
+        el.addEventListener('keydown', onKeyDown);
+        if (!el.hasAttribute('tabindex')) {
+          el.setAttribute('tabindex', '0');
+          addedTabindex = true;
+        }
+      }
     },
     afterLayout(_layout, context) {
       ctx = context;
@@ -318,6 +351,8 @@ export function zoomPanPlugin(options: ZoomPanOptions = {}): ChartPlugin {
       el.removeEventListener('pointercancel', onPointerUp);
       el.removeEventListener('click', onClickCapture, true);
       el.removeEventListener('dblclick', onDoubleClick);
+      el.removeEventListener('keydown', onKeyDown);
+      if (addedTabindex) el.removeAttribute('tabindex');
       el.style.touchAction = touchAction;
       selection?.box.remove();
       selection = null;

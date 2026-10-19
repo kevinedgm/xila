@@ -1,6 +1,14 @@
 import type { ChartPlugin, PluginContext } from '../plugin';
 import type { ResolvedSeries } from '../data/series';
 import { formatNumber } from '../format/number';
+import type { HoverPayload } from '../events';
+
+/** Transformación identidad: píxeles de entrada, píxeles de salida. */
+const PIXELS = {
+  x: { offset: 0, scale: 1, base: 0 },
+  y: { offset: 0, scale: 1, base: 0 },
+} as const;
+const RING_RADIUS = 9;
 
 export interface AccessibilityOptions {
   /** Descripción fija; si falta se genera un resumen (tipo, series, rangos). */
@@ -10,7 +18,11 @@ export interface AccessibilityOptions {
   readonly timeZone?: string;
   /** Filas máximas de la tabla alternativa; con más datos se muestrea de forma uniforme. */
   readonly tableRows?: number;
-  /** Teclado: flechas para recorrer los datos. */
+  /**
+   * Teclado: flechas para recorrer los datos, Enter o espacio fija el tooltip, Escape lo
+   * suelta. Con `false` el gráfico tampoco es enfocable (no pone `tabindex`): un gráfico
+   * decorativo no debe ser una parada de Tab.
+   */
   readonly keyboard?: boolean;
   /** Tabla de datos oculta visualmente para lectores de pantalla. */
   readonly table?: boolean;
@@ -117,6 +129,11 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
   let seriesIndex = 0;
   let tableKey = '';
   let off: (() => void) | null = null;
+  let offHover: (() => void) | null = null;
+  /** Tooltip fijado con Enter: sobrevive a perder el foco y a que el ratón salga. */
+  let pinned = false;
+  /** Para no reaccionar al `hover` que nosotros mismos provocamos. */
+  let applying = false;
 
   const visibleSeries = (): { s: ResolvedSeries; i: number }[] => {
     if (!ctx) return [];
@@ -137,12 +154,38 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     const yv = s.y[index] as number;
     const px = scales.x.kind === 'band' ? scales.x.center(xv) : scales.x.toPixel(xv);
     const py = Number.isFinite(yv) ? scales.y.toPixel(yv) : ctx.layout.plotArea.y;
-    ctx.hoverAt(px, py);
+    applying = true;
+    try {
+      ctx.hoverAt(px, py);
+    } finally {
+      applying = false;
+    }
     if (live) {
       const fx = xFormatter(ctx, locale, timeZone);
       const y = Number.isFinite(yv) ? formatNumber(yv, { locale }) : 'sin dato';
-      live.textContent = `${s.name}, ${fx(xv)}: ${y}`;
+      live.textContent = `${s.name}, ${fx(xv)}: ${y}${pinned ? ' (fijado)' : ''}`;
     }
+  };
+
+  /**
+   * Anillo de foco sobre el dato activo, en la capa `overlay` y después de que el núcleo
+   * pintó el cursor (el evento `hover` llega tras ese dibujo). Es el equivalente visual del
+   * contorno de foco: quien navega con teclado ve dónde está.
+   */
+  const drawRing = (payload: HoverPayload): void => {
+    if (!ctx || index < 0) return;
+    const hit = payload.nearest ?? payload.hits[0];
+    const px = hit ? hit.px : payload.px;
+    const py = hit ? hit.py : payload.py;
+    ctx.renderer.drawPointSeries(
+      'overlay',
+      new Float64Array([px]),
+      new Float64Array([py]),
+      0,
+      1,
+      { fill: 'transparent', radius: RING_RADIUS, stroke: ctx.config.theme.text, strokeWidth: 2 },
+      PIXELS,
+    );
   };
 
   const onKeyDown = (e: KeyboardEvent): void => {
@@ -171,8 +214,16 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
         if (index < 0) index = 0;
         break;
       }
+      case 'Enter':
+      case ' ':
+        if (index < 0) index = 0;
+        pinned = !pinned;
+        e.preventDefault();
+        focusPoint();
+        return;
       case 'Escape':
         index = -1;
+        pinned = false;
         ctx.clearHover();
         if (live) live.textContent = '';
         return;
@@ -184,6 +235,7 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
   };
 
   const onBlur = (): void => {
+    if (pinned) return;
     index = -1;
     ctx?.clearHover();
   };
@@ -229,7 +281,7 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
       // `figure`, no `img`: el elemento también contiene la leyenda (botones) y el tooltip, y
       // una imagen no puede tener hijos interactivos (axe: nested-interactive).
       el.setAttribute('role', 'figure');
-      el.setAttribute('tabindex', '0');
+      if (options.keyboard !== false) el.setAttribute('tabindex', '0');
       // Los canvas son píxeles: fuera del árbol de accesibilidad, el resumen y la tabla hablan.
       for (const canvas of Array.from(el.querySelectorAll('canvas'))) {
         canvas.setAttribute('aria-hidden', 'true');
@@ -254,6 +306,14 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
       off = context.events.on('dataChanged', () => {
         tableKey = '';
       });
+      offHover = context.events.on('hover', (payload) => {
+        if (payload) {
+          if (applying) drawRing(payload);
+          return;
+        }
+        // El ratón salió (o algo limpió el cursor) con el tooltip fijado: se vuelve a poner.
+        if (pinned && index >= 0 && !applying) requestAnimationFrame(() => pinned && focusPoint());
+      });
     },
     afterDraw(context) {
       ctx = context;
@@ -262,6 +322,8 @@ export function accessibilityPlugin(options: AccessibilityOptions = {}): ChartPl
     },
     uninstall() {
       off?.();
+      offHover?.();
+      pinned = false;
       el?.removeEventListener('keydown', onKeyDown);
       el?.removeEventListener('blur', onBlur);
       el?.removeAttribute('role');

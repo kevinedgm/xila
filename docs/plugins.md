@@ -41,8 +41,10 @@ oculta la serie y el eje Y se recalcula con las visibles.
 ## `zoomPanPlugin(opciones)`
 
 Zoom con la rueda centrado en el cursor, pan arrastrando, pellizco en pantallas táctiles,
-selección de un rango arrastrando con la tecla `modifier` (Shift) apretada y doble clic para
-volver al rango automático.
+selección de un rango arrastrando con la tecla `modifier` (Shift) apretada, doble clic para
+volver al rango automático y teclado con el gráfico enfocado: `+` acerca, `-` aleja (×2 alrededor
+del centro de lo visible) y `0` vuelve al automático. Si el elemento no era enfocable el plugin le
+pone `tabindex="0"`, porque un gráfico con zoom es interactivo y debe alcanzarse con Tab.
 
 | Opción                     | Valores                          | Por defecto |
 | -------------------------- | -------------------------------- | ----------- |
@@ -54,6 +56,7 @@ volver al rango automático.
 | `doubleClickReset`         | `boolean`                        | `true`      |
 | `select`                   | `boolean`                        | `true`      |
 | `wheelFactor`              | factor por cada 100 px de rueda  | `2`         |
+| `keyboard`                 | `boolean`                        | `true`      |
 
 Mecanismo: el plugin no toca los datos; fija un _dominio de vista_ por eje con
 `ctx.setViewDomain(eje, [min, max])` y el núcleo redibuja con esa escala. El valor bajo el
@@ -355,8 +358,11 @@ gráfico:
    `label`): "Gráfico de líneas. 2 series: Norte y Sur. 365 datos de 1 ene 2025 a 31 dic 2025.
    Valores entre 420 y 1,450 (MXN)."
 2. Teclado: con el gráfico enfocado, ← → recorren los datos (con Shift, saltos de 5 %), Inicio y
-   Fin van a los extremos, ↑ ↓ cambian de serie y Escape quita el cursor. Mueve el mismo cursor
-   que el ratón, así que el tooltip aparece y una región `aria-live` lee "Serie, x: y".
+   Fin van a los extremos, ↑ ↓ cambian de serie, Enter o espacio fija el tooltip (sobrevive a
+   perder el foco y a que el ratón salga) y Escape lo suelta y quita el cursor. Mueve el mismo
+   cursor que el ratón, así que el tooltip aparece, un anillo marca el dato activo (capa
+   `overlay`, contorno en el color del texto) y una región `aria-live` lee "Serie, x: y". Con
+   `keyboard: false` no hay `tabindex`: el gráfico no es una parada de Tab.
 3. Una `<table>` oculta visualmente (hermana del gráfico) con una fila por dato, muestreada a
    `tableRows` (200) filas como máximo, y una columna por serie. Se regenera cuando cambian los
    datos, también si el tamaño es el mismo (una huella de los valores lo detecta).
@@ -366,14 +372,14 @@ píxeles. El papel es `figure` y no `img` porque la leyenda (botones) y el toolt
 del mismo elemento, y una imagen no admite hijos interactivos. Nombra los siete tipos (líneas, barras, dispersión, caja, mapa de calor, unidades). La
 prueba `examples/tests/accesibilidad.spec.ts` pasa axe-core sobre un gráfico con el plugin.
 
-| Opción      | Valores   | Por defecto      |
-| ----------- | --------- | ---------------- |
-| `label`     | texto     | resumen generado |
-| `locale`    | BCP 47    | `'es-MX'`        |
-| `timeZone`  | IANA      | `'UTC'`          |
-| `tableRows` | número    | `200`            |
-| `keyboard`  | `boolean` | `true`           |
-| `table`     | `boolean` | `true`           |
+| Opción      | Valores   | Por defecto                         |
+| ----------- | --------- | ----------------------------------- |
+| `label`     | texto     | resumen generado                    |
+| `locale`    | BCP 47    | `'es-MX'`                           |
+| `timeZone`  | IANA      | `'UTC'`                             |
+| `tableRows` | número    | `200`                               |
+| `keyboard`  | `boolean` | `true` (sin él, tampoco `tabindex`) |
+| `table`     | `boolean` | `true`                              |
 
 `chartSummary(ctx)` genera el resumen por separado, por si se quiere mostrar en pantalla.
 
