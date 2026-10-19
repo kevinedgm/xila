@@ -21,10 +21,12 @@ async function cargar(page: import('@playwright/test').Page): Promise<void> {
 
 test('los cuatro casos de la ranura se dibujan con su referencia y su estado', async ({ page }) => {
   await cargar(page);
-  await expect(page.locator('#canciones')).toHaveScreenshot('ranura-canciones.png');
-  await expect(page.locator('#total')).toHaveScreenshot('ranura-co2-total.png');
-  await expect(page.locator('#persona')).toHaveScreenshot('ranura-co2-persona.png');
-  await expect(page.locator('#panaderia')).toHaveScreenshot('ranura-panaderia.png');
+  // La columna derecha es texto en la fuente mono: el hinting del runner mueve píxeles (5 %).
+  const mono = { maxDiffPixelRatio: 0.05 };
+  await expect(page.locator('#canciones')).toHaveScreenshot('ranura-canciones.png', mono);
+  await expect(page.locator('#total')).toHaveScreenshot('ranura-co2-total.png', mono);
+  await expect(page.locator('#persona')).toHaveScreenshot('ranura-co2-persona.png', mono);
+  await expect(page.locator('#panaderia')).toHaveScreenshot('ranura-panaderia.png', mono);
 });
 
 test('el tooltip de una fila da valor, referencia, margen y n; la fila parcial lo dice', async ({
