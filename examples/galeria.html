@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xila · Galería</title>
+    <link rel="icon" href="/favicon.svg" />
+    <style>
+      :root {
+        --manta: #f6f1e8;
+        --superficie: #fbf8f2;
+        --tinta: #15171f;
+        --gris: #5b5f6e;
+        --linea: #e3ddd1;
+        --cobalto: #1f4bd8;
+        --hilo: #d14e0a;
+      }
+      :root[data-tema='dark'] {
+        --manta: #15171f;
+        --superficie: #1b1e28;
+        --tinta: #f6f1e8;
+        --gris: #a9adbd;
+        --linea: #2b2f3d;
+        --cobalto: #5c86f0;
+        --hilo: #e06c2c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: 'Instrument Sans', system-ui, sans-serif;
+        color: var(--tinta);
+        background: var(--manta);
+      }
+      .pagina {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 28px 24px 64px;
+      }
+      header.cabeza {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      header.cabeza img {
+        height: 34px;
+      }
+      header.cabeza h1 {
+        font:
+          600 15px 'Instrument Sans',
+          system-ui,
+          sans-serif;
+        color: var(--gris);
+        margin: 0;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+      header.cabeza .espacio {
+        flex: 1;
+      }
+      .intro {
+        font-family: Fraunces, Georgia, serif;
+        font-size: 26px;
+        line-height: 1.25;
+        max-width: 780px;
+        margin: 28px 0 8px;
+      }
+      .intro-sub {
+        color: var(--gris);
+        font-size: 14px;
+        max-width: 780px;
+        margin: 0 0 20px;
+      }
+      nav.tareas {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: var(--manta);
+        border-bottom: 1px solid var(--linea);
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 10px 0;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+      .chip {
+        border: 1px solid var(--linea);
+        background: transparent;
+        border-radius: 999px;
+        padding: 5px 12px;
+        font-size: 13px;
+      }
+      .chip[aria-pressed='true'] {
+        background: var(--tinta);
+        color: var(--manta);
+        border-color: var(--tinta);
+      }
+      .entrada {
+        border-top: 1px solid var(--linea);
+        padding: 28px 0 8px;
+        scroll-margin-top: 56px;
+      }
+      .entrada[hidden] {
+        display: none;
+      }
+      .tarea {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--hilo);
+        margin: 0 0 4px;
+      }
+      .entrada h2 {
+        font-family: Fraunces, Georgia, serif;
+        font-weight: 500;
+        font-size: 22px;
+        margin: 0 0 12px;
+      }
+      .barra {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .formas {
+        display: flex;
+        gap: 0;
+        border: 1px solid var(--linea);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .formas button {
+        border: 0;
+        background: transparent;
+        padding: 6px 12px;
+        font-size: 13px;
+        border-right: 1px solid var(--linea);
+      }
+      .formas button:last-child {
+        border-right: 0;
+      }
+      .formas button[aria-pressed='true'] {
+        background: var(--cobalto);
+        color: #fff;
+      }
+      .formas .clasica {
+        color: var(--gris);
+      }
+      .formas .clasica[aria-pressed='true'] {
+        background: var(--gris);
+        color: var(--manta);
+      }
+      label.control {
+        font-size: 13px;
+        color: var(--gris);
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      select {
+        font: inherit;
+        color: var(--tinta);
+        background: var(--superficie);
+        border: 1px solid var(--linea);
+        border-radius: 6px;
+        padding: 3px 6px;
+      }
+      .nota {
+        font-size: 13px;
+        color: var(--gris);
+        margin: 0 0 10px;
+        max-width: 760px;
+      }
+      .nota code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--tinta);
+      }
+      .cuerpo {
+        display: grid;
+        grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+        gap: 20px;
+      }
+      @media (max-width: 900px) {
+        .cuerpo {
+          grid-template-columns: 1fr;
+        }
+      }
+      .chart {
+        height: 420px;
+      }
+      .acciones {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .acciones button {
+        border: 1px solid var(--linea);
+        background: transparent;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+      .panel {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+      .panel .titulo-panel {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 12px;
+        color: var(--gris);
+      }
+      .panel .titulo-panel button {
+        border: 0;
+        background: transparent;
+        color: var(--cobalto);
+        font-size: 12px;
+        padding: 0;
+      }
+      textarea,
+      pre {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--tinta);
+        background: var(--superficie);
+        border: 1px solid var(--linea);
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin: 0;
+      }
+      textarea {
+        width: 100%;
+        min-height: 200px;
+        resize: vertical;
+        tab-size: 2;
+      }
+      textarea[aria-invalid='true'] {
+        border-color: var(--hilo);
+      }
+      .error {
+        font-size: 12px;
+        color: var(--hilo);
+        min-height: 1em;
+        margin: 0;
+      }
+      details summary {
+        font-size: 12px;
+        color: var(--gris);
+        cursor: pointer;
+      }
+      details pre {
+        margin-top: 6px;
+        overflow-x: auto;
+        white-space: pre;
+      }
+      footer {
+        margin-top: 40px;
+        font-size: 12px;
+        color: var(--gris);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pagina">
+      <header class="cabeza">
+        <img id="logo" alt="Xila" />
+        <h1>Galería</h1>
+        <span class="espacio"></span>
+        <button class="chip" id="tema" aria-pressed="false">Tema oscuro</button>
+      </header>
+      <p class="intro">Empieza por la pregunta, no por el tipo de gráfico.</p>
+      <p class="intro-sub">
+        Cada entrada es una pregunta que alguien le hace a sus datos. Compara la forma clásica con
+        las alternativas de Xila, cambia los controles o edita las opciones a la derecha y el
+        gráfico se redibuja. Datos públicos de emisiones de CO₂ de siete países, 1950–2024 (Our
+        World in Data).
+      </p>
+      <nav class="tareas" id="tareas" aria-label="Filtrar por tarea"></nav>
+      <main id="entradas"></main>
+      <footer>
+        Todo lo que ves está hecho con <code>xilaplot</code> y corre en tu navegador, sin servidor.
+        El código de cada gráfico se copia tal cual.
+      </footer>
+    </div>
+    <script type="module" src="/src/galeria.ts"></script>
+  </body>
+</html>
