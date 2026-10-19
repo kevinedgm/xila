@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="marca/xila-oscuro.svg" />
+    <img src="marca/xila-claro.svg" alt="Xila" width="260" />
+  </picture>
+</p>
+
 # Xila
 
 Librería de gráficos en TypeScript para dashboards y datos científicos: lee tablas columnares
@@ -35,7 +42,8 @@ en vez de leyenda, barras con el extremo redondeado y un hueco del color del fon
 vecinas, puntos con anillo de superficie, y un título que dice el hallazgo (`titlePlugin`).
 Nada de sombras, degradados ni cajas: el dato manda.
 
-**Marca Xila.** Superficie «manta» (#f6f1e8) y tinta, cobalto #1f4bd8 como color de marca, «hilo»
+**Marca Xila.** La greca de Mitla bordada en punto de cruz como símbolo (archivos en `marca/`,
+la última puntada en cobalto es el último valor). Superficie «manta» (#f6f1e8) y tinta, cobalto #1f4bd8 como color de marca, «hilo»
 naranja de acento y una categórica de siete validada para daltonismo; Instrument Sans para la
 interfaz, JetBrains Mono para las cifras y Fraunces para el título del hallazgo (importa
 `xilaplot/fuentes/xila.css` una vez por página); el heatmap va de la manta al marino pasando por el cobalto (`cobalto`).

@@ -9,7 +9,10 @@ export default defineConfig({
   base: process.env['DOCS_BASE'] ?? '/xila/',
   cleanUrls: true,
   lastUpdated: true,
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/xila/favicon.svg' }]],
   themeConfig: {
+    logo: { light: '/xila-claro.svg', dark: '/xila-oscuro.svg', alt: 'Xila' },
+    siteTitle: false,
     nav: [
       { text: 'Guía', link: '/guia/primer-grafico' },
       { text: 'Galería', link: '/galeria/' },
