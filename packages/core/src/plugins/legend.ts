@@ -95,10 +95,10 @@ export function legendPlugin(options: LegendOptions = {}): ChartPlugin {
     /** Reserva espacio para la leyenda, para que no tape el gráfico; arriba, debajo del título. */
     reserveSpace() {
       const height = el?.offsetHeight ?? 0;
-      if (options.position === 'bottom') return { bottom: height };
+      if (options.position === 'bottom') return { bottom: height, dom: { bottom: height } };
       const title = el?.parentElement?.querySelector<HTMLElement>('.xila-title');
       if (el) el.style.top = `${title?.offsetHeight ?? 0}px`;
-      return { top: height };
+      return { top: height, dom: { top: height } };
     },
     uninstall() {
       el?.remove();

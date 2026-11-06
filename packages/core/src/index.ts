@@ -201,4 +201,12 @@ export type {
 export type { LegendOptions } from './plugins/legend';
 
 export { PluginRegistry, PLUGIN_HOOK_ORDER } from './plugin';
-export type { ChartPlugin, PluginContext, PluginHook, Layout, Rect, ReservedSpace } from './plugin';
+export type {
+  ChartPlugin,
+  PluginContext,
+  PluginHook,
+  Layout,
+  Rect,
+  ReservedSpace,
+  Side,
+} from './plugin';

@@ -124,6 +124,12 @@ export class Chart {
   private drawn = false;
   private readonly warnedLog = new Set<'x' | 'y'>();
   private layout: Layout;
+  private domSpace: Record<'top' | 'right' | 'bottom' | 'left', number> = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  };
   private scales: ChartScales | null = null;
   private frame = 0;
   private dirty = { data: true, layout: true };
@@ -283,6 +289,15 @@ export class Chart {
 
   getLayout(): Layout {
     return this.layout;
+  }
+
+  /**
+   * Franjas del lienzo, en píxeles CSS, que ocupan nodos HTML de los plugins (leyenda,
+   * tarjetas, controles) en el último dibujo. En el lienzo están vacías; la exportación las
+   * recorta para que la imagen no traiga huecos.
+   */
+  getDomSpace(): Readonly<Record<'top' | 'right' | 'bottom' | 'left', number>> {
+    return this.domSpace;
   }
 
   /** Escalas del último dibujo; `null` antes del primero. */
@@ -663,6 +678,7 @@ export class Chart {
     // 1. Escalas con un rango provisional, solo para saber qué etiquetas habrá.
     const { padding, theme } = config;
     const reserved = this.plugins.reserveSpace(this.context());
+    this.domSpace = reserved.dom;
     const provisional: Rect = {
       x: padding.left + reserved.left,
       y: padding.top + reserved.top,

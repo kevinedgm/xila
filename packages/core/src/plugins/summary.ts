@@ -283,7 +283,9 @@ export function summaryPlugin(options: SummaryOptions = {}): ChartPlugin {
       ctx = c;
       place();
       reservedHeight = el?.offsetHeight ?? 0;
-      return side === 'right' ? { right: width } : { bottom: reservedHeight + 12 };
+      return side === 'right'
+        ? { right: width, dom: { right: width } }
+        : { bottom: reservedHeight + 12, dom: { bottom: reservedHeight + 12 } };
     },
     afterLayout(_l, c) {
       ctx = c;

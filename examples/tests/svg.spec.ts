@@ -125,11 +125,11 @@ test('chartToSvg añade título, leyenda y, si se pide, las fuentes', async ({ p
   });
   expect(r.con).toContain('Ventas por región');
   expect(r.altoCon).toBeGreaterThan(r.altoSin);
-  // Leyenda: una muestra de color por serie visible.
+  // Leyenda: una muestra por serie visible, con forma de trazo porque son líneas.
   expect(
-    (r.con.match(/<rect x="\d+(?:\.\d+)?" y="[^"]+" width="10" height="10"/g) ?? []).length,
+    (r.con.match(/<rect x="\d+(?:\.\d+)?" y="[^"]+" width="14" height="2.5"/g) ?? []).length,
   ).toBe(3);
-  expect(r.sin).not.toContain('width="10" height="10"');
+  expect(r.sin).not.toContain('width="14" height="2.5"');
   expect(r.fuentes).toContain('@font-face');
   expect(r.fuentes).toContain('data:font/woff2;base64,');
   expect(r.fuentes).toContain('Instrument Sans');

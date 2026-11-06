@@ -231,7 +231,7 @@ export function selectionPlugin(options: SelectionOptions = {}): ChartPlugin {
       }
     },
     reserveSpace() {
-      return readoutOn ? { top: 24 } : undefined;
+      return readoutOn ? { top: 24, dom: { top: 24 } } : undefined;
     },
     afterLayout(l, c) {
       // El contexto de `install` trae el layout de ese momento; aquí llega el vigente.

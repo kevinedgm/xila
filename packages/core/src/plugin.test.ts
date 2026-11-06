@@ -62,6 +62,18 @@ function recorder(id: string, log: string[]): ChartPlugin {
 }
 
 describe('PluginRegistry', () => {
+  it('suma aparte el espacio que ocupa HTML, sin pasar de lo reservado', () => {
+    const ctx = fakeContext();
+    const registry = new PluginRegistry([
+      { id: 'leyenda', reserveSpace: () => ({ top: 30, dom: { top: 30 } }) },
+      { id: 'etiquetas', reserveSpace: () => ({ right: 80 }) },
+      { id: 'tarjetas', reserveSpace: () => ({ bottom: 40, dom: { bottom: 90 } }) },
+    ]);
+    const space = registry.reserveSpace(ctx);
+    expect(space.dom).toEqual({ top: 30, right: 0, bottom: 40, left: 0 });
+    expect(space.right).toBe(80);
+  });
+
   it('ejecuta los hooks en el orden documentado y en orden de registro', () => {
     const log: string[] = [];
     const ctx = fakeContext();
@@ -83,7 +95,13 @@ describe('PluginRegistry', () => {
     // La desinstalación va en orden inverso.
     expect(log.slice(-2)).toEqual(['b:uninstall', 'a:uninstall']);
     expect(updated.padding).toEqual({ top: 42 });
-    expect(space).toEqual({ top: 20, right: 0, bottom: 0, left: 0 });
+    expect(space).toEqual({
+      top: 20,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      dom: { top: 0, right: 0, bottom: 0, left: 0 },
+    });
     expect(ctx.renderer.drawRect).toHaveBeenCalledWith('overlay', 10, 5, 80, 40, { fill: 'red' });
     expect(registry.list()).toHaveLength(0);
   });

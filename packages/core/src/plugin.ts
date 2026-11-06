@@ -73,8 +73,16 @@ export interface StatusInfo {
   readonly py: Float64Array;
 }
 
-/** Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. */
-export type ReservedSpace = Partial<Record<'top' | 'right' | 'bottom' | 'left', number>>;
+export type Side = 'top' | 'right' | 'bottom' | 'left';
+
+/**
+ * Espacio que un plugin pide alrededor del área de dibujo, en píxeles CSS. `dom` dice qué
+ * parte de ese espacio ocupa un nodo HTML del plugin (leyenda, tarjetas, controles) y no el
+ * lienzo: en la imagen exportada esa franja queda vacía, así que la exportación la recorta.
+ */
+export type ReservedSpace = Partial<Record<Side, number>> & {
+  readonly dom?: Partial<Record<Side, number>>;
+};
 
 /**
  * Contrato de extensión. Todos los hooks son opcionales y corren en este orden fijo,
@@ -147,17 +155,20 @@ export class PluginRegistry {
     return current;
   }
 
-  reserveSpace(ctx: PluginContext): Required<ReservedSpace> {
+  reserveSpace(ctx: PluginContext): Record<Side, number> & { dom: Record<Side, number> } {
     const total = { top: 0, right: 0, bottom: 0, left: 0 };
+    const dom = { top: 0, right: 0, bottom: 0, left: 0 };
     for (const p of this.plugins) {
       const space = p.reserveSpace?.(ctx);
       if (!space) continue;
-      total.top += space.top ?? 0;
-      total.right += space.right ?? 0;
-      total.bottom += space.bottom ?? 0;
-      total.left += space.left ?? 0;
+      for (const side of ['top', 'right', 'bottom', 'left'] as const) {
+        const n = space[side] ?? 0;
+        total[side] += n;
+        // El HTML nunca ocupa más de lo que el plugin reservó de ese lado.
+        dom[side] += Math.min(n, space.dom?.[side] ?? 0);
+      }
     }
-    return total;
+    return { ...total, dom };
   }
 
   afterLayout(layout: Layout, ctx: PluginContext): void {

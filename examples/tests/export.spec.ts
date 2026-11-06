@@ -1,6 +1,38 @@
 import { expect, test } from '@playwright/test';
 import { PNG } from 'pngjs';
 
+/**
+ * Sin filtros el panel lleva leyenda HTML (cuatro regiones). Su franja en el lienzo estaba vacía
+ * y salía en la imagen como un hueco; ahora se recorta. Se mide la racha más larga de filas
+ * completamente del color de fondo: antes ~100 px, ahora solo márgenes.
+ */
+test('el PNG no trae la franja vacía de la leyenda HTML', async ({ page }) => {
+  await page.goto('/dashboard.html');
+  await page.locator('.xila-grid canvas').first().waitFor();
+  await page.evaluate(() => new Promise(requestAnimationFrame));
+  const panel = page.locator('[data-panel="4"]');
+  await expect(panel.locator('.xila-legend')).toBeAttached();
+  const [png] = await Promise.all([
+    page.waitForEvent('download'),
+    panel.locator('[data-export="png"]').click(),
+  ]);
+  const imagen = PNG.sync.read(await streamToBuffer(await png.createReadStream()));
+  const { width, height, data } = imagen;
+  const fondo = [data[4], data[5], data[6]];
+  let racha = 0;
+  let maxima = 0;
+  for (let y = 0; y < height; y++) {
+    let vacia = true;
+    for (let x = 0; x < width && vacia; x += 2) {
+      const k = (y * width + x) * 4;
+      vacia = data[k] === fondo[0] && data[k + 1] === fondo[1] && data[k + 2] === fondo[2];
+    }
+    racha = vacia ? racha + 1 : 0;
+    maxima = Math.max(maxima, racha);
+  }
+  expect(maxima).toBeLessThan(60);
+});
+
 /** Botones de descarga de cada panel: PNG a 2x con título y leyenda, y CSV de lo mostrado. */
 test('descarga PNG a 2x y CSV de los datos filtrados', async ({ page }) => {
   await page.goto('/dashboard.html');

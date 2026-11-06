@@ -400,7 +400,9 @@ export function nowPlugin(options: NowOptions = {}): ChartPlugin {
     },
     reserveSpace() {
       reserved = el?.offsetHeight ?? 0;
-      return position === 'top' ? { top: reserved } : { bottom: reserved };
+      return position === 'top'
+        ? { top: reserved, dom: { top: reserved } }
+        : { bottom: reserved, dom: { bottom: reserved } };
     },
     afterLayout(_layout, c) {
       ctx = c;

@@ -120,7 +120,7 @@ export function focusPlugin(options: FocusOptions = {}): ChartPlugin {
     reserveSpace(c) {
       const { theme } = c.config;
       const bottom = el?.offsetHeight ?? 0;
-      if (options.labels === false) return { bottom };
+      if (options.labels === false) return { bottom, dom: { bottom } };
       const font = { font: `600 ${theme.fontSize}px ${theme.fontFamily}`, fill: theme.text };
       widest = 0;
       c.getSeries().forEach((s, i) => {
@@ -130,7 +130,7 @@ export function focusPlugin(options: FocusOptions = {}): ChartPlugin {
         const text = s.id === focus ? `${name}  ${formatY(s.y[s.length - 1] as number, c)}` : name;
         widest = Math.max(widest, c.renderer.measureText(text, font));
       });
-      return { bottom, right: Math.ceil(widest) + 14 };
+      return { bottom, right: Math.ceil(widest) + 14, dom: { bottom } };
     },
     afterDraw(c) {
       const scales = c.getScales();

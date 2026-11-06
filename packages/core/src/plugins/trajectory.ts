@@ -348,7 +348,8 @@ export function trajectoryPlugin(options: TrajectoryOptions = {}): ChartPlugin {
       } as ChartConfig;
     },
     reserveSpace() {
-      return { bottom: el?.offsetHeight ?? 0, right: 110, top: 10 };
+      const bottom = el?.offsetHeight ?? 0;
+      return { bottom, right: 110, top: 10, dom: { bottom } };
     },
     afterDraw(c) {
       const scales = c.getScales();

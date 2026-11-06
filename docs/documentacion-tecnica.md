@@ -736,6 +736,13 @@ format }`, donde `format` es `(valor: number) => string`. Para formatear hay
 Exportación: `chartToPng(chart, { scale, title, legend })`, `chartToSvg(chart, { title,
 legend, fonts: 'embed' })`, `chartToCsv(chart)` y `downloadFile(nombre, contenido, tipo?)`.
 
+La imagen dibuja su propia leyenda encima del gráfico, con la forma de cada serie (trazo en
+líneas, punto en dispersión, cuadro en el resto), solo si hay dos o más series visibles y nunca
+en `waffle` ni `heatmap`, que se rotulan solos; `legend: true` la fuerza y `false` la quita.
+Las franjas del lienzo que ocupan nodos HTML de los plugins (leyenda, tarjetas de
+`nowPlugin`, selector de `focusPlugin`, controles) se recortan: el plugin las declara en
+`reserveSpace` como `dom` y `chart.getDomSpace()` las devuelve.
+
 ### 6.6 Transformaciones de datos
 
 | Función                                        | Equivalente pandas aproximado           |
@@ -758,7 +765,7 @@ Un plugin es un objeto con `id` y hooks opcionales que el núcleo llama en este 
 ```
 install       una vez, al crear el gráfico (nodos del DOM, listeners)
 beforeUpdate  antes de resolver una configuración nueva; puede devolver otra
-reserveSpace  cuánto margen pide (top/right/bottom/left, en px)
+reserveSpace  cuánto margen pide (top/right/bottom/left, en px; `dom`: la parte que ocupa HTML)
 afterLayout   ya se conoce el área de dibujo
 beforeDraw    antes de pintar las series
 afterDraw     después: lo que dibuje aquí queda encima

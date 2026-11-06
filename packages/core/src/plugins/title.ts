@@ -69,7 +69,8 @@ export function titlePlugin(options: TitleOptions): ChartPlugin {
       render(ctx);
     },
     reserveSpace() {
-      return { top: el?.offsetHeight ?? 0 };
+      const top = el?.offsetHeight ?? 0;
+      return { top, dom: { top } };
     },
     uninstall() {
       el?.remove();
