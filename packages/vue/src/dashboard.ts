@@ -22,7 +22,16 @@ import {
   type PanelKpi,
   type ValidationError,
 } from 'xilaplot';
-import { computed, defineComponent, h, markRaw, shallowRef, type PropType, type VNode } from 'vue';
+import {
+  computed,
+  defineComponent,
+  h,
+  markRaw,
+  ref,
+  shallowRef,
+  type PropType,
+  type VNode,
+} from 'vue';
 import { XilaChart } from './chart';
 
 /**
@@ -36,6 +45,11 @@ import { XilaChart } from './chart';
 
 /** Fondo de la tarjeta de cada panel (`--xila-panel` en el CSS de abajo), por tema. */
 const PANEL_BG = { light: '#fffdf9', dark: '#1e2130' } as const;
+
+/** Alto de cada gráfico (`.xila-panel-chart` en el CSS) y mínimo de área de dibujo. */
+const PANEL_HEIGHT = 320;
+const MIN_PLOT = 180;
+const MAX_EXTRA = 420;
 
 const STYLE_ID = 'xila-dashboard-style';
 const CSS = `
@@ -64,7 +78,8 @@ const CSS = `
 .xila-kpi-change[data-sign=down]{color:var(--xila-down,#d14e0a)}
 .xila-errors{background:#fde8e8;color:#8a1c1c;border:1px solid #f5b5b5;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px}
 .xila-errors code{font-family:ui-monospace,monospace}
-@media (max-width:720px){.xila-grid{grid-template-columns:1fr}.xila-panel{grid-column:span 1}.xila-dashboard{padding:12px}}
+@media (max-width:720px){.xila-grid{grid-template-columns:1fr}.xila-panel{grid-column:span 1}.xila-dashboard{padding:12px}.xila-brand{margin:-12px -12px 16px;padding:14px 12px}.xila-dashboard h1{font-size:20px}}
+@media (hover:none){.xila-panel-tools{opacity:1;position:static;justify-content:flex-end;margin:0 0 6px}.xila-panel-tools button{font-size:13px;padding:6px 10px}}
 `;
 
 function ensureStyles(): void {
@@ -186,6 +201,19 @@ export const XilaPanelChart = defineComponent({
       return markRaw({ ...base, plugins, theme, colors: props.colors });
     });
     let chart: Chart | null = null;
+    // Alto extra del panel cuando el HTML del gráfico (tarjetas de «ahora», selector de
+    // «protagonista», controles) se come el área de dibujo: en un teléfono las tarjetas se
+    // apilan y la línea quedaba de 20 px. Se crece lo justo para dejar MIN_PLOT de gráfico.
+    const extra = ref(0);
+    const fitHeight = (): void => {
+      if (!chart) return;
+      const plot = chart.getLayout().plotArea.height;
+      if (plot < MIN_PLOT - 4 && extra.value < MAX_EXTRA) {
+        extra.value = Math.min(MAX_EXTRA, extra.value + MIN_PLOT - plot);
+      } else if (extra.value > 0 && plot > MIN_PLOT + 40) {
+        extra.value = Math.max(0, extra.value - (plot - MIN_PLOT));
+      }
+    };
     const name = () =>
       slugify(
         props.panel.titulo ??
@@ -238,9 +266,20 @@ export const XilaPanelChart = defineComponent({
             'CSV',
           ),
         ]),
-        h('div', { class: 'xila-panel-chart' }, [
-          h(XilaChart, { config: config.value, onReady: (c: Chart) => (chart = c) }),
-        ]),
+        h(
+          'div',
+          {
+            class: 'xila-panel-chart',
+            style: extra.value > 0 ? { height: `${PANEL_HEIGHT + extra.value}px` } : undefined,
+          },
+          [
+            h(XilaChart, {
+              config: config.value,
+              onReady: (c: Chart) => (chart = c),
+              onDraw: fitHeight,
+            }),
+          ],
+        ),
       ]);
   },
 });

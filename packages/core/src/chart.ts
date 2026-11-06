@@ -91,6 +91,8 @@ const HOVER_DISTANCE = 24;
 /** Barra de color del heatmap: ancho y separación en píxeles CSS. */
 const LEGEND_BAR = 12;
 const LEGEND_GAP = 10;
+/** Fracción máxima del ancho que pueden ocupar las notas por fila del heatmap. */
+const NOTES_MAX_SHARE = 1 / 3;
 
 export interface ChartScales {
   readonly x: ContinuousScale | BandScale;
@@ -156,6 +158,11 @@ export class Chart {
   private statusPx = new Float64Array(0);
   private statusPy = new Float64Array(0);
   private statusTextCache: { value: string; status: string }[] = [];
+  /**
+   * Notas por fila del heatmap visibles en el último layout. En un lienzo angosto (teléfono)
+   * se apagan: ocuparían el ancho que necesitan las celdas, que son lo principal.
+   */
+  private rowNotesOn = false;
   private warnedStatus = false;
   /** Heatmap: rejilla `ny × nx` con la fila de la tabla de cada celda (−1 = vacía). */
   private cells: Int32Array = new Int32Array(0);
@@ -708,11 +715,16 @@ export class Chart {
           )
         : 0;
     // Notas por fila ("máx 1973 · mediana 18,6"): su ancho máximo más un hueco.
-    const notesWidth =
+    const notesWanted =
       config.type === 'heatmap' && config.heatmap.rowLabels !== 'none'
         ? LEGEND_GAP +
           Math.max(0, ...this.rowNotes().map((n) => renderer.measureText(n, textStyle(theme))))
         : 0;
+    // Las notas no se llevan más de un tercio del ancho: si no caben, se quitan.
+    this.rowNotesOn =
+      notesWanted > 0 &&
+      notesWanted <= (provisional.width - margins.left - legendWidth) * NOTES_MAX_SHARE;
+    const notesWidth = this.rowNotesOn ? notesWanted : 0;
     // Ranura: la columna derecha (valor y estado en palabras) se mide con los textos reales.
     this.statusTextCache = this.statusTexts();
     const statusWidth =
@@ -1092,11 +1104,31 @@ export class Chart {
       const gap = config.heatmap.gap;
       const rowH = area.height / ny;
       const colW = (x1 - x0) / nx;
-      const font = `500 ${config.theme.fontSize}px ${monoFont(config.theme)}`;
       const [lo2, hi2] = this.heatmapDomain();
       // Conteos y otras cifras enteras se escriben sin decimales ("119", no "119.0").
       const whole = Array.from(s.value ?? []).every((v) => v !== v || Number.isInteger(v));
       const step = whole ? Math.max(1, (hi2 - lo2) / 100) : (hi2 - lo2) / 100;
+      // Las cifras tienen que caber en su celda: se prueba la fuente normal y luego más chica
+      // (hasta 9 px); si ni así caben (muchas columnas), la tabla queda solo con el tono.
+      const sizes = [1, 0.85, 0.75].map((k) => Math.max(9, Math.round(config.theme.fontSize * k)));
+      let font: string | null = null;
+      if (config.heatmap.values && s.value) {
+        let widest = '';
+        for (const v of s.value) {
+          const text = formatNumber(v, { step });
+          if (text.length > widest.length) widest = text;
+        }
+        for (const size of sizes) {
+          const f = `500 ${size}px ${monoFont(config.theme)}`;
+          if (
+            renderer.measureText(widest, { font: f, fill: config.theme.text }) <=
+            colW - gap - 2
+          ) {
+            font = f;
+            break;
+          }
+        }
+      }
       for (let yi = 0; yi < ny; yi++) {
         // La fila 0 va abajo (el eje Y crece hacia arriba).
         const top = area.y + (ny - 1 - yi) * rowH;
@@ -1108,7 +1140,7 @@ export class Chart {
           renderer.drawRect('data', cx + gap / 2, top + gap / 2, colW - gap, rowH - gap, {
             fill: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`,
           });
-          if (config.heatmap.values) {
+          if (font !== null && s.value) {
             const v = s.value[this.cells[yi * nx + xi] as number] as number;
             renderer.drawText('data', formatNumber(v, { step }), cx + colW / 2, top + rowH / 2, {
               font,
@@ -1145,7 +1177,7 @@ export class Chart {
       }
       renderer.drawImage('data', pixels, nx, ny, x0, area.y, x1 - x0, area.height);
     }
-    if (config.heatmap.rowLabels !== 'none') this.drawRowNotes(area, ny);
+    if (this.rowNotesOn) this.drawRowNotes(area, ny);
     if (config.heatmap.legend) this.drawColorLegend(map, area);
   }
 
@@ -1379,7 +1411,7 @@ export class Chart {
   private drawColorLegend(map: Colormap, area: Rect): void {
     const { config } = this;
     const renderer = this.target;
-    const notes = config.heatmap.rowLabels !== 'none' ? this.rowNotes() : [];
+    const notes = this.rowNotesOn ? this.rowNotes() : [];
     const notesWidth =
       notes.length > 0
         ? LEGEND_GAP +
