@@ -757,6 +757,25 @@ Las franjas del lienzo que ocupan nodos HTML de los plugins (leyenda, tarjetas d
 `agg`: `'sum' | 'mean' | 'count' | 'min' | 'max' | 'first' | 'last'`. Estadísticos sobre
 arreglos: `min`, `max`, `sum`, `mean`, `variance`, `std`, `quantile`, `median`, `summary`.
 
+Frases que responden (`compareRange` + `answerText`): para un rango de fechas, compara la
+cifra contra las mismas fechas del año anterior (364 días) y contra el periodo anterior del
+mismo largo, nombra temporadas declaradas y la dice en una a tres oraciones:
+
+```ts
+const facts = compareRange({
+  table,
+  time: 'fecha',
+  value: 'ventas_mxn',
+  category: 'sucursal',
+  seasons: [{ nombre: 'Guelaguetza', meses: [7] }],
+});
+answerText(facts!, { subject: 'las ventas', format: formatCurrency, groups: 'las sucursales' });
+```
+
+`compareRange` devuelve hechos (`value`, `yearAgo`, `previous`, `season`, `groups`) o `null`
+sin datos; una base que los datos no cubren completa queda en `null`. En el dashboard es la
+clave `respuesta` (ver `docs/configuracion-dashboard.md`).
+
 ### 6.7 Sistema de plugins
 
 Un plugin es un objeto con `id` y hooks opcionales que el núcleo llama en este orden

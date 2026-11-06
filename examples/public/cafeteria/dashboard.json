@@ -30,6 +30,12 @@
       "multiple": true
     }
   ],
+  "temporadas": [
+    {
+      "nombre": "Guelaguetza",
+      "meses": [7]
+    }
+  ],
   "paneles": [
     {
       "tipo": "kpi",
@@ -99,6 +105,11 @@
       "periodo": "week",
       "ejes": {
         "y": "MXN"
+      },
+      "respuesta": {
+        "sujeto": "las ventas",
+        "formato": "moneda",
+        "grupos": "las sucursales"
       }
     },
     {

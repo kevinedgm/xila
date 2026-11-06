@@ -1,3 +1,4 @@
+import { answerText, compareRange } from '../answer';
 import type { ChartConfig } from '../config';
 import type { SeriesSpec } from '../data/series';
 import { categoryColumn, DataTable, type Column } from '../data/table';
@@ -17,6 +18,7 @@ import type {
   PanelChart,
   PanelGrafico,
   PanelKpi,
+  TemporadaConfig,
 } from './config';
 
 /**
@@ -178,6 +180,60 @@ export function formatter(formato: FormatoValor = 'numero'): (v: number) => stri
     case 'numero':
       return (v) => formatNumber(v, { decimals: Math.abs(v) >= 100 ? 0 : 2 });
   }
+}
+
+/**
+ * Frase de `respuesta` para un panel con `x` de tiempo. El filtro de fechas sobre `x` no
+ * recorta los datos: da el rango a comparar, porque el año anterior y el periodo anterior
+ * quedan fuera de él. Los demás filtros (sucursal, canal) sí se aplican. `null` sin respuesta.
+ */
+export function buildAnswer(
+  panel: PanelChart,
+  table: DataTable,
+  filters: readonly Condition[] = [],
+  temporadas: readonly TemporadaConfig[] = [],
+): string | null {
+  if (panel.tipo !== 'linea' && panel.tipo !== 'barras') return null;
+  const r = panel.respuesta;
+  if (!r || !table.has(panel.x) || table.column(panel.x).kind !== 'time') return null;
+  const y = typeof panel.y === 'string' ? panel.y : panel.y[0];
+  if (y === undefined) return null;
+  const toMs = (v: string | number | undefined): number | null =>
+    v === undefined ? null : typeof v === 'number' ? v : Date.parse(v);
+  let range: [number | null, number | null] | null = null;
+  const rest: Condition[] = [];
+  for (const f of filters) {
+    if (f.column === panel.x && f.equals === undefined && f.in === undefined)
+      range = [toMs(f.min), toMs(f.max)];
+    else rest.push(f);
+  }
+  const facts = compareRange({
+    table: applyFilters(table, rest),
+    time: panel.x,
+    value: y,
+    agg: panel.agregado === 'mean' || panel.agregado === 'count' ? panel.agregado : 'sum',
+    ...(panel.color && r.grupos ? { category: panel.color } : {}),
+    range,
+    ...(r.dias ? { days: r.dias } : {}),
+    seasons: temporadas,
+  });
+  if (!facts) return null;
+  // En una frase los pesos van sin centavos: "$412,350", no "$412,350.40".
+  const format =
+    r.formato === 'moneda'
+      ? (v: number) =>
+          new Intl.NumberFormat('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            maximumFractionDigits: 0,
+          }).format(v)
+      : formatter(r.formato);
+  return answerText(facts, {
+    subject: r.sujeto,
+    format,
+    mean: panel.agregado === 'mean',
+    ...(r.grupos ? { groups: r.grupos } : {}),
+  });
 }
 
 /**

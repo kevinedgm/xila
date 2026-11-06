@@ -61,6 +61,8 @@ export {
 export type {
   DashboardConfig,
   MarcaConfig,
+  RespuestaConfig,
+  TemporadaConfig,
   PanelConfig,
   PanelKpi,
   PanelGrafico,
@@ -78,7 +80,16 @@ export type {
   FormatoValor,
   ValidationError,
 } from './dashboard/config';
-export { buildChart, buildKpi, applyFilters, categoryColors, formatter } from './dashboard/build';
+export {
+  buildAnswer,
+  buildChart,
+  buildKpi,
+  applyFilters,
+  categoryColors,
+  formatter,
+} from './dashboard/build';
+export { compareRange, answerText, rangeText } from './answer';
+export type { CompareFacts, CompareOptions, Season, AnswerTextOptions } from './answer';
 export type { KpiResult } from './dashboard/build';
 export { loadDashboard } from './dashboard/load';
 export type { LoadedDashboard } from './dashboard/load';

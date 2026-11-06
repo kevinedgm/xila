@@ -1,4 +1,5 @@
 import {
+  buildAnswer,
   buildChart,
   buildKpi,
   categoryColors,
@@ -20,6 +21,7 @@ import {
   type MarcaConfig,
   type PanelChart,
   type PanelKpi,
+  type TemporadaConfig,
   type ValidationError,
 } from 'xilaplot';
 import {
@@ -72,6 +74,7 @@ const CSS = `
 .xila-panel-tools button{font:11px system-ui,sans-serif;padding:2px 6px;border:1px solid var(--xila-border,#cbd2d9);border-radius:4px;background:var(--xila-panel,#fff);color:var(--xila-muted,#52606d);cursor:pointer}
 .xila-panel-tools button:hover{color:var(--xila-text,#1f2933)}
 .xila-panel-chart{height:320px}
+.xila-answer{font-size:15px;line-height:1.45;margin:0 0 10px;max-width:72ch;color:var(--xila-text,#15171f);text-wrap:pretty}
 .xila-kpi-value{font:600 28px/1.2 "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .xila-kpi-change{font-size:13px;margin-top:4px}
 .xila-kpi-change[data-sign=up]{color:var(--xila-up,#12957a)}
@@ -158,8 +161,13 @@ export const XilaPanelChart = defineComponent({
     marca: { type: Object as PropType<MarcaConfig | undefined>, default: undefined },
     /** Color fijo por categoría para todo el dashboard (`categoryColors`). */
     colors: { type: Object as PropType<Readonly<Record<string, string>>>, default: () => ({}) },
+    /** Temporadas declaradas que la frase de `respuesta` puede nombrar. */
+    seasons: { type: Array as PropType<readonly TemporadaConfig[]>, default: () => [] },
   },
   setup(props) {
+    const answer = computed(() =>
+      buildAnswer(props.panel, props.table, props.conditions, props.seasons),
+    );
     const config = computed<ChartConfig>(() => {
       const base = buildChart(props.panel, props.table, props.conditions);
       // Con `forma`, el panel trae sus propios plugins (y sus propias etiquetas y controles):
@@ -266,6 +274,7 @@ export const XilaPanelChart = defineComponent({
             'CSV',
           ),
         ]),
+        answer.value ? h('p', { class: 'xila-answer', 'aria-live': 'polite' }, answer.value) : null,
         h(
           'div',
           {
@@ -459,6 +468,7 @@ export const XilaDashboard = defineComponent({
                         theme: theme.value,
                         marca: props.config.marca,
                         colors: colors.value,
+                        seasons: props.config.temporadas ?? [],
                       }),
               ],
             );

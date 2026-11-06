@@ -61,12 +61,13 @@ parser y pasar el objeto a `parseDashboard`; el esquema no cambia.
 
 ## Claves
 
-| Clave     | Tipo                   | Notas                                                         |
-| --------- | ---------------------- | ------------------------------------------------------------- |
-| `titulo`  | texto                  | Obligatorio.                                                  |
-| `tema`    | `light` \| `dark`      | Por defecto `light`.                                          |
-| `datos`   | `{ nombre: ruta.csv }` | Al menos una tabla; la ruta es relativa al `index.html`.      |
-| `filtros` | lista                  | `fechas` (columna `time`) o `categoria` (columna `category`). |
+| Clave        | Tipo                   | Notas                                                             |
+| ------------ | ---------------------- | ----------------------------------------------------------------- |
+| `titulo`     | texto                  | Obligatorio.                                                      |
+| `tema`       | `light` \| `dark`      | Por defecto `light`.                                              |
+| `datos`      | `{ nombre: ruta.csv }` | Al menos una tabla; la ruta es relativa al `index.html`.          |
+| `filtros`    | lista                  | `fechas` (columna `time`) o `categoria` (columna `category`).     |
+| `temporadas` | lista                  | `{ nombre, meses }` que las frases de `respuesta` pueden nombrar. |
 
 Un filtro lee sus opciones de la tabla `datos`. Con `"tambien": ["otra_tabla"]` se aplica
 además a otras tablas que tienen la misma columna, por ejemplo una tabla diaria y su resumen
@@ -179,6 +180,45 @@ mismo color en la línea, en la dispersión y en la leyenda, y si el filtro quit
 
 Ejemplo completo: `examples/public/cafeteria/dashboard.json`
 (cafetería simulada, `python/ejemplo_cafeteria.py`).
+
+## `respuesta`: la frase que abre el panel
+
+Un panel `linea` o `barras` con `x` de tiempo puede abrir con una frase que responde
+"¿cómo vamos?" antes de que el cliente lea el gráfico:
+
+```json
+"temporadas": [{ "nombre": "Guelaguetza", "meses": [7] }],
+"paneles": [{
+  "tipo": "linea", "datos": "diario", "x": "fecha", "y": "ventas_mxn",
+  "color": "sucursal", "agregado": "sum",
+  "respuesta": { "sujeto": "las ventas", "formato": "moneda", "grupos": "las sucursales" }
+}]
+```
+
+> Del 4 al 31 de agosto de 2025, las ventas suman $1,553,179: 20% más que en las mismas
+> fechas del año pasado. Contra las 4 semanas anteriores bajaron 10%, pero esas fechas fueron
+> de Guelaguetza. Las tres sucursales están arriba del año pasado; Jalatlaco, la que más (+34%).
+
+| Clave     | Notas                                                                             |
+| --------- | --------------------------------------------------------------------------------- |
+| `sujeto`  | Obligatorio. Plural con artículo: "las ventas", "los pedidos".                    |
+| `formato` | Como en `kpi`. `moneda` va sin centavos en la frase.                              |
+| `dias`    | Largo del rango sin filtro de fechas; 28 (cuatro semanas) por defecto.            |
+| `grupos`  | Los grupos de `color` en plural con artículo; el artículo da el género. Opcional. |
+
+Mecanismo:
+
+- **Rango.** El filtro de fechas sobre `x` no recorta la frase: da el rango que se compara.
+  Sin filtro, los últimos `dias` días con datos. Los demás filtros (sucursal, canal) sí recortan.
+- **Primero el año anterior.** Mismas fechas 364 días antes (52 semanas: lunes contra lunes),
+  porque así la temporada del año queda fuera de la comparación. Luego el periodo inmediato
+  anterior del mismo largo.
+- **Temporadas.** Solo se nombran las declaradas en `temporadas`: si el periodo anterior cayó
+  en una y el actual no, la frase lo dice para que una baja no se lea como mala noticia.
+- **Silencio.** Cambios menores al 3 % se dicen "prácticamente lo mismo".
+- **Sin inventar.** Sin datos completos de hace un año, la frase lo dice en vez de comparar.
+- Describe; no predice, no recomienda ni atribuye causas. Mismos datos y mismo rango, misma
+  frase. La función es `buildAnswer` (núcleo: `compareRange` + `answerText`).
 
 ## Mecanismo de los filtros
 

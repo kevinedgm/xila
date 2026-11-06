@@ -92,6 +92,28 @@ export interface PanelGrafico extends PanelBase {
   readonly periodo?: PeriodoTiempo;
   readonly apilado?: boolean;
   readonly ejes?: { readonly x?: string; readonly y?: string };
+  /**
+   * Frase que abre el panel y responde "¿cómo vamos?": compara el rango elegido contra las
+   * mismas fechas del año anterior y contra el periodo anterior. Requiere `x` de tiempo.
+   */
+  readonly respuesta?: RespuestaConfig;
+}
+
+export interface RespuestaConfig {
+  /** Sujeto en plural con artículo: "las ventas", "los pedidos". */
+  readonly sujeto: string;
+  readonly formato?: FormatoValor;
+  /** Días del rango cuando no hay filtro de fechas (28 por defecto: cuatro semanas). */
+  readonly dias?: number;
+  /** Los grupos de `color` en plural con artículo ("las sucursales"); sin él no se nombran. */
+  readonly grupos?: string;
+}
+
+/** Temporada que el dueño declara; la frase la nombra para explicar un cambio, nunca la deduce. */
+export interface TemporadaConfig {
+  readonly nombre: string;
+  /** Meses del 1 (enero) al 12. */
+  readonly meses: readonly number[];
 }
 
 /** Reparto de `y` por grupo `x`: box plot clásico o, con `forma`, un punto por caso, franja o hoy. */
@@ -136,6 +158,8 @@ export interface DashboardConfig {
   readonly tema?: 'light' | 'dark';
   /** Identidad del cliente: colores, logo y encabezado. Sin `marca`, el tema de Xila. */
   readonly marca?: MarcaConfig;
+  /** Temporadas del negocio que las frases de `respuesta` pueden nombrar. */
+  readonly temporadas?: readonly TemporadaConfig[];
 }
 
 /**
@@ -246,6 +270,25 @@ export function parseDashboard(raw: unknown): DashboardConfig {
   };
 
   if (obj['tema'] !== undefined) checkEnum('tema', obj['tema'], ['light', 'dark'], 'el tema');
+
+  const temporadas = obj['temporadas'];
+  if (temporadas !== undefined) {
+    if (!Array.isArray(temporadas)) fail('temporadas', 'debe ser una lista de { nombre, meses }');
+    else
+      temporadas.forEach((t: unknown, i) => {
+        const q = `temporadas[${i}]`;
+        if (!isRecord(t)) return fail(q, 'debe ser { nombre, meses }');
+        if (typeof t['nombre'] !== 'string' || t['nombre'] === '')
+          fail(`${q}.nombre`, 'falta el nombre, p. ej. "Guelaguetza"');
+        const m = t['meses'];
+        if (
+          !Array.isArray(m) ||
+          m.length === 0 ||
+          !m.every((x: unknown) => Number.isInteger(x) && (x as number) >= 1 && (x as number) <= 12)
+        )
+          fail(`${q}.meses`, 'debe ser una lista de meses del 1 (enero) al 12 (diciembre)');
+      });
+  }
 
   const marca = obj['marca'];
   if (marca !== undefined) {
@@ -370,6 +413,22 @@ export function parseDashboard(raw: unknown): DashboardConfig {
         if (panel['periodo'] !== undefined && panel['agregado'] === undefined) {
           fail(`${p}.periodo`, 'requiere "agregado" para combinar las filas de cada periodo');
         }
+        const r = panel['respuesta'];
+        if (r !== undefined) {
+          if (!isRecord(r)) fail(`${p}.respuesta`, 'debe ser { sujeto, formato?, dias?, grupos? }');
+          else {
+            if (typeof r['sujeto'] !== 'string' || r['sujeto'] === '')
+              fail(`${p}.respuesta.sujeto`, 'falta el sujeto, p. ej. "las ventas"');
+            checkEnum(`${p}.respuesta.formato`, r['formato'], FORMATOS, 'el formato');
+            const d = r['dias'];
+            if (d !== undefined && (typeof d !== 'number' || !Number.isInteger(d) || d < 1))
+              fail(`${p}.respuesta.dias`, 'debe ser un número entero de días');
+            if (r['grupos'] !== undefined && typeof r['grupos'] !== 'string')
+              fail(`${p}.respuesta.grupos`, 'debe ser texto, p. ej. "las sucursales"');
+            if (Array.isArray(panel['y']) && panel['y'].length > 1)
+              fail(`${p}.respuesta`, 'funciona con una sola columna en "y"');
+          }
+        }
       }
     });
   }
@@ -455,6 +514,7 @@ export function validateDashboard(
       column(ys.length === 1 ? `${p}.y` : `${p}.y[${j}]`, panel.datos, y, ['number', 'time']),
     );
     if (panel.color) column(`${p}.color`, panel.datos, panel.color, ['category']);
+    if (panel.respuesta) column(`${p}.x`, panel.datos, panel.x, ['time']);
     if (panel.tipo === 'barras' && !panel.agregado) {
       const table = tables[panel.datos];
       if (table?.has(panel.x) && table.column(panel.x).kind === 'time') {
