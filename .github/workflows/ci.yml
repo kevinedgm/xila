@@ -6,8 +6,10 @@ on:
   pull_request:
 
 jobs:
+  # ubuntu-24.04 fijo: ubuntu-latest pasó a 26.04 y Playwright 1.56 no instala Chromium ahí;
+  # además las capturas de referencia se generaron en 24.04 (mismo hinting de fuentes).
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -37,7 +39,7 @@ jobs:
 
   benchmark:
     # Separado del job principal: es lento y su resultado depende del runner.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -61,7 +63,7 @@ jobs:
 
   python:
     # El lado pandas del contrato de CSV (python/xila_export.py).
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
