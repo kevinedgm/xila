@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseCsv } from '../data/csv';
-import { buildChart, buildKpi } from './build';
+import { resolveConfig, seriesColor } from '../config';
+import { buildChart, buildKpi, categoryColors } from './build';
 import { DashboardConfigError, parseDashboard, validateDashboard, type PanelChart } from './config';
 
 const CSV = `fecha,region,monto
@@ -329,5 +330,57 @@ describe('formas de "Qué es Xila hoy" en el dashboard', () => {
     expect(err?.errors.map((e) => e.path)).toEqual(
       expect.arrayContaining(['paneles[0].forma', 'paneles[1].tiempo', 'paneles[1].color']),
     );
+  });
+});
+
+describe('categoryColors', () => {
+  const palette = ['#111111', '#222222', '#333333'];
+  const linea = base.paneles[1] as PanelChart;
+  const colorsOf = (conds: Parameters<typeof buildChart>[2], colors: Record<string, string>) => {
+    const r = resolveConfig({ ...buildChart(linea, ventas, conds), colors });
+    return Object.fromEntries(r.series.map((s, i) => [s.id, seriesColor(r, i)]));
+  };
+
+  it('da a cada categoría el color de su orden en los datos completos', () => {
+    const colors = categoryColors(parseDashboard(base), { ventas }, palette);
+    expect(colors).toEqual({ Norte: '#111111', Sur: '#222222', Centro: '#333333' });
+  });
+
+  it('un filtro que quita la primera categoría no le pasa su color a la siguiente', () => {
+    const colors = categoryColors(parseDashboard(base), { ventas }, palette);
+    // Sin el mapa (comportamiento anterior), Sur heredaría el color de Norte.
+    const sinMapa = colorsOf([{ column: 'region', in: ['Sur', 'Centro'] }], {});
+    expect(sinMapa['Sur']).toBe(resolveConfig(buildChart(linea, ventas)).theme.palette[0]);
+    const conMapa = colorsOf([{ column: 'region', in: ['Sur', 'Centro'] }], colors);
+    expect(conMapa).toEqual({ Sur: '#222222', Centro: '#333333' });
+  });
+
+  it('marca.categorias fija un color a mano', () => {
+    const cfg = parseDashboard({ ...base, marca: { categorias: { Sur: '#abcdef' } } });
+    expect(categoryColors(cfg, { ventas }, palette)['Sur']).toBe('#abcdef');
+  });
+
+  it('valida que marca.categorias sean colores hexadecimales', () => {
+    let err: unknown;
+    try {
+      parseDashboard({ ...base, marca: { categorias: { Sur: 'rojo' } } });
+    } catch (e) {
+      err = e;
+    }
+    expect(err).toBeInstanceOf(DashboardConfigError);
+    const paths = (err as DashboardConfigError).errors.map((e) => e.path);
+    expect(paths).toContain('marca.categorias.Sur');
+  });
+
+  it('las unidades colorean por la categoría de x', () => {
+    const cfg = parseDashboard({
+      ...base,
+      paneles: [{ tipo: 'barras', datos: 'ventas', x: 'region', y: 'monto', forma: 'unidades' }],
+    });
+    expect(categoryColors(cfg, { ventas }, palette)).toEqual({
+      Norte: '#111111',
+      Sur: '#222222',
+      Centro: '#333333',
+    });
   });
 });

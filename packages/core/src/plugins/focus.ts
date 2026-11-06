@@ -38,9 +38,13 @@ export function focusPlugin(options: FocusOptions = {}): ChartPlugin {
     return formatNumber(v, step !== undefined ? { step } : {});
   };
 
+  /** Color propio de la serie `i` (por nombre en `colors` o por posición), sin el apagado. */
   const paletteColor = (c: PluginContext, i: number): string => {
     const { palette } = c.config.theme;
-    return palette[i % palette.length] ?? c.config.theme.text;
+    const id = c.config.series[i]?.id;
+    const byName =
+      id !== undefined && Object.hasOwn(c.config.colors, id) ? c.config.colors[id] : undefined;
+    return byName ?? palette[i % palette.length] ?? c.config.theme.text;
   };
 
   const renderSelector = (c: PluginContext): void => {
@@ -99,11 +103,17 @@ export function focusPlugin(options: FocusOptions = {}): ChartPlugin {
       if (!focus || !config.series.some((s) => s.id === focus))
         focus = config.series[0]?.id ?? null;
       const palette = c.config.theme.palette;
+      const colors = config.colors ?? {};
       return {
         ...config,
         series: config.series.map((s, i) => ({
           ...s,
-          stroke: s.id === focus ? (palette[i % palette.length] ?? s.stroke) : muted,
+          stroke:
+            s.id === focus
+              ? ((Object.hasOwn(colors, s.id) ? colors[s.id] : undefined) ??
+                palette[i % palette.length] ??
+                s.stroke)
+              : muted,
         })),
       } as ChartConfig;
     },

@@ -666,6 +666,7 @@ interface ConfiguracionComun {
   padding?: Partial<{ top; right; bottom; left }>; // 8 px por lado
   lazy?: boolean; // true: no dibuja hasta estar a 200 px de la pantalla
   renderer?: 'canvas' | 'webgl' | 'auto';
+  colors?: Record<string, string>; // color fijo por id de serie (o categoría en waffle)
 }
 // + type: 'line' | 'bar' | 'scatter' | 'box' | 'heatmap' | 'dots' | 'waffle'
 // + la clave del tipo: line, bar, scatter, box, heatmap, dots o waffle
@@ -688,6 +689,11 @@ interface ConfiguracionComun {
 
 > `color` existe en `SeriesSpec` pero está reservado: `Chart` todavía no lo lee. Para una serie por categoría se usa `pivot` o `splitBy` (o la clave `color` de un
 > panel de `dashboard.json`, que hace el `pivot` por ti).
+>
+> El color de una serie sale, en este orden, de su `stroke`, de `colors[id]` del gráfico y de su
+> posición en la paleta. Con `colors: { Centro: '#6b3f2a' }` "Centro" conserva su color aunque un
+> filtro quite las series anteriores (sin el mapa, la siguiente heredaría su lugar en la paleta).
+> En `waffle` las claves son las categorías. `focusPlugin` y `trajectoryPlugin` lo respetan.
 
 ### 6.3 Escalas y ejes
 

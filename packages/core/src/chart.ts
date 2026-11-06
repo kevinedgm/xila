@@ -1737,7 +1737,10 @@ export class Chart {
     this.waffle = layout;
     for (const cell of layout.cells) {
       renderer.drawRect('data', cell.x, cell.y, cell.size, cell.size, {
-        fill: seriesColor({ series: this.waffleSpecs(categories), theme }, cell.category),
+        fill: seriesColor(
+          { series: this.waffleSpecs(categories), theme, colors: config.colors },
+          cell.category,
+        ),
       });
     }
     if (!config.waffle.labels) return;
@@ -1756,7 +1759,10 @@ export class Chart {
       }
       if (ly + line / 2 > bottom + 1) return;
       renderer.drawRect('data', lx, ly - 5, 10, 10, {
-        fill: seriesColor({ series: this.waffleSpecs(categories), theme }, i),
+        fill: seriesColor(
+          { series: this.waffleSpecs(categories), theme, colors: config.colors },
+          i,
+        ),
       });
       renderer.drawText('data', text, lx + 14, ly, { ...style, baseline: 'middle' });
       lx += w + 14;

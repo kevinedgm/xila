@@ -10,6 +10,7 @@ import { trajectoryPlugin } from '../plugins/trajectory';
 import { trendPlugin } from '../plugins/trend';
 import { floorTime } from '../scales/time';
 import type {
+  DashboardConfig,
   FormatoValor,
   PanelCajas,
   PanelCalor,
@@ -127,6 +128,43 @@ function aggregateAll(
     case 'last':
       return last;
   }
+}
+
+/**
+ * Color fijo para cada categoría que algún panel usa como serie (`color`, o `x` en la forma
+ * `unidades`). Se calcula una vez sobre las tablas completas, sin filtros: la categoría `k` de
+ * una columna toma `palette[k]` por su orden en los datos, y `marca.categorias` gana sobre eso.
+ * Así "Centro" es del mismo color en todos los paneles y un filtro que lo quita no le pasa su
+ * color a "Reforma". Cada columna reparte la paleta desde el principio, como antes.
+ */
+export function categoryColors(
+  config: DashboardConfig,
+  tables: Readonly<Record<string, DataTable>>,
+  palette: readonly string[],
+): Record<string, string> {
+  const columns: string[] = [];
+  for (const panel of config.paneles) {
+    if (panel.tipo === 'kpi' || panel.tipo === 'cajas' || panel.tipo === 'calor') continue;
+    const col = panel.color ?? (panel.forma === 'unidades' ? panel.x : undefined);
+    if (col !== undefined && !columns.includes(col)) columns.push(col);
+  }
+  const out: Record<string, string> = {};
+  for (const name of columns) {
+    const seen: string[] = [];
+    for (const table of Object.values(tables)) {
+      if (!table.names().includes(name)) continue;
+      const col = table.column(name);
+      if (col.kind !== 'category') continue;
+      for (const c of col.categories) if (!seen.includes(c)) seen.push(c);
+    }
+    seen.forEach((c, i) => {
+      if (!Object.hasOwn(out, c) && palette.length > 0)
+        out[c] = palette[i % palette.length] as string;
+    });
+  }
+  const fixed = config.marca?.categorias ?? {};
+  for (const [c, color] of Object.entries(fixed)) out[c] = color;
+  return out;
 }
 
 export function formatter(formato: FormatoValor = 'numero'): (v: number) => string {

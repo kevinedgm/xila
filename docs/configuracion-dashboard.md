@@ -167,8 +167,17 @@ cafetería no termina con cajas azul cobalto.
 | `borde`      | bordes y rejilla                                                            |
 | `divergente` | tres paradas (bajo, centro, alto) de los mapas `filas`                      |
 | `cambio`     | colores del cambio de los KPI: `[sube, baja]`                               |
+| `categorias` | color fijo a mano por categoría: `{ "Centro": "#6b3f2a" }`                  |
 
-Todos los colores son `#rrggbb`. Ejemplo completo: `examples/public/cafeteria/dashboard.json`
+Todos los colores son `#rrggbb`.
+
+**Cada categoría conserva su color en todo el tablero.** El dashboard reparte la paleta una sola
+vez, sobre los datos completos y sin filtros: la categoría k de cada columna que un panel usa
+como `color` (o como `x` en la forma `unidades`) toma el k-ésimo color. Por eso "Centro" es del
+mismo color en la línea, en la dispersión y en la leyenda, y si el filtro quita "Centro",
+"Reforma" no hereda su color. `categorias` fija un color a mano y gana sobre ese reparto.
+
+Ejemplo completo: `examples/public/cafeteria/dashboard.json`
 (cafetería simulada, `python/ejemplo_cafeteria.py`).
 
 ## Mecanismo de los filtros

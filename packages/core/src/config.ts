@@ -53,6 +53,13 @@ interface BaseChartConfig {
    * puntos o más.
    */
   readonly renderer?: 'auto' | 'canvas' | 'webgl';
+  /**
+   * Color fijo por nombre: el `id` de una serie o, en un gráfico de unidades, una categoría.
+   * Sin él, el color sale de la posición en la paleta, y un filtro que quita la primera serie
+   * le pasa su color a la siguiente. Con él, "Centro" es del mismo color con o sin filtros.
+   * El `stroke` de una serie gana sobre este mapa.
+   */
+  readonly colors?: Readonly<Record<string, string>>;
 }
 
 export interface LineChartConfig extends BaseChartConfig {
@@ -356,6 +363,7 @@ export interface ResolvedChartConfig {
   readonly plugins: readonly ChartPlugin[];
   readonly theme: Theme;
   readonly padding: Padding;
+  readonly colors: Readonly<Record<string, string>>;
   readonly line: Required<NonNullable<LineChartConfig['line']>>;
   readonly bar: Required<NonNullable<BarChartConfig['bar']>>;
   readonly scatter: Required<NonNullable<ScatterChartConfig['scatter']>>;
@@ -449,13 +457,26 @@ export const DEFAULTS = {
   waffle: { unit: 'auto', columns: 'auto', gap: 2, labels: true },
 } as const;
 
-/** Color de la serie `index`: el `stroke` que declara o, si no, el de su posición en la paleta. */
+/**
+ * Color de la serie `index`: el `stroke` que declara; si no, el de su `id` en `colors`; si no,
+ * el de su posición en la paleta.
+ */
 export function seriesColor(
-  config: { readonly series: readonly SeriesSpec[]; readonly theme: Theme },
+  config: {
+    readonly series: readonly SeriesSpec[];
+    readonly theme: Theme;
+    readonly colors?: Readonly<Record<string, string>>;
+  },
   index: number,
 ): string {
   const { palette } = config.theme;
-  return config.series[index]?.stroke ?? palette[index % palette.length] ?? '#000';
+  const spec = config.series[index];
+  if (spec?.stroke) return spec.stroke;
+  const byName =
+    spec && config.colors && Object.hasOwn(config.colors, spec.id)
+      ? config.colors[spec.id]
+      : undefined;
+  return byName ?? palette[index % palette.length] ?? '#000';
 }
 
 export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
@@ -503,6 +524,7 @@ export function resolveConfig(config: ChartConfig): ResolvedChartConfig {
     plugins: config.plugins ?? [],
     theme: resolveTheme(config.theme),
     padding: { ...DEFAULTS.padding, ...config.padding },
+    colors: config.colors ?? {},
     line: { ...DEFAULTS.line, ...(config.type === 'line' ? config.line : undefined) },
     bar: { ...DEFAULTS.bar, ...(config.type === 'bar' ? config.bar : undefined) },
     scatter: { ...DEFAULTS.scatter, ...(config.type === 'scatter' ? config.scatter : undefined) },

@@ -160,6 +160,12 @@ export interface MarcaConfig {
   readonly divergente?: readonly [string, string, string];
   /** Colores del cambio de los KPI: [sube, baja]. */
   readonly cambio?: readonly [string, string];
+  /**
+   * Color fijo por categoría, p. ej. `{ "Centro": "#6b3f2a" }`. Sin él, cada categoría toma
+   * el color de su lugar en la paleta según el orden de los datos completos, y lo conserva en
+   * todos los paneles y con cualquier filtro.
+   */
+  readonly categorias?: Readonly<Record<string, string>>;
 }
 
 export interface ValidationError {
@@ -265,6 +271,12 @@ export function parseDashboard(raw: unknown): DashboardConfig {
             n > 0 ? `debe ser una lista de ${n} colores` : 'debe ser una lista de colores',
           );
         else v.forEach((c: unknown, i) => hex(`marca.${k}[${i}]`, c));
+      }
+      const cats = marca['categorias'];
+      if (cats !== undefined) {
+        if (!isRecord(cats))
+          fail('marca.categorias', 'debe ser un objeto { "categoría": "#color" }');
+        else for (const [k, v] of Object.entries(cats)) hex(`marca.categorias.${k}`, v);
       }
       for (const k of ['nombre', 'lema', 'logo']) {
         if (marca[k] !== undefined && typeof marca[k] !== 'string')

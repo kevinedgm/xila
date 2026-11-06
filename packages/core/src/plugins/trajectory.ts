@@ -311,6 +311,7 @@ export function trajectoryPlugin(options: TrajectoryOptions = {}): ChartPlugin {
       if (focus && !config.series.some((s) => s.id === focus)) focus = config.series[0]?.id ?? null;
       const muted = c.config.theme.muted ?? c.config.theme.grid;
       const palette = c.config.theme.palette;
+      const colors = config.colors ?? {};
       const t = times[cur] as number;
       let data = config.data;
       if (times.length && cur < times.length - 1) {
@@ -328,7 +329,11 @@ export function trajectoryPlugin(options: TrajectoryOptions = {}): ChartPlugin {
         series: config.series.map((s, i) => ({
           ...s,
           stroke:
-            focus === null || s.id === focus ? (palette[i % palette.length] ?? s.stroke) : muted,
+            focus === null || s.id === focus
+              ? ((Object.hasOwn(colors, s.id) ? colors[s.id] : undefined) ??
+                palette[i % palette.length] ??
+                s.stroke)
+              : muted,
         })),
         scatter: {
           ...(config.type === 'scatter' ? config.scatter : undefined),

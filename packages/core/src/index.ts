@@ -78,7 +78,7 @@ export type {
   FormatoValor,
   ValidationError,
 } from './dashboard/config';
-export { buildChart, buildKpi, applyFilters, formatter } from './dashboard/build';
+export { buildChart, buildKpi, applyFilters, categoryColors, formatter } from './dashboard/build';
 export type { KpiResult } from './dashboard/build';
 export { loadDashboard } from './dashboard/load';
 export type { LoadedDashboard } from './dashboard/load';

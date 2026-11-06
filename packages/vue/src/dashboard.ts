@@ -1,6 +1,7 @@
 import {
   buildChart,
   buildKpi,
+  categoryColors,
   chartToCsv,
   chartToPng,
   chartToSvg,
@@ -140,6 +141,8 @@ export const XilaPanelChart = defineComponent({
     conditions: { type: Array as PropType<readonly Condition[]>, default: () => [] },
     theme: { type: String as PropType<'light' | 'dark'>, default: 'light' },
     marca: { type: Object as PropType<MarcaConfig | undefined>, default: undefined },
+    /** Color fijo por categoría para todo el dashboard (`categoryColors`). */
+    colors: { type: Object as PropType<Readonly<Record<string, string>>>, default: () => ({}) },
   },
   setup(props) {
     const config = computed<ChartConfig>(() => {
@@ -180,7 +183,7 @@ export const XilaPanelChart = defineComponent({
           heatmap: { ...base.heatmap, colormap: m.divergente },
         });
       }
-      return markRaw({ ...base, plugins, theme });
+      return markRaw({ ...base, plugins, theme, colors: props.colors });
     });
     let chart: Chart | null = null;
     const name = () =>
@@ -326,6 +329,15 @@ export const XilaDashboard = defineComponent({
     const state = shallowRef<FilterState>({});
     const conditions = computed(() => toConditions(props.config.filtros ?? [], state.value));
     const theme = computed(() => props.config.tema ?? 'light');
+    // Un color por categoría para todo el tablero, calculado sin filtros: "Centro" no cambia
+    // de color entre paneles ni cuando un filtro quita otra sucursal.
+    const colors = computed(() =>
+      categoryColors(
+        props.config,
+        props.tables,
+        props.config.marca?.colores ?? themes[theme.value].palette,
+      ),
+    );
     // La marca entra como variables CSS sobre el contenedor: el CSS base no cambia.
     const brandStyle = computed(() => {
       const m = props.config.marca;
@@ -407,6 +419,7 @@ export const XilaDashboard = defineComponent({
                         conditions: conds,
                         theme: theme.value,
                         marca: props.config.marca,
+                        colors: colors.value,
                       }),
               ],
             );
