@@ -15,6 +15,8 @@ export interface FocusOptions {
   readonly format?: (value: number) => string;
   /** Etiquetas de la interfaz. */
   readonly ui?: Partial<Record<'group', string>>;
+  /** Avisa cuando el lector elige otra protagonista con los botones (p. ej. para la frase). */
+  readonly onChange?: (id: string) => void;
 }
 
 /**
@@ -73,6 +75,7 @@ export function focusPlugin(options: FocusOptions = {}): ChartPlugin {
         focus = spec.id;
         renderSelector(c);
         c.update({});
+        options.onChange?.(spec.id);
       });
       el?.appendChild(b);
     });

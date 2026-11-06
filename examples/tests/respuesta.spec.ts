@@ -28,6 +28,24 @@ test('con protagonista, la frase dice cuánto del total sale por él', async ({ 
   );
 });
 
+test('al elegir otra protagonista, la frase habla de ella y la conserva con un filtro', async ({
+  page,
+}) => {
+  await page.goto('/dashboard.html?config=cafeteria/dashboard.json');
+  const panel = page.locator('[data-panel="5"]');
+  const frase = panel.locator('.xila-answer');
+  await expect(frase).toContainText('App de entrega suma');
+  await panel.locator('.xila-focus-item[data-series="Mostrador"]').click();
+  await expect(frase).toContainText(/Mostrador suma \$[\d,]+: el \d+ ?% del total/);
+  await expect(panel.locator('[data-series="Mostrador"]')).toHaveAttribute('aria-pressed', 'true');
+
+  const periodo = page.locator('[data-filter="0"]');
+  await periodo.getByLabel('desde').fill('2025-01-01');
+  await periodo.getByLabel('desde').dispatchEvent('change');
+  await expect(frase).toContainText('Mostrador suma');
+  await expect(panel.locator('[data-series="Mostrador"]')).toHaveAttribute('aria-pressed', 'true');
+});
+
 test('los paneles sin «respuesta» no tienen frase', async ({ page }) => {
   await page.goto('/dashboard.html?config=cafeteria/dashboard.json');
   await page.locator('[data-panel="4"] .xila-answer').waitFor();

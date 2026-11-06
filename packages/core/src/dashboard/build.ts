@@ -182,6 +182,14 @@ export function formatter(formato: FormatoValor = 'numero'): (v: number) => stri
   }
 }
 
+/** Estado de la vista que no está en el JSON: la protagonista que eligió el lector. */
+export interface ChartView {
+  /** Protagonista elegida con los botones; gana sobre `panel.protagonista`. */
+  readonly protagonista?: string;
+  /** Se llama cuando el lector cambia de protagonista. */
+  readonly onFocus?: (id: string) => void;
+}
+
 /**
  * Frase de `respuesta` para un panel con `x` de tiempo. El filtro de fechas sobre `x` no
  * recorta los datos: da el rango a comparar, porque el año anterior y el periodo anterior
@@ -257,6 +265,7 @@ export function buildChart(
   panel: PanelChart,
   table: DataTable,
   filters: readonly Condition[] = [],
+  view: ChartView = {},
 ): ChartConfig {
   if (panel.tipo === 'cajas') return buildBoxes(panel, applyFilters(table, filters));
   if (panel.tipo === 'calor') return buildHeatmap(panel, applyFilters(table, filters));
@@ -323,13 +332,19 @@ export function buildChart(
   }
   if (panel.forma === 'ahora') return { type: 'line', data, series, axes, plugins: [nowPlugin()] };
   if (panel.forma === 'protagonista') {
-    const first = series.find((s) => s.id === panel.protagonista) ?? series[0];
+    const wanted = view.protagonista ?? panel.protagonista;
+    const first = series.find((s) => s.id === wanted) ?? series[0];
     return {
       type: 'line',
       data,
       series,
       axes,
-      plugins: [focusPlugin(first ? { series: first.id } : {})],
+      plugins: [
+        focusPlugin({
+          ...(first ? { series: first.id } : {}),
+          ...(view.onFocus ? { onChange: view.onFocus } : {}),
+        }),
+      ],
     };
   }
   return { type: 'line', data, series, axes };

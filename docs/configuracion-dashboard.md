@@ -220,7 +220,8 @@ Mecanismo:
   "Contra julio bajaron 10%".
 - **Protagonista.** Con `protagonista` y `grupos`, la última oración habla de él: "App de entrega
   suma $555,287: el 32% del total, contra 20% hace un año". Sin protagonista y con grupos
-  mezclados, nombra al que más sube y a los que bajan.
+  mezclados, nombra al que más sube y a los que bajan. Si el lector elige otra protagonista con los botones,
+  la frase pasa a hablar de ella y la conserva aunque cambie un filtro.
 - **Silencio.** Cambios menores al 3 % se dicen "prácticamente lo mismo".
 - **Sin inventar.** Sin datos completos de hace un año, la frase lo dice en vez de comparar.
 - Describe; no predice, no recomienda ni atribuye causas. Mismos datos y mismo rango, misma

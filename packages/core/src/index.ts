@@ -88,6 +88,7 @@ export {
   categoryColors,
   formatter,
 } from './dashboard/build';
+export type { ChartView } from './dashboard/build';
 export { compareRange, answerText, rangeText } from './answer';
 export type { CompareFacts, CompareOptions, Season, AnswerTextOptions } from './answer';
 export type { KpiResult } from './dashboard/build';

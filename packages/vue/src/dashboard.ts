@@ -165,11 +165,25 @@ export const XilaPanelChart = defineComponent({
     seasons: { type: Array as PropType<readonly TemporadaConfig[]>, default: () => [] },
   },
   setup(props) {
-    const answer = computed(() =>
-      buildAnswer(props.panel, props.table, props.conditions, props.seasons),
-    );
+    // Protagonista que el lector eligió con los botones. `chosen` (sin reactividad) la conserva
+    // si el gráfico se reconstruye por un filtro; `focus` (reactiva) mueve solo la frase, así un
+    // clic no rehace el gráfico.
+    let chosen: string | undefined;
+    const focus = ref<string>();
+    const onFocus = (id: string): void => {
+      chosen = id;
+      focus.value = id;
+    };
+    const answer = computed(() => {
+      const p = props.panel;
+      const panel = focus.value && p.tipo === 'linea' ? { ...p, protagonista: focus.value } : p;
+      return buildAnswer(panel, props.table, props.conditions, props.seasons);
+    });
     const config = computed<ChartConfig>(() => {
-      const base = buildChart(props.panel, props.table, props.conditions);
+      const base = buildChart(props.panel, props.table, props.conditions, {
+        ...(chosen ? { protagonista: chosen } : {}),
+        onFocus,
+      });
       // Con `forma`, el panel trae sus propios plugins (y sus propias etiquetas y controles):
       // solo se añade el tooltip. Sin forma, leyenda si hay varias series y zoom donde aplica.
       const propios = base.plugins ?? [];

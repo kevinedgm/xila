@@ -774,7 +774,8 @@ answerText(facts!, { subject: 'las ventas', format: formatCurrency, groups: 'las
 
 `compareRange` devuelve hechos (`value`, `yearAgo`, `previous`, `season`, `groups`) o `null`
 sin datos; una base que los datos no cubren completa queda en `null`. En el dashboard es la
-clave `respuesta` (ver `docs/configuracion-dashboard.md`).
+clave `respuesta` (ver `docs/configuracion-dashboard.md`). `focusPlugin({ onChange })` avisa
+cuando el lector elige otra protagonista; el dashboard lo usa para que la frase la siga.
 
 ### 6.7 Sistema de plugins
 
