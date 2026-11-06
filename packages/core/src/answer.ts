@@ -56,6 +56,8 @@ export interface GroupFacts {
   readonly value: number;
   /** Cambio contra las mismas fechas del año anterior; `null` sin datos de ese año. */
   readonly yearAgoChange: number | null;
+  /** Valor del grupo en las mismas fechas del año anterior; `null` sin datos de ese año. */
+  readonly yearAgoValue: number | null;
 }
 
 export interface CompareFacts {
@@ -148,7 +150,12 @@ export function compareRange(options: CompareOptions): CompareFacts | null {
           const rows = (i: number): boolean => col.codes[i] === code;
           const now = aggregate(from, to, rows);
           const before = yearAgo ? aggregate(yearAgo.from, yearAgo.to, rows) : Number.NaN;
-          return { name, value: now, yearAgoChange: change(now, before) };
+          return {
+            name,
+            value: now,
+            yearAgoChange: change(now, before),
+            yearAgoValue: before === before ? before : null,
+          };
         })
         .filter((g) => g.value === g.value)
         .sort((a, b) => b.value - a.value);
@@ -179,6 +186,11 @@ export interface AnswerTextOptions {
    * género de la frase. Sin él no se habla de grupos.
    */
   readonly groups?: string;
+  /**
+   * Grupo protagonista del panel ("App de entrega"): la frase de grupos habla de él, de su
+   * parte del total y de cuánto era hace un año, en vez de repasar a todos.
+   */
+  readonly focus?: string;
   readonly locale?: string;
 }
 
@@ -199,7 +211,8 @@ export function answerText(facts: CompareFacts, options: AnswerTextOptions): str
 
   if (facts.previous) {
     const c = facts.previous.change;
-    const span = spanText(facts.days);
+    const span =
+      monthText(facts.previous.from, facts.previous.to, options.locale) ?? spanText(facts.days);
     let s = flat(c)
       ? `Contra ${span} quedaron prácticamente igual`
       : `Contra ${span} ${c > 0 ? 'subieron' : 'bajaron'} ${pct(c)}`;
@@ -209,6 +222,11 @@ export function answerText(facts: CompareFacts, options: AnswerTextOptions): str
   }
 
   const groups = facts.groups;
+  const focus = options.focus ? groups?.find((g) => g.name === options.focus) : undefined;
+  if (focus && groups && groups.length > 1) {
+    out.push(focusText(focus, groups, facts, options, pct, flat));
+    return out.join(' ');
+  }
   if (options.groups && groups && groups.length > 1 && facts.yearAgo) {
     const known = groups.filter((g) => g.yearAgoChange !== null);
     const up = known.filter((g) => (g.yearAgoChange as number) >= facts.threshold);
@@ -233,11 +251,53 @@ export function answerText(facts: CompareFacts, options: AnswerTextOptions): str
         `${all} están abajo del año pasado; ${worst.name}, ${which} bajó (−${pct(worst.yearAgoChange as number)}).`,
       );
     } else if (down.length > 0) {
+      // Mezcla: el que más sube primero, para que una baja no tape el resto de la historia.
+      const best = top[0] as GroupFacts;
       const names = down.map((g) => `${g.name} (−${pct(g.yearAgoChange as number)})`);
-      out.push(`${listText(names)} ${down.length === 1 ? 'está' : 'están'} abajo del año pasado.`);
+      const lead =
+        up.length > 0
+          ? `${best.name} es ${which} sube (+${pct(best.yearAgoChange as number)}); `
+          : '';
+      const tail = `${listText(names)} ${down.length === 1 ? 'está' : 'están'} abajo del año pasado.`;
+      out.push(lead ? lead + tail : capitalize(tail));
     }
   }
   return out.join(' ');
+}
+
+/**
+ * "App de entrega suma $495,330: el 32% del total, contra 20% hace un año." Con promedios la
+ * parte del total no tiene sentido y se dice el cambio contra el año anterior.
+ */
+function focusText(
+  g: GroupFacts,
+  groups: readonly GroupFacts[],
+  facts: CompareFacts,
+  options: AnswerTextOptions,
+  pct: (c: number) => string,
+  flat: (c: number) => boolean,
+): string {
+  const head = `${g.name} ${options.mean ? 'promedia' : 'suma'} ${options.format(g.value)}`;
+  const c = g.yearAgoChange;
+  if (options.mean) {
+    if (c === null) return `${head}.`;
+    return flat(c)
+      ? `${head}: prácticamente lo mismo que hace un año.`
+      : `${head}: ${pct(c)} ${c > 0 ? 'más' : 'menos'} que hace un año.`;
+  }
+  const total = groups.reduce((a, x) => a + x.value, 0);
+  const share = total > 0 ? g.value / total : Number.NaN;
+  if (share !== share) return `${head}.`;
+  let text = `${head}: el ${pct(share)} del total`;
+  if (facts.yearAgo && g.yearAgoValue !== null) {
+    const before = groups.reduce((a, x) => a + (x.yearAgoValue ?? 0), 0);
+    const was = before > 0 ? g.yearAgoValue / before : Number.NaN;
+    if (was === was) {
+      const same = pct(was) === pct(share);
+      text += same ? `, igual que hace un año` : `, contra ${pct(was)} hace un año`;
+    }
+  }
+  return `${text}.`;
 }
 
 function floorDay(ms: number): number {
@@ -269,6 +329,15 @@ function count(n: number, feminine: boolean): string {
 function listText(items: readonly string[]): string {
   if (items.length <= 1) return items[0] ?? '';
   return `${items.slice(0, -1).join(', ')} y ${items[items.length - 1]}`;
+}
+
+/** "julio" si el rango es un mes de calendario completo; `null` si no. */
+function monthText(from: number, to: number, locale = 'es-MX'): string | null {
+  const a = new Date(from);
+  const next = new Date(to + DAY);
+  if (a.getUTCDate() !== 1 || next.getUTCDate() !== 1) return null;
+  if (next.getUTCMonth() !== (a.getUTCMonth() + 1) % 12) return null;
+  return new Intl.DateTimeFormat(locale, { month: 'long', timeZone: 'UTC' }).format(a);
 }
 
 /** "las 4 semanas anteriores", "la semana anterior", "los 31 días anteriores". */

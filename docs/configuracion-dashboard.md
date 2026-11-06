@@ -215,6 +215,12 @@ Mecanismo:
   anterior del mismo largo.
 - **Temporadas.** Solo se nombran las declaradas en `temporadas`: si el periodo anterior cayó
   en una y el actual no, la frase lo dice para que una baja no se lea como mala noticia.
+- **Panel por mes.** Con `periodo` `month`, `quarter` o `year` y sin filtro de fechas, el rango
+  es el último periodo del calendario (el mismo que rotula la línea), y el anterior se nombra:
+  "Contra julio bajaron 10%".
+- **Protagonista.** Con `protagonista` y `grupos`, la última oración habla de él: "App de entrega
+  suma $555,287: el 32% del total, contra 20% hace un año". Sin protagonista y con grupos
+  mezclados, nombra al que más sube y a los que bajan.
 - **Silencio.** Cambios menores al 3 % se dicen "prácticamente lo mismo".
 - **Sin inventar.** Sin datos completos de hace un año, la frase lo dice en vez de comparar.
 - Describe; no predice, no recomienda ni atribuye causas. Mismos datos y mismo rango, misma

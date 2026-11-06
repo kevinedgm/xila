@@ -125,6 +125,11 @@
       "periodo": "month",
       "ejes": {
         "y": "MXN"
+      },
+      "respuesta": {
+        "sujeto": "las ventas",
+        "formato": "moneda",
+        "grupos": "los canales"
       }
     },
     {

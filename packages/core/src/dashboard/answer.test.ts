@@ -1,4 +1,5 @@
 import diarioCsv from '../../../../examples/public/cafeteria/data/diario.csv?raw';
+import ventasCsv from '../../../../examples/public/cafeteria/data/ventas.csv?raw';
 import { describe, expect, it } from 'vitest';
 import { parseCsv } from '../data/csv';
 import { buildAnswer } from './build';
@@ -86,5 +87,57 @@ describe('configuración de respuesta y temporadas', () => {
     });
     const errs = validateDashboard(config, { diario });
     expect(errs.map((e) => e.message).join()).toMatch(/sucursal.*se esperaba time/);
+  });
+});
+
+describe('buildAnswer con protagonista', () => {
+  const ventas = parseCsv(ventasCsv).table;
+  const app = {
+    tipo: 'linea',
+    forma: 'protagonista',
+    protagonista: 'App de entrega',
+    datos: 'ventas',
+    x: 'fecha',
+    y: 'ventas_mxn',
+    color: 'canal',
+    agregado: 'sum',
+    periodo: 'month',
+    respuesta: { sujeto: 'las ventas', formato: 'moneda', grupos: 'los canales' },
+  } as const satisfies PanelChart;
+
+  it('dice cuánto del total sale por el protagonista, contra hace un año', () => {
+    const text = buildAnswer(app, ventas, [], temporadas)!;
+    // Panel por mes: el último mes del calendario, el mismo que rotula la línea.
+    expect(text).toMatch(/^Del 1 al 31 de agosto de 2025,/);
+    expect(text).toContain('Contra julio bajaron');
+    expect(text).toMatch(
+      /App de entrega suma \$[\d,]+: el 32 ?% del total, contra 20 ?% hace un año\.$/,
+    );
+  });
+
+  it('sin año anterior, solo su parte del total', () => {
+    const text = buildAnswer(
+      app,
+      ventas,
+      [{ column: 'fecha', min: '2024-03-01', max: '2024-03-31T23:59:59.999Z' }],
+      temporadas,
+    )!;
+    expect(text).toMatch(/App de entrega suma \$[\d,]+: el 15 ?% del total\.$/);
+  });
+
+  it('sin protagonista y con grupos mezclados, nombra al que más sube y a los que bajan', () => {
+    const sin: PanelChart = {
+      tipo: 'linea',
+      datos: 'ventas',
+      x: 'fecha',
+      y: 'ventas_mxn',
+      color: 'canal',
+      agregado: 'sum',
+      respuesta: app.respuesta,
+    };
+    const text = buildAnswer(sin, ventas, [], temporadas)!;
+    expect(text).toMatch(
+      /App de entrega es el que más sube \(\+89 ?%\); Mostrador \(−5 ?%\) está abajo/,
+    );
   });
 });

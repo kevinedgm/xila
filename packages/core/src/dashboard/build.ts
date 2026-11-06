@@ -9,7 +9,7 @@ import { nowPlugin } from '../plugins/now';
 import { referencePlugin } from '../plugins/reference';
 import { trajectoryPlugin } from '../plugins/trajectory';
 import { trendPlugin } from '../plugins/trend';
-import { floorTime } from '../scales/time';
+import { floorTime, type TimeUnit } from '../scales/time';
 import type {
   DashboardConfig,
   FormatoValor,
@@ -207,8 +207,19 @@ export function buildAnswer(
       range = [toMs(f.min), toMs(f.max)];
     else rest.push(f);
   }
+  const data = applyFilters(table, rest);
+  // Un panel por mes (o trimestre, año) habla del último periodo del calendario, el mismo que
+  // muestra la etiqueta de la línea; por semana o día, de las últimas `dias` (28) jornadas.
+  const coarse =
+    panel.periodo === 'month' || panel.periodo === 'quarter' || panel.periodo === 'year';
+  if (!range && coarse && !r.dias) {
+    const t = data.numeric(panel.x);
+    let last = -Infinity;
+    for (let i = 0; i < t.length; i++) if ((t[i] as number) > last) last = t[i] as number;
+    if (Number.isFinite(last)) range = [floorTime(last, panel.periodo as TimeUnit), null];
+  }
   const facts = compareRange({
-    table: applyFilters(table, rest),
+    table: data,
     time: panel.x,
     value: y,
     agg: panel.agregado === 'mean' || panel.agregado === 'count' ? panel.agregado : 'sum',
@@ -233,6 +244,7 @@ export function buildAnswer(
     format,
     mean: panel.agregado === 'mean',
     ...(r.grupos ? { groups: r.grupos } : {}),
+    ...(r.grupos && panel.protagonista ? { focus: panel.protagonista } : {}),
   });
 }
 

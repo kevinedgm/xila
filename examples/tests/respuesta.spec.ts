@@ -21,8 +21,15 @@ test('la frase responde y sigue a los filtros', async ({ page }) => {
   await expect(frase).toContainText('estas fechas son de Guelaguetza');
 });
 
+test('con protagonista, la frase dice cuánto del total sale por él', async ({ page }) => {
+  await page.goto('/dashboard.html?config=cafeteria/dashboard.json');
+  await expect(page.locator('[data-panel="5"] .xila-answer')).toContainText(
+    /App de entrega suma \$[\d,]+: el 32 ?% del total, contra 20 ?% hace un año/,
+  );
+});
+
 test('los paneles sin «respuesta» no tienen frase', async ({ page }) => {
   await page.goto('/dashboard.html?config=cafeteria/dashboard.json');
   await page.locator('[data-panel="4"] .xila-answer').waitFor();
-  await expect(page.locator('.xila-answer')).toHaveCount(1);
+  await expect(page.locator('.xila-answer')).toHaveCount(2);
 });
