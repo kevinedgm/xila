@@ -710,6 +710,13 @@ Más: `domain: [min, max] | 'auto'` y `nice: true`. Ejes: `axes.x|y = { title, s
 format }`, donde `format` es `(valor: number) => string`. Para formatear hay
 `formatNumber`, `formatSI`, `formatScientific`, `formatPercent` y `formatCurrency`.
 
+Etiquetas que no caben (un teléfono): en un eje de bandas los nombres se escalonan en dos o
+tres renglones antes de quitar alguno (`staggerLabels`); en ejes continuos se ralean
+(`thinLabels`). En `box.now`, si el contexto ("sobre el 84 %") no cabe en la columna, queda solo
+la cifra. En la ranura, la columna de textos no pasa de la mitad del ancho: primero se quitan
+"desde" y el conteo, luego todo salvo la cifra; tooltip y tabla accesible conservan la frase
+completa.
+
 ### 6.4 Temas
 
 `theme: 'light'` (defecto: fondo manta `#f6f1e8`, serie principal cobalto `#1f4bd8`) o

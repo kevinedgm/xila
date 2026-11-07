@@ -5,6 +5,8 @@ import {
   drawAxes,
   textStyle,
   thinLabels,
+  staggerLabels,
+  labelRows,
   TICK_GAP,
   TICK_SIZE,
   type AxisTicks,
@@ -92,6 +94,8 @@ const HOVER_DISTANCE = 24;
 const LEGEND_BAR = 12;
 const LEGEND_GAP = 10;
 /** Fracción máxima del ancho que pueden ocupar las notas por fila del heatmap. */
+/** Parte máxima del ancho para la columna de textos de la ranura antes de acortarlos. */
+const STATUS_MAX_SHARE = 0.5;
 const NOTES_MAX_SHARE = 1 / 3;
 
 export interface ChartScales {
@@ -726,13 +730,15 @@ export class Chart {
       notesWanted <= (provisional.width - margins.left - legendWidth) * NOTES_MAX_SHARE;
     const notesWidth = this.rowNotesOn ? notesWanted : 0;
     // Ranura: la columna derecha (valor y estado en palabras) se mide con los textos reales.
-    this.statusTextCache = this.statusTexts();
-    const statusWidth =
-      this.status && this.statusTextCache.length > 0
-        ? LEGEND_GAP +
+    // En un teléfono no cabe la frase completa: se acorta por niveles (sin "desde" ni "n", luego
+    // solo la cifra) hasta que la columna deje al menos la mitad del ancho a la ranura.
+    const statusWidthOf = (texts: { value: string; status: string }[]): number =>
+      texts.length === 0
+        ? 0
+        : LEGEND_GAP +
           Math.max(
             0,
-            ...this.statusTextCache.map(
+            ...texts.map(
               (t) =>
                 renderer.measureText(t.value, { font: statusValueFont(theme), fill: theme.text }) +
                 (t.status
@@ -743,9 +749,17 @@ export class Chart {
                     })
                   : 0),
             ),
-          )
-        : 0;
-    const plotArea: Rect = {
+          );
+    let statusWidth = 0;
+    if (this.status) {
+      const room = (provisional.width - margins.left - theme.fontSize) * STATUS_MAX_SHARE;
+      for (const level of [0, 1, 2] as const) {
+        this.statusTextCache = this.statusTexts(level);
+        statusWidth = statusWidthOf(this.statusTextCache);
+        if (statusWidth <= room) break;
+      }
+    } else this.statusTextCache = [];
+    let plotArea: Rect = {
       x: provisional.x + margins.left,
       y: provisional.y + theme.fontSize / 2,
       width: Math.max(
@@ -756,9 +770,31 @@ export class Chart {
     };
     scales = this.buildScales(plotArea, scales);
     ticks = this.buildTicks(scales);
+    // Bandas abajo: si los nombres no caben en un renglón, se escalonan en dos o tres antes de
+    // quitar ninguno; el área de dibujo cede la altura de los renglones extra.
+    const staggered =
+      !flip && scales.x.kind === 'band' && config.axes.x.show
+        ? staggerLabels(renderer, theme, ticks.x)
+        : null;
+    const extraRows = staggered ? labelRows(staggered) - 1 : 0;
+    if (extraRows > 0) {
+      plotArea = {
+        ...plotArea,
+        height: Math.max(1, plotArea.height - extraRows * theme.fontSize * 1.2),
+      };
+      scales = this.buildScales(plotArea, scales);
+      ticks = this.buildTicks(scales);
+    }
     ticks = flip
       ? { x: ticks.x, y: thinLabels(renderer, theme, ticks.y) }
-      : { x: thinLabels(renderer, theme, ticks.x), y: ticks.y };
+      : {
+          x: staggered
+            ? staggered.rows
+              ? { ...ticks.x, rows: staggered.rows }
+              : ticks.x
+            : thinLabels(renderer, theme, ticks.x),
+          y: ticks.y,
+        };
     axes = physical(ticks);
     this.scales = scales;
     this.layout = { width, height, plotArea };
@@ -2109,40 +2145,33 @@ export class Chart {
               : p >= 0.95
                 ? (L.highest ?? '').replace('{p}', String(Math.max(1, 100 - pct)))
                 : (L.above ?? '').replace('{p}', String(pct));
-        const above = cy - 34 >= area.y;
         const lh = theme.fontSize * 1.15;
         const fontValue = `600 ${theme.fontSize}px ${monoFont(theme)}`;
         const fontContext = `${Math.round(theme.fontSize * 0.85)}px ${theme.fontFamily}`;
-        const top = above ? cy - 10 - 2 * lh : cy + 10;
-        chip(
-          [
-            { text: context, font: fontContext },
-            { text: format(v), font: fontValue },
-          ],
-          cx,
-          top,
+        const valueLine = { text: format(v), font: fontValue, fill: theme.text };
+        const contextLine = { text: context, font: fontContext, fill: theme.axis };
+        // Bandas angostas (un teléfono): "sobre el 84 %" no cabe en su columna y se encima con
+        // la vecina; queda solo la cifra y el contexto sigue en el tooltip.
+        const fits =
+          renderer.measureText(context, { font: fontContext, fill: theme.text }) + 8 <= slot;
+        const count = fits ? 2 : 1;
+        const above = cy - 10 - count * lh >= area.y;
+        // Encima del punto el contexto va primero; debajo, primero la cifra (la más cercana).
+        const lines = !fits
+          ? [valueLine]
+          : above
+            ? [contextLine, valueLine]
+            : [valueLine, contextLine];
+        const top = above ? cy - 10 - count * lh : cy + 10;
+        chip(lines, cx, top);
+        lines.forEach((l, k) =>
+          renderer.drawText('overlay', l.text, cx, top + k * lh, {
+            font: l.font,
+            fill: l.fill,
+            align: 'center',
+            baseline: 'top',
+          }),
         );
-        const [first, second] = above
-          ? [
-              { text: context, font: fontContext, fill: theme.axis },
-              { text: format(v), font: fontValue, fill: theme.text },
-            ]
-          : [
-              { text: format(v), font: fontValue, fill: theme.text },
-              { text: context, font: fontContext, fill: theme.axis },
-            ];
-        renderer.drawText('overlay', first.text, cx, top, {
-          font: first.font,
-          fill: first.fill,
-          align: 'center',
-          baseline: 'top',
-        });
-        renderer.drawText('overlay', second.text, cx, top + lh, {
-          font: second.font,
-          fill: second.fill,
-          align: 'center',
-          baseline: 'top',
-        });
       }
     });
   }
@@ -2206,7 +2235,8 @@ export class Chart {
     if (!this.status) return null;
     return {
       layout: this.status,
-      texts: this.statusTextCache,
+      // Tooltip y tabla accesible: siempre la frase completa, aunque la columna vaya acortada.
+      texts: this.statusTexts(0),
       px: this.statusPx,
       py: this.statusPy,
     };
@@ -2283,7 +2313,8 @@ export class Chart {
   }
 
   /** Textos de la columna derecha: valor (o diferencia) y contexto, y la palabra del estado. */
-  private statusTexts(): { value: string; status: string }[] {
+  /** `level`: 0 completo, 1 sin "desde" ni conteo, 2 solo la cifra principal (y "parcial"). */
+  private statusTexts(level: 0 | 1 | 2 = 0): { value: string; status: string }[] {
     const { config } = this;
     const s = this.status;
     if (!s || config.type !== 'box') return [];
@@ -2329,15 +2360,16 @@ export class Chart {
         parts.push(fmt(r.raw));
         if (r.distance > 0) parts.push(fill(L.aboveRef, { d, ref: refName }));
         else if (r.distance < 0) parts.push(fill(L.belowRef, { d, ref: refName }));
-        if (r.crossing === r.crossing && r.distance !== 0) {
+        if (level === 0 && r.crossing === r.crossing && r.distance !== 0) {
           parts.push(fill(L.since, { p: period(r.crossing) }));
         }
       }
-      if (box.count !== null && r.count === r.count) {
+      if (level === 0 && box.count !== null && r.count === r.count) {
         parts.push(fill(L.count, { n: formatNumber(r.count) }));
       }
-      if (this.statusIsPartial(r, cutoff)) parts.push(L.partial ?? '');
-      return { value: parts.filter(Boolean).join(' · '), status: S[r.status] ?? '' };
+      const kept = level === 2 ? parts.slice(0, 1) : parts;
+      if (this.statusIsPartial(r, cutoff)) kept.push(L.partial ?? '');
+      return { value: kept.filter(Boolean).join(' · '), status: S[r.status] ?? '' };
     });
   }
 

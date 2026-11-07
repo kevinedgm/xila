@@ -16,6 +16,8 @@ export interface AxisTicks {
   readonly labels: string[];
   /** Posición en píxeles de cada tick, una vez que la escala tiene su rango final. */
   readonly positions: number[];
+  /** Renglón de cada etiqueta de X cuando se escalonan (0 = el de arriba). */
+  readonly rows?: number[];
 }
 
 export function textStyle(theme: Theme, fill = theme.text): TextStyle {
@@ -108,6 +110,37 @@ export function thinLabels(renderer: Renderer, theme: Theme, ticks: AxisTicks): 
   };
 }
 
+/**
+ * Etiquetas de bandas en renglones alternos en vez de quitarlas: en un teléfono, siete países
+ * no caben en una fila, pero en dos sí, y una categoría sin nombre no se puede leer. Devuelve
+ * cuántos renglones hacen falta (hasta `maxRows`) o `null` si ni así caben.
+ */
+export function staggerLabels(
+  renderer: Renderer,
+  theme: Theme,
+  ticks: AxisTicks,
+  maxRows = 3,
+): AxisTicks | null {
+  const style = textStyle(theme);
+  const widths = ticks.labels.map((l) => renderer.measureText(l, style) + 8);
+  const n = ticks.positions.length;
+  for (let k = 1; k <= maxRows; k++) {
+    let ok = true;
+    for (let i = k; i < n && ok; i++) {
+      const gap = Math.abs((ticks.positions[i] as number) - (ticks.positions[i - k] as number));
+      if (gap < ((widths[i] as number) + (widths[i - k] as number)) / 2) ok = false;
+    }
+    // La primera y la última no deben salirse del lienzo más de media etiqueta (como hoy).
+    if (ok) return k === 1 ? ticks : { ...ticks, rows: ticks.values.map((_, i) => i % k) };
+  }
+  return null;
+}
+
+/** Renglones que ocupan las etiquetas de X (1 sin escalonar). */
+export function labelRows(ticks: AxisTicks): number {
+  return ticks.rows ? Math.max(0, ...ticks.rows) + 1 : 1;
+}
+
 export function drawAxes(
   renderer: Renderer,
   theme: Theme,
@@ -162,9 +195,14 @@ export function drawAxes(
 
   if (xAxis.show) {
     if (!bare) renderer.drawRule('background', area.x, bottom, right, bottom, axisLine);
+    const line = theme.fontSize * 1.2;
     xTicks.positions.forEach((px, i) => {
+      // Escalonadas: la etiqueta baja a su renglón, centrada bajo su banda. La marca no se
+      // alarga: cruzaría el nombre del renglón de arriba.
+      const row = xTicks.rows?.[i] ?? 0;
       if (!bare) renderer.drawRule('background', px, bottom, px, bottom + TICK_SIZE, axisLine);
-      renderer.drawText('background', xTicks.labels[i] ?? '', px, bottom + TICK_SIZE + TICK_GAP, {
+      const y = bottom + TICK_SIZE + TICK_GAP + row * line;
+      renderer.drawText('background', xTicks.labels[i] ?? '', px, y, {
         ...label,
         align: 'center',
         baseline: 'top',
@@ -173,12 +211,11 @@ export function drawAxes(
     if (xAxis.title) {
       // Debajo de las etiquetas, no al borde del lienzo: así respeta el espacio que un plugin
       // reserva abajo (leyenda o panel de resumen).
-      const line = theme.fontSize * 1.2;
       renderer.drawText(
         'background',
         xAxis.title,
         area.x + area.width / 2,
-        bottom + TICK_SIZE + TICK_GAP + line + TITLE_GAP,
+        bottom + TICK_SIZE + TICK_GAP + line * labelRows(xTicks) + TITLE_GAP,
         {
           ...label,
           align: 'center',
