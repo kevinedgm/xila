@@ -1,9 +1,10 @@
 # Sitio de documentación de Xila
 
 Sitio estático con [VitePress](https://vitepress.dev) 1.6, en español, publicado en GitHub Pages en cada push a `main`
-(`.github/workflows/docs.yml`): **https://kevinedgm.github.io/xila/**. El marco es propio y viste la marca (manta,
-tinta, cobalto e hilo; Instrument Sans, JetBrains Mono y Fraunces): la página actual del índice y la sección activa
-llevan la puntada en cobalto, como la última puntada de la greca.
+(`.github/workflows/docs.yml`): **https://kevinedgm.github.io/xila/**. El marco es propio y viste la marca 2.0
+(`marca/README.md`: añil en varias intensidades sobre manta; Familjen Grotesk para el lema y los títulos, Instrument
+Sans para el texto): la página actual del índice y la sección activa llevan la puntada en añil, como el centro del
+emblema, que es el dato.
 
 ```bash
 pnpm --filter xilaplot --filter xilaplot-vue build   # los ejemplos importan los paquetes construidos
@@ -65,7 +66,7 @@ de `DEFAULTS` de xilaplot. Hoy la lleva `docs/guia/tipos.md`.
 `onContentUpdated`, `withBase`) y el módulo del índice de búsqueda local (`@localSearchIndex`, vigilado por la prueba del
 generador). Sin `DefaultTheme`: de VitePress solo quedan los estilos de documento (`.vp-doc`).
 
-- **Banda** de 64 px: marca (`marca/xila.svg` en línea, la última puntada en cobalto o hilo según el tema), secciones
+- **Banda** de 64 px: marca (`marca/xila-claro.svg` o `xila-oscuro.svg` en línea según el tema), secciones
   (Guía, Galería, Dashboards, Referencia, GitHub), «Buscar ⌘K», tema de dos estados (`data-theme` + la clase `dark` de
   VitePress; la preferencia es la de VitePress) y, bajo 48rem, la hamburguesa con la pantalla de menú.
 - **Índice** (`Indice.vue`, 272 px desde 60rem; cajón `<dialog>` por debajo, abierto desde «Menú»): grupos Guía,

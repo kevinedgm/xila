@@ -1,30 +1,32 @@
-/* Tema del sitio de Xila: la marca (manta, tinta, cobalto e hilo; Instrument Sans, JetBrains Mono y Fraunces) como
-   tokens --x-*, y las variables de VitePress leyéndolos, así los estilos de documento (.vp-doc) y el marco visten igual.
+/* Tema del sitio de Xila: la marca 2.0 (añil en varias intensidades sobre manta; Familjen Grotesk para títulos e
+   Instrument Sans para el texto) como tokens --x-*, y las variables de VitePress leyéndolos, así los estilos de
+   documento (.vp-doc) y el marco visten igual.
    `data-theme` en <html> lo escribe el script del <head> antes de pintar y el Layout al cambiar. Anatomía editorial:
    nada de sombras, degradados ni cajas; una rejilla de 1 px y el dato manda. */
 
 :root {
-  --x-manta: #f6f1e8;
-  --x-tinta: #15171f;
-  --x-cobalto: #1f4bd8;
-  --x-hilo: #d14e0a;
+  /* Guía de marca 2.0: un solo tinte, el añil, en varias intensidades sobre manta (marca/README.md). */
+  --x-anil: #16255c;
+  --x-anil-medio: #2f4fa8;
+  --x-anil-claro: #7fa0e0;
+  --x-bruma: #c9d6f2;
+  --x-manta: #f4f1ea;
+  --x-contexto: #c4c6cf;
 
   --x-bg: var(--x-manta);
-  --x-bg-2: #efe9de; /* hundida: índice, código */
-  --x-bg-3: #fffdf9; /* elevada: superficies que flotan */
-  --x-ink: var(--x-tinta);
-  --x-ink-2: #5b5f6e;
-  --x-ink-3: #7b7f8c;
-  --x-line: #e3ddd1;
-  --x-line-2: #cfc9bd;
-  --x-accent: var(--x-cobalto);
-  --x-accent-2: #173aa8;
-  --x-accent-soft: rgba(31, 75, 216, 0.1);
-  --x-hilo-text: #ad3f09;
+  --x-bg-2: #ebe7dd; /* hundida: índice, código */
+  --x-bg-3: #fffdf9; /* elevada: tarjetas, búsqueda */
+  --x-ink: var(--x-anil);
+  --x-ink-2: #4a5274;
+  --x-line: #dcd6ca;
+  --x-line-2: #c6c0b3;
+  --x-accent: var(--x-anil-medio);
+  --x-accent-2: var(--x-anil);
+  --x-accent-soft: rgba(47, 79, 168, 0.1);
 
   --x-font-ui: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --x-font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --x-font-display: Fraunces, Georgia, 'Times New Roman', serif;
+  --x-font-display: 'Familjen Grotesk', 'Instrument Sans', system-ui, sans-serif;
 
   --x-band: 64px;
   --x-local: 48px;
@@ -39,20 +41,16 @@
 }
 
 :root[data-theme='dark'] {
-  --x-bg: var(--x-tinta);
-  --x-bg-2: #111319;
-  --x-bg-3: #1e2130;
-  --x-ink: var(--x-manta);
-  --x-ink-2: #a9adbd;
-  --x-ink-3: #868a9a;
-  --x-line: #2b2f3d;
-  --x-line-2: #3b4050;
-  --x-accent: #7a9bff;
-  --x-accent-2: #9db5ff;
-  --x-accent-soft: rgba(122, 155, 255, 0.16);
-  --x-hilo: #ff8a3d;
-  --x-hilo-text: #ff8a3d;
-  --xila-color: #ff8a3d; /* la última puntada de la greca, en oscuro va de hilo */
+  --x-bg: #0f1530;
+  --x-bg-2: #0b1026;
+  --x-bg-3: #16204a;
+  --x-ink: #eef0f8;
+  --x-ink-2: #b3bcd9;
+  --x-line: #2a3563;
+  --x-line-2: #3a4679;
+  --x-accent: var(--x-anil-claro);
+  --x-accent-2: #9db8ea;
+  --x-accent-soft: rgba(127, 160, 224, 0.16);
 }
 
 /* VitePress lee los tokens */
@@ -76,8 +74,8 @@
   --vp-c-brand-soft: var(--x-accent-soft);
   --vp-c-tip-1: var(--x-accent);
   --vp-c-tip-soft: var(--x-accent-soft);
-  --vp-c-warning-1: var(--x-hilo-text);
-  --vp-c-warning-soft: rgba(209, 78, 10, 0.12);
+  --vp-c-warning-1: #8a4b00;
+  --vp-c-warning-soft: rgba(176, 120, 30, 0.14);
   --vp-c-danger-1: #b3261e;
   --vp-c-danger-soft: rgba(179, 38, 30, 0.1);
   --vp-c-default-soft: var(--x-bg-2);
@@ -113,6 +111,7 @@
 :root[data-theme='dark'] {
   --vp-c-danger-1: #ff7b72;
   --vp-c-danger-soft: rgba(255, 123, 114, 0.14);
+  --vp-c-warning-1: #e6b566;
 }
 
 html {
@@ -156,7 +155,7 @@ body {
   inset-block-start: -100px;
   z-index: 100;
   padding: 8px 12px;
-  background: var(--x-accent);
+  background: var(--x-anil);
   color: var(--x-manta);
   border-radius: var(--x-radius);
   font-weight: 600;
@@ -254,14 +253,22 @@ body {
   background: var(--x-bg-2);
   border-color: var(--x-ink-3);
 }
-.x-btn--brand {
-  background: var(--x-cobalto);
-  border-color: var(--x-cobalto);
+.x-btn--manta {
+  background: var(--x-manta);
+  border-color: var(--x-manta);
+  color: var(--x-anil);
+}
+.x-btn--manta:hover {
+  background: #fffdf9;
+  border-color: #fffdf9;
+}
+.x-btn--bruma {
+  border-color: var(--x-anil-claro);
   color: var(--x-manta);
 }
-.x-btn--brand:hover {
-  background: #173aa8;
-  border-color: #173aa8;
+.x-btn--bruma:hover {
+  background: rgba(244, 241, 234, 0.1);
+  border-color: var(--x-manta);
 }
 
 /* ---------------------------------------------------------------- la banda */
@@ -301,6 +308,13 @@ html[data-top] .x-band {
   display: block;
   height: 32px;
   width: auto;
+}
+.x-brand__mark--oscuro,
+:root[data-theme='dark'] .x-brand__mark--claro {
+  display: none;
+}
+:root[data-theme='dark'] .x-brand__mark--oscuro {
+  display: block;
 }
 .x-nav {
   flex: 1;
@@ -544,7 +558,8 @@ html[data-top] .x-band {
   min-width: 0;
 }
 .x-index__code {
-  font: 500 12px var(--x-font-mono);
+  font: 600 12px var(--x-font-ui);
+  font-variant-numeric: tabular-nums;
   color: var(--x-ink-2);
   background: none;
   padding: 0;
@@ -793,7 +808,6 @@ html[data-top] .x-band {
   font-family: var(--x-font-display);
   font-weight: 600;
   letter-spacing: -0.01em;
-  font-variation-settings: 'opsz' 48;
 }
 .vp-doc h1 {
   font-size: 40px;
@@ -812,7 +826,8 @@ html[data-top] .x-band {
 .vp-doc h2[data-n]::before {
   content: attr(data-n);
   margin-inline-end: 12px;
-  font: 500 14px var(--x-font-mono);
+  font: 600 14px var(--x-font-ui);
+  font-variant-numeric: tabular-nums;
   color: var(--x-accent);
   vertical-align: 0.2em;
 }
@@ -1178,7 +1193,7 @@ details.x-code > div[class*='language-'] {
 .x-home {
   max-width: 1104px;
   margin: 0 auto;
-  padding: 48px 24px 0;
+  padding: 0 24px;
 }
 .x-home__body {
   padding: 0;
@@ -1194,48 +1209,57 @@ details.x-code > div[class*='language-'] {
 }
 .x-hero {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-areas: 'mark title' 'mark text' 'mark actions' 'mark estado';
-  column-gap: 40px;
-  align-items: start;
-  padding-bottom: 48px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px 48px;
+  align-items: center;
+  margin: 24px 0 48px;
+  padding: 48px 40px;
+  border-radius: 24px;
+  background: var(--x-anil);
+  color: var(--x-manta);
 }
-.x-hero__mark {
-  grid-area: mark;
-  color: var(--x-ink);
-}
-.x-hero__mark svg {
-  display: block;
-  width: 160px;
-  height: 160px;
+.x-hero__main {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
 }
 .x-hero__title {
-  grid-area: title;
   margin: 0;
-  font: 600 72px/1 var(--x-font-display);
-  letter-spacing: -0.02em;
-  font-variation-settings: 'opsz' 144;
+}
+.x-hero__wordmark svg {
+  display: block;
+  height: 84px;
+  width: auto;
+  max-width: 100%;
+}
+.x-hero__lema {
+  margin: 0;
+  max-width: 18ch;
+  font: 600 clamp(32px, 5vw, 52px) / 1.05 var(--x-font-display);
+  letter-spacing: -0.01em;
 }
 .x-hero__text {
-  grid-area: text;
-  margin: 20px 0 0;
-  max-width: 760px;
-  font-size: 20px;
-  line-height: 1.45;
-  color: var(--x-ink-2);
+  margin: 0;
+  max-width: 60ch;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--x-bruma);
 }
 .x-hero__actions {
-  grid-area: actions;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 28px 0 0;
+  margin: 8px 0 0;
 }
 .x-hero__estado {
-  grid-area: estado;
-  margin: 24px 0 0;
+  margin: 0;
   font-size: 13px;
-  color: var(--x-ink-2);
+  color: var(--x-bruma);
+}
+.x-hero__mark svg {
+  display: block;
+  width: 180px;
+  height: 180px;
 }
 .x-home__h2 {
   margin: 0 0 12px;
@@ -1347,11 +1371,11 @@ a.x-q:hover .x-q__row .x-stitch {
 }
 .x-marca--claro {
   background: var(--x-manta);
-  color: var(--x-tinta);
-  border: 1px solid #e3ddd1;
+  color: var(--x-anil);
+  border: 1px solid #dcd6ca;
 }
 .x-marca--oscuro {
-  background: var(--x-tinta);
+  background: var(--x-anil);
   color: var(--x-manta);
 }
 .x-marca__item {
@@ -1407,15 +1431,17 @@ a.x-q:hover .x-q__row .x-stitch {
   }
   .x-hero {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'mark' 'title' 'text' 'actions' 'estado';
+    padding: 32px 24px;
+  }
+  .x-hero__mark {
+    order: -1;
   }
   .x-hero__mark svg {
     width: 96px;
     height: 96px;
-    margin-bottom: 16px;
   }
-  .x-hero__title {
-    font-size: 56px;
+  .x-hero__wordmark svg {
+    height: 64px;
   }
 }
 @media (max-width: 47.99rem) {
@@ -1449,8 +1475,12 @@ a.x-q:hover .x-q__row .x-stitch {
   .x-home__body {
     padding-inline: 16px;
   }
-  .x-hero__text {
-    font-size: 17px;
+  .x-hero {
+    margin: 16px 0 32px;
+    border-radius: 16px;
+  }
+  .x-hero__wordmark svg {
+    height: 48px;
   }
   .x-pager {
     grid-template-columns: 1fr;

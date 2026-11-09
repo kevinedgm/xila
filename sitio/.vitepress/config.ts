@@ -28,6 +28,24 @@ export default defineConfig({
   ignoreDeadLinks: false,
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }],
+    // Familjen Grotesk: la primaria de la marca (lema y títulos); Instrument Sans viene con xilaplot/fuentes.
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@600&display=swap',
+      },
+    ],
+    // Vista previa para enlaces y redes (marca/tarjeta-redes.png, 1200 × 630).
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Xila · Primero la pregunta, después la gráfica' }],
+    [
+      'meta',
+      { property: 'og:image', content: 'https://kevinedgm.github.io/xila/tarjeta-redes.png' },
+    ],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     // Tema antes de pintar: VitePress pone la clase `dark` con su propio script (clave `vitepress-theme-appearance`:
     // auto · light · dark); este escribe a la vez `data-theme` para los tokens del sitio y de los gráficos.
     [

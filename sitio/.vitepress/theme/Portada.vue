@@ -3,7 +3,8 @@
 // tabla de preguntas: Xila parte de la pregunta del lector, así que la portada también. Cada pregunta lleva a su
 // ejemplo en la galería.
 import { withBase } from 'vitepress';
-import simbolo from '@marca/simbolo.svg?raw';
+import emblema from '@marca/emblema-oscuro.svg?raw';
+import wordmark from '@marca/xila-oscuro.svg?raw';
 
 interface Pregunta {
   pregunta: string;
@@ -26,17 +27,23 @@ defineProps<{ data: HomeData }>();
 <template>
   <div class="x-home">
     <section class="x-hero">
-      <div class="x-hero__mark" aria-hidden="true" v-html="simbolo"></div>
-      <h1 class="x-hero__title">Xila</h1>
-      <p class="x-hero__text">{{ data.description }}</p>
-      <p class="x-hero__actions">
-        <a class="x-btn x-btn--brand" :href="withBase('/guia/primer-grafico')"
-          >Primer gráfico en 5 minutos</a
-        >
-        <a class="x-btn" :href="withBase('/galeria')">Galería</a>
-        <a class="x-btn" href="https://github.com/kevinedgm/xila">GitHub</a>
-      </p>
-      <p class="x-hero__estado"><strong>Estado:</strong> {{ data.estado }}</p>
+      <div class="x-hero__main">
+        <h1 class="x-hero__title">
+          <span class="x-sr">Xila</span
+          ><span class="x-hero__wordmark" aria-hidden="true" v-html="wordmark"></span>
+        </h1>
+        <p class="x-hero__lema">Primero la pregunta, después la gráfica.</p>
+        <p class="x-hero__text">{{ data.description }}</p>
+        <p class="x-hero__actions">
+          <a class="x-btn x-btn--manta" :href="withBase('/guia/primer-grafico')"
+            >Primer gráfico en 5 minutos</a
+          >
+          <a class="x-btn x-btn--bruma" :href="withBase('/galeria')">Galería</a>
+          <a class="x-btn x-btn--bruma" href="https://github.com/kevinedgm/xila">GitHub</a>
+        </p>
+        <p class="x-hero__estado"><strong>Estado:</strong> {{ data.estado }}</p>
+      </div>
+      <div class="x-hero__mark" aria-hidden="true" v-html="emblema"></div>
     </section>
 
     <section class="x-preguntas" aria-labelledby="x-preguntas-title">

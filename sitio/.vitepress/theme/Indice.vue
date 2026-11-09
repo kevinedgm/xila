@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Índice izquierdo: grupos de páginas con filtro (`/`) y número estable al final de la fila en galería y decisiones.
-// La página actual lleva la puntada en cobalto: en la greca de la marca, la última puntada en color es el último valor.
+// La página actual lleva la puntada en añil: en el emblema de la marca, el centro en otro tono es el dato.
 import { computed, ref } from 'vue';
 import { withBase } from 'vitepress';
 import Icono from './Icono.vue';

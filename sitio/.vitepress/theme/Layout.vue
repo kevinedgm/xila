@@ -14,7 +14,8 @@ import {
   withBase,
 } from 'vitepress';
 import siteData from '../../src/.site-data.json';
-import wordmark from '@marca/xila.svg?raw';
+import wordmarkClaro from '@marca/xila-claro.svg?raw';
+import wordmarkOscuro from '@marca/xila-oscuro.svg?raw';
 import Icono from './Icono.vue';
 import Indice from './Indice.vue';
 import PaginaIndice from './PaginaIndice.vue';
@@ -223,7 +224,16 @@ onBeforeUnmount(() => {
         aria-label="Xila, inicio"
         @click="plainClick($event) && ($event.preventDefault(), go(homeHref))"
       >
-        <span class="x-brand__mark" aria-hidden="true" v-html="wordmark"></span>
+        <span
+          class="x-brand__mark x-brand__mark--claro"
+          aria-hidden="true"
+          v-html="wordmarkClaro"
+        ></span>
+        <span
+          class="x-brand__mark x-brand__mark--oscuro"
+          aria-hidden="true"
+          v-html="wordmarkOscuro"
+        ></span>
       </a>
       <nav class="x-nav" aria-label="Secciones">
         <ul class="x-nav__list">

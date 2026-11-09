@@ -89,10 +89,13 @@ const HOME = [
   ['.x-q__nombre', 'portada · alternativa'],
   ['.x-q__detalle', 'portada · detalle'],
   ['.x-q__code', 'portada · clave'],
-  ['.x-hero__estado', 'portada · estado'],
   ['.x-hero__text', 'portada · descripción'],
   ['.x-feature__text', 'portada · ventaja'],
-  ['.x-btn--brand', 'portada · botón principal'],
+  ['.x-btn--manta', 'portada · botón principal (manta sobre añil)'],
+  ['.x-btn--bruma', 'portada · botón secundario'],
+  ['.x-hero__lema', 'portada · lema'],
+  ['.x-hero__text', 'portada · texto sobre añil'],
+  ['.x-hero__estado', 'portada · estado sobre añil'],
   ['.x-footer', 'pie'],
 ];
 
