@@ -3,7 +3,7 @@
 // tabla de preguntas: Xila parte de la pregunta del lector, así que la portada también. Cada pregunta lleva a su
 // ejemplo en la galería.
 import { withBase } from 'vitepress';
-import emblema from '@marca/emblema-oscuro.svg?raw';
+import emblema from '@marca/simbolo-oscuro.svg?raw';
 import wordmark from '@marca/xila-oscuro.svg?raw';
 
 interface Pregunta {

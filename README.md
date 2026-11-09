@@ -44,15 +44,12 @@ en vez de leyenda, barras con el extremo redondeado y un hueco del color del fon
 vecinas, puntos con anillo de superficie, y un título que dice el hallazgo (`titlePlugin`).
 Nada de sombras, degradados ni cajas: el dato manda.
 
-**Marca Xila.** Xila borda los datos: el emblema es la x de Xila dentro del rombo del huipil y el
-centro, en otro tono, es el dato (archivos en `marca/`, un dibujo por tamaño: grande desde 64 px, mediano de
-32 a 48, chico de 20 a 28 y favicon a 16). El nombre va siempre en punto de cruz, nunca con una fuente, y el
-punto de la i también es el dato. Un solo color, el añil #16255C, en varias intensidades sobre manta
-#F4F1EA; Familjen Grotesk 600 para el lema, los títulos y el título de cada gráfica, Instrument Sans para el
-resto. Guía completa en [`marca/README.md`](marca/README.md). El tema por defecto de las gráficas sigue hoy
-la paleta Cobalto (Instrument Sans, JetBrains Mono para las cifras y Fraunces para el hallazgo; importa
-`xilaplot/fuentes/xila.css` una vez por página), pendiente de alinearlo con la guía 2.0: los tokens viven en
-el tema y se cambian en una sola configuración.
+**Marca Xila.** La x bordada en el rombo del huipil, con un dibujo por tamaño y el nombre en punto de
+cruz, en añil (archivos y reglas en `marca/`). Tema de las gráficas: superficie «manta» (#f6f1e8) y tinta, cobalto #1f4bd8 como color principal, «hilo»
+naranja de acento y una categórica de siete validada para daltonismo; Instrument Sans para la
+interfaz, JetBrains Mono para las cifras y Fraunces para el título del hallazgo (importa
+`xilaplot/fuentes/xila.css` una vez por página); el heatmap va de la manta al marino pasando por el cobalto (`cobalto`).
+Los tokens viven en el tema y se cambian en una sola configuración.
 
 **Interacción incluida.** Tooltip, leyenda, zoom y pan, selección que cuenta, panel de resumen,
 anotaciones, sincronización entre gráficos y accesibilidad por teclado vienen como plugins; un
