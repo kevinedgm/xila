@@ -11,3 +11,6 @@ __pycache__/
 sitio/.vitepress/cache/
 sitio/.vitepress/dist/
 sitio/public/api/
+sitio/src/
+sitio/test-results/
+sitio/playwright-report/

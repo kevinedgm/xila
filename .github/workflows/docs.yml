@@ -9,6 +9,10 @@ on:
       - 'sitio/**'
       - 'docs/**'
       - 'packages/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'marca/**'
+      - 'plantilla/README.md'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
@@ -33,7 +37,12 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter xilaplot --filter xilaplot-vue build
+      - run: pnpm --filter sitio test
+      - run: pnpm --filter sitio typecheck
       - run: pnpm --filter sitio build
+      # Pruebas de navegador sobre el build (Chromium): marco, galería, ficha, búsqueda y teléfono.
+      - run: pnpm --filter sitio exec playwright install --with-deps chromium
+      - run: pnpm --filter sitio test:e2e
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

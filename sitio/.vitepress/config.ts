@@ -1,66 +1,72 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitepress';
 
+const here = path.dirname(fileURLToPath(import.meta.url));
+const sitio = path.resolve(here, '..');
+const dataFile = path.join(sitio, 'src/.site-data.json');
+if (!fs.existsSync(dataFile)) {
+  throw new Error(
+    'Falta sitio/src/: ejecuta antes `node sitio/scripts/generar.mjs` (lo hacen dev, build y typecheck)',
+  );
+}
+
 // El sitio se publica en GitHub Pages bajo /xila/ (workflow .github/workflows/docs.yml).
+const base = process.env['DOCS_BASE'] ?? '/xila/';
+
 export default defineConfig({
+  srcDir: 'src',
+  base,
   lang: 'es-MX',
   title: 'Xila',
   description:
     'Librería de gráficos en TypeScript para dashboards y datos científicos: Canvas por capas, WebGL para millones de puntos y plugins.',
-  base: process.env['DOCS_BASE'] ?? '/xila/',
   cleanUrls: true,
-  lastUpdated: true,
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/xila/favicon.svg' }]],
-  themeConfig: {
-    logo: { light: '/xila-claro.svg', dark: '/xila-oscuro.svg', alt: 'Xila' },
-    siteTitle: false,
-    nav: [
-      { text: 'Guía', link: '/guia/primer-grafico' },
-      { text: 'Galería', link: '/galeria/' },
-      { text: 'Referencia', link: '/referencia/' },
-      { text: 'GitHub', link: 'https://github.com/kevinedgm/xila' },
+  lastUpdated: false,
+  // Un enlace interno roto detiene el build.
+  ignoreDeadLinks: false,
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }],
+    // Tema antes de pintar: VitePress pone la clase `dark` con su propio script (clave `vitepress-theme-appearance`:
+    // auto · light · dark); este escribe a la vez `data-theme` para los tokens del sitio y de los gráficos.
+    [
+      'script',
+      {},
+      `;(()=>{try{var p=localStorage.getItem('vitepress-theme-appearance')||'auto';var d=p==='auto'?matchMedia('(prefers-color-scheme: dark)').matches:p==='dark';document.documentElement.setAttribute('data-theme',d?'dark':'light')}catch(e){}})()`,
     ],
-    sidebar: {
-      '/guia/': [
-        {
-          text: 'Guía',
-          items: [
-            { text: 'Primer gráfico en 5 minutos', link: '/guia/primer-grafico' },
-            { text: 'Tipos de gráfico', link: '/guia/tipos' },
-            { text: 'Crear un plugin', link: '/guia/plugin' },
-            { text: 'Dashboards desde CSV', link: '/guia/dashboards' },
-            { text: 'Rendimiento', link: '/guia/rendimiento' },
-          ],
-        },
-      ],
-      '/galeria/': [
-        { text: 'Galería', items: [{ text: 'Todos los ejemplos', link: '/galeria/' }] },
-      ],
-      '/referencia/': [
-        {
-          text: 'Referencia',
-          items: [
-            { text: 'Configuración del gráfico', link: '/referencia/' },
-            { text: 'Plugins incluidos', link: '/referencia/plugins' },
-            { text: 'Contrato de CSV', link: '/referencia/contrato-csv' },
-            { text: 'Configuración de dashboards', link: '/referencia/dashboard' },
-            { text: 'Despliegue', link: '/referencia/despliegue' },
-            { text: 'Benchmarks', link: '/referencia/benchmarks' },
-            { text: 'Contribuir', link: '/referencia/contribuir' },
-            { text: 'API (TypeDoc)', link: '/api/', target: '_self' },
-          ],
-        },
-      ],
-    },
-    socialLinks: [{ icon: 'github', link: 'https://github.com/kevinedgm/xila' }],
-    outline: { label: 'En esta página', level: [2, 3] },
-    docFooter: { prev: 'Anterior', next: 'Siguiente' },
-    lastUpdated: { text: 'Actualizado' },
+  ],
+  // El marco es propio (theme/Layout.vue): de la configuración del tema solo queda la búsqueda local, que construye
+  // el índice `@localSearchIndex` que lee la búsqueda modal.
+  themeConfig: {
     search: { provider: 'local' },
-    footer: { message: 'Licencia MIT.' },
+  },
+  // Portada «arriba del todo» desde el servidor: `data-top` en <html>; el Layout lo quita y lo pone al desplazar.
+  transformHtml(html, _id, { pageData }) {
+    if (pageData.frontmatter['layout'] !== 'home') return html;
+    return html.replace(/<html([^>]*)>/, (m, attrs: string) =>
+      /data-top/.test(attrs) ? m : `<html${attrs} data-top>`,
+    );
+  },
+  markdown: {
+    theme: { light: 'github-light', dark: 'github-dark' },
+    // `page.headers` con los h2 y h3: las secciones de «En esta página».
+    headers: { level: [2, 3] },
   },
   vite: {
+    // Con srcDir «src» VitePress buscaría src/public, que el generador vacía: los estáticos siguen en sitio/public.
+    publicDir: path.join(sitio, 'public'),
+    resolve: {
+      alias: {
+        '@demos': path.join(sitio, 'demos'),
+        '@gen-demos': path.join(sitio, 'src/.demos'),
+        '@live': path.join(sitio, 'live'),
+        '@marca': path.resolve(sitio, '../marca'),
+      },
+      dedupe: ['vue'],
+    },
     // Los ejemplos se sirven con la versión del monorepo, sin publicar en npm.
-    resolve: { dedupe: ['vue'] },
     optimizeDeps: { exclude: ['xilaplot', 'xilaplot-vue'] },
+    ssr: { noExternal: ['xilaplot', 'xilaplot-vue'] },
   },
 });

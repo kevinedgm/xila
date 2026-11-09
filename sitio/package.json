@@ -3,23 +3,29 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "Sitio de documentación de Xila (VitePress).",
+  "description": "Sitio de documentación de Xila (VitePress): generado desde README.md y docs/, vestido con la marca.",
   "scripts": {
-    "dev": "vitepress dev",
-    "build": "typedoc && vitepress build",
-    "preview": "vitepress preview",
-    "typecheck": "tsc --noEmit",
+    "generar": "node scripts/generar.mjs",
+    "dev": "node scripts/generar.mjs && vitepress dev .",
+    "build": "node scripts/generar.mjs && typedoc && vitepress build .",
+    "preview": "vitepress preview . --port 4300",
+    "typecheck": "node scripts/generar.mjs && tsc --noEmit",
+    "test": "node --test scripts/generar.test.mjs",
+    "test:e2e": "playwright test",
     "api": "typedoc"
   },
   "dependencies": {
+    "minisearch": "^7.1.1",
+    "vue": "^3.5.44",
     "xilaplot": "workspace:*",
-    "xilaplot-vue": "workspace:*",
-    "vue": "^3.5.44"
+    "xilaplot-vue": "workspace:*"
   },
   "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "^26.6.5",
     "typedoc": "0.28.20",
     "typescript": "^6.0.3",
     "vite": "5.4.21",
-    "vitepress": "^1.6.4"
+    "vitepress": "1.6.4"
   }
 }
