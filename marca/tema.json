@@ -1,0 +1,63 @@
+{
+  "nombre": "xila",
+  "version": "2.0.0",
+  "fuente": ".fruti/icons/xila/LEEME.md (rediseño aprobado 2026-11-09)",
+  "concepto": "La x bordada en el rombo del huipil; el centro es el dato. El nombre se escribe en punto de cruz y el punto de la i es el dato.",
+  "simbolo": {
+    "grande": "9 × 9 puntadas, desde 64 px",
+    "mediano": "5 × 5, de 32 a 48 px",
+    "chico": "3 × 3, de 20 a 28 px",
+    "favicon": "una X gruesa con su punto, 16 px",
+    "regla": "cada dibujo solo en su rango; no se escala uno para cubrir otro"
+  },
+  "color": {
+    "anil": {
+      "valor": "#16255C",
+      "uso": "marca, fondo del emblema, el dato en las gráficas; 12.8:1 sobre manta"
+    },
+    "anil_medio": {
+      "valor": "#2F4FA8",
+      "uso": "rombo del emblema claro, enlaces, cambios positivos; 6.6:1 sobre manta"
+    },
+    "anil_claro": {
+      "valor": "#7FA0E0",
+      "uso": "rombo del emblema y punto de la i sobre añil; 5.5:1 sobre añil"
+    },
+    "anil_bruma": {
+      "valor": "#C9D6F2",
+      "uso": "texto secundario sobre añil; 9.9:1"
+    },
+    "manta": {
+      "valor": "#F4F1EA",
+      "uso": "fondo claro y la x del emblema"
+    },
+    "texto2": {
+      "valor": "#4A5274",
+      "uso": "texto secundario sobre manta; 6.8:1"
+    },
+    "contexto": {
+      "valor": "#C4C6CF",
+      "uso": "series de contexto en las gráficas (gris)"
+    }
+  },
+  "tipografia": {
+    "primaria": {
+      "familia": "Familjen Grotesk",
+      "peso": 600,
+      "uso": "lema, títulos de sección, título de gráfica (el hallazgo)"
+    },
+    "secundaria": {
+      "familia": "Instrument Sans",
+      "pesos": [400, 600],
+      "uso": "texto, ejes, etiquetas, tablas, botones; cifras tabulares"
+    },
+    "nombre": "siempre bordado (svg/wordmark.svg); nunca escrito con una fuente"
+  },
+  "reglas": [
+    "En las gráficas, el dato que importa va en añil y el resto en gris: la misma regla que el centro del emblema.",
+    "Desde 64 px el emblema grande; de 32 a 48 el mediano; de 20 a 28 el chico; a 16 px el favicon.",
+    "Sobre fondos oscuros o de color se usa el emblema claro (manta).",
+    "El nombre bordado se usa desde 24 px de alto; más chico, «xila» en Familjen Grotesk junto al símbolo.",
+    "La metáfora textil va en la marca; los botones y mensajes hablan claro («Quitar filtros»)."
+  ]
+}
